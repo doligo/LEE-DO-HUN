@@ -64,6 +64,7 @@ int WardManager::Draw_Word(_Ward *name, int i)
 	if (name[i].status == TRUE)
 	{
 		XY.gotoxy(name[i].x, name[i].y);
+		BLUE
 		cout << name[i].name;
 	}
 
