@@ -15,6 +15,8 @@ Play::Play()
 	m_iStage = 1; // 스테이지
 	m_iSpeed = 900; //기본속도
 	m_iCreate_Speed = 3000; // 기본생성속도
+	m_iItem_Use = FALSE;
+	m_iItem_Clear_Use = FALSE;
 }
 
 void Play::Life_Name()
@@ -202,7 +204,10 @@ void Play::Insert_Name()
 		else if (ch == ENTER)
 		{
 			m_iName = tmp;
-			break;
+			if (m_iName != "\0")
+			{
+				break;
+			}
 		}
 
 		Ui.DrawMidText("                    ", WIDTH, HEIGHT * 0.75);
@@ -261,6 +266,8 @@ void Play::Insert_Word() // m_iPause == FALSE 구문 3개로 비패널티와 패널티시에 �
 		m_iTmpWord = { "\0" }; // 다음단어를 위해 초기화
 		m_inum = 0;
 		m_iTmp_Iw[INSERT_WORD_MAX] = { '\0' };
+		if (m_iWord.length() == 0)
+			return;
 		Correct_Word();
 		Life_Name(); // 점수 바로 출력
 	}
@@ -288,6 +295,7 @@ int Play::Draw_Drop()
 	int pause_cur_time = 0;
 
 	int warning_time = 0;
+	int item_time = 0;
 
 	m_iTmpWord = { "\0" }; // 재시작할시를 위해 초기화
 	m_inum = 0;
@@ -297,6 +305,7 @@ int Play::Draw_Drop()
 	old_time = clock();
 	pause_old_time = clock();
 	warning_time = clock();
+	item_time = clock();
 
 	while (word_num != WARD_MAX)
 	{
@@ -312,10 +321,11 @@ int Play::Draw_Drop()
 		if (_kbhit()) // ★★★ kbhit는 경험상 딜레이가 있어도 미리 입력해놓으면 나중에 실행된다;;??
 		{            // 그래서 && 로 진입이 안되게하지말고 다른방향으로 코드짜기
 			Insert_Word();
-			pause_old_time = pause_cur_time; // 패널티시간 일정하게 하기위함
+			pause_old_time = pause_cur_time; // 시간 일정하게 하기위함
+			item_time = clock(); // 시간 일정하게 하기위함
 		}
 
-		if (clock() - move_time >= (m_iSpeed / m_iStage + 300) && word_num != NULL)
+		if (clock() - move_time >= (m_iSpeed / m_iStage + 300) && word_num != NULL) // 단어속도
 		{
 			for (int i = 0; i < num; i++) // 출력된것은 전부 움직이게 하기
 			{
@@ -341,15 +351,15 @@ int Play::Draw_Drop()
 			Ui.DrawMidText(m_iTmpWord, WIDTH, HEIGHT * 0.75);
 		}
 
-		if (cur_time - old_time >= (m_iCreate_Speed / m_iStage) + 500)
+		if (cur_time - old_time >= (m_iCreate_Speed / m_iStage) + 500) // 단어 출력
 		{
-			printed_word[num] = Draw_Word(w, printed_word[num]); // 단어 출력
-			word_num++; // 단어 갯수
+			printed_word[num] = Draw_Word(w, printed_word[num]);
+			word_num++;
 			num++;
 			old_time = cur_time;
 		}
 
-		if (clock() - warning_time >= 25 && m_iPause == TRUE)
+		if (clock() - warning_time >= 25 && m_iPause == TRUE) // 패널티문구
 		{
 			RED
 				Ui.DrawMidText("Miss [채팅잠금]", WIDTH, HEIGHT * 0.75);
@@ -362,6 +372,60 @@ int Play::Draw_Drop()
 			pause_old_time = pause_cur_time;
 			m_iPause = FALSE;
 		}
+
+		if (m_iItem_Use == TRUE && clock() - item_time >= 2200) // 속도 변화아이템
+		{
+			m_iItem_Use = FALSE;
+			m_iSpeed = 900;
+			item_time = clock();
+		}
+	}
+}
+
+void Play::Item_Word(int i)
+{
+
+	if (w[i].item_word == WORD_SPEED_UP)
+	{
+		m_iSpeed -= 800;
+		m_iItem_Use = TRUE;
+	}
+	else if (w[i].item_word == WORD_SPEED_DOWN)
+	{
+		m_iSpeed += 800;
+		m_iItem_Use = TRUE;
+	}
+	else if (w[i].item_word == WORD_PAUSE)
+	{
+		m_iSpeed = 0;
+		m_iItem_Use = TRUE;
+	}
+	else if (w[i].item_word == SCREEN_CLEAR)
+	{
+		m_iItem_Clear_Use = TRUE;
+	}
+}
+
+void Play::Item_Clear_Screen() // 화면클리어 아이템
+{
+	int n = 0;
+
+	if (m_iItem_Clear_Use == TRUE)
+	{
+		for (int i = 0; i < WARD_MAX; i++)
+		{
+			if (w[i].on_screen == TRUE && w[i].status == TRUE)
+			{
+				n = w[i].name.length();
+				Ui.gotoxy(w[i].x, w[i].y);
+				Ui.EraseWord(n);
+				w[i].status = FALSE;
+				w[i].on_screen = FALSE;
+				m_iScore += 53 + (m_iStage * 20);
+				m_iTotal_Score += m_iScore; // 총 스코어
+			}
+		}
+		m_iItem_Clear_Use = FALSE;
 	}
 }
 
@@ -380,12 +444,16 @@ void Play::Correct_Word() // 단어 맞추면 점수가 오른다
 				Ui.gotoxy(w[i].x, w[i].y);
 				Ui.EraseWord(num);
 				w[i].status = FALSE;
+				w[i].on_screen = FALSE;
 				m_iScore += 53 + (m_iStage * 20);
 				m_iTotal_Score += m_iScore; // 총 스코어
+				Item_Word(i); // 아무 아이템단어일경우 효과적용
+				Item_Clear_Screen(); // 화면클리어 아이템일경우 실행된다
 				return;
 			}
 		}
 	}
+
 	m_iPause = TRUE; // 정지 패널티
 }
 
@@ -402,8 +470,11 @@ void Play::Playing()
 			w[i].x = NULL;
 			w[i].y = NULL;
 			w[i].status = TRUE;
+			w[i].item_word = NULL;
+			w[i].on_screen = FALSE;
 		}
 		Set_xy(w); // 단어 위치 세팅
+		Set_item(w); // 단어 아이템 세팅
 
 		sprintf_s(buf, "★ %d Stage ★", m_iStage);
 

@@ -24,3 +24,7 @@ sdsfedf 1 0
 s 1 0
 dsfsdf 1 0
 df 1 0
+s 1 0
+w 1 0
+e 1 0
+e 3 3597

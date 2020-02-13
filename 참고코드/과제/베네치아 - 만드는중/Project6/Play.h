@@ -20,10 +20,14 @@ private:
 	int m_iPause;
 	int m_iSpeed;
 	int m_iCreate_Speed;
+	int m_iItem_Use;
+	int m_iItem_Clear_Use;
+
 	char m_iTmp_Iw[INSERT_WORD_MAX];
 	string m_iName;
 	string m_iWord;
 	string m_iTmpWord;
+
 	Interface Ui;
 	_Ward *w;
 public:
@@ -38,6 +42,8 @@ public:
 	int Draw_Drop();
 	void Insert_Word();
 	void Correct_Word();
+	void Item_Word(int i);
+	void Item_Clear_Screen();
 	~Play();
 };
 

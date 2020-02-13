@@ -16,6 +16,8 @@ void WardManager::Load_Ward(_Ward *name, int ward_max)
 		name[i].y = NULL;
 		name[i].name = { "\0" };
 		name[i].status = TRUE;
+		name[i].item_word = NULL;
+		name[i].on_screen = FALSE;
 	}
 
 	Load.open("Word.txt");
@@ -39,7 +41,6 @@ void WardManager::Load_Ward(_Ward *name, int ward_max)
 
 void WardManager::Set_xy(_Ward *name)
 {
-	int check = FALSE;
 
 	for (int i = 0; i < WARD_MAX;)
 	{
@@ -54,6 +55,14 @@ void WardManager::Set_xy(_Ward *name)
 
 }
 
+void WardManager::Set_item(_Ward *name)
+{
+	for (int i = 0; i < WARD_MAX; i++)
+	{
+		name[i].item_word = (rand() % 25);
+	}
+}
+
 int WardManager::Draw_Word(_Ward *name, int i)
 {
 	// 살아있는상태인 단어를 랜덤으로 출력
@@ -63,9 +72,20 @@ int WardManager::Draw_Word(_Ward *name, int i)
 
 	if (name[i].status == TRUE)
 	{
-		XY.gotoxy(name[i].x, name[i].y);
-		BLUE
-		cout << name[i].name;
+		name[i].on_screen = TRUE;
+
+		if (name[i].item_word >= WORD_SPEED_UP && name[i].item_word <= SCREEN_CLEAR)
+		{
+			XY.gotoxy(name[i].x, name[i].y);
+			PUPPLE
+			cout << name[i].name;
+		}
+		else
+		{
+			XY.gotoxy(name[i].x, name[i].y);
+			BLUE
+			cout << name[i].name;
+		}
 	}
 
 	return i;
@@ -89,11 +109,22 @@ int WardManager::Drop_Word(_Ward *name, int i)
 		if (name[i].y == HEIGHT - 1)
 		{
 			name[i].status = FALSE; // 단어 죽음
+			name[i].on_screen = FALSE; // 스크린에서 사라짐
 			return 1;
 		}
-		XY.gotoxy(name[i].x, name[i].y);
-		BLUE
-		cout << name[i].name;
+
+		if (name[i].item_word >= WORD_SPEED_UP && name[i].item_word <= SCREEN_CLEAR)
+		{
+			XY.gotoxy(name[i].x, name[i].y);
+			PUPPLE
+			cout << name[i].name;
+		}
+		else
+		{
+			XY.gotoxy(name[i].x, name[i].y);
+			BLUE
+			cout << name[i].name;
+		}
 	}
 	return 0;
 }
