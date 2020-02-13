@@ -7,12 +7,12 @@ Play::Play()
 	m_iName = { "\0" };
 	m_iWord = { "\0" };
 	m_iTmpWord = { "\0" };
-	m_iStage = 1;
 	m_iload_word = 0; // 총 단어 갯수
 	w = NULL; // 단어
 	m_inum = 0;
 	m_iTmp_Iw[INSERT_WORD_MAX] = { '\0' };
 	m_iPause = FALSE;
+	m_iStage = 1; // 스테이지
 	m_iSpeed = 900; //기본속도
 	m_iCreate_Speed = 3000; // 기본생성속도
 }
@@ -20,6 +20,8 @@ Play::Play()
 void Play::Life_Name()
 {
 	char buf[256];
+
+	Ui.EraseHeart(8, HEIGHT + 1);
 
 	RED
 	Ui.TextDraw("Life : ", 1, HEIGHT + 1);
@@ -44,30 +46,39 @@ void Play::Start()
 {
 	int Select = 0;
 
-	if (w != NULL)
+	while (1)
 	{
-		delete[] w;
+		if (w != NULL)
+		{
+			delete[] w;
+		}
+		w = new _Ward[WARD_MAX]; // 미리 공간을 할당해야 Load_Ward 에서 동작이됌
+		m_iLife = FULL_HP;
+		m_iName = { "\0" };
+		m_iStage = 1;
+		m_iScore = 0;
+
+		Load_Ward(w, m_iload_word);	// 단어 불러오기
+
+		Ui.First_Screen();
+		Life_Name();
+
+		BLUE
+		Ui.DrawMidText("1.Game Start", WIDTH, HEIGHT * 0.4);
+		Ui.DrawMidText("2.Rank", WIDTH, HEIGHT * 0.4 + 3);
+		Ui.DrawMidText("3.Exit", WIDTH, HEIGHT * 0.4 + 6);
+
+		Select = Ui.MenuSelectCursor(3, 3, WIDTH * 0.4, HEIGHT * 0.4);
+
+		if (Select == 1)
+		{
+			Game_Start();
+		}
+		else if (Select == 3)
+		{
+			return;
+		}
 	}
-	w = new _Ward[WARD_MAX]; // 미리 공간을 할당해야 Load_Ward 에서 동작이됌
-
-	Load_Ward(w, m_iload_word);	// 단어 불러오기
-	Set_xy(w); // 단어 위치 세팅
-
-	Ui.First_Screen();
-	Life_Name();
-
-	BLUE
-	Ui.DrawMidText("1.Game Start", WIDTH , HEIGHT * 0.4);
-	Ui.DrawMidText("2.Rank", WIDTH, HEIGHT * 0.4 + 3);
-	Ui.DrawMidText("3.Exit", WIDTH, HEIGHT * 0.4 + 6);
-
-	Select = Ui.MenuSelectCursor(3, 3, WIDTH * 0.4, HEIGHT * 0.4);
-
-	if (Select == 1)
-	{
-		Game_Start();
-	}
-
 }
 
 void Play::Game_Start()
@@ -262,11 +273,12 @@ void Play::Insert_Word() // m_iPause == FALSE 구문 3개로 비패널티와 패널티시에 �
 
 }
 
-void Play::Draw_Drop()
+int Play::Draw_Drop()
 {
 	int printed_word[WARD_MAX] = {'\0'};
 	int word_num = 0;
 	int num = 0;
+	int heart = 0;
 
 	int move_time = 0;
 	int old_time = 0;
@@ -277,6 +289,10 @@ void Play::Draw_Drop()
 
 	int warning_time = 0;
 
+	m_iTmpWord = { "\0" }; // 재시작할시를 위해 초기화
+	m_inum = 0;
+	m_iTmp_Iw[INSERT_WORD_MAX] = { '\0' };
+
 	move_time = clock();
 	old_time = clock();
 	pause_old_time = clock();
@@ -284,6 +300,12 @@ void Play::Draw_Drop()
 
 	while (word_num != WARD_MAX)
 	{
+		if (m_iScore >= 500 * m_iStage)
+		{
+			m_iStage++;
+			return 0;
+		}
+
 		cur_time = clock();
 		pause_cur_time = clock();
 
@@ -293,11 +315,22 @@ void Play::Draw_Drop()
 			pause_old_time = pause_cur_time; // 패널티시간 일정하게 하기위함
 		}
 
-		if (clock() - move_time >= m_iSpeed && word_num != NULL)
+		if (clock() - move_time >= (m_iSpeed / m_iStage + 300) && word_num != NULL)
 		{
 			for (int i = 0; i < num; i++) // 출력된것은 전부 움직이게 하기
 			{
-				Drop_Word(w, printed_word[i]);
+				heart = Drop_Word(w, printed_word[i]);
+				if (heart == 1)
+				{
+					m_iLife--;
+					Life_Name();
+					if (m_iLife == NULL)
+					{
+						Ui.DrawMidText("●○ 게임 오버 ●○", WIDTH, HEIGHT * 0.3);
+						Sleep(1500);
+						return 1;
+					}
+				}
 			}
 			move_time = clock();
 
@@ -308,7 +341,7 @@ void Play::Draw_Drop()
 			Ui.DrawMidText(m_iTmpWord, WIDTH, HEIGHT * 0.75);
 		}
 
-		if (cur_time - old_time >= m_iCreate_Speed)
+		if (cur_time - old_time >= (m_iCreate_Speed / m_iStage) + 500)
 		{
 			printed_word[num] = Draw_Word(w, printed_word[num]); // 단어 출력
 			word_num++; // 단어 갯수
@@ -347,7 +380,8 @@ void Play::Correct_Word() // 단어 맞추면 점수가 오른다
 				Ui.gotoxy(w[i].x, w[i].y);
 				Ui.EraseWord(num);
 				w[i].status = FALSE;
-				m_iScore += 153 * (m_iStage * 0.5);
+				m_iScore += 53 + (m_iStage * 20);
+				m_iTotal_Score += m_iScore; // 총 스코어
 				return;
 			}
 		}
@@ -357,20 +391,34 @@ void Play::Correct_Word() // 단어 맞추면 점수가 오른다
 
 void Play::Playing()
 {
+	int game_over = FALSE;
 	char buf[256];
-	sprintf_s(buf, "★ %d Stage ★", m_iStage);
 
-	PLUM
-	Ui.BoxDraw(0, 0, WIDTH, HEIGHT);
-	BLUE
-	Ui.DrawMidText(buf, WIDTH, HEIGHT * 0.4);
-	Life_Name();
+	while (game_over != TRUE)
+	{
+		m_iScore = 0; // 스코어 초기화
+		for (int i = 0; i < WARD_MAX; i++) // 단어 초기화
+		{
+			w[i].x = NULL;
+			w[i].y = NULL;
+			w[i].status = TRUE;
+		}
+		Set_xy(w); // 단어 위치 세팅
 
-	Sleep(2000);
-	system("cls");
-	Ui.Game_Screen();
-	Life_Name();
-	Draw_Drop(); //단어 그리고 떨어지는함수
+		sprintf_s(buf, "★ %d Stage ★", m_iStage);
+
+		PLUM
+			Ui.BoxDraw(0, 0, WIDTH, HEIGHT);
+		BLUE
+			Ui.DrawMidText(buf, WIDTH, HEIGHT * 0.4);
+		Life_Name();
+
+		Sleep(2000);
+		system("cls");
+		Ui.Game_Screen();
+		Life_Name();
+		game_over = Draw_Drop(); //단어 그리고 떨어지는함수
+	}
 }
 
 Play::~Play()

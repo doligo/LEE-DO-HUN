@@ -13,6 +13,7 @@ class Play : virtual public WardManager
 private:
 	int m_iLife;
 	int m_iScore;
+	int m_iTotal_Score;
 	int m_iStage;
 	int m_iload_word;
 	int m_inum;
@@ -34,7 +35,7 @@ public:
 	void Story();
 	void Insert_Name();
 	void Playing();
-	void Draw_Drop();
+	int Draw_Drop();
 	void Insert_Word();
 	void Correct_Word();
 	~Play();

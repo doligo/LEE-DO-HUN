@@ -89,7 +89,7 @@ int WardManager::Drop_Word(_Ward *name, int i)
 		if (name[i].y == HEIGHT - 1)
 		{
 			name[i].status = FALSE; // ´Ü¾î Á×À½
-			return 0;
+			return 1;
 		}
 		XY.gotoxy(name[i].x, name[i].y);
 		BLUE
