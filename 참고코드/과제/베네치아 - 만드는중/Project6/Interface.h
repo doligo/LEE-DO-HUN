@@ -9,6 +9,7 @@ public:
 
 	void First_Screen();
 	void Game_Screen();
+	void Rank_Screen();
 	~Interface();
 };
 

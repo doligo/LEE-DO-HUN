@@ -24,6 +24,7 @@ public:
 	int LB_x[SAVE_XY_MAX]; // LittleBox 입력창 좌표저장, 사용안해도됌
 	int LB_y[SAVE_XY_MAX];
 	void EraseWord(int n);
+	void DrawBlind(int n);
 	MapDraw();
 	inline void gotoxy(int x, int y)
 	{

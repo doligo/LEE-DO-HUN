@@ -14,6 +14,14 @@ void MapDraw::EraseWord(int n)
 	}
 }
 
+void MapDraw::DrawBlind(int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		cout << "=";
+	}
+}
+
 void MapDraw::ErasePoint(int x, int y)
 {
 	gotoxy(x * 2, y);

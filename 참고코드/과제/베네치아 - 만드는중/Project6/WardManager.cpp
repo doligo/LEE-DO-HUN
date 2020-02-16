@@ -36,6 +36,7 @@ void WardManager::Load_Ward(_Ward *name, int ward_max)
 			j++; // 0 ~ 74까지 저장되고 마지막에 75가 됌
 		}
 	}
+	Load.close();
 
 }
 
@@ -77,13 +78,13 @@ int WardManager::Draw_Word(_Ward *name, int i)
 		if (name[i].item_word >= WORD_SPEED_UP && name[i].item_word <= SCREEN_CLEAR)
 		{
 			XY.gotoxy(name[i].x, name[i].y);
-			PUPPLE
+			SKY_BLUE
 			cout << name[i].name;
 		}
 		else
 		{
 			XY.gotoxy(name[i].x, name[i].y);
-			BLUE
+			ORIGINAL
 			cout << name[i].name;
 		}
 	}
@@ -116,13 +117,13 @@ int WardManager::Drop_Word(_Ward *name, int i)
 		if (name[i].item_word >= WORD_SPEED_UP && name[i].item_word <= SCREEN_CLEAR)
 		{
 			XY.gotoxy(name[i].x, name[i].y);
-			PUPPLE
+			SKY_BLUE
 			cout << name[i].name;
 		}
 		else
 		{
 			XY.gotoxy(name[i].x, name[i].y);
-			BLUE
+			ORIGINAL
 			cout << name[i].name;
 		}
 	}
