@@ -3,7 +3,7 @@
 class Bsearch
 {
 public:
-	int search(int arr[], int len, int target);
+	int search(int arr[], int first, int last, int target);
 	Bsearch();
 	~Bsearch();
 };

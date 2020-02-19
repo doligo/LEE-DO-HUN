@@ -24,7 +24,7 @@ int main()
 	cout << "찾을 숫자를 입력하세요 : ";
 	cin >> num;
 
-	idx = bb.search(arr, sizeof(arr) / sizeof(int), num); // int 안쓰면 5 * 자료형크기 되버림
+	idx = bb.search(arr, 0, (sizeof(arr) / sizeof(int)) - 1, num); // int 안쓰면 5 * 자료형크기 되버림
 
 	if (idx == -1)
 		cout << "탐색 실패" << endl;

@@ -6,10 +6,9 @@ Bsearch::Bsearch()
 {
 }
 
-int Bsearch::search(int arr[], int len, int target)
+int Bsearch::search(int arr[], int first, int last, int target)
 {
-	int first = 0;
-	int last = len - 1;
+
 	int mid;
 
 	while (first <= last)
@@ -23,11 +22,10 @@ int Bsearch::search(int arr[], int len, int target)
 		else
 		{
 			if (target < arr[mid])
-				return search(arr, len - 1, target);
+				return search(arr, first, last - 1, target);
 			else
-				return search(arr, len + 1, target);
+				return search(arr, first + 1, last, target);
 		}
-
 	}
 
 	return -1;

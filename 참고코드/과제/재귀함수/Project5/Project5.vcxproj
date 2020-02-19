@@ -149,11 +149,13 @@
   <ItemGroup>
     <ClCompile Include="Bsearch.cpp" />
     <ClCompile Include="Fibo.cpp" />
+    <ClCompile Include="Hanoi.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bsearch.h" />
     <ClInclude Include="Fibo.h" />
+    <ClInclude Include="Hanoi.h" />
     <ClInclude Include="Mecro.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

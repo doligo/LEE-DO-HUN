@@ -21,7 +21,6 @@ int Fibo::fibo(int n)
 	{
 		return fibo(n - 1) + fibo(n - 2);
 	}
-
 }
 
 
