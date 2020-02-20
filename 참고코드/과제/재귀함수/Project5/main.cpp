@@ -1,10 +1,12 @@
 ﻿#include "Fibo.h"
 #include "Bsearch.h"
+#include "Hanoi.h"
 
 int main()
 {
 	Fibo ff;
 	Bsearch bb;
+	Hanoi hh;
 
 	int num = 0;
 	int result = 0;
@@ -30,6 +32,11 @@ int main()
 		cout << "탐색 실패" << endl;
 	else
 		cout << "타겟 저장 인덱스 : " << idx << endl;
+
+	cout << "하노이 탑의 층수를 입력하세요 : ";
+	cin >> num;
+
+	hh.hanoi(num, 'A', 'B', 'C');
 
 	system("pause");
 }
