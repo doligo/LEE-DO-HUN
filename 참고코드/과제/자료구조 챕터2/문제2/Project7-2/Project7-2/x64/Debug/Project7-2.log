@@ -1,2 +1,3 @@
-﻿  NameCard.cpp
-  Project7-2.vcxproj -> C:\Users\A09\Desktop\LEE-DO-HUN\LEE-DO-HUN\참고코드\과제\자료구조 챕터2\문제2\Project7-2\x64\Debug\Project7-2.exe
+﻿  Main.cpp
+c:\users\l\documents\github\lee-do-hun\참고코드\과제\자료구조 챕터2\문제2\project7-2\project7-2\main.cpp(45): warning C4326: 'main'의 반환 형식이 'int'이어야 하는데 'void'입니다.
+c:\users\l\documents\github\lee-do-hun\참고코드\과제\자료구조 챕터2\문제2\project7-2\project7-2\main.cpp(114): error C4703: 초기화되지 않았을 수 있는 로컬 포인터 변수 'nc'이(가) 사용되었습니다.

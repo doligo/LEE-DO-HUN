@@ -4,41 +4,45 @@
 
 NameCard *MakeNameCard(char * name, char * phone)
 {
-	for (int i = 0; i < NAME_LEN; i++)
-	{
-		name[i] = { '\0' };
-		phone[i] = { '\0' };
-	}
+	NameCard *cd = new NameCard;
 
-	return 0; // 동적할당 및 초기화후 주소값 반환하는이유?????? name or phone 시작주소 반환?
+	strcpy(cd->name, name);
+	strcpy(cd->phone, phone);
+
+	return cd;
 }
 
 void ShowNameCardInfo(NameCard *pcard)
 {
-	char tmp[NAME_LEN] = { "\0" };
-	int trigger = FALSE;
+	cout << "=====정 보=====" << endl;
+	cout << pcard->name << "   " << pcard->phone << endl;
 
-	cout << "검색할 이름을 입력하세요 : ";
-	cin >> tmp;
+	system("pause");
+}
 
-	for (int i = 0; i < PEOPLE_MAX; i++)
+void ChangePhoneNum(NameCard * pcard, char * phone)
+{
+	strcpy(pcard->phone, phone);
+}
+
+int NameCompare(NameCard * pcard, char * name)
+{
+	string tmp1;
+	string tmp2;
+
+	tmp1 = pcard->name;
+	tmp2 = name;
+	if (tmp1 == tmp2)
 	{
-		if (pcard[i].name == tmp)
-		{
-			cout << "=============정 보=============" << endl;
-			cout << "이름 : " << pcard[i].name << endl;
-			cout << "번호 : " << pcard[i].phone << endl;
-			break;
-		}
-		else
-		{
-			trigger = TRUE;
-		}
+		return 1;
 	}
-
-	if (trigger == TRUE)
+	else
 	{
-		cout << "정보가 존재하지 않습니다.";
-		trigger = FALSE;
+		return 0;
 	}
+}
+
+void Delete(NameCard *pcard)
+{
+	delete pcard;
 }
