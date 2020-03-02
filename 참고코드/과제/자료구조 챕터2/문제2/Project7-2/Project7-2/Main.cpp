@@ -16,6 +16,7 @@ void Set(NameCard *n)
 
 void main()
 {
+	int select = 0;
 	NameCard *nc;
 	nc = NULL;
 
@@ -25,14 +26,28 @@ void main()
 	}
 	nc = new NameCard[PEOPLE_MAX];
 
-	for (int i = 0; i < PEOPLE_MAX; i++)
-	{
-		MakeNameCard(nc[i].name, nc[i].phone);
-	}
+	
+	MakeNameCard(nc->name, nc->phone);
 
 	Set(nc);
 
-	ShowNameCardInfo(nc);
+	cout << "1.정보보기" << endl;
+	cout << "2.번호변경" << endl;
+	cout << "3.정보삭제" << endl;
+	cout << "입력 : ";
+	cin >> select;
+
+	switch (select)
+	{
+	case 1:
+		ShowNameCardInfo(nc);
+		break;
+	case 2:
+		break;
+	case3:
+		break;
+	}
+
 
 	system("pause");
 }

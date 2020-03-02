@@ -1,11 +1,14 @@
 #include "NameCard.h"
 #include <iostream>
-
+#pragma warning(disable:4996)
 
 NameCard *MakeNameCard(char * name, char * phone)
 {
-	*name = { '\0' }; // 배열의 첫번째 공간만 초기화된다 전부 초기화 방법은?
-	*phone = { '\0' };
+	for (int i = 0; i < NAME_LEN; i++)
+	{
+		name[i] = { '\0' };
+		phone[i] = { '\0' };
+	}
 
 	return 0; // 동적할당 및 초기화후 주소값 반환하는이유?????? name or phone 시작주소 반환?
 }
@@ -20,7 +23,7 @@ void ShowNameCardInfo(NameCard *pcard)
 
 	for (int i = 0; i < PEOPLE_MAX; i++)
 	{
-		if (tmp == pcard[i].name)
+		if (pcard[i].name == tmp)
 		{
 			cout << "=============정 보=============" << endl;
 			cout << "이름 : " << pcard[i].name << endl;
