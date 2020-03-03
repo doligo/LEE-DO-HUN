@@ -15,7 +15,7 @@ int Register()
 	return n;
 }
 
-void Insert(NameCard *n, int n2)
+void Insert(NameCard **n, int n2)
 {
 	char name[NAME_LEN] = { "\0" };
 	char phone[PHONE_LEN] = { "\0" };
@@ -27,7 +27,7 @@ void Insert(NameCard *n, int n2)
 		cin >> name;
 		cout << i + 1 << "번 사람 핸드폰입력 : ";
 		cin >> phone;
-		n[i] = *MakeNameCard(name, phone);
+		n[i] = MakeNameCard(name, phone);
 	}
 }
 
@@ -52,7 +52,7 @@ void main()
 	char tmp_phone[MAX] = { "\0" };
 
 
-	NameCard *nc;
+	NameCard **nc;
 	nc = NULL;
 
 	while (1)
@@ -62,6 +62,7 @@ void main()
 		cout << "2.정보찾기" << endl;
 		cout << "3.번호변경" << endl;
 		cout << "4.정보삭제" << endl;
+		cout << "5.모든정보" << endl;
 		cout << "입력 : ";
 		cin >> select;
 
@@ -69,7 +70,7 @@ void main()
 		{
 		case 1:
 			num = Register();
-			nc = new NameCard[num];
+			nc = new NameCard*[num];
 			people_max = num;
 			Insert(nc, num);
 			break;
@@ -79,10 +80,12 @@ void main()
 			cin >> name;
 			for (int i = 0; i < num; i++)
 			{
-				num2 = NameCompare(&nc[i], name);
-				if (num2 == 1)
+				if (nc[i] != NULL)
+				num2 = NameCompare(nc[i], name);
+				if (num2 == 1 && nc[i] != NULL)
 				{
-					ShowNameCardInfo(&nc[i]);
+					ShowNameCardInfo(nc[i]);
+					system("pause");
 					break;
 				}
 			}
@@ -94,12 +97,13 @@ void main()
 			cin >> name;
 			for (int i = 0; i < num; i++)
 			{
-				num2 = NameCompare(&nc[i], name);
-				if (num2 == 1)
+				if (nc[i] != NULL)
+				num2 = NameCompare(nc[i], name);
+				if (num2 == 1 && nc[i] != NULL)
 				{
 					cout << "변경하고싶은 번호 입력 : ";
 					cin >> tmp_phone;
-					ChangePhoneNum(&nc[i], tmp_phone);
+					ChangePhoneNum(nc[i], tmp_phone);
 					break;
 				}
 			}
@@ -111,15 +115,32 @@ void main()
 			cin >> name;
 			for (int i = 0; i < num; i++)
 			{
-				num2 = NameCompare(&nc[i], name);
-				if (num2 == 1)
+				if (nc[i] != NULL)
+				num2 = NameCompare(nc[i], name);
+				if (num2 == 1 && nc[i] != NULL)
 				{
-					Delete(&nc[i]); // 힙영역 오류가 난다
+					Delete(nc[i]); // 더블포인트로 이렇게 쓰던가 or 그냥 main에서 delete함수를 쓰던가
 					nc[i] = {};
 					break;
 				}
 			}
 			No_Data(num2);
+			break;
+		case 5:
+			system("cls");
+			for (int i = 0; i < people_max; i++) 
+			{
+				if (nc[i] == NULL)
+				{
+					cout << "=====정 보=====" << endl;
+					cout << "데이터없음" << "   " << "데이터없음" << endl;
+				}
+				else
+				{
+					ShowNameCardInfo(nc[i]);
+				}
+			}
+			system("pause");
 			break;
 		}
 	}

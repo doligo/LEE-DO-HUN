@@ -2,9 +2,9 @@
 #include <iostream>
 #pragma warning(disable:4996)
 
-NameCard *MakeNameCard(char * name, char * phone)
+NameCard *MakeNameCard(char * name, char * phone) // 이거 복습
 {
-	NameCard *cd = new NameCard;
+	NameCard *cd = new NameCard; // 구조체 동적할당 후 return 으로 할당한 주소값 main에 전달
 
 	strcpy(cd->name, name);
 	strcpy(cd->phone, phone);
@@ -17,7 +17,6 @@ void ShowNameCardInfo(NameCard *pcard)
 	cout << "=====정 보=====" << endl;
 	cout << pcard->name << "   " << pcard->phone << endl;
 
-	system("pause");
 }
 
 void ChangePhoneNum(NameCard * pcard, char * phone)
