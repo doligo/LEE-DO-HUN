@@ -12,7 +12,7 @@ int main(void)
 	Node * head = NULL;    // NULL 포인터 초기화
 	Node * tail = NULL;
 	Node * cur = NULL;
-	Node * dmy = NULL;
+	Node * dummy = NULL;
 
 	Node * newNode = NULL;
 	int readData;
@@ -31,13 +31,18 @@ int main(void)
 		newNode->next = NULL;
 
 		if (head == NULL)
+		{
 			head = newNode;
+		}
 		else
-			dmy->next = newNode;
+		{
+			dummy->next = newNode;
+		}
 
-		dmy = newNode;
-		tail->next = newNode;
+		dummy = newNode;
+
 	}
+	tail = dummy;
 	printf("\n");
 
 	/**** 입력 받은 데이터의 출력과정 ****/
@@ -54,9 +59,13 @@ int main(void)
 		while (cur->next != NULL)    // 두 번째 이후의 데이터 출력
 		{
 			cur = cur->next;
+	
 			printf("%d  ", cur->data);
 		}
 	}
+	printf("\n\n");
+	printf("꼬리의 값 : %d", tail->data);
+
 	printf("\n\n");
 
 	/**** 메모리의 해제과정 ****/
@@ -75,12 +84,18 @@ int main(void)
 		while (delNextNode != NULL)    // 두 번째 이후의 노드 삭제 위한 반복문
 		{
 			delNode = delNextNode;
+			if (delNextNode->next == NULL)
+				break;
 			delNextNode = delNextNode->next;
 
 			printf("%d을(를) 삭제합니다. \n", delNode->data);
 			free(delNode);    // 두 번째 이후의 노드 삭제
 		}
+		printf("꼬리의 %d을(를) 삭제합니다. \n", tail->data);
+		free(tail);
 	}
+
+	system("pause");
 
 	return 0;
 }
