@@ -6,11 +6,13 @@ void ListInit(List * plist)
 {
 	plist->head = (Node*)malloc(sizeof(Node));
 	plist->head->next = NULL;
-	plist->comp = NULL;
+	plist->cur = NULL;
+	plist->before = NULL;
 	plist->numOfData = 0;
+	plist->comp = NULL;
 }
 
-void FInsert(List * plist, LData data)
+void Insert(List * plist, LData data)
 {
 	Node * newNode = (Node*)malloc(sizeof(Node));
 	newNode->data = data;
@@ -19,29 +21,6 @@ void FInsert(List * plist, LData data)
 	plist->head->next = newNode;
 
 	(plist->numOfData)++;
-}
-
-void SInsert(List * plist, LData data)
-{
-	Node * newNode = (Node*)malloc(sizeof(Node));
-	Node * pred = plist->head; // 맨앞데이터 11
-	newNode->data = data; // 입력데이터 저장
-
-	while (pred->next != NULL && plist->comp(data, pred->next->data) != 0)
-	{
-		pred = pred->next;
-	}
-
-	newNode->next = pred->next;
-	pred->next = newNode;
-
-	(plist->numOfData)++;
-}
-
-
-void LInsert(List * plist, LData data)
-{
-	
 }
 
 int LFirst(List * plist, LData * pdata)

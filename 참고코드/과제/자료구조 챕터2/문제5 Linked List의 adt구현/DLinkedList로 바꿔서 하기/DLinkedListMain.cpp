@@ -11,12 +11,7 @@ int main(void)
 
 	// 5개의 데이터 저장 /////////////////////////////
 
-	FInsert(&list, 11);
-	SInsert(&list, 22);
-	SInsert(&list, 22);
-	SInsert(&list, 33);
-	SInsert(&list, 44);
-
+	Insert(&list, 11);
 
 	// 저장된 데이터의 전체 출력 /////////////////////////
 	printf("현재 데이터의 수: %d \n", LCount(&list));
