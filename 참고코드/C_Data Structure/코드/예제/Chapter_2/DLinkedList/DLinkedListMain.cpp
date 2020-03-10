@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "DLinkedList.h"
 
 int main(void)
@@ -49,5 +50,8 @@ int main(void)
 			printf("%d ", data);
 	}
 	printf("\n\n");
+
+	system("pause");
+
 	return 0;
 }
