@@ -1,12 +1,13 @@
+#include "Point.h"
 #ifndef __D_LINKED_LIST_H__
 #define __D_LINKED_LIST_H__
 
 #define TRUE	1
 #define FALSE	0
 
-typedef int LData;
+typedef Point *LData;
 
-typedef struct _node
+typedef struct _node // 포인터로 구현
 {
 	LData data;
 	struct _node * next;
