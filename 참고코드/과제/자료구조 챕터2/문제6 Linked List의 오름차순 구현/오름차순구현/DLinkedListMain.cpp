@@ -3,6 +3,14 @@
 #include "DLinkedList.h"
 #include "Point.h"
 
+int WhoIsPrecede(int d1, int d2) //typedef int Ldata
+{
+	if (d1 < d2)
+		return 0; // d1 이 정렬 순서상 앞선다
+	else
+		return 1; // d2 가 정렬 순서상 앞서거나 같다
+} // 이부분 참고
+
 int main(void)
 {
 	// List의 생성 및 초기화
@@ -22,7 +30,7 @@ int main(void)
 	{
 		pp = new Point;
 		SetPointPos(pp, j, i);
-		Insert(&list, pp);
+		LInsert(&list, pp);
 		j++;
 	}
 

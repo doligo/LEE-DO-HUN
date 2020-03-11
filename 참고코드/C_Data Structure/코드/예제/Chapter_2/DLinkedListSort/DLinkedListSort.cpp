@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "DLinkedList.h"
 
 //정렬조건
@@ -61,5 +62,7 @@ int main(void)
 			printf("%d ", data);
 	}
 	printf("\n\n");
+
+	system("pause");
 	return 0;
 }
