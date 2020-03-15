@@ -54,28 +54,24 @@ int LCount(List * plist)
 	return plist->numOfData;
 }
 
-void LInsert(List * plist, LData data)
+void Insert(List * plist, LData data)
 {
-	if (plist->comp == NULL)
-		FInsert(plist, data);
+	Node * newNode = (Node*)malloc(sizeof(Node));
+
+	if (plist->numOfData == NULL)
+	{
+		newNode->data = data; // x,y 값 저장
+		newNode->next = plist->head->next;
+		plist->head->next = newNode;
+		(plist->numOfData)++;
+	}
 	else
-		SInsert(plist, data);
-}
+	{
+		if (plist->comp())
+	}
 
-void FInsert(List * plist, LData data)
-{
-	Node * newNode = (Node*)malloc(sizeof(Node));
-	newNode->data = data; // x,y 값 저장
-
-	newNode->next = plist->head->next;
-	plist->head->next = newNode;
-
-	(plist->numOfData)++;
-}
-
-void SInsert(List * plist, LData data)
-{
-	Node * newNode = (Node*)malloc(sizeof(Node));
+	/*
+		Node * newNode = (Node*)malloc(sizeof(Node));
 	Node * pred = plist->head;
 	newNode->data = data; // x,y 값 저장
 
@@ -88,6 +84,8 @@ void SInsert(List * plist, LData data)
 	pred->next = newNode;
 
 	(plist->numOfData)++;
+
+	*/
 }
 
 void SetSortRule(List * plist, int(*comp)(LData d1, LData d2))

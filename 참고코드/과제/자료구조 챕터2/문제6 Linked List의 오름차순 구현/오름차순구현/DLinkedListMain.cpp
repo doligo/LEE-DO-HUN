@@ -3,30 +3,37 @@
 #include "DLinkedList.h"
 #include "Point.h"
 
-int WhoIsPrecede(int d1, int d2)
+int WhoIsPrecede(LData d1, LData d2)
 {
-	if (d1 < d2)
+	if (d1->xpos < d2->xpos)
 		return 0; // d1 이 정렬 순서상 앞선다
 	else
 		return 1; // d2 가 정렬 순서상 앞서거나 같다
 } // 이부분 참고
 
 int main(void)
+
 {
 	// List의 생성 및 초기화
 	List list;
 	Point *pp;
+	Point *compare;
 	ListInit(&list);
 
-	// 함수포인트 예제 풀어보기
+	SetSortRule(&list, WhoIsPrecede);
+
+	// 비교 (x가 2거나 y가 2면 삭제할 예정)
+	compare = new Point;
+	compare->xpos = 2;
+	compare->ypos = 2;
 
 	// 5개의 데이터 저장
 
 	for (int i = 0, j = 1; i < 5; i++)
 	{
 		pp = new Point;
-		SetPointPos(pp, j, i); // x, y
-		LInsert(&list, pp);
+		SetPointPos(pp, j, i);
+		Insert(&list, pp);
 		j++;
 	}
 
