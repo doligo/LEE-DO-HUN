@@ -56,14 +56,13 @@ int LCount(List * plist)
 
 void Insert(List * plist, LData data)
 {
-	Node * newNode = (Node*)malloc(sizeof(Node));
+	Node *newNode = (Node*)malloc(sizeof(Node));
 	Node *tmp = (Node*)malloc(sizeof(Node));
 	Node *tmp2 = (Node*)malloc(sizeof(Node));
 
 	newNode->data = data; // x,y 값 저장
-
-	tmp = plist->head->next;
-	tmp2 = tmp->next;
+	tmp = plist->head->next; // 주소값전달
+	tmp2 = plist->head; // 똑같이 주소값전달
 
 	if (plist->numOfData == NULL) // 처음
 	{
@@ -71,24 +70,22 @@ void Insert(List * plist, LData data)
 		plist->head->next = newNode;
 		(plist->numOfData)++;
 	}
+	
 	else
 	{
-		do
+		while (plist->comp(tmp, newNode) == 1)
 		{
-			tmp = tmp2;
-			tmp2 = plist->head->next;
-
-		} while (plist->comp(tmp->data, data) == 1); // ex) 3 , 2 이면
-
-		plist->head->next = newNode;
-		newNode->next = tmp2;
-
+			tmp2 = tmp;
+			tmp = tmp->next;
+		}
+		newNode->next = tmp; // null 대입
+		tmp2->next = newNode; // tmp2에 대입된것이 plist->head도 똑같이 대입된다
 		(plist->numOfData)++;
 	}
 
 }
 
-void SetSortRule(List * plist, int(*comp)(LData d1, LData d2))
+void SetSortRule(List * plist, int(*comp)(Node *d1, Node *d2))
 {
 	plist->comp = comp;
 }

@@ -3,12 +3,22 @@
 #include "DLinkedList.h"
 #include "Point.h"
 
-int WhoIsPrecede(LData d1, LData d2) // 오름차순 1 2 3 4 ...
+
+int WhoIsPrecede(Node *d1, Node *d2) // 오름차순 1 2 3 4 ...
 {
-	if (d1->xpos < d2->xpos)
-		return 0; // d1 이 정렬 순서상 앞선다
+	if (d1 == NULL)
+		return 0;
+	else if (d1->data->xpos < d2->data->xpos)
+		return 1; // d1 이 정렬 순서상 앞선다
+	else if (d1->data->xpos == d2->data->xpos) // x값이 같을경우 y값 비교
+	{
+		if (d1->data->ypos < d2->data->ypos)
+			return 1;
+		else
+			return 0;
+	}
 	else
-		return 1; // d2 가 정렬 순서상 앞서거나 같다
+		return 0; // d2 가 정렬 순서상 앞서거나 같다
 }
 
 int main(void)
@@ -28,6 +38,7 @@ int main(void)
 	compare->ypos = 2;
 
 	// 5개의 데이터 저장
+
 
 	for (int i = 0, j = 1; i < 5; i++)
 	{
@@ -75,6 +86,12 @@ int main(void)
 			printf("%d %d\n", pp->xpos, pp->ypos);
 	}
 	printf("\n\n");
+
+	if (compare != NULL)
+	{
+		delete compare;
+		compare = NULL;
+	}
 
 	system("pause");
 
