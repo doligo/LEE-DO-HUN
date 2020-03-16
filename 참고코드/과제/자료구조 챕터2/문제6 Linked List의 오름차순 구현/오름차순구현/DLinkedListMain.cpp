@@ -3,13 +3,13 @@
 #include "DLinkedList.h"
 #include "Point.h"
 
-int WhoIsPrecede(LData d1, LData d2)
+int WhoIsPrecede(LData d1, LData d2) // 오름차순 1 2 3 4 ...
 {
 	if (d1->xpos < d2->xpos)
 		return 0; // d1 이 정렬 순서상 앞선다
 	else
 		return 1; // d2 가 정렬 순서상 앞서거나 같다
-} // 이부분 참고
+}
 
 int main(void)
 
@@ -20,7 +20,7 @@ int main(void)
 	Point *compare;
 	ListInit(&list);
 
-	SetSortRule(&list, WhoIsPrecede);
+	SetSortRule(&list, WhoIsPrecede); // 주소값을 넘겨줬으므로 계속 주소값을 들고있다
 
 	// 비교 (x가 2거나 y가 2면 삭제할 예정)
 	compare = new Point;
