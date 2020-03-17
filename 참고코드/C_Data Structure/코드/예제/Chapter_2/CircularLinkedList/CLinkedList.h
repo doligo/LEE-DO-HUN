@@ -4,6 +4,8 @@
 #define TRUE	1
 #define FALSE	0
 
+
+
 typedef int Data;
 
 typedef struct _node
@@ -24,8 +26,9 @@ typedef struct _CLL
 typedef CList List;
 
 void ListInit(List * plist);
+
 void LInsert(List * plist, Data data);
-void LInsertFront(List * plist, Data data);
+void LInsertFront(List * plist, Data data); // 두개 합칠시 enum을 추가해주면 유용
 
 int LFirst(List * plist, Data * pdata);
 int LNext(List * plist, Data * pdata);
