@@ -8,35 +8,32 @@ DBLinkedList::DBLinkedList()
 void DBLinkedList::ListInit(List *plist)
 {
 	plist->head = NULL;
-	plist->head->next = NULL;
 	plist->tail = NULL;
-	plist->tail->next = NULL;
-	plist->cur = NULL;
 	plist->numofdata = 0;
 }
 
 void DBLinkedList::LInsert(List *plist, Data data)
 {
 	Node *newNode = new Node;
-
 	newNode->data = data;
-	newNode->next = plist->tail->next;
 
-	if (plist->tail->next != NULL)
-		plist->tail->prev = newNode;
+	newNode->next = plist->tail; // NULL로 초기화
+
+	if (plist->head != NULL)
+		plist->head->prev = newNode;
 
 	newNode->prev = NULL;
-	plist->tail->next = newNode;
+	plist->head = newNode;
 
 	plist->numofdata++;
 }
 
 int DBLinkedList::LFirst(List *plist, Data *pdata)
 {
-	if (plist->tail->next == NULL)
+	if (plist->head == NULL)
 		return FALSE;
 
-	plist->cur = plist->tail->next;
+	plist->cur = plist->head;
 	*pdata = plist->cur->data;
 	return TRUE;
 }
