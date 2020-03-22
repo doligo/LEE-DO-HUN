@@ -19,7 +19,7 @@ int WhoIsPrecede(Node *d1, Node *d2) // 오름차순 1 2 3 4 ...
 	}
 	else
 		return 0; // d2 가 정렬 순서상 앞서거나 같다
-}
+} // 함수포인터 복습
 
 int main(void)
 

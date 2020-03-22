@@ -41,7 +41,6 @@ public:
 	int LCount(List *plist);
 	Data LRemove(List *plist); // 앞서 참조가 이뤄진 노드를 삭제
 
-	// 머리,꼬리 부분 dummy로 바꿔서 추가하기 - 현재오류남
 	// LRemove 구현하기
 
 	DBLinkedList();
