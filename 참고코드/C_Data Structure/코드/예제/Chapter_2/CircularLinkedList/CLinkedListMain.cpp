@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <Windows.h>
 #include "CLinkedList.h"
 
 int main(void)
@@ -56,5 +57,6 @@ int main(void)
 				printf("%d ", data);
 		}
 	}
+	system("pause");
 	return 0;
 }

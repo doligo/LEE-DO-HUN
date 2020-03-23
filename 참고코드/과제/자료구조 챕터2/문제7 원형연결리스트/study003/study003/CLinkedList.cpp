@@ -27,12 +27,12 @@ void CLinkedList::LInsert(Clist *plist, Data data, int pos)
 
 	else
 	{
-		if (pos == POSITION_FRONT) // 0
+		if (pos == POSITION_FRONT) // 0 머리에 추가
 		{
 			newNode->next = plist->tail->next;
 			plist->tail->next = newNode;
 		}
-		else // POSITION_NEXT 1
+		else // POSITION_NEXT 1 꼬리에 추가
 		{
 			newNode->next = plist->tail->next;
 			plist->tail->next = newNode;
