@@ -30,9 +30,7 @@ public:
 	CLinkedList();
 
 	void ListInit(Clist *plist);
-
-	void LInsert(Clist *plist, Data data); // 꼬리로 추가한다
-
+	void LInsert(Clist *plist, Data data);
 	int LFirst(Clist *plist, Data *pdata);
 	int LNext(Clist *plist, Data *pdata);
 	Data LRemove(Clist *plist);
@@ -43,6 +41,10 @@ public:
 
 	void StackInit(Clist *pstack);
 	int SIsEmpty(Clist *pstack);
+	void SPush(Clist *pstack, Data data);
+	Data SPop(Clist *pstack);
+	Data SPeek(Clist *pstack);
+
 
 	~CLinkedList();
 };

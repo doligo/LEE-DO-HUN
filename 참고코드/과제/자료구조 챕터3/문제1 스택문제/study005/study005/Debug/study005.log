@@ -1,2 +1,6 @@
-﻿  Main.cpp
-  study005.vcxproj -> C:\Users\A09\Desktop\LEE-DO-HUN\LEE-DO-HUN\참고코드\과제\자료구조 챕터3\문제1 스택문제\study005\Debug\study005.exe
+﻿  CLinkedList.cpp
+  Main.cpp
+c:\users\l\documents\github\lee-do-hun\참고코드\과제\자료구조 챕터3\문제1 스택문제\study005\study005\main.cpp(9): warning C4101: 'data' :참조되지 않은 지역 변수입니다.
+c:\users\l\documents\github\lee-do-hun\참고코드\과제\자료구조 챕터3\문제1 스택문제\study005\study005\main.cpp(9): warning C4101: 'i' :참조되지 않은 지역 변수입니다.
+  코드를 생성하고 있습니다...
+  study005.vcxproj -> C:\Users\L\Documents\GitHub\LEE-DO-HUN\참고코드\과제\자료구조 챕터3\문제1 스택문제\study005\Debug\study005.exe

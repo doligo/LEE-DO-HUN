@@ -85,21 +85,91 @@ int CLinkedList::LCount(Clist *plist)
 	return plist->numofdata;
 }
 
-////////////////////////////
 
-void CLinkedList::StackInit(Clist *pstack)
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
+
+void CLinkedList::StackInit(Clist *pstack) // 스택 Last In First Out
 {
 	pstack->tail = NULL;
+	pstack->cur = NULL;
+	pstack->before = NULL;
 	pstack->numofdata = 0;
 }
 
 int CLinkedList::SIsEmpty(Clist *pstack)
 {
-	if (pstack->tail == NULL)
+	if (pstack->tail == NULL || pstack->numofdata == NULL)
 		return TRUE;
 	else
 		return FALSE;
 }
+
+void CLinkedList::SPush(Clist *pstack, Data data) // 스택으로하려면 머리부분에 추가
+{
+
+	Node *newNode = new Node;
+
+	newNode->data = data;
+
+	if (pstack->tail == NULL)
+	{
+		pstack->tail = newNode;
+		newNode->next = newNode;
+	}
+
+	else
+	{
+		newNode->next = pstack->tail->next;
+		pstack->tail->next = newNode;
+	}
+
+
+	pstack->numofdata++;
+}
+
+Data CLinkedList::SPeek(Clist *pstack)
+{
+	if (SIsEmpty(pstack) == TRUE)
+	{
+		cout << "Stack Memory Error";
+		exit(-1);
+	}
+
+	return pstack->tail->next->data;
+
+}
+
+Data CLinkedList::SPop(Clist *pstack)
+{
+	Data rdata;
+	Node *rnode;
+
+	if (SIsEmpty(pstack) == TRUE)
+	{
+		cout << "Stack Memory Error";
+		exit(-1);
+	}
+
+
+	pstack->before = pstack->tail; // 1
+	pstack->cur = pstack->tail->next; // 5
+
+	rdata = pstack->cur->data;  // 5
+	
+	rnode = pstack->cur;
+
+	pstack->before->next = pstack->cur->next; // 4
+	pstack->cur = pstack->before; // 1
+
+	free(rnode);
+	pstack->numofdata--;
+
+
+	return rdata;
+}
+
 
 CLinkedList::~CLinkedList()
 {
