@@ -46,6 +46,7 @@ int main(void)
 				dubOrder += 1;
 				break;
 			}
+			makeProc = 0;
 		}
 
 		if (makeProc == 0 && !QIsEmpty(&que))
