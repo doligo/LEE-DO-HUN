@@ -1,1 +1,12 @@
-﻿  InfixCalculator.vcxproj -> C:\Users\A09\Desktop\LEE-DO-HUN\LEE-DO-HUN\참고코드\C_Data Structure\코드\활용코드\Chapter_3\InfixCalculator\Debug\InfixCalculator.exe
+﻿  InfixCalculator.cpp
+c:\users\l\documents\github\lee-do-hun\참고코드\c_data structure\코드\활용코드\chapter_3\infixcalculator\infixcalculator.cpp(11): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+  infixCalculatorMain.cpp
+  InfixToPostfix.cpp
+c:\users\l\documents\github\lee-do-hun\참고코드\c_data structure\코드\활용코드\chapter_3\infixcalculator\infixtopostfix.cpp(88): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+  ListBaseStack.cpp
+  PostCalculator.cpp
+  코드를 생성하고 있습니다...
+  LINK : C:\Users\L\Documents\GitHub\LEE-DO-HUN\참고코드\C_Data Structure\코드\활용코드\Chapter_3\InfixCalculator\Debug\InfixCalculator.exe을(를) 찾을 수 없거나 마지막 증분 링크에 의해 빌드되지 않았습니다. 전체 링크를 수행하고 있습니다.
+  InfixCalculator.vcxproj -> C:\Users\L\Documents\GitHub\LEE-DO-HUN\참고코드\C_Data Structure\코드\활용코드\Chapter_3\InfixCalculator\Debug\InfixCalculator.exe

@@ -5,6 +5,7 @@ class Queue : public Deque
 {
 public:
 	Queue();
+	void Queue_Show();
 	~Queue();
 };
 

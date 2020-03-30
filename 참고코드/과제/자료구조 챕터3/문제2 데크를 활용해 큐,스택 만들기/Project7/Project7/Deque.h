@@ -16,7 +16,7 @@ struct Node
 	struct Node *prev;
 };
 
-struct Deques
+struct Head_Tail
 {
 	Node *head;
 	Node *tail;
@@ -26,17 +26,17 @@ class Deque
 {
 public:
 	Deque();
-	void DequeInit(Deques * pdeq);
-	int DQIsEmpty(Deques * pdeq);
+	void DequeInit(Head_Tail * pdeq);
+	int DQIsEmpty(Head_Tail * pdeq);
 
-	void DQAddFirst(Deques * pdeq, Data data);
-	void DQAddLast(Deques * pdeq, Data data);
+	void DQAddFirst(Head_Tail * pdeq, Data data);
+	void DQAddLast(Head_Tail * pdeq, Data data);
 
-	Data DQRemoveFirst(Deques * pdeq);
-	Data DQRemoveLast(Deques * pdeq);
+	Data DQRemoveFirst(Head_Tail * pdeq);
+	Data DQRemoveLast(Head_Tail * pdeq);
 
-	Data DQGetFirst(Deques * pdeq);
-	Data DQGetLast(Deques * pdeq);
+	Data DQGetFirst(Head_Tail * pdeq);
+	Data DQGetLast(Head_Tail * pdeq);
 	~Deque();
 };
 

@@ -4,17 +4,13 @@ Deque::Deque()
 {
 }
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "Deque.h"
-
-void Deque::DequeInit(Deques * pdeq)
+void Deque::DequeInit(Head_Tail * pdeq)
 {
 	pdeq->head = NULL;
 	pdeq->tail = NULL;
 }
 
-int Deque::DQIsEmpty(Deques * pdeq)
+int Deque::DQIsEmpty(Head_Tail * pdeq)
 {
 	if (pdeq->head == NULL)
 		return TRUE;
@@ -22,7 +18,7 @@ int Deque::DQIsEmpty(Deques * pdeq)
 		return FALSE;
 }
 
-void Deque::DQAddFirst(Deques * pdeq, Data data)
+void Deque::DQAddFirst(Head_Tail * pdeq, Data data)
 {
 	Node * newNode = (Node*)malloc(sizeof(Node));
 	newNode->data = data;
@@ -38,7 +34,7 @@ void Deque::DQAddFirst(Deques * pdeq, Data data)
 	pdeq->head = newNode;
 }
 
-void Deque::DQAddLast(Deques * pdeq, Data data)
+void Deque::DQAddLast(Head_Tail * pdeq, Data data)
 {
 	Node * newNode = (Node*)malloc(sizeof(Node));
 	newNode->data = data;
@@ -54,7 +50,7 @@ void Deque::DQAddLast(Deques * pdeq, Data data)
 	pdeq->tail = newNode;
 }
 
-Data Deque::DQRemoveFirst(Deques * pdeq)
+Data Deque::DQRemoveFirst(Head_Tail * pdeq)
 {
 	Node * rnode = pdeq->head;
 	Data rdata = pdeq->head->data;
@@ -76,7 +72,7 @@ Data Deque::DQRemoveFirst(Deques * pdeq)
 	return rdata;
 }
 
-Data Deque::DQRemoveLast(Deques * pdeq)
+Data Deque::DQRemoveLast(Head_Tail * pdeq)
 {
 	Node * rnode = pdeq->tail;
 	Data rdata = pdeq->tail->data;
@@ -98,7 +94,7 @@ Data Deque::DQRemoveLast(Deques * pdeq)
 	return rdata;
 }
 
-Data Deque::DQGetFirst(Deques * pdeq)
+Data Deque::DQGetFirst(Head_Tail * pdeq)
 {
 	if (DQIsEmpty(pdeq))
 	{
@@ -109,7 +105,7 @@ Data Deque::DQGetFirst(Deques * pdeq)
 	return pdeq->head->data;
 }
 
-Data Deque::DQGetLast(Deques * pdeq)
+Data Deque::DQGetLast(Head_Tail * pdeq)
 {
 	if (DQIsEmpty(pdeq))
 	{

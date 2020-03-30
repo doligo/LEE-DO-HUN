@@ -5,6 +5,7 @@ class Stack : public Deque
 {
 public:
 	Stack();
+	void Stack_Show();
 	~Stack();
 };
 
