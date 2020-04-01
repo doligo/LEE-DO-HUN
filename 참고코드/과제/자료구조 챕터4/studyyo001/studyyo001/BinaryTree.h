@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #pragma once
+using namespace std;
 
 typedef int BTData;
 
@@ -18,15 +19,15 @@ class BinaryTree
 public:
 	BinaryTree();
 
-	BTreeNode * MakeBTreeNode(void);
-	BTData GetData(BTreeNode * bt);
-	void SetData(BTreeNode * bt, BTData data);
+	BTreeNode *MakeBTreeNode(void);
+	BTData GetData(BTreeNode *bt);
+	void SetData(BTreeNode *bt, BTData data);
 
-	BTreeNode * GetLeftSubTree(BTreeNode * bt);
-	BTreeNode * GetRightSubTree(BTreeNode * bt);
+	BTreeNode *GetLeftSubTree(BTreeNode *bt);
+	BTreeNode *GetRightSubTree(BTreeNode *bt);
 
-	void MakeLeftSubTree(BTreeNode * main, BTreeNode * sub);
-	void MakeRightSubTree(BTreeNode * main, BTreeNode * sub);
+	void MakeLeftSubTree(BTreeNode *main, BTreeNode *sub);
+	void MakeRightSubTree(BTreeNode *main, BTreeNode *sub);
 
 	void DeleteTree(BTreeNode *bt);
 

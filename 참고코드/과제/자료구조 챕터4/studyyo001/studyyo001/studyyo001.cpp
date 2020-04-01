@@ -24,12 +24,13 @@ int main()
 	//bt1의 왼쪽 자식 노드의 왼쪽 자식 노드의 데이터 출력
 	printf("%d \n", BT.GetData(BT.GetLeftSubTree(BT.GetLeftSubTree(bt1))));
 
-	BT.DeleteTree(bt1);
-
-	printf("%d \n", BT.GetData(BT.GetLeftSubTree(bt1)));
+	
+	cout << "삭제된 데이터 : ";
+	BT.DeleteTree(bt2);
 
 
 	system("pause");
+	// 재귀, 함수포인터 더 보기
 
 	return 0;
 }

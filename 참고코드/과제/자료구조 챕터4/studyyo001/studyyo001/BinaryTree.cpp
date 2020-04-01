@@ -16,12 +16,6 @@ BTreeNode *BinaryTree::MakeBTreeNode()
 
 BTData BinaryTree::GetData(BTreeNode *bt)
 {
-	if (bt == NULL)
-	{
-		printf("데이터가 없습니다\n");
-		return 1;
-	}
-
 	return bt->data;
 }
 
@@ -62,13 +56,16 @@ void BinaryTree::MakeRightSubTree(BTreeNode *main, BTreeNode *sub)
 
 void BinaryTree::DeleteTree(BTreeNode *bt)
 {
-	if (bt->data != NULL)
+	if (bt == NULL)
 	{
-		free(bt);
-		bt->data = NULL;
-		bt->left = NULL;
-		bt->right = NULL;
+		return;
 	}
+	// 재귀함수로 붙어있는 노드들 전부 삭제해준다
+	DeleteTree(bt->left);
+	DeleteTree(bt->right);
+	cout << bt->data << " ";
+
+	delete bt;
 }
 
 BinaryTree::~BinaryTree()
