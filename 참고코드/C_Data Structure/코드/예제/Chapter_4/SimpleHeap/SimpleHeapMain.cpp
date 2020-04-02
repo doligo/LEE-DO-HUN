@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <iostream>
 #include "SimpleHeap.h"
 
 int main(void)
@@ -18,6 +19,8 @@ int main(void)
 
 	while (!HIsEmpty(&heap))
 		printf("%c \n", HDelete(&heap));
+
+	system("pause");
 
 	return 0;
 }
