@@ -1,10 +1,10 @@
-#include <stdio.h>
 #include <iostream>
+#include <stdio.h>
 #include "UsefulHeap.h"
 
 int PriComp(int n1, int n2)
 {
-	return n2 - n1;
+	return n1 - n2;
 	//return n1 - n2;
 }
 

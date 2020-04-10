@@ -1,5 +1,5 @@
 ﻿  BinarySearchTree.cpp
-  BinarySearchTreeMain.cpp
   BinaryTree.cpp
   코드를 생성하고 있습니다...
-  BinarySearchTree.vcxproj -> C:\Users\assas\Desktop\Chapter_10\Debug\BinarySearchTree.exe
+MSVCRTD.lib(exe_main.obj) : error LNK2019: _main 외부 기호(참조 위치: "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ) 함수)에서 확인하지 못했습니다.
+C:\Users\A09\Desktop\LEE-DO-HUN\LEE-DO-HUN\참고코드\C_Data Structure\코드\예제\Chapter_5\BinarySearchTree\Debug\BinarySearchTree.exe : fatal error LNK1120: 1개의 확인할 수 없는 외부 참조입니다.

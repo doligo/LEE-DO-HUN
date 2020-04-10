@@ -3,13 +3,13 @@
 int ISearch(int ar[], int first, int last, int target)
 {
 	int mid;
-
+	
 	//	if(first > last)
 	//		return -1;    // -1의 반환은 탐색의 실패를 의미
 
 	if (ar[first] > target || ar[last] < target)
 		return -1;
-
+	
 	// 이진 탐색과의 차이점을 반영한 문장
 	mid = ((double)(target - ar[first]) / (ar[last] - ar[first]) *
 		(last - first)) + first;
