@@ -49,6 +49,36 @@ void BinaryTree::MakeRightSubTree(BTreeNode *main, BTreeNode *sub)
 	main->right = sub;
 }
 
+void BinaryTree::PreorderTraverse(BTreeNode *bt, VisitFuncPtr action)
+{
+	if (bt == NULL)
+		return;
+
+	action(bt->data);
+	PreorderTraverse(bt->left, action);
+	PreorderTraverse(bt->right, action);
+}
+
+void BinaryTree::InorderTraverse(BTreeNode *bt, VisitFuncPtr action)
+{
+	if (bt == NULL)
+		return;
+
+	InorderTraverse(bt->left, action);
+	action(bt->data);
+	InorderTraverse(bt->right, action);
+}
+
+void BinaryTree::PostorderTraverse(BTreeNode *bt, VisitFuncPtr action)
+{
+	if (bt == NULL)
+		return;
+
+	PostorderTraverse(bt->left, action);
+	PostorderTraverse(bt->right, action);
+	action(bt->data);
+}
+
 BinaryTree::~BinaryTree()
 {
 }
