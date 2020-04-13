@@ -15,7 +15,7 @@ BSTData BinarySearchTree::BSTGetNodeData(BTreeNode *bst)
 	return GetData(bst);
 }
 
-void BinarySearchTree::BSTInsert(BTreeNode **pRoot, BSTData data)
+int BinarySearchTree::BSTInsert(BTreeNode **pRoot, BSTData data)
 {
 	BTreeNode * pNode = NULL;    // parent node
 	BTreeNode * cNode = *pRoot;    // current node
@@ -25,7 +25,7 @@ void BinarySearchTree::BSTInsert(BTreeNode **pRoot, BSTData data)
 	while (cNode != NULL)
 	{
 		if (data == GetData(cNode))
-			return;    // 키의 중복을 허용하지 않음
+			return 1;    // 키의 중복을 허용하지 않음
 
 		pNode = cNode;
 
