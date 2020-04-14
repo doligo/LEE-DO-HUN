@@ -20,6 +20,10 @@ public:
 	// BST를 대상으로 데이터 탐색
 	BTreeNode *BSTSearch(BTreeNode *bst, BSTData target);
 
+	void Show_All(BTreeNode *bst); // 현재 노드값 다보여준다
+	// 트리에서 노드를 제거하고 제거된 노드의 주소 값을 반환한다. 
+	BTreeNode *BSTRemove(BTreeNode **pRoot, BSTData target);
+
 	~BinarySearchTree();
 };
 

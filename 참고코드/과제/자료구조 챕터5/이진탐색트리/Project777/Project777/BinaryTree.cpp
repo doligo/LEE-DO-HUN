@@ -79,6 +79,7 @@ void BinaryTree::PostorderTraverse(BTreeNode *bt, VisitFuncPtr action)
 	action(bt->data);
 }
 
+
 BinaryTree::~BinaryTree()
 {
 }

@@ -73,6 +73,24 @@ BTreeNode *BinarySearchTree::BSTSearch(BTreeNode *bst, BSTData target)
 	return NULL;
 }
 
+void ShowIntData(int data)
+{
+	printf("%d ", data);
+}
+
+void BinarySearchTree::Show_All(BTreeNode *bst)
+{
+	InorderTraverse(bst, ShowIntData);
+}
+
+BTreeNode *BinarySearchTree::BSTRemove(BTreeNode ** pRoot, BSTData target)
+{
+	BTreeNode *pVRoot = MakeBTreeNode(); // 가상 루트 노드
+	BTreeNode *pNode = pVRoot; // 부모노드
+	BTreeNode *cNode = *pRoot; // 현재노드
+	BTreeNode *dNode; // 삭제할 노드
+}
+
 BinarySearchTree::~BinarySearchTree()
 {
 }

@@ -5,12 +5,13 @@ int main()
 {
 	BinarySearchTree BST;
 	BTreeNode *BTN;
+	BTreeNode *tempBTN;
 	int num = 0;
 	int trigger = NULL;
 
 	BST.BSTMakeAndInit(&BTN);
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		cout << "추가 할 데이터를 입력하세요 : ";
 		cin >> num;
@@ -24,15 +25,22 @@ int main()
 
 	cout << "찾을 데이터를 입력하세요 : ";
 	cin >> num;
-	BTN = BST.BSTSearch(BTN, num);
+	tempBTN = BST.BSTSearch(BTN, num);
 
-	if (BTN != NULL)
+	if (tempBTN != NULL)
 	{
-		cout << "검색한 데이터 : " << BTN->data << endl;
+		cout << "검색한 데이터 : " << tempBTN->data << endl;
 	}
 
 	else
 		cout << "데이터가 없습니다" << endl;
+
+
+	cout << "전체 데이터 : ";
+	BST.Show_All(BTN);
+
+	free(tempBTN);
+
 
 
 	system("pause");
