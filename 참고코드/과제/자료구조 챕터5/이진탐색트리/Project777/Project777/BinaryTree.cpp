@@ -79,6 +79,41 @@ void BinaryTree::PostorderTraverse(BTreeNode *bt, VisitFuncPtr action)
 	action(bt->data);
 }
 
+// 왼쪽 자식 노드 제거, 제거된 노드의 주소 값이 반환된다.
+BTreeNode *BinaryTree::RemoveLeftSubTree(BTreeNode * bt)
+{
+	BTreeNode * delNode;
+
+	if (bt != NULL) {
+		delNode = bt->left;
+		bt->left = NULL;
+	}
+	return delNode;
+}
+
+// 오른쪽 자식 노드 제거, 제거된 노드의 주소 값이 반환된다.
+BTreeNode *BinaryTree::RemoveRightSubTree(BTreeNode * bt)
+{
+	BTreeNode * delNode;
+
+	if (bt != NULL) {
+		delNode = bt->right;
+		bt->right = NULL;
+	}
+	return delNode;
+}
+
+// 메모리 소멸을 수반하지 않고 main의 왼쪽 자식 노드를 변경한다. 
+void BinaryTree::ChangeLeftSubTree(BTreeNode * main, BTreeNode * sub)
+{
+	main->left = sub;
+}
+
+// 메모리 소멸을 수반하지 않고 main의 오른쪽 자식 노드를 변경한다. 
+void BinaryTree::ChangeRightSubTree(BTreeNode * main, BTreeNode * sub)
+{
+	main->right = sub;
+}
 
 BinaryTree::~BinaryTree()
 {

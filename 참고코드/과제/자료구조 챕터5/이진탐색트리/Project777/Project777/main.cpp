@@ -7,6 +7,7 @@ int main()
 	BTreeNode *BTN;
 	BTreeNode *tempBTN;
 	int num = 0;
+	int data[7] = {};
 	int trigger = NULL;
 
 	BST.BSTMakeAndInit(&BTN);
@@ -20,6 +21,10 @@ int main()
 		{
 			cout << "데이터가 중복됩니다" << endl;
 			i--;
+		}
+		else
+		{
+			data[i] = num;
 		}
 	}
 
@@ -39,9 +44,12 @@ int main()
 	cout << "전체 데이터 : ";
 	BST.Show_All(BTN);
 
+	cout << endl;
+	cout << "네번째로 넣은 데이터를 삭제하겠습니다" << endl;
+	tempBTN = BST.BSTRemove(&BTN, data[3]);
 	free(tempBTN);
-
-
+	cout << "삭제후 : ";
+	BST.Show_All(BTN);
 
 	system("pause");
 

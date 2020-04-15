@@ -89,6 +89,83 @@ BTreeNode *BinarySearchTree::BSTRemove(BTreeNode ** pRoot, BSTData target)
 	BTreeNode *pNode = pVRoot; // 부모노드
 	BTreeNode *cNode = *pRoot; // 현재노드
 	BTreeNode *dNode; // 삭제할 노드
+
+	ChangeRightSubTree(pVRoot, *pRoot);
+
+	while (cNode != NULL && GetData(cNode) != target)
+	{
+		pNode = cNode; // 현재노드로 바꿔준다
+
+		if (target < GetData(cNode)) // 삭제할 값과 현재노드의 값의 비교
+			cNode = GetLeftSubTree(cNode);
+		else
+			cNode = GetRightSubTree(cNode);
+	}
+
+	if (cNode == NULL)    // 삭제 대상이 존재하지 않는다면, 빠꾸
+		return NULL;
+
+	dNode = cNode;    // 삭제 대상을 dNode가 가리키게 한다.
+
+	// 첫 번째 경우: 삭제할 노드가 단말 노드인 경우
+	if (GetLeftSubTree(dNode) == NULL && GetRightSubTree(dNode) == NULL)
+	{
+		if (GetLeftSubTree(pNode) == dNode)
+			RemoveLeftSubTree(pNode);
+		else
+			RemoveRightSubTree(pNode);
+	}
+
+	// 두 번째 경우: 하나의 자식 노드를 갖는 경우
+	else if (GetLeftSubTree(dNode) == NULL || GetRightSubTree(dNode) == NULL)
+	{
+		BTreeNode * dcNode;    // delete node의 자식 노드
+
+		if (GetLeftSubTree(dNode) != NULL)
+			dcNode = GetLeftSubTree(dNode);
+		else
+			dcNode = GetRightSubTree(dNode);
+
+		if (GetLeftSubTree(pNode) == dNode)
+			ChangeLeftSubTree(pNode, dcNode);
+		else
+			ChangeRightSubTree(pNode, dcNode);
+	}
+
+	// 세 번째 경우: 두 개의 자식 노드를 모두 갖는 경우
+	else
+	{
+		BTreeNode * mNode = GetRightSubTree(dNode);    // mininum node
+		BTreeNode * mpNode = dNode;    // mininum node의 부모 노드
+		int delData;
+
+		// 삭제할 노드를 대체할 노드를 찾는다.
+		while (GetLeftSubTree(mNode) != NULL)
+		{
+			mpNode = mNode;
+			mNode = GetLeftSubTree(mNode);
+		}
+
+		// 대체할 노드에 저장된 값을 삭제할 노드에 대입한다.
+		delData = GetData(dNode);    // 대입 전 데이터 백업
+		SetData(dNode, GetData(mNode));
+
+		// 대체할 노드의 부모 노드와 자식 노드를 연결한다.
+		if (GetLeftSubTree(mpNode) == mNode)
+			ChangeLeftSubTree(mpNode, GetRightSubTree(mNode));
+		else
+			ChangeRightSubTree(mpNode, GetRightSubTree(mNode));
+
+		dNode = mNode;
+		SetData(dNode, delData);    // 백업 데이터 복원
+	}
+
+	// 삭제된 노드가 루트 노드인 경우에 대한 처리
+	if (GetRightSubTree(pVRoot) != *pRoot)
+		*pRoot = GetRightSubTree(pVRoot);
+
+	free(pVRoot);
+	return dNode;
 }
 
 BinarySearchTree::~BinarySearchTree()
