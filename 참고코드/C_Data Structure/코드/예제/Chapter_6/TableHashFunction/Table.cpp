@@ -18,7 +18,7 @@ void TBLInsert(Table* pt, Key k, Value v)
 	pt->tbl[hv].status = INUSE;
 }
 
-Value TBLDelete(Table* pt, Key k)
+void TBLDelete(Table* pt, Key k)
 {
 	int hv = pt->hf(k);
 
@@ -31,9 +31,10 @@ Value TBLDelete(Table* pt, Key k)
 		(pt->tbl[hv]).status = DELETED;
 		return (pt->tbl[hv]).val;
 	}
+
 }
 
-Value TBLSearch(Table* pt, Key k)
+void TBLSearch(Table* pt, Key k)
 {
 	int hv = pt->hf(k);
 
@@ -41,4 +42,5 @@ Value TBLSearch(Table* pt, Key k)
 		return NULL;
 	else
 		return (pt->tbl[hv]).val;
+
 }

@@ -1,0 +1,7 @@
+﻿  Table.cpp
+c:\users\a09\desktop\lee-do-hun\lee-do-hun\참고코드\c_data structure\코드\예제\chapter_6\tablehashfunction\table.cpp(22): error C2556: 'void TBLDelete(Table *,Key)': 오버로드된 함수가 'Value TBLDelete(Table *,Key)'과(와) 반환 형식만 다릅니다.
+  c:\users\a09\desktop\lee-do-hun\lee-do-hun\참고코드\c_data structure\코드\예제\chapter_6\tablehashfunction\table.h(20): note: 'TBLDelete' 선언을 참조하십시오.
+c:\users\a09\desktop\lee-do-hun\lee-do-hun\참고코드\c_data structure\코드\예제\chapter_6\tablehashfunction\table.cpp(22): error C2040: 'TBLDelete': 'void (Table *,Key)'의 간접 참조 수준이 'Value (Table *,Key)'과(와) 다릅니다.
+c:\users\a09\desktop\lee-do-hun\lee-do-hun\참고코드\c_data structure\코드\예제\chapter_6\tablehashfunction\table.cpp(38): error C2556: 'void TBLSearch(Table *,Key)': 오버로드된 함수가 'Value TBLSearch(Table *,Key)'과(와) 반환 형식만 다릅니다.
+  c:\users\a09\desktop\lee-do-hun\lee-do-hun\참고코드\c_data structure\코드\예제\chapter_6\tablehashfunction\table.h(22): note: 'TBLSearch' 선언을 참조하십시오.
+c:\users\a09\desktop\lee-do-hun\lee-do-hun\참고코드\c_data structure\코드\예제\chapter_6\tablehashfunction\table.cpp(38): error C2040: 'TBLSearch': 'void (Table *,Key)'의 간접 참조 수준이 'Value (Table *,Key)'과(와) 다릅니다.

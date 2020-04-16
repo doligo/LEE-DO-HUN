@@ -17,8 +17,8 @@ void TBLInit(Table* pt, HashFunc* f);
 
 void TBLInsert(Table* pt, Key k, Value v);
 
-void TBLDelete(Table* pt, Key k);
+Value TBLDelete(Table* pt, Key k);
 
-void TBLSearch(Table* pt, Key k);
+Value TBLSearch(Table* pt, Key k);
 
 #endif
