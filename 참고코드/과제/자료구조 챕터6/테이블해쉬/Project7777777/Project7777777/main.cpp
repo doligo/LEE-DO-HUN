@@ -1,16 +1,21 @@
 ﻿#include "Table.h"
 
-int GetHashValue(int hf)
+int GetHashValue(int n)
 {
-	return hf % 100;
+	return n % 100;
 }
 
 int main()
 {
 	Table TB;
+	Person PS;
+
+	PersonS pss;
 	TableS tbs;
 
-	TB.TBLInit(&tbs, GetHashValue());
+	TB.TBLInit(&tbs, GetHashValue); // 초기화
+
+	TB.TBLInsert(&tbs, );
 
 	system("pause");
 }

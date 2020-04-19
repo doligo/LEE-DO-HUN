@@ -20,7 +20,7 @@ int main(void)
 	BSTInsert(&bstRoot, 7);
 
 	BSTShowAll(bstRoot); printf("\n");
-	sNode = BSTRemove(&bstRoot, 3);
+	sNode = BSTRemove(&bstRoot, 5);
 	free(sNode);
 
 	BSTShowAll(bstRoot); printf("\n");
