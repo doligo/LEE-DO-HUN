@@ -13,3 +13,7 @@ struct User_Info
 	char name[STR_LEN];
 	char addr[STR_LEN];
 };
+
+int GetSSN(User_Info *u);
+void ShowPerInfo(User_Info *u);
+User_Info *MakePersonData(int phone_num, char *name, char *addr);
