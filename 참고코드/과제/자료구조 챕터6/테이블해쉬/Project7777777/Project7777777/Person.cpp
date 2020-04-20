@@ -12,8 +12,8 @@ int Person::GetSSN(PersonS *p)
 void Person::ShowPerInfo(PersonS *p)
 {
 	printf("주민등록번호: %d \n", p->ssn);
-	printf("이름: %d \n", p->name);
-	printf("주소: %d \n\n", p->addr);
+	printf("이름: %s \n", p->name);
+	printf("주소: %s \n\n", p->addr);
 }
 
 PersonS *Person::MakePersonData(int ssn, char *name, char *addr)
