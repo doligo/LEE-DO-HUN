@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fstream>
+#include <string>
 #pragma once
 using namespace std;
 

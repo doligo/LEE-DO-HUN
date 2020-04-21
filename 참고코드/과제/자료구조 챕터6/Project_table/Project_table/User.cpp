@@ -7,7 +7,7 @@ int GetSSN(User_Info *p)
 
 void ShowPerInfo(User_Info *p)
 {
-	printf("주민등록번호: %d \n", p->phone_num);
+	printf("전화번호: %d \n", p->phone_num);
 	printf("이름: %s \n", p->name);
 	printf("주소: %s \n\n", p->addr);
 }
