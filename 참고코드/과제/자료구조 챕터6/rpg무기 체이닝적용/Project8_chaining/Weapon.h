@@ -10,10 +10,11 @@ using namespace std;
 
 struct WeaponS
 {
-	int ssn;
+	char type[STR_LEN];
 	char name[STR_LEN];
 	int dam;
 	int price;
+	int hsn;
 };
 
 class Weapon
@@ -24,7 +25,7 @@ public:
 
 	int GetSSN(WeaponS *p);
 	void ShowWeaponInfo(WeaponS *p);
-	WeaponS *MakeWeaponData(int ssn, const char * name, int dam, int price);
+	WeaponS *MakeWeaponData(const char * type, const char * name, int dam, int price, int hsn);
 
 	~Weapon();
 };

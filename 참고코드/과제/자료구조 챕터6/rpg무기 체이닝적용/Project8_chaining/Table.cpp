@@ -66,7 +66,6 @@ Value Table::TBLSearch(TableS *pt, Key k)
 {
 	int hv = pt->hf(k);
 	Slot cSlot;
-	TableS tmp;
 
 	if (LFirst(&(pt->tbl[hv]), &cSlot))
 	{
