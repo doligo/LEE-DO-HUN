@@ -81,6 +81,8 @@ int main()
 
 	}
 
+	read.close();
+
 	while (1)
 	{
 		system("cls");
