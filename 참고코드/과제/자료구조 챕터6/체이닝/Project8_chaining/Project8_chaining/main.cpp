@@ -17,7 +17,7 @@ int main(void)
 
 	TB.TBLInit(&myTbl, MyHashFunc);
 
-	cout << "Lee, Lin, KIM, HAN 삽입완료" << endl;
+	cout << "Lee, Lin, KIM, KING, HAN 삽입완료" << endl;
 	cout << endl;
 
 	// 데이터 입력 ///////
@@ -28,6 +28,9 @@ int main(void)
 	TB.TBLInsert(&myTbl, PS.GetSSN(np), np);
 
 	np = PS.MakePersonData(900139, "KIM", "Jeju");
+	TB.TBLInsert(&myTbl, PS.GetSSN(np), np);
+
+	np = PS.MakePersonData(900139, "KING", "Busan"); // 위와 같은 키값을 가졌다
 	TB.TBLInsert(&myTbl, PS.GetSSN(np), np);
 
 	np = PS.MakePersonData(900827, "HAN", "Kangwon");
@@ -60,12 +63,15 @@ int main(void)
 	if (rp != NULL)
 		free(rp);
 
-	cout << "Lin, KIM, HAN 삭제 완료" << endl;
+	cout << "Lin, KIM, KING, HAN 삭제 완료" << endl;
 	cout << endl;
 
 	//////////////// 삭제후에 값은키값으로 저장된 다음 데이터 출력
 
 	sp = TB.TBLSearch(&myTbl, 900254);
+	if (sp != NULL)
+		PS.ShowPerInfo(sp);
+	sp = TB.TBLSearch(&myTbl, 900139);
 	if (sp != NULL)
 		PS.ShowPerInfo(sp);
 
