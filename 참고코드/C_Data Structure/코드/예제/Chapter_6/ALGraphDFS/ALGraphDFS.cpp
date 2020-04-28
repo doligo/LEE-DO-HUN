@@ -5,7 +5,7 @@
 #include "DLinkedList.h"
 #include "ArrayBaseStack.h"
 
-int WhoIsPrecede(int data1, int data2);
+//int WhoIsPrecede(int data1, int data2);
 
 // 그래프의 초기화
 void GraphInit(ALGraph * pg, int nv)
