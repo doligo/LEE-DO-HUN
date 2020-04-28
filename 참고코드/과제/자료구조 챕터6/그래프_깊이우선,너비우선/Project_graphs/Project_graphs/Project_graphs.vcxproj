@@ -148,13 +148,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DLinkedList.cpp" />
-    <ClCompile Include="GraphDFS.cpp" />
+    <ClCompile Include="GraphDFS_BFS.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Queue.cpp" />
     <ClCompile Include="Stack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DLinkedList.h" />
-    <ClInclude Include="GraphDFS.h" />
+    <ClInclude Include="GraphDFS_BFS.h" />
+    <ClInclude Include="Queue.h" />
     <ClInclude Include="Stack.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

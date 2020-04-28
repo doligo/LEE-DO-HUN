@@ -5,7 +5,7 @@
 #include "DLinkedList.h"
 #include "ArrayBaseStack.h"
 
-//int WhoIsPrecede(int data1, int data2);
+int WhoIsPrecede(int data1, int data2);
 
 // 그래프의 초기화
 void GraphInit(ALGraph * pg, int nv)
@@ -96,7 +96,7 @@ void DFShowGraphVertex(ALGraph * pg, int startV)
 	StackInit(&stack);
 
 	VisitVertex(pg, visitV);    // 시작 정점 방문
-	SPush(&stack, visitV);
+	//SPush(&stack, visitV);
 
 	while (LFirst(&(pg->adjList[visitV]), &nextV) == TRUE)
 	{
