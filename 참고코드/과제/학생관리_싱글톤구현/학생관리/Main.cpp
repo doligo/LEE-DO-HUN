@@ -2,5 +2,5 @@
 
 void main() 
 {
-	Std_manager<T>::GetInstance()
+	Std_manager::GetInstance()->display();
 }

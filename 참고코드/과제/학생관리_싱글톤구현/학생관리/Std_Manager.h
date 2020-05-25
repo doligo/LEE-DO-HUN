@@ -3,29 +3,29 @@
 
 #define S_MAX 30
 
-template <typename T>
+// ΩÃ±€≈Ê∏∏ ≈€«√∏¥»≠ «œ±‚
 class Std_manager 
 {
-	T* std[S_MAX];
+	Student* std[S_MAX];
 
-	static T *m_stmanager;
+	static Std_manager *m_stmanager;
 public:
-	static T *GetInstance()
+	static Std_manager *GetInstance()
 	{
 		if (m_stmanager == NULL)
-			m_stmanager = new T;
+			m_stmanager = new Std_manager;
 
 		return m_stmanager;
 	}
 
 	Std_manager();
 
-	T display();
-	T setStudent();
-	T showStudent();
-	T findNumber();
-	T findname();
-	T findClass();
+	void display();
+	void setStudent();
+	void showStudent();
+	void findNumber();
+	void findname();
+	void findClass();
 
 	~Std_manager()
 	{

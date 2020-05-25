@@ -1,7 +1,7 @@
 #include "Student.h"
 
-template <typename T>
-T Student<T>::SetStudent(T _num)
+
+void Student::SetStudent(int _num)
 {
 	cout << "이름을 입력 하시오 : ";
 	cin >> name;
@@ -28,8 +28,8 @@ T Student<T>::SetStudent(T _num)
 	return;
 }
 
-template <typename T>
-T Student<T>::showStudent()
+
+void Student::showStudent()
 {
 	cout << "----------------------" << endl;
 	cout << num << "번 학생" << endl;

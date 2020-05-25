@@ -3,30 +3,29 @@
 #define max_len 100
 using namespace std;
 
-template <typename T> // ÅÛÇÃ¸´Àû¿ë
 class Student
 {
 private:
-	T name;
-	T kor, eng, math, sum;
-	T avg;
-	T num;
-	T Class;
+	string name;
+	int kor, eng, math, sum;
+	float avg;
+	int num;
+	char Class;
 public:
 	Student() { num = 0; }
 	~Student() {}
 
-	T SetStudent(T _num);
-	T showStudent();
-	T getnum()
+	void SetStudent(int _num);
+	void showStudent();
+	int getnum()
 	{
 		return num;
 	}
-	T getname()
+	string getname()
 	{
 		return name;
 	}
-	T getClass()
+	char getClass()
 	{
 		return Class;
 	}
