@@ -1,14 +1,17 @@
 #include "Std_Manager.h"
 
-Std_manager *Std_manager::m_stmanager = NULL;
+template <typename T>
+T *Std_manager<T>::m_stmanager = NULL;
 
-Std_manager::Std_manager()
+template <typename T>
+Std_manager<T>::Std_manager()
 {
 	for (int i = 0; i < 30; i++)
-		std[i] = new Student;
+		std[i] = new T;
 }
 
-void Std_manager::display() {
+template <typename T>
+T Std_manager<T>::display() {
 	int sel;
 	while (true)
 	{
@@ -44,7 +47,8 @@ void Std_manager::display() {
 	}
 }
 
-void Std_manager::setStudent()
+template <typename T>
+T Std_manager<T>::setStudent()
 {
 	for (int i = 0; i < 30; i++)
 	{
@@ -57,7 +61,8 @@ void Std_manager::setStudent()
 	cout << "학생이 전원 등록 되었습니다." << endl;
 }
 
-void Std_manager::showStudent()
+template <typename T>
+T Std_manager<T>::showStudent()
 {
 	for (int i = 0; i < 30; i++)
 	{
@@ -70,7 +75,8 @@ void Std_manager::showStudent()
 	}
 }
 
-void Std_manager::findNumber()
+template <typename T>
+T Std_manager<T>::findNumber()
 {
 	int _find;
 	cout << "찾을 학생의번호를 입력 하시오";
@@ -86,7 +92,8 @@ void Std_manager::findNumber()
 	cout << endl << "해당 번호의 학생이 없습니다." << endl;
 }
 
-void Std_manager::findname()
+template <typename T>
+T Std_manager<T>::findname()
 {
 	string _find;
 	int find_num = 0;
@@ -104,7 +111,8 @@ void Std_manager::findname()
 		cout << "해당 이름의 학생이 없습니다." << endl;
 }
 
-void Std_manager::findClass()
+template <typename T>
+T Std_manager<T>::findClass()
 {
 	int _find = 0;
 	cout << "========= [ A ] =========" << endl;
