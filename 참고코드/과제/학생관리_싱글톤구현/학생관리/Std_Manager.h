@@ -1,25 +1,24 @@
-#pragma once
 #include "Student.h"
-
+#include "single_ton.h"
 #define S_MAX 30
 
 // ΩÃ±€≈Ê∏∏ ≈€«√∏¥»≠ «œ±‚
-template <typename T>
-class Std_manager
+
+class Std_manager : public Single_Ton<Std_manager>
 {
 	Student* std[S_MAX];
 
-	static T *m_stmanager;
+	//static Std_manager *m_stmanager;
 
 public:
 
-	static T *GetInstance()
+	/*static Std_manager *GetInstance()
 	{
 		if (m_stmanager == NULL)
-			m_stmanager = new T;
+			m_stmanager = new Std_manager;
 
 		return m_stmanager;
-	}
+	}*/
 
 	Std_manager();
 
