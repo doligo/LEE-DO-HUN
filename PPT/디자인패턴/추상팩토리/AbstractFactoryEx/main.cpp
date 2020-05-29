@@ -14,9 +14,9 @@ int main()
 	JobClass* archer = new Archer();
 	JobClass* wizard = new Wizard();
 
-	knight->SetWeapon(new Bow());
-	archer->SetWeapon(new Staff());
-	wizard->SetWeapon(new Sword());
+	knight->SetWeapon(new Bow);
+	archer->SetWeapon(new Staff);
+	wizard->SetWeapon(new Sword);
 
 	AttackTest(knight);
 	AttackTest(archer);
