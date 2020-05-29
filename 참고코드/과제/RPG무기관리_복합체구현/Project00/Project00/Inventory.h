@@ -21,6 +21,7 @@ public:
 	Inventory* GetParent();
 	string GetName();
 	int GetLevel();
+
 protected:
 	int GetSize();
 };

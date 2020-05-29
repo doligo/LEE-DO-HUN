@@ -39,6 +39,7 @@ int Inventory::GetSize()
 	return nameis.size() + GetLevel() * 2;
 }
 
+
 ////////////////// πÿ¿∏∑Œ Bag, item
 
 Item::Item(string name) : Inventory(name)
