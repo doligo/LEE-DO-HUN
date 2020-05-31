@@ -4,14 +4,19 @@
 #include <string>
 #include <iomanip>
 #include <fstream>
+#include <map>
 using namespace std;
+
 
 class Inventory
 {
 	Inventory* parent;
 	const string nameis;
+
 public:
 	Inventory(string name);
+
+	int pr_num = 1;
 
 	virtual void View() = 0;
 	virtual void AddInventory(Inventory* inventory) = 0;
@@ -28,7 +33,8 @@ protected:
 
 class Bag : public Inventory
 {
-	vector<Inventory*> inventoryList;
+	// vector<Inventory*> inventoryList;
+	map<int, Inventory*> inventoryList;
 public:
 	Bag(string name);
 	~Bag();
