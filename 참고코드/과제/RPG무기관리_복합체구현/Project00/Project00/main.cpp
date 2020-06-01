@@ -1,10 +1,13 @@
 ﻿#include "Inventory.h"
 
+#define MAX 10
 
 void Setting(string st, Inventory *bag_name)
 {
 	ifstream read;
-	string tmp_st;
+	string _st[MAX] = {"\0"};
+	string tmp = { "\0" };
+	int i = 0;
 
 	read.open(st);
 	if (!read)
@@ -16,12 +19,33 @@ void Setting(string st, Inventory *bag_name)
 	{
 		while (!read.eof())
 		{
-			read >> tmp_st;
-			Inventory* item = new Item(tmp_st);
-			bag_name->AddInventory(item);
+			read >> _st[i];
+			i++;
 		}
 	}
 	read.close();
+
+	for (int z = 0; z < i; z++)
+	{
+		for (int y = z + 1; y < i; y++)
+		{
+			if (_st[z].size() > _st[y].size())
+			{
+				tmp = _st[z];
+				_st[z] = _st[y];
+				_st[y] = tmp;
+			}
+		}
+	}
+
+
+
+	for (int j = 0; j < i; j++)
+	{
+		Inventory* item = new Item(_st[j]);
+		bag_name->AddInventory(item);
+	}
+
 }
 
 int main()
