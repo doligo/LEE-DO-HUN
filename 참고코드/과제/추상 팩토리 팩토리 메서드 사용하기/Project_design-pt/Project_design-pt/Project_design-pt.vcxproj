@@ -147,13 +147,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Block_Factory.cpp" />
+    <ClCompile Include="Block_Type.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Organ.cpp" />
-    <ClCompile Include="Snake.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Organ.h" />
-    <ClInclude Include="Snake.h" />
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="Block_Factory.h" />
+    <ClInclude Include="Block_Type.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

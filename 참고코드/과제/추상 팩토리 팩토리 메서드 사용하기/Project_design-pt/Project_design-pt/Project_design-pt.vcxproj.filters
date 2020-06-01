@@ -18,18 +18,24 @@
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Snake.cpp">
+    <ClCompile Include="Block.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Organ.cpp">
+    <ClCompile Include="Block_Type.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Block_Factory.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Snake.h">
+    <ClInclude Include="Block.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Organ.h">
+    <ClInclude Include="Block_Type.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Block_Factory.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
