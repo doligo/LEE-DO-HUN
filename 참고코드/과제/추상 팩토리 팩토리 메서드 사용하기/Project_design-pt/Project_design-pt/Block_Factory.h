@@ -23,6 +23,8 @@ class Trigger_Block_Factory : public Block_Factory
 public:
 	virtual Block_Type* CreateBlockType();
 	virtual Block* CreateBlock();
+	Block* CreateBlock2();
+	Block* CreateBlock3();
 };
 
 class Move_Block_Factory : public Block_Factory
