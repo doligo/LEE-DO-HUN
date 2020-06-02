@@ -8,7 +8,7 @@ public:
 	virtual bool Draw() = 0;
 };
 
-class Character
+class Character : public Block
 {
 public:
 	virtual bool Draw();
