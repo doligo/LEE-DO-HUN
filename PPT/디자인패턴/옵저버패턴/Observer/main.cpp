@@ -10,7 +10,7 @@ int main()
 	Player* player3 = new Player("하양");
 
 	//주제개체에 구독개체를 등록한다.
-	player1->SetBossAlarm(dragon);
+	player1->SetBossAlarm(dragon, false);
 	player2->SetBossAlarm(orc, false);
 	player3->SetBossAlarm(orc);
 

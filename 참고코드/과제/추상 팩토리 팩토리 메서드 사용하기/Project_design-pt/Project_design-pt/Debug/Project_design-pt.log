@@ -1,2 +1,7 @@
-﻿  Block_Type.cpp
-  Project_design-pt.vcxproj -> C:\Users\A-12\Documents\GitHub\LEE-DO-HUN\참고코드\과제\추상 팩토리 팩토리 메서드 사용하기\Project_design-pt\Debug\Project_design-pt.exe
+﻿  Block.cpp
+  Block_Factory.cpp
+  Block_Type.cpp
+  main.cpp
+C:\Users\user\Desktop\LEE-DO-HUN\참고코드\과제\추상 팩토리 팩토리 메서드 사용하기\Project_design-pt\Project_design-pt\main.cpp(6,1): warning C4326: 'main'의 반환 형식이 'int'이어야 하는데 'void'입니다.
+  코드를 생성하고 있습니다...
+  Project_design-pt.vcxproj -> C:\Users\user\Desktop\LEE-DO-HUN\참고코드\과제\추상 팩토리 팩토리 메서드 사용하기\Project_design-pt\Debug\Project_design-pt.exe
