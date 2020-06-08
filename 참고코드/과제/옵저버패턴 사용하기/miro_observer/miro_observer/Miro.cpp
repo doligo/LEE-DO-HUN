@@ -235,19 +235,6 @@ void Miro::Move()
 	v[character[Y]][character[X]] = CHARACTER;
 }
 
-void Miro::InGame()
-{
-	Init();
-	Set_Block();
-	while (!GameClear)
-	{
-		MapDraw();
-		Move();
-	}
-	system("cls");
-	printf("Å»Ãâ¼º°ø!!");
-}
-
 Miro::~Miro()
 {
 
