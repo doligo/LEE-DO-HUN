@@ -1,1 +1,10 @@
-﻿  ObserverEx.vcxproj -> C:\Users\user\Desktop\LEE-DO-HUN\PPT\디자인패턴\옵저버패턴\ObserverEx\Debug\ObserverEx.exe
+﻿  Data.cpp
+  DataGraph.cpp
+c:\users\l\documents\github\lee-do-hun\ppt\디자인패턴\옵저버패턴\observerex\datagraph.cpp(20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  DataTable.cpp
+  main.cpp
+c:\users\l\documents\github\lee-do-hun\ppt\디자인패턴\옵저버패턴\observerex\main.cpp(6): warning C4326: 'main'의 반환 형식이 'int'이어야 하는데 'void'입니다.
+  Observer.cpp
+  Subject.cpp
+  코드를 생성하고 있습니다...
+  ObserverEx.vcxproj -> C:\Users\L\Documents\GitHub\LEE-DO-HUN\PPT\디자인패턴\옵저버패턴\ObserverEx\Debug\ObserverEx.exe
