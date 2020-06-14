@@ -11,7 +11,7 @@ void Map::Init_Map()
 	int r_height, r_width = 0;
 
 	m_mine_map.assign(MAP_HEIGHT, vector<int>(MAP_WIDTH, 0));
-	m_mine_map[0][0] = CHARACTER; // 캐릭터위치설정
+	m_mine_map[0][0] = CHARACTER; // 캐릭터 처음 그려질곳
 
 	srand((unsigned)time(NULL));
 
@@ -70,6 +70,17 @@ void Map::Map_Draw_Second()
 		cout << endl;
 	}
 
+}
+
+void Map::Move()
+{
+	char ch;
+	ch = _getch();
+	switch (ch)
+	{
+	case LEFT:
+		break;
+	}
 }
 
 Map::~Map()

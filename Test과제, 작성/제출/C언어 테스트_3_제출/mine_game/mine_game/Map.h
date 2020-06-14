@@ -1,5 +1,5 @@
 #pragma once
-#include "Mecro.h"
+#include "Control.h"
 
 #define MINE 101
 #define CHARACTER 111
@@ -8,7 +8,7 @@
 #define MAP_WIDTH 12
 #define MAP_HEIGHT 12
 
-class Map
+class Map : virtual public Control
 {
 private:
 	vector<vector<int>> m_mine_map;
@@ -16,8 +16,10 @@ public:
 	Map();
 
 	void Init_Map();
-	void Map_Draw_First(); // 지뢰가 있어도 숨겨진 초기게임화면
+	void Map_Draw_First();
 	void Map_Draw_Second();
+
+	void Move();
 
 	~Map();
 };

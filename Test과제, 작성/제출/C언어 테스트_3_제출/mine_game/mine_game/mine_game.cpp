@@ -2,10 +2,10 @@
 
 int main()
 {
-	Map mm;
+	Map m;
 
-	mm.Init_Map();
-	mm.Map_Draw_First();
+	m.Init_Map();
+	m.Map_Draw_First();
 
 	return 0;
 }

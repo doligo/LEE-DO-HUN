@@ -1,16 +1,17 @@
 #pragma once
-#include "Map.h"
+#include "Mecro.h"
 
-#define UP 72
-#define DOWN 80
-#define LEFT 75
-#define RIGHT 77
+#define UP 119
+#define DOWN 115
+#define LEFT 97
+#define RIGHT 100
 
 class Control
 {
 private:
 public:
 	Control();
+
 	~Control();
 };
 
