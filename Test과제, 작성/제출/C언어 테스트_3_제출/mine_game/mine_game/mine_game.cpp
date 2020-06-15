@@ -7,7 +7,7 @@ int main()
 	m.Init_Map();
 	while (1)
 	{
-		m.Map_Draw_First();
+		m.Map_Draw();
 		m.Move();
 	}
 

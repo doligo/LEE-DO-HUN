@@ -1,3 +1,6 @@
 ﻿  Map.cpp
 c:\users\l\documents\github\lee-do-hun\test과제, 작성\제출\c언어 테스트_3_제출\mine_game\mine_game\control.h(18): warning C4838: 'int'에서 'SHORT'(으)로의 변환에는 축소 변환이 필요합니다.
+  mine_game.cpp
+c:\users\l\documents\github\lee-do-hun\test과제, 작성\제출\c언어 테스트_3_제출\mine_game\mine_game\control.h(18): warning C4838: 'int'에서 'SHORT'(으)로의 변환에는 축소 변환이 필요합니다.
+  코드를 생성하고 있습니다...
   mine_game.vcxproj -> C:\Users\L\Documents\GitHub\LEE-DO-HUN\Test과제, 작성\제출\C언어 테스트_3_제출\mine_game\x64\Debug\mine_game.exe

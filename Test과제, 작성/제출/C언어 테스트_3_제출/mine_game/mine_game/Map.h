@@ -22,8 +22,7 @@ public:
 	Map();
 
 	void Init_Map();
-	void Map_Draw_First();
-	void Map_Draw_Second();
+	void Map_Draw();
 
 	void Move();
 	void Check_Mine();

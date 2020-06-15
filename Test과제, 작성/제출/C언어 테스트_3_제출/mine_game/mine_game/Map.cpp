@@ -36,7 +36,7 @@ void Map::Init_Map()
 
 }
 
-void Map::Map_Draw_First()
+void Map::Map_Draw()
 {
 	vector<vector<int>>::iterator iter_y;
 	vector<int>::iterator iter_x;
@@ -52,26 +52,6 @@ void Map::Map_Draw_First()
 				cout << "б╪";
 			else
 				cout << "бр";
-		}
-		cout << endl;
-	}
-
-}
-
-void Map::Map_Draw_Second()
-{
-	vector<vector<int>>::iterator iter_y;
-	vector<int>::iterator iter_x;
-
-
-	for (iter_y = m_mine_map.begin(); iter_y != m_mine_map.end(); iter_y++)
-	{
-		for (iter_x = (*iter_y).begin(); iter_x != (*iter_y).end(); iter_x++)
-		{
-			if ((*iter_x) == FALSE)
-				cout << "бр";
-			else if ((*iter_x) == MINE)
-				cout << "б╪";
 		}
 		cout << endl;
 	}
