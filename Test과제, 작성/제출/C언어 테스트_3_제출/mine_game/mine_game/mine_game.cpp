@@ -5,7 +5,12 @@ int main()
 	Map m;
 
 	m.Init_Map();
-	m.Map_Draw_First();
+	while (1)
+	{
+		m.Map_Draw_First();
+		m.Move();
+	}
+
 
 	return 0;
 }
