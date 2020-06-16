@@ -3,6 +3,8 @@
 Map::Map()
 {
 	LastObjectIndex = NULL;
+	wall[WALL_MAX][2] = {};
+	wall_count = 0;
 }
 
 void Map::Init_Map()
@@ -46,6 +48,7 @@ void Map::Map_Draw()
 	vector<vector<int>>::iterator iter_y;
 	vector<int>::iterator iter_x;
 	int i = 0;
+	int j = 0;
 
 	for (iter_y = m_mine_map.begin(); iter_y != m_mine_map.end(); iter_y++)
 	{
@@ -69,8 +72,12 @@ void Map::Map_Draw()
 				cout << "¡Ø";
 				i++;
 			}
-			else if ((*iter_x) == NOTING)
+			else if ((*iter_x) == WALL)
+			{
+				gotoxy(wall[j][X] * 2, wall[j][Y]);
 				cout << "¢Æ";
+				j++;
+			}
 		}
 	}
 }
@@ -110,26 +117,52 @@ void Map::Move()
 
 void Map::Check_Mine()
 {
+	int tmp_y = 0;
+	int tmp_x = 0;
+
+	tmp_y = character[Y];
+	tmp_x = character[X];
+
 	for (int i = 0; i < MINE_COUNT; i++)
 	{
-		if (character[Y] == mine[i][Y] && character[X] == mine[i][X])
+		if (character[Y] == mine[i][Y] && character[X] * 2 == mine[i][X])
 		{
 			cout << "Áö·ÚÀÔ´Ï´Ù";
 			_getch();
-			break;
+			return;
 		}
 	}
 
-	Spread(character[Y], character[X], 0);
+	Spread(character[Y], character[X]);
 }
 
-void Map::Spread(int y, int x, int what)
+int Map::Spread(int y, int x)
 {
-	if (m_mine_map[y][x] == NULL)
+	int count = 0;
+
+	if (y == -1 || x == -1)
+		return 0;
+
+	else
 	{
-		m_mine_map[y][x] = NOTING;
+		if (m_mine_map[y][x] == NULL)
+		{
+			m_mine_map2[y][x] = WALL;
+			wall[wall_count][Y] = y;
+			wall[wall_count][X] = x;
+			wall_count++;
+		}
+		else if (m_mine_map[y][x] == MINE)
+		{
+			count++;
+			return count;
+		}
 	}
+
+	Spread(y, x - 1);
+
 }
+
 
 Map::~Map()
 {
