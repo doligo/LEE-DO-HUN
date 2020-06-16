@@ -55,9 +55,9 @@ void Map::Map_Draw()
 		for (iter_x = (*iter_y).begin(); iter_x != (*iter_y).end(); iter_x++)
 		{
 			if ((*iter_x) == CHARACTER)
-				cout << "бс";
+				cout << "в├";
 			else
-				cout << "бр";
+				cout << "бс";
 		}
 		cout << endl;
 	}
@@ -75,7 +75,7 @@ void Map::Map_Draw()
 			else if ((*iter_x) == WALL)
 			{
 				gotoxy(wall[j][X] * 2, wall[j][Y]);
-				cout << "в╞";
+				cout << "бр";
 				j++;
 			}
 		}
