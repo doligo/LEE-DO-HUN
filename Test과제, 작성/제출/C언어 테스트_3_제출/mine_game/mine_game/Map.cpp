@@ -56,7 +56,7 @@ void Map::Map_Draw()
 		{
 			if ((*iter_x) == CHARACTER)
 				cout << "▣";
-			else
+			else if ((*iter_x) == NULL)
 				cout << "■";
 		}
 		cout << endl;
@@ -68,7 +68,7 @@ void Map::Map_Draw()
 		{
 			if ((*iter_x) == MINE)
 			{
-				gotoxy(mine[i][X], mine[i][Y]);
+				gotoxy(mine[i][X] * 2, mine[i][Y]);
 				cout << "※";
 				i++;
 			}
@@ -117,15 +117,10 @@ void Map::Move()
 
 void Map::Check_Mine()
 {
-	int tmp_y = 0;
-	int tmp_x = 0;
-
-	tmp_y = character[Y];
-	tmp_x = character[X];
 
 	for (int i = 0; i < MINE_COUNT; i++)
 	{
-		if (character[Y] == mine[i][Y] && character[X] * 2 == mine[i][X])
+		if (character[Y] == mine[i][Y] && character[X] == mine[i][X]) // 벽추가
 		{
 			cout << "지뢰입니다";
 			_getch();
@@ -140,11 +135,13 @@ int Map::Spread(int y, int x)
 {
 	int count = 0;
 
-	if (y == -1 || x == -1)
+	if (y == -1 || x == -1 || x == 13 || y == 13)
 		return 0;
 
 	else
 	{
+		Spread(y, x - 1);
+
 		if (m_mine_map[y][x] == NULL)
 		{
 			m_mine_map2[y][x] = WALL;
@@ -157,9 +154,12 @@ int Map::Spread(int y, int x)
 			count++;
 			return count;
 		}
+		else if (m_mine_map[y][x] == WALL)
+		{
+			return 0;
+		}
 	}
 
-	Spread(y, x - 1);
 
 }
 
