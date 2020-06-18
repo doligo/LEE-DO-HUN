@@ -1,0 +1,208 @@
+1.func(10, 20, 30) 세 인자를받는 연산자 오버로딩 함수로 선언하시요
+코딩문제들은 따로 파일첨부함
+
+
+2.다음 구문이 컴파일 될 수 있게 최소한의 String클래스를 작성하시오
+
+
+2-1.String s("Hello!");
+const char* sz = s;
+
+
+2-2.const char* sz = "Hello!";
+String s("Hi~!");
+s = sz;
+
+
+
+3.다음 구문이 작동하는 함수 템플릿 Copy()를 완성하시오
+
+int main()
+{
+	int arr1[5] = { 10, 20, 30, 40, 50 };
+	int arr2[5];
+
+	//Copy(t, s, n) t:목적지 주소, s:소스 주소, n: 원소갯수 
+	Copy(arr2, arr1, 5);
+
+	MyType myArr1[5] = {/*구성 요소의 구성 부분*/};
+	MyType myArr2[5];
+
+	Copy(myArr2, myArr1, 5);
+
+	return 0;
+}
+
+
+4.Push(), Empty(), Pop()이 동작하는 최소한의 Stack 클래스를 작성 하시오.
+
+int main()
+{
+	Stack<int> st;
+
+	st.Push(10);
+	st.Push(20);
+	st.Push(30);;
+
+	if (!st.Empty())
+		cout << st.Pop() << endl;
+
+	if(!st.Empy())
+		cout << st.Pop() << endl;
+
+	if (!st.Empy())
+		cout << st.Pop() << endl;
+}
+
+5.Push(), Empty(), Pop()이 동작하는 최소한의 Queue 클래스를 작성하시오.
+
+int main()
+{
+	Queue<int> q;
+
+	q.Push(10);
+	q.Push(20);
+	q.Push(30);
+
+	if (!q.Empty())
+		cout << q.Pop() << endl;
+
+	if (!q.Empty())
+		cout << q.Pop() << endl;
+
+	if (!q.Empty())
+		cout << q.Pop() << endl;
+
+	return 0;
+}
+
+6.각각의 맞는 답을 작성하시오.
+
+	6-1.STL 구성 요소에서 객체를 저장하는 객체를(	)라 한다.
+	6-2.컨테이너의 원소를 순회하고 참조하는 객체를(	)라 한다.
+	6-3.여러 가지 문제 해결을 우한 반복자와 동작하는 함수 템플릿을(	      )라 한다.
+	6-4.컨테이너 원소가 자신만의 삽입 위치를 갖는 것을(	) 컨테이너라 한다.
+	6-5.컨테이너 원소가 특정 정렬 기준에 의해 자동 정렬된 것을(	) 컨테이너라 한다.
+
+7.vector<int> v는 A, B, C, D, E라는 원소를 차례대로 가지고 있다.
+반복자 iter는 C를 가리키고 있는 상황이다. 
+[begin, end), [begin, iter), [iter, end)의 순차열을 각각 쓰시오.
+
+
+
+8.vector, deque, list의 특징을 기술하시오.
+
+
+
+9.vector의 []연산자와 at()의 공통점과 차이를 쓰세요
+
+
+
+10.vector와 deque의 가장 큰 차이점을 쓰세요
+
+
+
+11.vector와 list의 가장 큰 차이점을 쓰세요.
+
+
+
+12. 시퀀스 컨테이너와 연관 컨테이너의 가장 큰 차이점을 쓰세요.
+
+
+13. 연관 컨테이너의 기본 정렬 기분은 무엇인가?
+
+
+14.set과 map의 특징을 기술하시오.
+
+
+15.set과 map의 차이점을 기술하시오.
+
+
+16.연관 컨테이너의 찾기 관련 함수의 성능을 기술 하시오.
+
+
+17.vector<int> v는 10,20,30,40,50의 원소를 가지고 있다. 
+알고리즘을 사용하여 30을 제거하는 코드를 작성하시오
+
+
+18.vector<int> v는 10,20,30,40,50,60,70,80,90,100의 순차열을 가지는 원소를 가지고 있다.
+알고리즘을 사용하여 50,40,30,20,10,60,70,80,90,100을 만들어 주는 코드를 작성하시오.
+
+
+19.vector<int> v는 70, 20, 30, 32, 40, 33, 60, 32, 33, 90, 50의 순차열을 가지는 원소를 
+가지고 있다. 정렬과 함께 모든 원소가 유일하게 하는 코드를 작성하시오.
+
+
+20.vector<int>v1은 10,20,30,40,50,60,70,80,90,100의 순차열을 가지는 원소를 가지고 있다. 
+v1을 v2에 복사를 한 뒤 v1과 v2의 합을 v3로 출력하는 코드를 작성하시오.
+
+
+21.vector<int> v1은 50,10,30,80,60의 순차열을 가지는 원소를 가지고 있고 size는 5이다.
+vector<int> v2는 20,70,40의 순차열을 가지는 원소를 가지고 있고 size는 3이다.
+v1과 v2를 v3으로 합병하는 코드를 작성하시오.
+
+
+22.vector<int> v1은 10,20,30,40,50,60,70,80,90,100의 순차열을 가지는 원소를 가지고 있다.
+v1을 다음과 같은 순차열을 가지게 만드는 코드를 작성하시오 ==> 70,80,90,100,10,20,30,40,50,60
+
+
+23.vector<int> v1은 50,10,30,80,60의 순차열을 가지는 원소를 v2는 20,70,40의 순차열을
+ 가지는 원소를 가지고 있다.
+v1 + v2의 합집합을 v3에 출력하는 코드를 작성하시오.
+
+
+24.양방향 반복자와 임의 접근 반복자의 차이점을 설명하시오.
+
+
+25.X::iterator와 X::const_iterator의 차이점을 설명하시오.
+
+
+26.vector<int> v1은 10,20,30,40,50을 순차열로 가지는 원소를 가지고 있다.
+정방향 반복자 iter는 40을 가리키고있고 역방향 반복자 riter는 40을 가리키고있다.
+다음 질문에 알맞는 답을 하시오.
+
+	26-1.*iter와 *riter의 값을 쓰시오.
+	26-2.*++iter와 *++riter의 값을 각각 쓰시오.
+	26-3.X::iterator iter2 = riter가 가능한가?
+	26-4.X::reverse_iterator riter2 = iter가 가능한가?
+
+27 다음 구문에서 오류를 찾아서 수정해보자.
+
+int main()
+{
+	vector<int> v1;
+	v1.push_back(10);
+	v1.push_back(40);
+	v1.push_back(50);
+
+	vector<int> v2;
+	v2.push_back(20);
+	v2.push_back(30);
+	v2.push_back(60);
+
+	vector<int> v3(6);
+
+	merge(v1.begin(), v1.end(), v2.begin(), v2.end(), v3.begin());
+
+	for (vector<int>::size_type i = 0; i < v3.size(); ++i)
+	{
+		count << v3[i] << endl;
+	}
+
+	return 0;
+}
+
+
+28. v컨테이너의 원소를 copy()알고리즘을 사용해서 완성해보자.
+
+int main()
+{
+	vector<int> v;
+	v.push_back(10);
+	v.push_back(20);
+	v.push_back(30);
+	
+	//copy() 알고리즘
+
+	return 0;
+}
