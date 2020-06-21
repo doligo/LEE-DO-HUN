@@ -32,6 +32,7 @@ public:
 	void Play();
 	bool Check(int width, int height);
 	void EmptyCheck(int width, int height, int x, int y);
+	bool Win_Check(int width, int height);
 
 	~Mine_Game();
 };

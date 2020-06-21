@@ -39,6 +39,8 @@ void Mine_Game::Init()
 		}
 	}
 
+	srand((unsigned)time(NULL));
+
 	for (int i = 0; i < m_imine_max; i++) //// 마인심기
 	{
 		m_imine[i][X] = rand() % m_width;
@@ -67,6 +69,10 @@ void Mine_Game::Init()
 	Map_Init(m_width, m_height);
 	DrawMap(m_width, m_height, m_ix, m_iy);
 	DrawPoint("★", (m_imypos[X] + m_ix) * 2, (m_imypos[Y] + m_iy));
+	gotoxy(13, m_iy + 11);
+	cout << "조작 : w a s d";
+	gotoxy(35, m_iy + 11);
+	cout << "확인 : 엔터";
 }
 
 void Mine_Game::Map_Init(int width, int height)
@@ -79,58 +85,58 @@ void Mine_Game::Map_Init(int width, int height)
 		{
 			if (m_igame_map[y][x] == MINE)
 			{
-				for (int k = 0; k < 8; k++)
+				for (int j = 0; j < 8; j++)
 				{
-					if (k == 0)
+					if (j == NULL)
 					{
-						if (y == 0)
+						if (y == NULL)
 							continue;
 						_y = y - 1;
 						_x = x;
 					}
-					else if (k == 1)
+					else if (j == 1)
 					{
 						if (y >= height - 1)
 							continue;
 						_y = y + 1;
 						_x = x;
 					}
-					else if (k == 2)
+					else if (j == 2)
 					{
 						if (y == 0 || x == 0)
 							continue;
 						_y = y - 1;
 						_x = x - 1;
 					}
-					else if (k == 3)
+					else if (j == 3)
 					{
 						if (x == 0)
 							continue;
 						_y = y;
 						_x = x - 1;
 					}
-					else if (k == 4)
+					else if (j == 4)
 					{
 						if (y >= height - 1 || x == 0)
 							continue;
 						_y = y + 1;
 						_x = x - 1;
 					}
-					else if (k == 5)
+					else if (j == 5)
 					{
 						if (y == 0 || x >= width - 1)
 							continue;
 						_y = y - 1;
 						_x = x + 1;
 					}
-					else if (k == 6)
+					else if (j == 6)
 					{
 						if (x >= width - 1)
 							continue;
 						_y = y;
 						_x = x + 1;
 					}
-					else if (k == 7)
+					else if (j == 7)
 					{
 						if (y >= height - 1 || x >= width - 1)
 							continue;
@@ -160,7 +166,7 @@ int Mine_Game::Control(int x, int y)
 			}
 			if (ch == 'w' || ch == 'a' || ch == 's' || ch == 'd')
 			{
-				DrawPoint(Symbol(m_igame_map2[m_imypos[X]][m_imypos[Y]]), (m_imypos[X] + m_ix) * 2, (m_imypos[Y] + m_iy));
+				DrawPoint(Symbol(m_igame_map2[m_imypos[Y]][m_imypos[X]]), (m_imypos[X] + m_ix) * 2, (m_imypos[Y] + m_iy));
 				switch (ch)
 				{
 				case 'w':
@@ -219,13 +225,13 @@ void Mine_Game::EmptyCheck(int width, int height, int x, int y)
 	int Up = FALSE;
 	int Down = FALSE;
 
-	if (m_igame_map2[y][x + 1] != NULL && x + 1 != width) // 오른쪽끝이 아니면서 NULL이 아닐시
+	if (x + 1 != width && m_igame_map2[y][x + 1] != NULL) // 오른쪽끝이 아니면서 NULL이 아닐시
 	{
 		if (m_igame_map[y][x + 1] != NULL)
 		{
-			Right = TRUE;
 			m_igame_map2[y][x + 1] = m_igame_map[y][x + 1];
-			DrawPoint(Symbol(m_igame_map2[y][x + 1]), (x + 1 + m_ix) * 2, y + m_ix);
+			DrawPoint(Symbol(m_igame_map2[y][x + 1]), (x + 1 + m_ix) * 2, y + m_iy);
+			Right = TRUE;
 		}
 		else
 		{
@@ -235,13 +241,13 @@ void Mine_Game::EmptyCheck(int width, int height, int x, int y)
 		}
 	}
 
-	if (m_igame_map2[y][x - 1] != NULL && x - 1 != -1) // 왼쪽체크
+	if (x - 1 != -1 && m_igame_map2[y][x - 1] != NULL) // 왼쪽체크
 	{
 		if (m_igame_map[y][x - 1] != NULL)
 		{
-			Left = TRUE;
 			m_igame_map2[y][x - 1] = m_igame_map[y][x - 1];
-			DrawPoint(Symbol(m_igame_map2[y][x - 1]), (x - 1 + m_ix) * 2, y + m_ix);
+			DrawPoint(Symbol(m_igame_map2[y][x - 1]), (x - 1 + m_ix) * 2, y + m_iy);
+			Left = TRUE;
 		}
 		else
 		{
@@ -250,19 +256,103 @@ void Mine_Game::EmptyCheck(int width, int height, int x, int y)
 			EmptyCheck(width, height, x - 1, y); // 재귀
 		}
 	}
+
+	if (y + 1 != height && m_igame_map2[y + 1][x] != NULL) // 아랫쪽체크
+	{
+		if (m_igame_map[y + 1][x] != NULL)
+		{
+			m_igame_map2[y + 1][x] = m_igame_map[y + 1][x];
+			DrawPoint(Symbol(m_igame_map2[y + 1][x]), (x + m_ix) * 2, y + 1 + m_iy);
+			Down = TRUE;
+		}
+		else
+		{
+			m_igame_map2[y + 1][x] = NULL;
+			DrawPoint("□", (x + m_ix) * 2, y + 1 + m_iy);
+			EmptyCheck(width, height, x, y + 1);
+		}
+	}
+
+	if (y != 0 && m_igame_map2[y - 1][x] != NULL)
+	{
+		if (m_igame_map[y - 1][x] != NULL)
+		{
+			m_igame_map2[y - 1][x] = m_igame_map[y - 1][x];
+			DrawPoint(Symbol(m_igame_map2[y - 1][x]), (x + m_ix) * 2, y - 1 + m_iy);
+			Up = TRUE;
+		}
+		else
+		{
+			m_igame_map2[y - 1][x] = NULL;
+			DrawPoint("□", (x + m_ix) * 2, y - 1 + m_iy);
+			EmptyCheck(width, height, x, y - 1);
+		}
+	}
+	///// 대각선
+	if (Right == TRUE && Up == TRUE && m_igame_map[y - 1][x + 1] != MINE && m_igame_map2[y - 1][x + 1] == WALL)//대각선 체크
+	{
+		m_igame_map2[y - 1][x + 1] = m_igame_map[y - 1][x + 1];
+		DrawPoint(Symbol(m_igame_map2[y - 1][x + 1]), (x + 1 + m_ix) * 2, y - 1 + m_iy);
+		if (m_igame_map[y - 1][x + 1] == NULL) // NULL 일시 다시 진입
+			EmptyCheck(width, height, x + 1, y - 1);
+	}
+
+	if (Right == TRUE && Down == TRUE && m_igame_map[y + 1][x + 1] != MINE && m_igame_map2[y + 1][x + 1] == WALL)
+	{
+		m_igame_map2[y + 1][x + 1] = m_igame_map[y + 1][x + 1];
+		DrawPoint(Symbol(m_igame_map2[y + 1][x + 1]), (x + 1 + m_ix) * 2, y + 1 + m_iy);
+		if (m_igame_map[y + 1][x + 1] == NULL) // NULL 일시 다시 진입
+			EmptyCheck(width, height, x + 1, y + 1);
+	}
+
+	if (Left == TRUE && Up == TRUE && m_igame_map[y - 1][x - 1] != MINE && m_igame_map2[y - 1][x - 1] == WALL)
+	{
+		m_igame_map2[y - 1][x - 1] = m_igame_map[y - 1][x - 1];
+		DrawPoint(Symbol(m_igame_map2[y - 1][x - 1]), (x - 1 + m_ix) * 2, y - 1 + m_iy);
+		if (m_igame_map[y - 1][x - 1] == NULL) // NULL 일시 다시 진입
+			EmptyCheck(width, height, x - 1, y - 1);
+	}
+
+	if (Left == TRUE && Down == TRUE && m_igame_map[y + 1][x - 1] != MINE && m_igame_map2[y + 1][x - 1] == WALL)
+	{
+		m_igame_map2[y + 1][x - 1] = m_igame_map[y + 1][x - 1];
+		DrawPoint(Symbol(m_igame_map2[y + 1][x - 1]), (x - 1 + m_ix) * 2, y + 1 + m_iy);
+		if (m_igame_map[y + 1][x - 1] == NULL) // NULL 일시 다시 진입
+			EmptyCheck(width, height, x - 1, y + 1);
+	}
 }
 
 bool Mine_Game::Check(int width, int height)
 {
-	m_igame_map2[m_imypos[Y]][m_imypos[X]] = m_igame_map[m_imypos[Y]][m_imypos[X]];
+	int tmp = 0;
+	tmp = m_igame_map[m_imypos[Y]][m_imypos[X]];
+
+	m_igame_map2[m_imypos[Y]][m_imypos[X]] = tmp;
 	DrawPoint(Symbol(m_igame_map2[m_imypos[Y]][m_imypos[X]]), (m_imypos[X] + m_ix) * 2, (m_imypos[Y] + m_iy));
 	if (m_igame_map2[m_imypos[Y]][m_imypos[X]] == MINE)
 		return false;
 	if (m_igame_map2[m_imypos[Y]][m_imypos[X]] == NULL)
 	{
-		EmptyCheck(width, height, m_imypos[X], m_imypos[X]);
+		EmptyCheck(width, height, m_imypos[X], m_imypos[Y]);
 	}
 	return true;
+}
+
+bool Mine_Game::Win_Check(int width, int height)
+{
+	int count = 0;
+
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			if (m_igame_map2[x][y] != WALL)
+				count++;
+			if (count == m_iempty_max)
+				return true;
+		}
+	}
+	return false;
 }
 
 void Mine_Game::Play()
@@ -276,7 +366,15 @@ void Mine_Game::Play()
 		{
 			if (Check(m_width, m_height) == false)
 			{
-				DrawMidText("!게임오버!", WIDTH, HEIGHT*0.5);
+				DrawMidText("!게임오버!", WIDTH, HEIGHT * 0.5);
+				gotoxy(0, HEIGHT + 4);
+				_getch();
+				return;
+			}
+
+			if (Win_Check(m_width, m_height) == true)
+			{
+				DrawMidText("!게임클리어!", WIDTH, HEIGHT * 0.5);
 				gotoxy(0, HEIGHT + 4);
 				_getch();
 				return;
@@ -287,5 +385,9 @@ void Mine_Game::Play()
 
 Mine_Game::~Mine_Game()
 {
-
+	for (int i = 0; i < m_height; i++)
+	{
+		delete[] m_igame_map[i];
+		delete[] m_igame_map2[i];
+	}
 }

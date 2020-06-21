@@ -2,7 +2,6 @@
 
 int main()
 {
-	srand((unsigned)time);
 
 	Mine_Game mg;
 	mg.Init();
