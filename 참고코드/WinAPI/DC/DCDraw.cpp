@@ -73,7 +73,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		TextOut(hdc, 100, 100, TEXT("Beautiful Korea"), 15);
 
 		ReleaseDC(hWnd, hdc);
-		return 0; 
+		return 0;
 	}
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam));
 }

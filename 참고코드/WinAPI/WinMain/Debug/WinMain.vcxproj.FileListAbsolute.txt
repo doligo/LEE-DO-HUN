@@ -1,0 +1,2 @@
+C:\Users\A-12\Documents\GitHub\LEE-DO-HUN\참고코드\WinAPI\WinMain\Debug\WinMain.exe
+C:\Users\A-12\Documents\GitHub\LEE-DO-HUN\참고코드\WinAPI\WinMain\Debug\WinMain.pdb
