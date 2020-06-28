@@ -5,6 +5,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;//글로벌 인스턴스핸들값
 LPCTSTR lpszClass = TEXT("게임"); //창이름
 
+
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmdParam, int nCmdShow)
 {
 	HWND hWnd;
@@ -64,6 +65,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 		for (int i = 0; i < 100; i++)
 			SetPixel(hdc, 300 + (i * 2), 350 - (i * 2) , RGB(255, 0, 0));
+
+
+		for (int i = 0; i < 360; i++)
+		{
+			SetPixel(hdc, (sin(i*3.141592 / 180) * 70) + 400, (cos(i*3.141592 / 180) * 70) + 400, RGB(0, 0, 255));
+		} // x축 sin으로 반지름 70인 원을 절반을 그린 후, y 축으로 cos을 절반 그린다
+
+		for (int i = 0; i < 360; i++)
+		{
+			SetPixel(hdc, (sin(i*3.141592 / 180) * 90) + 600, (cos(i*3.141592 / 180) * 70) + 400, RGB(0, 0, 255));
+		} // 타원은 반지름이 다르기 때문에 x나 y축의 반지름 하나만 다르게 설정해주면 된다
 
 		EndPaint(hWnd, &ps);
 
