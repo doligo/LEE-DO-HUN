@@ -43,101 +43,108 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	static int trigger = FALSE;
 	RECT rt = { 0, 0, 400, 400 };
+	RECT rt2;
 	static int x = 0;
 	static int y = 0;
+
 	/*
-	switch (iMessage) // 1번문제
-	{
-	case WM_DESTROY:// 윈도우가 파괴되었다는 메세지
-		PostQuitMessage(0); //GetMessage함수에 WM_QUIT 메시지를 보낸다.
-		return 0; //WndProc의 Switch는 break 대신 return 0; 를 쓴다.
-	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
-
-		Ellipse(hdc, 220 + x, 100 + y, 350 + x, 200 + y); // left, top, right, bottom 
-
-		EndPaint(hWnd, &ps);
-		return 0;
-	case WM_KEYDOWN:
-		switch (wParam)
+		switch (iMessage) // 1번문제
 		{
-		case VK_LEFT:
-			x -= 10;
-			break;
-		case VK_RIGHT:
-			x += 10;
-			break;
-		case VK_UP:
-			y -= 10;
-			break;
-		case VK_DOWN:
-			y += 10;
-			break;
+		case WM_DESTROY:// 윈도우가 파괴되었다는 메세지
+			PostQuitMessage(0); //GetMessage함수에 WM_QUIT 메시지를 보낸다.
+			return 0; //WndProc의 Switch는 break 대신 return 0; 를 쓴다.
+		case WM_PAINT:
+			hdc = BeginPaint(hWnd, &ps);
+
+			Ellipse(hdc, 220 + x, 100 + y, 350 + x, 200 + y); // left, top, right, bottom
+
+			EndPaint(hWnd, &ps);
+			return 0;
+		case WM_KEYDOWN:
+			switch (wParam)
+			{
+			case VK_LEFT:
+				x -= 10;
+				break;
+			case VK_RIGHT:
+				x += 10;
+				break;
+			case VK_UP:
+				y -= 10;
+				break;
+			case VK_DOWN:
+				y += 10;
+				break;
+			}
+
+			InvalidateRect(hWnd, NULL, TRUE);
+
+			return 0;
 		}
 
-		InvalidateRect(hWnd, NULL, TRUE);
 
-		return 0;
-	}
+		/////////////////////////////////////////////////////
 
 
-	/////////////////////////////////////////////////////
+		GetClientRect(hWnd, &rt2);
 
+		switch (iMessage) // 2번문제
+		{
+		case WM_DESTROY:// 윈도우가 파괴되었다는 메세지
+			PostQuitMessage(0); //GetMessage함수에 WM_QUIT 메시지를 보낸다.
+			return 0; //WndProc의 Switch는 break 대신 return 0; 를 쓴다.
+		case WM_PAINT:
+			hdc = BeginPaint(hWnd, &ps);
 
+			Ellipse(hdc, x - 30, y - 30, 40 + x, 20 + y); // left, top, right, bottom
 
+			EndPaint(hWnd, &ps);
+			return 0;
+		case WM_MOUSEMOVE:
+			x = LOWORD(lParam);
+			y = HIWORD(lParam);
 
-	switch (iMessage) // 2번문제
-	{
-	case WM_DESTROY:// 윈도우가 파괴되었다는 메세지
-		PostQuitMessage(0); //GetMessage함수에 WM_QUIT 메시지를 보낸다.
-		return 0; //WndProc의 Switch는 break 대신 return 0; 를 쓴다.
-	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
+			if (x + 40 >= rt2.right || y + 40 >= rt2.bottom || x <= 40 || y <= 40)
+				break;
+			InvalidateRect(hWnd, NULL, TRUE);
 
-		Ellipse(hdc, x - 30, y - 30, 40 + x, 20 + y); // left, top, right, bottom 
-
-		EndPaint(hWnd, &ps);
-		return 0;
-	case WM_MOUSEMOVE:
-		x = LOWORD(lParam);
-		y = HIWORD(lParam);
-
-		InvalidateRect(hWnd, NULL, TRUE);
-
-		return 0;
-	}
+			return 0;
+		}
 
 
 
-	////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////
 
 
 
 
-	switch (iMessage) // 3번문제
-	{
-	case WM_DESTROY:// 윈도우가 파괴되었다는 메세지
-		PostQuitMessage(0); //GetMessage함수에 WM_QUIT 메시지를 보낸다.
-		return 0; //WndProc의 Switch는 break 대신 return 0; 를 쓴다.
-	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
+		switch (iMessage) // 3번문제
+		{
+		case WM_DESTROY:// 윈도우가 파괴되었다는 메세지
+			PostQuitMessage(0); //GetMessage함수에 WM_QUIT 메시지를 보낸다.
+			return 0; //WndProc의 Switch는 break 대신 return 0; 를 쓴다.
+		case WM_PAINT:
+			hdc = BeginPaint(hWnd, &ps);
 
-		Ellipse(hdc, x - 30, y - 30, 40 + x, 20 + y); // left, top, right, bottom 
+			Ellipse(hdc, x - 30, y - 30, 40 + x, 20 + y); // left, top, right, bottom
 
-		EndPaint(hWnd, &ps);
-		return 0;
-	case WM_MOUSEMOVE:
-		x = LOWORD(lParam);
-		y = HIWORD(lParam);
+			EndPaint(hWnd, &ps);
+			return 0;
+		case WM_MOUSEMOVE:
+			x = LOWORD(lParam);
+			y = HIWORD(lParam);
 
-		InvalidateRect(hWnd, &rt, TRUE);
+			if (x + 40 >= rt.right || y + 40 >= rt.bottom || x <= 40 || y <= 40)
+				break;
 
-		return 0;
-	}
+			InvalidateRect(hWnd, &rt, TRUE);
+
+			return 0;
+		}
 
 
-	*/
-	/////////////////////////////////////////////
+		*/
+		/////////////////////////////////////////////
 
 	switch (iMessage) // 4번문제
 	{
@@ -169,5 +176,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 		return 0;
 	}
+
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam)); // case에 있는 메시지를 제외한 나머지 메시지를 처리한다.
+
 }
