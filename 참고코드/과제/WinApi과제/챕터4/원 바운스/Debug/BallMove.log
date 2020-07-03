@@ -1,0 +1,3 @@
+﻿  BallMove.cpp
+C:\Users\A-12\Documents\GitHub\LEE-DO-HUN\참고코드\과제\WinApi과제\챕터4\원 바운스\BallMove.cpp(58,13): warning C4101: 'st' :참조되지 않은 지역 변수입니다.
+  BallMove.vcxproj -> C:\Users\A-12\Documents\GitHub\LEE-DO-HUN\참고코드\과제\WinApi과제\챕터4\원 바운스\Debug\BallMove.exe
