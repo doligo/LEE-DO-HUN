@@ -6,15 +6,19 @@ void DrawCircle(HDC hdc, int x, int y);
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void CALLBACK TimeProc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime);
-
+using namespace std;
 #define RIGHT_UP 10
 #define RIGHT_DOWN 11
 #define LEFT_UP 12
 #define LEFT_DOWN 13
 
+#define STOP 50
+
 int x = 0;
 int y = 0;
 RECT rect;
+int my_direct = NULL;
+int status = 0;
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmdParam, int nCmdShow)
 {
@@ -42,7 +46,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 
-	while(GetMessage(&Message, NULL, 0, 0))
+	while (GetMessage(&Message, NULL, 0, 0))
 	{
 		TranslateMessage(&Message);
 		DispatchMessage(&Message);
@@ -60,62 +64,70 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 	GetClientRect(hWnd, &rect);
 
-	switch(iMessage)
+	switch (iMessage)
 	{
-		case WM_CREATE:
-			SetTimer(hWnd, 1, 100, TimeProc);
-			//SendMessage(hWnd, WM_TIMER, 1, 0);
-			return 0;
-		case WM_PAINT:
-			hdc = BeginPaint(hWnd, &ps);
-			Ellipse(hdc, x, y, x + 50, y + 50);
-			EndPaint(hWnd, &ps);
-			return 0;
-		case WM_DESTROY:
-			KillTimer(hWnd, 1);
-			PostQuitMessage(0);
-			return 0;
+	case WM_CREATE:
+		if (my_direct == NULL)
+		{
+			my_direct = rand() % 4 + 10;
+		}
+		SetTimer(hWnd, 1, 100, TimeProc);
+		//SendMessage(hWnd, WM_TIMER, 1, 0);
+		return 0;
+	case WM_PAINT:
+		hdc = BeginPaint(hWnd, &ps);
+		Ellipse(hdc, x, y, x + 50, y + 50);
+		EndPaint(hWnd, &ps);
+		return 0;
+	case WM_DESTROY:
+		KillTimer(hWnd, 1);
+		PostQuitMessage(0);
+		return 0;
 	}
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam));
 }
 
 void CALLBACK TimeProc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime)
 {
-	int my_direct = 0;
 
-	my_direct = rand() % 4 + 10;
+	if (x + 50 >= rect.right || y - 50 <= rect.top || x - 50 <= rect.left || y + 50 >= rect.bottom)
+	{
+		status = STOP;
+	}
+
+	if (status == STOP)
+	{
+		my_direct = rand() % 4 + 10;
+		status = 0;
+		if (x + 50 >= rect.right)
+			x -= 10;
+		if (y + 50 >= rect.bottom)
+			y -= 10;
+		if (x - 50 <= rect.left)
+			x += 10;
+		if (y - 50 <= rect.top)
+			y += 10;
+	}
 
 	if (my_direct == RIGHT_UP)
 	{
-		while (x + 50 <= rect.right || y - 50 >= rect.top)
-		{
-			x += 10;
-			y -= 10;
-		}
+		x += 10;
+		y -= 10;
 	}
 	else if (my_direct == RIGHT_DOWN)
 	{
-		while (x + 50 <= rect.right || y + 50 <= rect.bottom)
-		{
-			x += 10;
-			y += 10;
-		}
+		x += 10;
+		y += 10;
 	}
 	else if (my_direct == LEFT_UP)
 	{
-		while (x - 50 >= rect.left || y - 50 >= rect.top)
-		{
-			x -= 10;
-			y -= 10;
-		}
+		x -= 10;
+		y -= 10;
 	}
 	else if (my_direct == LEFT_DOWN)
 	{
-		while (x - 50 >= rect.left || y + 50 <= rect.bottom)
-		{
-			x -= 10;
-			y += 10;
-		}
+		x -= 10;
+		y += 10;
 	}
 
 	InvalidateRect(hWnd, NULL, TRUE);
