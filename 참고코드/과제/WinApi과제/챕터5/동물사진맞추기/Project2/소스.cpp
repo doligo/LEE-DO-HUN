@@ -4,7 +4,7 @@ void main()
 {
 	Animal_Card AC;
 
-	AC.SetandShow();
+	AC.Show();
 
 	return;
 }
