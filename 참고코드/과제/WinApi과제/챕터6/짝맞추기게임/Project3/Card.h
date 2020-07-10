@@ -1,9 +1,12 @@
 #include <iostream>
 #include <string>
 #include <windows.h>
+#include "resource.h"
 #pragma once
 
 using namespace std;
+
+#define CARD_MAX 21
 
 class Card
 {

@@ -1,4 +1,5 @@
 #include<windows.h>
+#include "Card.h"
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;
 LPCTSTR lpszClass = TEXT("그림맞추기");
@@ -33,29 +34,30 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 	return (int)Message.wParam;
 }
 
+HDC hdc;
+PAINTSTRUCT ps;
+Card* cd = NULL;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
-	HDC hdc;
-	PAINTSTRUCT ps;
-
 	switch (iMessage)
 	{
+	case WM_CREATE:
+		cd = new Card[CARD_MAX];
+
+		for (int i = 0; i < CARD_MAX; i++)
+		{
+			cd[i].Init(hdc, g_hInst, IDB_BITMAP1 + i);
+		}
+
+		return 0;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 
-		TextOut(hdc, 100, 100, TEXT("Beautiful Korea"), 15);
-
+		EndPaint(hWnd, &ps);
 		return 0;
 	case WM_DESTROY:
 		PostQuitMessage(0);
-		return 0;
-
-	case WM_LBUTTONDOWN:
-		hdc = GetDC(hWnd);
-
-		TextOut(hdc, 100, 100, TEXT("Beautiful Korea!!!"), 15);
-
-		ReleaseDC(hWnd, hdc);
 		return 0;
 	}
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam));

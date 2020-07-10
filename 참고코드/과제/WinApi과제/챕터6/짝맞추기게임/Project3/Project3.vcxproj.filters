@@ -32,5 +32,48 @@
     <ClInclude Include="Card_Manager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Project3.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\동물카드\00.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\동물카드\01.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\동물카드\02.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\동물카드\03.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\동물카드\04.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\동물카드\05.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\동물카드\06.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\동물카드\07.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\동물카드\08.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\동물카드\09.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\동물카드\back.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>
