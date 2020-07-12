@@ -1,2 +1,4 @@
-﻿MSVCRTD.lib(exe_main.obj) : error LNK2019: main"int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ) 함수에서 참조되는 확인할 수 없는 외부 기호
-C:\Users\A-12\Documents\GitHub\LEE-DO-HUN\참고코드\과제\WinApi과제\챕터6\짝맞추기게임\x64\Debug\Project3.exe : fatal error LNK1120: 1개의 확인할 수 없는 외부 참조입니다.
+﻿  Card.cpp
+c:\users\l\documents\github\lee-do-hun\참고코드\과제\winapi과제\챕터6\짝맞추기게임\project3\card.cpp(42): warning C4101: '_oldBitmap' :참조되지 않은 지역 변수입니다.
+c:\users\l\documents\github\lee-do-hun\참고코드\과제\winapi과제\챕터6\짝맞추기게임\project3\card.cpp(42): warning C4101: '_myBitmap' :참조되지 않은 지역 변수입니다.
+  Project3.vcxproj -> C:\Users\L\Documents\GitHub\LEE-DO-HUN\참고코드\과제\WinApi과제\챕터6\짝맞추기게임\x64\Debug\Project3.exe
