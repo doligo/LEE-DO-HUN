@@ -30,8 +30,9 @@ public:
 	int flip_over;
 	Card();
 
-	void Init(HDC hdc, HINSTANCE hinst, int id, int x, int y, int SpX = 1, int SpY = 1);
-	void Draw(HDC hdc, HINSTANCE hinst, int SpX = 1, int SpY = 1);
+	void Init(HDC hdc, HINSTANCE hinst, int id, int x, int y, int SpX = 1, int SpY= 1);
+	void Draw(HDC hdc, int SpX = 1, int SpY = 1);
+	int Click(Card _card, int x, int y);
 
 	~Card();
 };

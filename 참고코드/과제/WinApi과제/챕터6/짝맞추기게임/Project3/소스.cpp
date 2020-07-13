@@ -5,6 +5,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;
 LPCTSTR lpszClass = TEXT("그림맞추기");
 
+
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmdParam, int nCmdShow)
 {
 	HWND hWnd;
@@ -37,13 +38,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 
 HDC hdc;
 PAINTSTRUCT ps;
-Card* cd = NULL;
 Card_Manager cm;
+Card cd;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
-	int x = 20;
-	int y = 20;
 	int num = 0;
 	int card_num = 0;
 	int mouse_x = 0;
@@ -53,48 +52,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	switch (iMessage)
 	{
 	case WM_CREATE:
-		cd = new Card[CARD_MAX];
+		cm.GetInstance();
+		cm.Init(hdc, g_hInst);
 
-		for (int i = 0; i < CARD_MAX; i++)
-		{
-			if (num == 10)
-			{
-				x = 20;
-				y += 250;
-				card_num = 0;
-			}
-
-			cd[i].Init(hdc, g_hInst, IDB_BITMAP1 + card_num, x, y);
-
-			x += 140;
-			card_num++;
-			num++;
-
-		}
 		return 0;
 	case WM_LBUTTONDOWN:
 		mouse_x = LOWORD(lParam);
 		mouse_y = HIWORD(lParam);
 
-		flip_chage = cm.Click(cd[0], mouse_x + 10, mouse_y + 10);
-		if (flip_chage == TRUE)
-			cd[0].flip_over = TRUE;
+		cm.Click(mouse_x, mouse_y);
 
 		InvalidateRect(hWnd, NULL, TRUE);
-		flip_chage = FALSE;
 
 		return 0;
+
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 
-		for (int i = 0; i < CARD_MAX; i++)
-		{
-			cd[i].Draw(hdc, g_hInst);
-		}
+		cm.Draw(hdc);
 
 		EndPaint(hWnd, &ps);
 		return 0;
 	case WM_DESTROY:
+		DeleteDC(hdc);
 		PostQuitMessage(0);
 		return 0;
 	}

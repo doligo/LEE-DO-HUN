@@ -16,7 +16,6 @@ void Card::Init(HDC hdc, HINSTANCE hinst, int id, int x, int y, int SpX, int SpY
 	GetObject(m_MyCard_Black, sizeof(Bitmap_info_Black), &Bitmap_info_Black);
 
 
-
 	//// 뒤집은상태 (동물카드)
 	MemDC = CreateCompatibleDC(hdc);
 	m_MyCard = (HBITMAP)LoadBitmap(hinst, MAKEINTRESOURCE(id));
@@ -32,14 +31,12 @@ void Card::Init(HDC hdc, HINSTANCE hinst, int id, int x, int y, int SpX, int SpY
 	m_posy = y;
 	card_number = id; // 동물카드 넘버
 	flip_over = FALSE; // 뒤집어진 상태
-	rt = { m_posx, m_posy, m_size.cx * SpX - 15, m_size.cy * SpY - 15 }; // 범위저장
-
+	rt = { m_posx, m_posy, m_posx + 125, m_posy + 210 }; // 범위저장
 
 }
 
-void Card::Draw(HDC hdc, HINSTANCE hinst, int SpX, int SpY)
+void Card::Draw(HDC hdc, int SpX, int SpY)
 {
-	HBITMAP _myBitmap, _oldBitmap;
 
 	if (flip_over == FALSE) // 검은카드 상태
 	{
@@ -51,14 +48,24 @@ void Card::Draw(HDC hdc, HINSTANCE hinst, int SpX, int SpY)
 	}
 }
 
+int Card::Click(Card _card, int x, int y)
+{
+	if (_card.rt.left <= x && _card.rt.right >= x && _card.rt.top <= y && _card.rt.bottom >= y && flip_over == FALSE)
+	{
+		flip_over = TRUE;
+		return TRUE;
+	}
+	return FALSE;
+}
+
 Card::~Card()
 {
 	//// 여기 부분 살펴보기
-	SelectObject(MemDC, m_OldCard);
-	DeleteObject(m_MyCard);
+	//SelectObject(MemDC, m_OldCard);
+	//DeleteObject(m_MyCard);
 	//DeleteDC(MemDC);
 
-	SelectObject(MemDC_Black, m_OldCard_Black);
-	DeleteObject(m_MyCard_Black);
+	//SelectObject(MemDC_Black, m_OldCard_Black);
+	//DeleteObject(m_MyCard_Black);
 	//DeleteDC(MemDC_Black);
 }
