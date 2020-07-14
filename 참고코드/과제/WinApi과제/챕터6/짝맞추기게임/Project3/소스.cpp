@@ -56,11 +56,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		cm.Init(hdc, g_hInst);
 
 		return 0;
+	case WM_TIMER:
+		return 0;
 	case WM_LBUTTONDOWN:
 		mouse_x = LOWORD(lParam);
 		mouse_y = HIWORD(lParam);
 
-		cm.Click(mouse_x, mouse_y);
+		cm.Click(hWnd, hdc, mouse_x, mouse_y);
 
 		InvalidateRect(hWnd, NULL, TRUE);
 

@@ -5,7 +5,7 @@ LPCTSTR lpszClass = TEXT("BallMove");
 void DrawCircle(HDC hdc, int x, int y);
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-void CALLBACK TimeProc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime);
+void CALLBACK TimeProc(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 using namespace std;
 #define RIGHT_UP 10
 #define RIGHT_DOWN 11
@@ -87,7 +87,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam));
 }
 
-void CALLBACK TimeProc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime)
+void CALLBACK TimeProc(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
 
 	if (x + 50 >= rect.right || y - 50 <= rect.top || x - 50 <= rect.left || y + 50 >= rect.bottom)

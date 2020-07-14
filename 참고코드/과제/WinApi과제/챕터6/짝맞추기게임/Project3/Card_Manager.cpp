@@ -1,9 +1,11 @@
 #include "Card_Manager.h"
 Card_Manager* Card_Manager::m_pThis = NULL;
+void CALLBACK TimeProc(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
 Card_Manager::Card_Manager()
 {
 	m_count = 0;
+	m_score = 0;
 }
 
 void Card_Manager::Init(HDC hdc, HINSTANCE hInst, int SpX, int SpY)
@@ -27,16 +29,19 @@ void Card_Manager::Init(HDC hdc, HINSTANCE hInst, int SpX, int SpY)
 		m_cd[o].card_number = NULL;
 	}
 
-	for (int j = 0; j < CARD_MAX - 10; j++)
-	{ // 이부분 고치기
+	card_rand = rand() % 10 + 101;
+	animal[0] = card_rand;
+
+	for (int j = 0; j < CARD_MAX - 10; j++) // 카드 섞어서 넣기
+	{
 		again:
 		card_rand = rand() % 10 + 101;
-		animal[j] = card_rand;
 
 		while (j != 0 && animal[num2] != 0)
 		{
 			if (animal[num2] == card_rand)
 			{
+				num2 = 0;
 				goto again;
 			}
 			else
@@ -45,6 +50,9 @@ void Card_Manager::Init(HDC hdc, HINSTANCE hInst, int SpX, int SpY)
 			}
 		}
 
+		if (j != 0)
+		animal[j] = card_rand;
+
 		num2 = 0;
 
 		while (overlap_trigger == FALSE)
@@ -52,14 +60,14 @@ void Card_Manager::Init(HDC hdc, HINSTANCE hInst, int SpX, int SpY)
 			overlap_check = rand() % 20;
 			if (m_cd[overlap_check].card_number == NULL)
 			{
-				m_cd[overlap_check].card_number = card_rand;
+				m_cd[overlap_check].card_number = animal[j];
 
 				again2:
 
 				overlap_check = rand() % 20;
 				if (m_cd[overlap_check].card_number == NULL)
 				{
-					m_cd[overlap_check].card_number = card_rand;
+					m_cd[overlap_check].card_number = animal[j];
 					overlap_trigger = TRUE;
 				}
 				else
@@ -81,7 +89,7 @@ void Card_Manager::Init(HDC hdc, HINSTANCE hInst, int SpX, int SpY)
 			_y += 250;
 		}
 
-		m_cd[i].Init(hdc, hInst,  _x, _y);
+		m_cd[i].Init(hdc, hInst,  _x, _y); // 그외 기본값 설정
 
 		_x += 140;
 		num++;
@@ -91,6 +99,11 @@ void Card_Manager::Init(HDC hdc, HINSTANCE hInst, int SpX, int SpY)
 
 void Card_Manager::Draw(HDC hdc)
 {
+	char buf[256] = {};
+
+	sprintf_s(buf, "Score : %d", m_score);
+
+	TextOut(hdc, 640, 600, buf, lstrlen(buf));
 
 	for (int i = 0; i < CARD_MAX; i++)
 	{
@@ -98,7 +111,7 @@ void Card_Manager::Draw(HDC hdc)
 	}
 }
 
-void Card_Manager::Click(int x, int y)
+void Card_Manager::Click(HWND hWnd, HDC hdc, int x, int y)
 {
 	int flag = 0;
 
@@ -110,10 +123,42 @@ void Card_Manager::Click(int x, int y)
 		}
 
 		flag = m_cd[i].Click(m_cd[i], x, y);
-		//if (flag == TRUE)
-			//m_count++;
+		if (flag == TRUE)
+			m_count++;
 	}
 
+	Check_Card(hWnd, hdc);
+}
+
+void Card_Manager::Check_Card(HWND hWnd, HDC hdc)
+{
+	int card[2] = {0 , 1};
+	int num = 0;
+
+	for (int i = 0; i < CARD_MAX; i++)
+	{
+		if (m_cd[i].flip_over == TRUE)
+		{
+			card[num] = m_cd[i].card_number;
+			num++;
+		}
+	}
+	
+	if (card[0] == card[1])
+	{
+		m_score += 100;
+	}
+	else
+	{
+		SetTimer(hWnd, 1, 2000, TimeProc);
+
+		KillTimer(hWnd, 1);
+	}
+}
+
+void CALLBACK TimeProc(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
+{
+	cout << "하" << endl;
 }
 
 Card_Manager::~Card_Manager()

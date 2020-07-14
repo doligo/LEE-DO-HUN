@@ -45,6 +45,7 @@ void Card::Draw(HDC hdc, int SpX, int SpY)
 	{
 		StretchBlt(hdc, m_posx, m_posy, m_size.cx * SpX - 15, m_size.cy * SpY - 15, MemDC, 0, 0, m_size.cx, m_size.cy, SRCCOPY);
 	}
+
 }
 
 int Card::Click(Card _card, int x, int y)

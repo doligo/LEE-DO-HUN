@@ -9,6 +9,7 @@ private:
 	static Card_Manager* m_pThis;
 	Card* m_cd;
 	int m_count;
+	int m_score;
 protected:
 public:
 	Card_Manager();
@@ -24,7 +25,8 @@ public:
 
 	void Init(HDC hdc, HINSTANCE hInst, int SpX = 1, int SpY = 1);
 	void Draw(HDC hdc);
-	void Click(int x, int y);
+	void Click(HWND hWnd, HDC hdc, int x, int y);
+	void Check_Card(HWND hWnd, HDC hdc);
 	
 	~Card_Manager();
 };
