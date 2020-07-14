@@ -4,7 +4,6 @@ Card_Manager* Card_Manager::m_pThis = NULL;
 Card_Manager::Card_Manager()
 {
 	m_count = 0;
-	m_animal[20] = {};
 }
 
 void Card_Manager::Init(HDC hdc, HINSTANCE hInst, int SpX, int SpY)
@@ -14,10 +13,65 @@ void Card_Manager::Init(HDC hdc, HINSTANCE hInst, int SpX, int SpY)
 	int _y = 20;
 	int card_rand = 0;
 	int trigger = 0;
+	int overlap_check = 0;
+	int overlap_trigger = FALSE;
+	int animal[10] = {};
+	int num2 = 0;
 
 	srand((unsigned)time(NULL));
 
 	m_cd = new Card[CARD_MAX];
+
+	for (int o = 0; o < CARD_MAX; o++) // 카드 넘버 초기화
+	{
+		m_cd[o].card_number = NULL;
+	}
+
+	for (int j = 0; j < CARD_MAX - 10; j++)
+	{ // 이부분 고치기
+		again:
+		card_rand = rand() % 10 + 101;
+		animal[j] = card_rand;
+
+		while (j != 0 && animal[num2] != 0)
+		{
+			if (animal[num2] == card_rand)
+			{
+				goto again;
+			}
+			else
+			{
+				num2++;
+			}
+		}
+
+		num2 = 0;
+
+		while (overlap_trigger == FALSE)
+		{
+			overlap_check = rand() % 20;
+			if (m_cd[overlap_check].card_number == NULL)
+			{
+				m_cd[overlap_check].card_number = card_rand;
+
+				again2:
+
+				overlap_check = rand() % 20;
+				if (m_cd[overlap_check].card_number == NULL)
+				{
+					m_cd[overlap_check].card_number = card_rand;
+					overlap_trigger = TRUE;
+				}
+				else
+				{
+					goto again2;
+				}
+			}
+		}
+		overlap_trigger = FALSE;
+	}
+
+
 
 	for (int i = 0; i < CARD_MAX; i++)
 	{
@@ -27,38 +81,12 @@ void Card_Manager::Init(HDC hdc, HINSTANCE hInst, int SpX, int SpY)
 			_y += 250;
 		}
 
-		card_rand = rand() % 10 + 101;
-
-		trigger = Init_Card_Rand(i, card_rand);
-		if (trigger == TRUE)
-		{
-			i--;
-			_x -= 140;
-			num--;
-		}
-		else
-		m_cd[i].Init(hdc, hInst, card_rand, _x, _y);
+		m_cd[i].Init(hdc, hInst,  _x, _y);
 
 		_x += 140;
 		num++;
 
 	}
-}
-
-int Card_Manager::Init_Card_Rand(int n, int num)
-{
-	int count = 0;
-
-	for (int i = 0; i < CARD_MAX; i++)
-	{
-		if (count == 2)
-			return TRUE;
-		if (m_animal[i] == num)
-			count++;
-	}
-
-	return 0;
-	m_animal[n] = num;
 }
 
 void Card_Manager::Draw(HDC hdc)

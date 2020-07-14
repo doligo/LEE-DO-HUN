@@ -5,7 +5,7 @@ Card::Card()
 
 }
 
-void Card::Init(HDC hdc, HINSTANCE hinst, int id, int x, int y, int SpX, int SpY)
+void Card::Init(HDC hdc, HINSTANCE hinst, int x, int y, int SpX, int SpY)
 {
 	//// 검은카드 설정
 	MemDC_Black = CreateCompatibleDC(hdc);
@@ -18,7 +18,7 @@ void Card::Init(HDC hdc, HINSTANCE hinst, int id, int x, int y, int SpX, int SpY
 
 	//// 뒤집은상태 (동물카드)
 	MemDC = CreateCompatibleDC(hdc);
-	m_MyCard = (HBITMAP)LoadBitmap(hinst, MAKEINTRESOURCE(id));
+	m_MyCard = (HBITMAP)LoadBitmap(hinst, MAKEINTRESOURCE(card_number));
 	m_OldCard = (HBITMAP)SelectObject(MemDC, m_MyCard);
 
 	BITMAP Bitmap_info;
@@ -29,7 +29,6 @@ void Card::Init(HDC hdc, HINSTANCE hinst, int id, int x, int y, int SpX, int SpY
 
 	m_posx = x; // 카드 출력위치
 	m_posy = y;
-	card_number = id; // 동물카드 넘버
 	flip_over = FALSE; // 뒤집어진 상태
 	rt = { m_posx, m_posy, m_posx + 125, m_posy + 210 }; // 범위저장
 

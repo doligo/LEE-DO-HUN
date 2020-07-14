@@ -50,27 +50,27 @@ END
 // Bitmap
 //
 
-IDB_BITMAP1             BITMAP                  "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\00.bmp"
+IDB_BITMAP1             BITMAP                  "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\00.bmp"
 
-IDB_BITMAP2             BITMAP                  "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\01.bmp"
+IDB_BITMAP2             BITMAP                  "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\01.bmp"
 
-IDB_BITMAP3             BITMAP                  "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\02.bmp"
+IDB_BITMAP3             BITMAP                  "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\02.bmp"
 
-IDB_BITMAP4             BITMAP                  "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\03.bmp"
+IDB_BITMAP4             BITMAP                  "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\03.bmp"
 
-IDB_BITMAP5             BITMAP                  "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\04.bmp"
+IDB_BITMAP5             BITMAP                  "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\04.bmp"
 
-IDB_BITMAP6             BITMAP                  "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\05.bmp"
+IDB_BITMAP6             BITMAP                  "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\05.bmp"
 
-IDB_BITMAP7             BITMAP                  "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\06.bmp"
+IDB_BITMAP7             BITMAP                  "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\06.bmp"
 
-IDB_BITMAP8             BITMAP                  "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\07.bmp"
+IDB_BITMAP8             BITMAP                  "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\07.bmp"
 
-IDB_BITMAP9             BITMAP                  "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\08.bmp"
+IDB_BITMAP9             BITMAP                  "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\08.bmp"
 
-IDB_BITMAP10            BITMAP                  "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\09.bmp"
+IDB_BITMAP10            BITMAP                  "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\09.bmp"
 
-IDB_BITMAP11            BITMAP                  "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\back.bmp"
+IDB_BITMAP11            BITMAP                  "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터6\\짝맞추기게임\\동물카드\\back.bmp"
 
 #endif    // 한국어(대한민국) resources
 /////////////////////////////////////////////////////////////////////////////

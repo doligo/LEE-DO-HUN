@@ -9,7 +9,6 @@ private:
 	static Card_Manager* m_pThis;
 	Card* m_cd;
 	int m_count;
-	int m_animal[20];
 protected:
 public:
 	Card_Manager();
@@ -24,7 +23,6 @@ public:
 	}
 
 	void Init(HDC hdc, HINSTANCE hInst, int SpX = 1, int SpY = 1);
-	int Init_Card_Rand(int n, int num);
 	void Draw(HDC hdc);
 	void Click(int x, int y);
 	
