@@ -47,16 +47,46 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	int card_num = 0;
 	int mouse_x = 0;
 	int mouse_y = 0;
-	int flip_chage = FALSE;
+	int value = 0;
 
 	switch (iMessage)
 	{
 	case WM_CREATE:
+		SetTimer(hWnd, 1, 500, NULL);
+
 		cm.GetInstance();
 		cm.Init(hdc, g_hInst);
 
+		SendMessage(hWnd, WM_TIMER, 1, 0);
 		return 0;
 	case WM_TIMER:
+		if (cm.count == 2)
+		{
+			value = cm.Check_Card(hWnd, hdc);
+			if (value == TRUE)
+			{
+				cm.count = 0;
+				InvalidateRect(hWnd, NULL, TRUE);
+			}
+			else if (value == CLEAR)
+			{
+				if (MessageBox(hWnd, TEXT("클리어 했습니다 다시하려면 Y를 눌러주세요"), TEXT("Clear"), MB_YESNO) == IDYES)
+				{
+					value = 0;
+					cm.Clear_And_Re(g_hInst, hWnd);
+				}
+				else
+				{
+					break;
+				}
+			}
+			else
+			{
+				Sleep(1500);
+				cm.BacktoCard(hWnd);
+				InvalidateRect(hWnd, NULL, TRUE);
+			}
+		}
 		return 0;
 	case WM_LBUTTONDOWN:
 		mouse_x = LOWORD(lParam);
@@ -67,11 +97,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		InvalidateRect(hWnd, NULL, TRUE);
 
 		return 0;
-
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 
-		cm.Draw(hdc);
+		cm.Draw(hWnd, hdc);
 
 		EndPaint(hWnd, &ps);
 		return 0;

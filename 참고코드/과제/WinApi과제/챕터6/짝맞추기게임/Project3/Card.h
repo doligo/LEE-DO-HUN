@@ -28,11 +28,13 @@ public:
 	int m_posy;
 	int card_number;
 	int flip_over;
+	int card_clear;
 	Card();
 
 	void Init(HDC hdc, HINSTANCE hinst, int x, int y, int SpX = 1, int SpY= 1);
 	void Draw(HDC hdc, int SpX = 1, int SpY = 1);
 	int Click(Card _card, int x, int y);
+	void Re_Init(HINSTANCE hinst, int x, int y);
 
 	~Card();
 };

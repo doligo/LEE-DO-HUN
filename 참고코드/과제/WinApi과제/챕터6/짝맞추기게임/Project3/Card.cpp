@@ -30,8 +30,34 @@ void Card::Init(HDC hdc, HINSTANCE hinst, int x, int y, int SpX, int SpY)
 	m_posx = x; // 카드 출력위치
 	m_posy = y;
 	flip_over = FALSE; // 뒤집어진 상태
+	card_clear = FALSE; // 카드 맞춘상태 유무
 	rt = { m_posx, m_posy, m_posx + 125, m_posy + 210 }; // 범위저장
 
+}
+
+void Card::Re_Init(HINSTANCE hinst, int x, int y)
+{
+
+	m_MyCard_Black = (HBITMAP)LoadBitmap(hinst, MAKEINTRESOURCE(IDB_BITMAP11));
+	m_OldCard_Black = (HBITMAP)SelectObject(MemDC_Black, m_MyCard_Black);
+
+	BITMAP Bitmap_info_Black;
+	GetObject(m_MyCard_Black, sizeof(Bitmap_info_Black), &Bitmap_info_Black);
+
+	m_MyCard = (HBITMAP)LoadBitmap(hinst, MAKEINTRESOURCE(card_number));
+	m_OldCard = (HBITMAP)SelectObject(MemDC, m_MyCard);
+
+	BITMAP Bitmap_info;
+	GetObject(m_MyCard, sizeof(Bitmap_info), &Bitmap_info);
+
+	m_size.cx = Bitmap_info.bmWidth;
+	m_size.cy = Bitmap_info.bmHeight;
+
+	m_posx = x; // 카드 출력위치
+	m_posy = y;
+	flip_over = FALSE; // 뒤집어진 상태
+	card_clear = FALSE; // 카드 맞춘상태 유무
+	rt = { m_posx, m_posy, m_posx + 125, m_posy + 210 }; // 범위저장
 }
 
 void Card::Draw(HDC hdc, int SpX, int SpY)
