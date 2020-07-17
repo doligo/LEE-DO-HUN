@@ -40,7 +40,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
+	HDC MemDC = NULL;
 	PAINTSTRUCT ps;
+	HBITMAP hbtmap, old_hbtmap;
+	BITMAP btmap;
+	int x, y;
 
 	switch (iMessage)
 	{
@@ -48,6 +52,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		return 0;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
+		MemDC = CreateCompatibleDC(hdc);
+
+		hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Å× -½º-Æ®\\0.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+
+		old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
+		GetObject(hbtmap, sizeof(BITMAP), &btmap);
+		x = btmap.bmWidth;
+		y = btmap.bmHeight;
+
+		BitBlt(hdc, 50, 50, x, y, MemDC, 0, 0, SRCCOPY);
+		SelectObject(MemDC, old_hbtmap);
+		DeleteObject(hbtmap);
+		DeleteDC(MemDC);
 
 		EndPaint(hWnd, &ps);
 
