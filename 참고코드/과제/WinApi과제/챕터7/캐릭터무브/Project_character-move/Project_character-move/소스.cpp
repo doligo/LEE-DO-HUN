@@ -5,6 +5,8 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;//글로벌 인스턴스핸들값
 LPCTSTR lpszClass = TEXT("캐릭터 무브"); //창이름
 
+#pragma comment(lib, "msimg32.lib")
+
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmdParam, int nCmdShow)
 {
@@ -37,6 +39,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 
 }
 
+int pic_num = 0;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
@@ -47,9 +51,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	int x, y;
 
 	char buf[256] = {};
-	int pic_num = 0;
-
-	//sprintf_s(buf, "%d", pic_num);
 
 	switch (iMessage)
 	{
@@ -61,14 +62,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		hdc = BeginPaint(hWnd, &ps);
 		MemDC = CreateCompatibleDC(hdc);
 
-		hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\캐릭터무브\\Project_character-move\\0.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+		sprintf_s(buf, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\캐릭터무브\\Project_character-move\\%d.bmp", pic_num);
+		pic_num++;
+		if (pic_num == 4)
+			pic_num = 0;
+
+		hbtmap = (HBITMAP)LoadImage(NULL, buf, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 		old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 		GetObject(hbtmap, sizeof(BITMAP), &btmap);
 		x = btmap.bmWidth;
 		y = btmap.bmHeight;
 
-		BitBlt(hdc, 50, 50, x, y, MemDC, 0, 0, SRCCOPY);
+		//BitBlt(hdc, 50, 50, x, y, MemDC, 0, 0, SRCCOPY);
+
+		TransparentBlt(hdc, 50, 50, x, y ,MemDC, 0, 0, x, y, RGB(255, 0, 255));
 		SelectObject(MemDC, old_hbtmap);
 		DeleteObject(hbtmap);
 		DeleteDC(MemDC);
