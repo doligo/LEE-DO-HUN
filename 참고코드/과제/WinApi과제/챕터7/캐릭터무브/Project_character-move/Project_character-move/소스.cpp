@@ -3,7 +3,7 @@
 using namespace std;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;//글로벌 인스턴스핸들값
-LPCTSTR lpszClass = TEXT("캐릭터가 움직인다"); //창이름
+LPCTSTR lpszClass = TEXT("캐릭터 무브"); //창이름
 
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmdParam, int nCmdShow)
@@ -46,15 +46,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	BITMAP btmap;
 	int x, y;
 
+	char buf[256] = {};
+	int pic_num = 0;
+
+	//sprintf_s(buf, "%d", pic_num);
+
 	switch (iMessage)
 	{
 	case WM_CREATE:
+		SetTimer(hWnd, 1, 700, NULL);
+		SendMessage(hWnd, WM_PAINT, 1, 0); // 0.7초마다 wm_paint로 간다
 		return 0;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		MemDC = CreateCompatibleDC(hdc);
 
-		hbtmap = (HBITMAP)LoadImage(NULL, "C:\\테 -스-트\\0.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+		hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\캐릭터무브\\Project_character-move\\0.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 		old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 		GetObject(hbtmap, sizeof(BITMAP), &btmap);
