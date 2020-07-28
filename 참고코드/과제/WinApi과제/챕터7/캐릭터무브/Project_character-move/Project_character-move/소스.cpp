@@ -40,6 +40,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 }
 
 int pic_num = 0;
+char buf[256] = {};
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
@@ -50,22 +51,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	BITMAP btmap;
 	int x, y;
 
-	char buf[256] = {};
 
 	switch (iMessage)
 	{
 	case WM_CREATE:
-		SetTimer(hWnd, 1, 700, NULL);
-		SendMessage(hWnd, WM_PAINT, 1, 0); // 0.7초마다 wm_paint로 간다
+		SetTimer(hWnd, 1, 100, NULL);
+		SendMessage(hWnd, WM_TIMER, 1, 0);
+		return 0;
+	case WM_TIMER:
+		// 경로는 각 데스크탑에 맞게 설정
+		sprintf_s(buf, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\캐릭터무브\\Project_character-move\\%d.bmp", pic_num);
+		pic_num++;
+		if (pic_num == 4)
+			pic_num = 0;
+		InvalidateRect(hWnd, NULL, TRUE);
 		return 0;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		MemDC = CreateCompatibleDC(hdc);
-
-		sprintf_s(buf, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\캐릭터무브\\Project_character-move\\%d.bmp", pic_num);
-		pic_num++;
-		if (pic_num == 4)
-			pic_num = 0;
 
 		hbtmap = (HBITMAP)LoadImage(NULL, buf, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
@@ -86,6 +89,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		return 0;
 	case WM_DESTROY:// 윈도우가 파괴되었다는 메세지
 		PostQuitMessage(0); //GetMessage함수에 WM_QUIT 메시지를 보낸다.
+		KillTimer(hWnd, 1);
 		return 0; //WndProc의 Switch는 break 대신 return 0; 를 쓴다.
 	}
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam)); // case에 있는 메시지를 제외한 나머지 메시지를 처리한다.

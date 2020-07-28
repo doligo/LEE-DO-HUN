@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.28307.960
+VisualStudioVersion = 15.0.28307.1209
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project_character-move", "Project_character-move\Project_character-move.vcxproj", "{F4BB2D39-F38C-475F-9842-65A99375D7FC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project_character-move", "Project_character-move.vcxproj", "{F4BB2D39-F38C-475F-9842-65A99375D7FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {2857D370-B7EF-4163-B457-125EC0741D43}
+		SolutionGuid = {66DBBB0F-56D7-48AD-9AA2-94230AC35A83}
 	EndGlobalSection
 EndGlobal
