@@ -5,9 +5,9 @@ chess_pieces::chess_pieces()
 
 }
 
-void chess_pieces::Init()
+void chess_pieces::Init_pieces()
 {
-	if ()
+	//if ()
 }
 
 chess_pieces::~chess_pieces()

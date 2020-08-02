@@ -1,4 +1,5 @@
 #include <iostream>
+#include <windows.h>
 #include <string.h>
 #pragma once
 using namespace std;
@@ -22,7 +23,7 @@ private:
 public:
 	chess_pieces();
 
-	void Init();
+	void Init_pieces();
 
 	~chess_pieces();
 };

@@ -1,5 +1,6 @@
 #include<windows.h>
 #include <iostream>
+#include "Game_System.h"
 using namespace std;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;//글로벌 인스턴스핸들값
@@ -39,21 +40,28 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 
 }
 
+HDC hdc;
+Game_System gs;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
-	HDC hdc;
 	PAINTSTRUCT ps;
 
 	switch (iMessage)
 	{
 	case WM_CREATE:
 		SetTimer(hWnd, 1, 1000, NULL);
+
+		gs.Init_System(hdc, g_hInst);
+
 		SendMessage(hWnd, WM_TIMER, 1, 0);
 		return 0;
 	case WM_TIMER:
 		return 0;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
+
+		gs.Draw(hdc);
 
 		EndPaint(hWnd, &ps);
 

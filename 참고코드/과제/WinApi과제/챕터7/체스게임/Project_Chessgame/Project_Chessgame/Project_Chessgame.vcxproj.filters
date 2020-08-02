@@ -24,10 +24,10 @@
     <ClCompile Include="Player.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Draw.cpp">
+    <ClCompile Include="Game_System.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Game_System.cpp">
+    <ClCompile Include="Board.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,10 +38,10 @@
     <ClInclude Include="Player.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Draw.h">
+    <ClInclude Include="Game_System.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Game_System.h">
+    <ClInclude Include="Board.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
