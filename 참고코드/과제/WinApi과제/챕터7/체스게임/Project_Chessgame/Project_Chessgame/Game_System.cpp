@@ -57,6 +57,13 @@ void Game_System::Init_System(HDC hdc, HINSTANCE hinst)
 		m_bd[j].Board_Init(hdc, hinst, x, y);
 		x++;
 	}
+
+	m_pr = new Player[2];
+	m_pr[0].m_player_num = 0; // ¹é
+	m_pr[1].m_player_num = 1; // Èæ
+	
+	for (int i = 0; i < 2; i++)
+		m_pr[i].Init_Player(hdc, m_pr[i].m_player_num);
 }
 
 void Game_System::Draw(HDC hdc)
@@ -77,6 +84,12 @@ void Game_System::Draw(HDC hdc)
 		x += 75;
 		count++;
 	}
+
+	x = 0;
+	y = 0;
+
+	m_pr[0].Player_Pieces_Draw(hdc, x, y);
+
 }
 
 Game_System::~Game_System()

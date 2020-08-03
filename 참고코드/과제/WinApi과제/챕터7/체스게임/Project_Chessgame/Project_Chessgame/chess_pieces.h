@@ -6,7 +6,6 @@ using namespace std;
 
 struct Piece
 {
-	int player_num;
 	int x;
 	int y;
 };
@@ -14,16 +13,23 @@ struct Piece
 class chess_pieces
 {
 private:
-	Piece m_king;
+	Piece m_King;
 	Piece m_Queen;
 	Piece m_Rook[2];
 	Piece m_Bishop[2];
 	Piece m_Knight[2];
 	Piece m_Pawn[8];
+
+	HDC MemDC;
+	HBITMAP hbtmap, old_hbtmap;
+	BITMAP btmap;
 public:
 	chess_pieces();
 
-	void Init_pieces();
+	int m_x;
+	int m_y;
+	void Init_pieces(HDC hdc, int player_num);
+	void Pieces_Draw(HDC hdc, int x, int y);
 
 	~chess_pieces();
 };

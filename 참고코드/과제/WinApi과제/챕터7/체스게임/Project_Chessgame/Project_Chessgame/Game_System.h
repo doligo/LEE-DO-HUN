@@ -5,6 +5,7 @@ class Game_System
 {
 private:
 	Board *m_bd;
+	Player *m_pr;
 public:
 	Game_System();
 
