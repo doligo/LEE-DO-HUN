@@ -20,12 +20,12 @@ void Board::Board_Init(HDC hdc, HINSTANCE hinst, int x, int y)
 	m_x = btmap.bmWidth - 50;
 	m_y = btmap.bmHeight - 50;
 
-	pos_x = x; // 보드판 위치
-	pos_y = y;
 }
 
 void Board::Board_Draw(HDC hdc, int x, int y)
 {
+	pos_x = x; // 보드판 위치
+	pos_y = y;
 	TransparentBlt(hdc, x, y, m_x, m_y, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
 }
 

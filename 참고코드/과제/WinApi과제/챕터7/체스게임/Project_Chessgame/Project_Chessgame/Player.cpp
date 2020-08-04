@@ -10,6 +10,7 @@ void Player::Init_Player(HDC hdc, int player_num)
 	Cp = new chess_pieces;
 
 	Cp->Init_pieces(hdc, player_num);
+	Cp->Init_pieces_2(hdc, player_num);
 }
 
 void Player::Player_Pieces_Draw(HDC hdc, int x, int y)

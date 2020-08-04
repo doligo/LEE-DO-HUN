@@ -88,7 +88,7 @@ void Game_System::Draw(HDC hdc)
 	x = 0;
 	y = 0;
 
-	m_pr[0].Player_Pieces_Draw(hdc, x, y);
+	//m_pr[0].Player_Pieces_Draw(hdc, m_bd[2].pos_x, m_bd[1].pos_y);
 
 }
 

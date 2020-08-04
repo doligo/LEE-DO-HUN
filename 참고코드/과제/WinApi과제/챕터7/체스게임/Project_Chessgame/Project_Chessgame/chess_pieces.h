@@ -8,6 +8,7 @@ struct Piece
 {
 	int x;
 	int y;
+	int draw;
 };
 
 class chess_pieces
@@ -29,6 +30,7 @@ public:
 	int m_x;
 	int m_y;
 	void Init_pieces(HDC hdc, int player_num);
+	void Init_pieces_2(HDC hdc, int player_num);
 	void Pieces_Draw(HDC hdc, int x, int y);
 
 	~chess_pieces();
