@@ -9,7 +9,7 @@ public:
 
 	int m_player_num;
 	void Init_Player(HDC hdc, int player_num);
-	void Player_Pieces_Draw(HDC hdc, int x , int y);
+	void Player_Pieces_Draw(HDC hdc);
 
 	~Player();
 };
