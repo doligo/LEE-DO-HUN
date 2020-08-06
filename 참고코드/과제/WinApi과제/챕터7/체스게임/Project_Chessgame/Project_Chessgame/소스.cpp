@@ -46,6 +46,8 @@ Game_System gs;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
+	int mouse_x = 0;
+	int mouse_y = 0;
 
 	switch (iMessage)
 	{
@@ -57,6 +59,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		SendMessage(hWnd, WM_TIMER, 1, 0);
 		return 0;
 	case WM_TIMER:
+		return 0;
+	case WM_LBUTTONDOWN:
+		mouse_x = LOWORD(lParam);
+		mouse_y = HIWORD(lParam);
+
+		gs.Click(hWnd, hdc, mouse_x, mouse_y);
+
+		InvalidateRect(hWnd, NULL, TRUE);
 		return 0;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);

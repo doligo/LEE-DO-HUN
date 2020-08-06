@@ -11,6 +11,7 @@ public:
 
 	void Init_System(HDC hdc, HINSTANCE hinst);
 	void Draw(HDC hdc);
+	void Click(HWND hWnd, HDC hdc, int x , int y);
 
 	~Game_System();
 };

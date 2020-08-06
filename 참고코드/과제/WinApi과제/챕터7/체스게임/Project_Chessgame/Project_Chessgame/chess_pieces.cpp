@@ -14,31 +14,39 @@ void chess_pieces::Init_pieces(HDC hdc, int player_num)
 		m_King.x = 300;
 		m_King.y = 525;
 		m_King.draw = FALSE;
+		m_King.rt = {300, 525, 375, 600}; // 말의 영역
 
 		m_Queen.x = 225;
 		m_Queen.y = 525;
 		m_Queen.draw = FALSE;
+		m_Queen.rt = { 225, 525, 300, 600 };
 
 		m_Rook[0].x = 0;
 		m_Rook[0].y = 525;
 		m_Rook[0].draw = FALSE;
+		m_Rook[0].rt = { 0, 525, 75, 600 };
 		m_Rook[1].x = 525;
 		m_Rook[1].y = 525;
 		m_Rook[1].draw = FALSE;
+		m_Rook[1].rt = { 525, 525, 600, 600 };
 
 		m_Bishop[0].x = 150;
 		m_Bishop[0].y = 525;
 		m_Bishop[0].draw = FALSE;
+		m_Bishop[0].rt = { 150, 525, 225, 600 };
 		m_Bishop[1].x = 375;
 		m_Bishop[1].y = 525;
 		m_Bishop[1].draw = FALSE;
+		m_Bishop[0].rt = { 375, 525, 450, 600 };
 
 		m_Knight[0].x = 75;
 		m_Knight[0].y = 525;
 		m_Knight[0].draw = FALSE;
+		m_Knight[0].rt = { 75, 525, 150, 600 };
 		m_Knight[1].x = 450;
 		m_Knight[1].y = 525;
 		m_Knight[1].draw = FALSE;
+		m_Knight[1].rt = { 450, 525, 525, 600 };
 
 		for (int i = 0; i < 8; i++)
 		{
@@ -47,6 +55,7 @@ void chess_pieces::Init_pieces(HDC hdc, int player_num)
 				m_Pawn[i].x = 0;
 				m_Pawn[i].y = 450;
 				m_Pawn[i].draw = FALSE;
+				m_Pawn[i].rt = { 0, 450, 75, 525 };
 			}
 			else
 			{
@@ -54,6 +63,7 @@ void chess_pieces::Init_pieces(HDC hdc, int player_num)
 				m_Pawn[i].x += num_x;
 				m_Pawn[i].y = 450;
 				m_Pawn[i].draw = FALSE;
+				m_Pawn[i].rt = { num_x, 450, num_x + 75, 525 };
 			}
 
 		}
@@ -64,31 +74,39 @@ void chess_pieces::Init_pieces(HDC hdc, int player_num)
 		m_King.x = 300;
 		m_King.y = 0;
 		m_King.draw = FALSE;
+		m_King.rt = { 300, 0, 375, 75 };
 
 		m_Queen.x = 225;
 		m_Queen.y = 0;
 		m_Queen.draw = FALSE;
+		m_Queen.rt = { 255, 0, 300, 75 };
 
 		m_Rook[0].x = 0;
 		m_Rook[0].y = 0;
 		m_Rook[0].draw = FALSE;
+		m_Rook[0].rt = { 0, 0, 75, 75 };
 		m_Rook[1].x = 525;
 		m_Rook[1].y = 0;
 		m_Rook[1].draw = FALSE;
+		m_Rook[1].rt = { 525, 0, 600, 75 };
 
 		m_Bishop[0].x = 150;
 		m_Bishop[0].y = 0;
 		m_Bishop[0].draw = FALSE;
+		m_Bishop[0].rt = { 150, 0, 225, 75 };
 		m_Bishop[1].x = 375;
 		m_Bishop[1].y = 0;
 		m_Bishop[1].draw = FALSE;
+		m_Bishop[1].rt = { 375, 0, 450, 75 };
 
 		m_Knight[0].x = 75;
 		m_Knight[0].y = 0;
 		m_Knight[0].draw = FALSE;
+		m_Knight[0].rt = { 75, 0, 150, 75 };
 		m_Knight[1].x = 450;
 		m_Knight[1].y = 0;
 		m_Knight[1].draw = FALSE;
+		m_Knight[0].rt = { 450, 0, 525, 75 };
 
 		for (int i = 0; i < 8; i++)
 		{
@@ -97,6 +115,7 @@ void chess_pieces::Init_pieces(HDC hdc, int player_num)
 				m_Pawn[i].x = 0;
 				m_Pawn[i].y = 75;
 				m_Pawn[i].draw = FALSE;
+				m_Pawn[i].rt = { 0, 75, 75, 150 };
 			}
 			else
 			{
@@ -104,6 +123,7 @@ void chess_pieces::Init_pieces(HDC hdc, int player_num)
 				m_Pawn[i].x += num_x;
 				m_Pawn[i].y = 75;
 				m_Pawn[i].draw = FALSE;
+				m_Pawn[i].rt = { num_x, 75, num_x + 75, 150 };
 			}
 		}
 	}
@@ -117,7 +137,7 @@ void chess_pieces::Init_pieces_2(HDC hdc, int player_num)
 		if (m_King.draw == FALSE)
 		{
 			MemDC[0] = CreateCompatibleDC(hdc);
-			hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_w_05.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+			hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_w_05.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 			old_hbtmap = (HBITMAP)SelectObject(MemDC[0], hbtmap);
 			GetObject(hbtmap, sizeof(BITMAP), &btmap);
 			m_x = btmap.bmWidth;
@@ -129,7 +149,7 @@ void chess_pieces::Init_pieces_2(HDC hdc, int player_num)
 		if (m_Queen.draw == FALSE)
 		{
 			MemDC[1] = CreateCompatibleDC(hdc);
-			hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_w_04.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+			hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_w_04.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 			old_hbtmap = (HBITMAP)SelectObject(MemDC[1], hbtmap);
 			GetObject(hbtmap, sizeof(BITMAP), &btmap);
 			m_x = btmap.bmWidth;
@@ -143,7 +163,7 @@ void chess_pieces::Init_pieces_2(HDC hdc, int player_num)
 			if (m_Rook[i].draw == FALSE)
 			{
 				MemDC[i + 2] = CreateCompatibleDC(hdc);
-				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_w_03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_w_03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 				old_hbtmap = (HBITMAP)SelectObject(MemDC[i + 2], hbtmap);
 				GetObject(hbtmap, sizeof(BITMAP), &btmap);
 				m_x = btmap.bmWidth;
@@ -158,7 +178,7 @@ void chess_pieces::Init_pieces_2(HDC hdc, int player_num)
 			if (m_Bishop[i].draw == FALSE)
 			{
 				MemDC[i + 4] = CreateCompatibleDC(hdc);
-				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_w_02.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_w_02.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 				old_hbtmap = (HBITMAP)SelectObject(MemDC[i + 4], hbtmap);
 				GetObject(hbtmap, sizeof(BITMAP), &btmap);
 				m_x = btmap.bmWidth;
@@ -173,7 +193,7 @@ void chess_pieces::Init_pieces_2(HDC hdc, int player_num)
 			if (m_Knight[i].draw == FALSE)
 			{
 				MemDC[i + 6] = CreateCompatibleDC(hdc);
-				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_w_01.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_w_01.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 				old_hbtmap = (HBITMAP)SelectObject(MemDC[i + 6], hbtmap);
 				GetObject(hbtmap, sizeof(BITMAP), &btmap);
 				m_x = btmap.bmWidth;
@@ -188,7 +208,7 @@ void chess_pieces::Init_pieces_2(HDC hdc, int player_num)
 			if (m_Pawn[i].draw == FALSE)
 			{
 				MemDC[i + 8] = CreateCompatibleDC(hdc);
-				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_w_00.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_w_00.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 				old_hbtmap = (HBITMAP)SelectObject(MemDC[i + 8], hbtmap);
 				GetObject(hbtmap, sizeof(BITMAP), &btmap);
 				m_x = btmap.bmWidth;
@@ -207,7 +227,7 @@ void chess_pieces::Init_pieces_2(HDC hdc, int player_num)
 		if (m_King.draw == FALSE)
 		{
 			MemDC[0] = CreateCompatibleDC(hdc);
-			hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_b_05.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+			hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_b_05.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 			old_hbtmap = (HBITMAP)SelectObject(MemDC[0], hbtmap);
 			GetObject(hbtmap, sizeof(BITMAP), &btmap);
 			m_x = btmap.bmWidth;
@@ -219,7 +239,7 @@ void chess_pieces::Init_pieces_2(HDC hdc, int player_num)
 		if (m_Queen.draw == FALSE)
 		{
 			MemDC[1] = CreateCompatibleDC(hdc);
-			hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_b_04.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+			hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_b_04.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 			old_hbtmap = (HBITMAP)SelectObject(MemDC[1], hbtmap);
 			GetObject(hbtmap, sizeof(BITMAP), &btmap);
 			m_x = btmap.bmWidth;
@@ -233,7 +253,7 @@ void chess_pieces::Init_pieces_2(HDC hdc, int player_num)
 			if (m_Rook[i].draw == FALSE)
 			{
 				MemDC[i + 2] = CreateCompatibleDC(hdc);
-				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_b_03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_b_03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 				old_hbtmap = (HBITMAP)SelectObject(MemDC[i + 2], hbtmap);
 				GetObject(hbtmap, sizeof(BITMAP), &btmap);
 				m_x = btmap.bmWidth;
@@ -248,7 +268,7 @@ void chess_pieces::Init_pieces_2(HDC hdc, int player_num)
 			if (m_Bishop[i].draw == FALSE)
 			{
 				MemDC[i + 4] = CreateCompatibleDC(hdc);
-				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_b_02.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_b_02.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 				old_hbtmap = (HBITMAP)SelectObject(MemDC[i + 4], hbtmap);
 				GetObject(hbtmap, sizeof(BITMAP), &btmap);
 				m_x = btmap.bmWidth;
@@ -263,7 +283,7 @@ void chess_pieces::Init_pieces_2(HDC hdc, int player_num)
 			if (m_Knight[i].draw == FALSE)
 			{
 				MemDC[i + 6] = CreateCompatibleDC(hdc);
-				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_b_01.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_b_01.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 				old_hbtmap = (HBITMAP)SelectObject(MemDC[i + 6], hbtmap);
 				GetObject(hbtmap, sizeof(BITMAP), &btmap);
 				m_x = btmap.bmWidth;
@@ -278,7 +298,7 @@ void chess_pieces::Init_pieces_2(HDC hdc, int player_num)
 			if (m_Pawn[i].draw == FALSE)
 			{
 				MemDC[i + 8] = CreateCompatibleDC(hdc);
-				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_b_00.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+				hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block_b_00.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 				old_hbtmap = (HBITMAP)SelectObject(MemDC[i + 8], hbtmap);
 				GetObject(hbtmap, sizeof(BITMAP), &btmap);
 				m_x = btmap.bmWidth;

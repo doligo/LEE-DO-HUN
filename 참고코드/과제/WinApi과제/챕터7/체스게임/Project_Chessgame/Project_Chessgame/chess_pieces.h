@@ -11,6 +11,7 @@ struct Piece
 	int x;
 	int y;
 	int draw;
+	RECT rt;
 };
 
 class chess_pieces
