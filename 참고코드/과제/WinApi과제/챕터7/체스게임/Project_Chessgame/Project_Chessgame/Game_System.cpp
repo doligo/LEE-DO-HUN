@@ -91,10 +91,10 @@ void Game_System::Draw(HDC hdc)
 
 }
 
-void Game_System::Click(HWND hWnd, HDC hdc, int x, int y)
+void Game_System::Click(HDC hdc, int x, int y)
 {
 	for (int i = 0; i < 2; i++)
-		m_pr[i].Click_Check(hWnd, hdc, x, y);
+		m_pr[i].Click_Check(hdc, i, x, y);
 }
 
 Game_System::~Game_System()

@@ -33,12 +33,16 @@ void Player::Player_Pieces_Draw(HDC hdc)
 	}
 }
 
-void Player::Click_Check(HWND hWnd, HDC hdc, int x, int y)
+void Player::Click_Check(HDC hdc, int player_num, int x, int y)
 {
-	if (Cp->m_Pawn[4].rt.left <= x && Cp->m_Pawn[4].rt.right >= x && Cp->m_Pawn[4].rt.top <= y && Cp->m_Pawn[4].rt.bottom >= y)
+	for (int i = 0; i < 8; i++)
 	{
-		MessageBox(hWnd, TEXT("마우스 좌클릭"), TEXT("MessageBox"), MB_OK);
+		if (Cp->m_Pawn[i].rt.left <= x && Cp->m_Pawn[i].rt.right >= x && Cp->m_Pawn[i].rt.top <= y && Cp->m_Pawn[i].rt.bottom >= y)
+		{
+			Cp->Pawn_Act(hdc, player_num, x, y);
+		}
 	}
+
 }
 
 Player::~Player()

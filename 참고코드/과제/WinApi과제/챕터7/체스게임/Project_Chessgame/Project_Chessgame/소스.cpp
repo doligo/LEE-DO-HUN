@@ -64,7 +64,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		mouse_x = LOWORD(lParam);
 		mouse_y = HIWORD(lParam);
 
-		gs.Click(hWnd, hdc, mouse_x, mouse_y);
+		gs.Click(hdc, mouse_x, mouse_y);
 
 		InvalidateRect(hWnd, NULL, TRUE);
 		return 0;

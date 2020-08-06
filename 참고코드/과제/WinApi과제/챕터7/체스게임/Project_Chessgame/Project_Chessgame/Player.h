@@ -10,7 +10,7 @@ public:
 	int m_player_num;
 	void Init_Player(HDC hdc, int player_num);
 	void Player_Pieces_Draw(HDC hdc);
-	void Click_Check(HWND hWnd, HDC hdc, int x, int y);
+	void Click_Check(HDC hdc, int player_num, int x, int y);
 
 	~Player();
 };
