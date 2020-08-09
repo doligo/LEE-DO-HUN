@@ -34,8 +34,6 @@ public:
 	void Init_pieces(HDC hdc, int player_num);
 	void Init_pieces_2(HDC hdc, int player_num);
 	void Pieces_Draw(HDC hdc, int x, int y, string name);
-	
-	void Pawn_Act(HDC hdc, int player_num, int x ,int y);
 
 	~chess_pieces();
 };

@@ -346,22 +346,6 @@ void chess_pieces::Pieces_Draw(HDC hdc, int x, int y, string name)
 		TransparentBlt(hdc, x, y, m_x - 50, m_y - 50, MemDC[15], 0, 0, m_x, m_y, RGB(255, 0, 255));
 }
 
-void chess_pieces::Pawn_Act(HDC hdc, int player_num, int x, int y)
-{
-	if (player_num == 0)
-	{
-
-		Ellipse(hdc, 400, 400, 600, 600);
-
-		//// 게임시스템에 인자값 전달해서 draw 함수에서 처리하게 만들기
-
-	}
-	else if (player_num == 1)
-	{
-
-	}
-}
-
 chess_pieces::~chess_pieces()
 {
 	for (int i = 0; i < PIECE_MAX; i++)

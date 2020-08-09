@@ -11,6 +11,16 @@ void Player::Init_Player(HDC hdc, int player_num)
 
 	Cp->Init_pieces(hdc, player_num);
 	Cp->Init_pieces_2(hdc, player_num);
+
+
+	MemDC = CreateCompatibleDC(hdc);
+
+	hbtmap = (HBITMAP)LoadImage(NULL, "\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+
+	old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
+	GetObject(hbtmap, sizeof(BITMAP), &btmap);
+	m_x = btmap.bmWidth;
+	m_y = btmap.bmHeight;
 }
 
 void Player::Player_Pieces_Draw(HDC hdc)
@@ -31,6 +41,23 @@ void Player::Player_Pieces_Draw(HDC hdc)
 		sprintf_s(buf, "pawn%d", i + 1);
 		Cp->Pieces_Draw(hdc, Cp->m_Pawn[i].x, Cp->m_Pawn[i].y, buf);
 	}
+
+	Move_Able_Point(hdc); // 장기 클릭시 이동 범위출력
+}
+
+void Player::Move_Able_Point(HDC hdc)
+{// clicked_pos_x와 y에 +20은 꼭넣어야 사각형이 중앙에 그려진다
+	if (select_num == SELECT_PAWN && m_player_num == 0)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+		TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y - 150 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+
+	if (select_num == SELECT_PAWN && m_player_num == 1)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y + 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+		TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y + 150 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
 }
 
 void Player::Click_Check(HDC hdc, int player_num, int x, int y)
@@ -39,10 +66,12 @@ void Player::Click_Check(HDC hdc, int player_num, int x, int y)
 	{
 		if (Cp->m_Pawn[i].rt.left <= x && Cp->m_Pawn[i].rt.right >= x && Cp->m_Pawn[i].rt.top <= y && Cp->m_Pawn[i].rt.bottom >= y)
 		{
-			Cp->Pawn_Act(hdc, player_num, x, y);
+			select_num = SELECT_PAWN;
+			clicked_pos_x = Cp->m_Pawn[i].rt.left;
+			clicked_pos_y = Cp->m_Pawn[i].rt.top;
+			break;
 		}
 	}
-
 }
 
 Player::~Player()
