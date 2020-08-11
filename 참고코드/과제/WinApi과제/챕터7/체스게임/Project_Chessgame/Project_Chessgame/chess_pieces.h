@@ -12,6 +12,7 @@ struct Piece
 	int y;
 	int draw;
 	RECT rt;
+	int first_move;
 };
 
 class chess_pieces

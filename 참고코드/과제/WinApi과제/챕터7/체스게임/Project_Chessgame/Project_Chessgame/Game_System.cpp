@@ -94,9 +94,21 @@ void Game_System::Draw(HDC hdc)
 void Game_System::Click(HDC hdc, int x, int y)
 {
 	for (int i = 0; i < 2; i++)
+	{
 		m_pr[i].Move_Check(hdc, x, y);
-	for (int i = 0; i < 2; i++)
 		m_pr[i].Click_Check(hdc, i, x, y);
+		if (i == 0)
+		{
+			if (m_pr[0].my_turn == FALSE)
+				m_pr[1].my_turn = TRUE;
+		}
+		else if (i == 1)
+		{
+			if (m_pr[1].my_turn == FALSE)
+				m_pr[0].my_turn = TRUE;
+		}
+
+	}
 
 }
 
