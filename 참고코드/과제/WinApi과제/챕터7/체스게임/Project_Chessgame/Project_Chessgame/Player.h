@@ -28,7 +28,7 @@ public:
 	void Move_Able_Point(HDC hdc);
 	void Click_Check(HDC hdc, int player_num, int x, int y);
 	void Move_Check(HDC hdc, int x, int y);
-	void Pawn_Check(int num, int x, int y);
+	int Pawn_Check(int num);
 
 	~Player();
 };

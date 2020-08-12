@@ -15,7 +15,7 @@ void Player::Init_Player(HDC hdc, int player_num)
 
 	MemDC = CreateCompatibleDC(hdc);
 
-	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 	old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 	GetObject(hbtmap, sizeof(BITMAP), &btmap);
@@ -97,15 +97,17 @@ void Player::Move_Check(HDC hdc, int x, int y)
 			Cp->m_Pawn[clicked_object_num].x = selected_object_rt.left;
 			Cp->m_Pawn[clicked_object_num].y = selected_object_rt.top - 75;
 			Cp->m_Pawn[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top - 75, selected_object_rt.left + 75, selected_object_rt.top - 75 + 75 };
+			Cp->m_All_Pawn[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top - 75, selected_object_rt.left + 75, selected_object_rt.top - 75 + 75 };
 			select_num = 0;
 			my_turn = FALSE;
 			Cp->m_Pawn[clicked_object_num].first_move = TRUE;
 		}
-		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - 150 <= y && selected_object_rt.bottom - 150 >= y)
+		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - 150 <= y && selected_object_rt.bottom - 150 >= y && Cp->m_Pawn[clicked_object_num].first_move != TRUE)
 		{
 			Cp->m_Pawn[clicked_object_num].x = selected_object_rt.left;
 			Cp->m_Pawn[clicked_object_num].y = selected_object_rt.top - 150;
 			Cp->m_Pawn[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top - 150, selected_object_rt.left + 75, selected_object_rt.top - 150 + 75 };
+			Cp->m_All_Pawn[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top - 150, selected_object_rt.left + 75, selected_object_rt.top - 150 + 75 };
 			select_num = 0;
 			my_turn = FALSE;
 			Cp->m_Pawn[clicked_object_num].first_move = TRUE;
@@ -119,15 +121,17 @@ void Player::Move_Check(HDC hdc, int x, int y)
 			Cp->m_Pawn[clicked_object_num].x = selected_object_rt.left;
 			Cp->m_Pawn[clicked_object_num].y = selected_object_rt.top + 75;
 			Cp->m_Pawn[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top + 75, selected_object_rt.left + 75, selected_object_rt.top + 75 + 75 };
+			Cp->m_All_Pawn[clicked_object_num + 8].rt = { selected_object_rt.left, selected_object_rt.top + 75, selected_object_rt.left + 75, selected_object_rt.top + 75 + 75 };
 			select_num = 0;
 			my_turn = FALSE;
 			Cp->m_Pawn[clicked_object_num].first_move = TRUE;
 		}
-		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + 150 <= y && selected_object_rt.bottom + 150 >= y)
+		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + 150 <= y && selected_object_rt.bottom + 150 >= y && Cp->m_Pawn[clicked_object_num].first_move != TRUE)
 		{
 			Cp->m_Pawn[clicked_object_num].x = selected_object_rt.left;
 			Cp->m_Pawn[clicked_object_num].y = selected_object_rt.top + 150;
 			Cp->m_Pawn[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top + 150, selected_object_rt.left + 75, selected_object_rt.top + 150 + 75 };
+			Cp->m_All_Pawn[clicked_object_num + 8].rt = { selected_object_rt.left, selected_object_rt.top + 150, selected_object_rt.left + 75, selected_object_rt.top + 150 + 75 };
 			select_num = 0;
 			my_turn = FALSE;
 			Cp->m_Pawn[clicked_object_num].first_move = TRUE;
@@ -138,6 +142,8 @@ void Player::Move_Check(HDC hdc, int x, int y)
 
 void Player::Click_Check(HDC hdc, int player_num, int x, int y)
 {
+	int trigger = 0;
+
 	// 이동경로 그리는 함수
 	if (my_turn == TRUE)
 	{
@@ -145,6 +151,12 @@ void Player::Click_Check(HDC hdc, int player_num, int x, int y)
 		{
 			if (Cp->m_Pawn[i].rt.left <= x && Cp->m_Pawn[i].rt.right >= x && Cp->m_Pawn[i].rt.top <= y && Cp->m_Pawn[i].rt.bottom >= y) // 클릭한 말이 범위안에 있을때
 			{
+				trigger = Pawn_Check(i);
+				if (trigger == TRUE)
+				{
+					select_num = 0;
+					break;
+				}
 				select_num = SELECT_PAWN;
 				clicked_pos_x = Cp->m_Pawn[i].rt.left;
 				clicked_pos_y = Cp->m_Pawn[i].rt.top;
@@ -158,12 +170,18 @@ void Player::Click_Check(HDC hdc, int player_num, int x, int y)
 	}
 }
 
-void Player::Pawn_Check(int num, int x, int y)
+int Player::Pawn_Check(int num) // Cp->m_All_Pawn를 객체화하지말고 게임시스템에 static으로 쓰자
 {
 	for (int j = 0; j < 16; j++)
 	{
-		Cp->m_All_Pawn[j].rt.top = Cp->m_Pawn[num].rt.top + 75;
+		if (Cp->m_All_Pawn[j].rt.top == Cp->m_Pawn[num].rt.top - 75 && Cp->m_All_Pawn[j].rt.left == Cp->m_Pawn[num].rt.left)
+		{
+			return TRUE;
+		}
+
 	}
+	
+	return 0;
 }
 
 Player::~Player()
