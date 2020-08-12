@@ -11,11 +11,11 @@ void Player::Init_Player(HDC hdc, int player_num)
 
 	Cp->Init_pieces(hdc, player_num);
 	Cp->Init_pieces_2(hdc, player_num);
-
+	Cp->Set_All_Pawn_Pos();
 
 	MemDC = CreateCompatibleDC(hdc);
 
-	hbtmap = (HBITMAP)LoadImage(NULL, "\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 	old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 	GetObject(hbtmap, sizeof(BITMAP), &btmap);
@@ -30,6 +30,7 @@ void Player::Init_Player(HDC hdc, int player_num)
 	{
 		my_turn = FALSE;
 	}
+
 
 }
 
@@ -98,6 +99,7 @@ void Player::Move_Check(HDC hdc, int x, int y)
 			Cp->m_Pawn[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top - 75, selected_object_rt.left + 75, selected_object_rt.top - 75 + 75 };
 			select_num = 0;
 			my_turn = FALSE;
+			Cp->m_Pawn[clicked_object_num].first_move = TRUE;
 		}
 		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - 150 <= y && selected_object_rt.bottom - 150 >= y)
 		{
@@ -106,8 +108,8 @@ void Player::Move_Check(HDC hdc, int x, int y)
 			Cp->m_Pawn[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top - 150, selected_object_rt.left + 75, selected_object_rt.top - 150 + 75 };
 			select_num = 0;
 			my_turn = FALSE;
+			Cp->m_Pawn[clicked_object_num].first_move = TRUE;
 		}
-		Cp->m_Pawn[clicked_object_num].first_move = TRUE; // 여기 다시보기 **
 	}
 
 	else if (select_num == SELECT_PAWN && m_player_num == 1 && my_turn == TRUE) // 폰
@@ -119,6 +121,7 @@ void Player::Move_Check(HDC hdc, int x, int y)
 			Cp->m_Pawn[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top + 75, selected_object_rt.left + 75, selected_object_rt.top + 75 + 75 };
 			select_num = 0;
 			my_turn = FALSE;
+			Cp->m_Pawn[clicked_object_num].first_move = TRUE;
 		}
 		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + 150 <= y && selected_object_rt.bottom + 150 >= y)
 		{
@@ -127,8 +130,9 @@ void Player::Move_Check(HDC hdc, int x, int y)
 			Cp->m_Pawn[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top + 150, selected_object_rt.left + 75, selected_object_rt.top + 150 + 75 };
 			select_num = 0;
 			my_turn = FALSE;
+			Cp->m_Pawn[clicked_object_num].first_move = TRUE;
 		}
-		Cp->m_Pawn[clicked_object_num].first_move = TRUE;
+
 	}
 }
 
@@ -139,7 +143,7 @@ void Player::Click_Check(HDC hdc, int player_num, int x, int y)
 	{
 		for (int i = 0; i < 8; i++) // pawn
 		{
-			if (Cp->m_Pawn[i].rt.left <= x && Cp->m_Pawn[i].rt.right >= x && Cp->m_Pawn[i].rt.top <= y && Cp->m_Pawn[i].rt.bottom >= y)
+			if (Cp->m_Pawn[i].rt.left <= x && Cp->m_Pawn[i].rt.right >= x && Cp->m_Pawn[i].rt.top <= y && Cp->m_Pawn[i].rt.bottom >= y) // 클릭한 말이 범위안에 있을때
 			{
 				select_num = SELECT_PAWN;
 				clicked_pos_x = Cp->m_Pawn[i].rt.left;
@@ -152,7 +156,14 @@ void Player::Click_Check(HDC hdc, int player_num, int x, int y)
 				select_num = 0;
 		}
 	}
+}
 
+void Player::Pawn_Check(int num, int x, int y)
+{
+	for (int j = 0; j < 16; j++)
+	{
+		Cp->m_All_Pawn[j].rt.top = Cp->m_Pawn[num].rt.top + 75;
+	}
 }
 
 Player::~Player()
