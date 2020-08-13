@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="All_pieces_pos.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="chess_pieces.cpp" />
     <ClCompile Include="Game_System.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="소스.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="All_pieces_pos.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="chess_pieces.h" />
     <ClInclude Include="Game_System.h" />

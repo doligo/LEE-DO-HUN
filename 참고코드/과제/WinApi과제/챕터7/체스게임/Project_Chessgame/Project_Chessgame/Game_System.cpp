@@ -64,6 +64,9 @@ void Game_System::Init_System(HDC hdc, HINSTANCE hinst)
 	
 	for (int i = 0; i < 2; i++)
 		m_pr[i].Init_Player(hdc, m_pr[i].m_player_num);
+
+	m_all_p_pos = new All_pieces_pos; // 저장이 안되고 있었음;;; 바꾸기
+	m_all_p_pos->Set_All_Pawn_Pos();
 }
 
 void Game_System::Draw(HDC hdc)
