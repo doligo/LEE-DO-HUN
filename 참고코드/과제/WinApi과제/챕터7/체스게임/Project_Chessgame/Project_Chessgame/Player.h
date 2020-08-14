@@ -1,5 +1,4 @@
 #include "chess_pieces.h"
-#include "All_pieces_pos.h"
 #pragma once
 
 #define SELECT_PAWN 8
@@ -24,6 +23,7 @@ public:
 	int m_player_num;
 	int my_turn;
 	int someting;
+	RECT_AND_STATUS tmp_rt;
 
 	int pawn_front;
 	int pawn_diagonal1;
@@ -34,7 +34,6 @@ public:
 	void Move_Able_Point(HDC hdc);
 	void Click_Check(HDC hdc, int player_num, int x, int y);
 	void Move_Check(HDC hdc, int x, int y);
-	void Pawn_Check(int num);
 
 	~Player();
 };

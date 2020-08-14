@@ -5,6 +5,17 @@
 using namespace std;
 
 #define PIECE_MAX 16
+#define ALIVE 20
+#define DEAD 21
+
+struct RECT_AND_STATUS
+{
+	RECT rt;
+	int status;
+	int player_num;
+	int x;
+	int y;
+};
 
 struct Piece
 {
