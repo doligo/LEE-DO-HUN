@@ -23,7 +23,8 @@ struct Piece
 	int y;
 	int draw;
 	RECT rt;
-	int first_move;
+	int first_move; // pawn
+	int status;
 };
 
 class chess_pieces

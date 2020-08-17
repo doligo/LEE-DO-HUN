@@ -95,23 +95,35 @@ void Game_System::Draw(HDC hdc)
 
 void Game_System::Click(HDC hdc, int x, int y)
 {
+	int trigger = 0;
+
 	for (int i = 0; i < 2; i++)
 	{
-		m_pr[i].Move_Check(hdc, x, y);
+		trigger = m_pr[i].Move_Check(hdc, x, y);
+		Pawn_Rules(i);
 		All_Pawn_Pos(i); // 이동했을때 좌표저장
+
+		if (m_pr[i].who_is_moved != -1)
+		Die_Check(i);
+
 		m_pr[i].Click_Check(hdc, i, x, y);
 		Pawn_Check(i);
-		if (i == 0)
+
+		if (i == 0 && trigger == TRUE)
 		{
-			if (m_pr[0].my_turn == FALSE) // 턴 바꾸는곳 고치기**
+			if (m_pr[0].my_turn == FALSE)
+			{
 				m_pr[1].my_turn = TRUE;
+			}
 		}
-		else if (i == 1)
+		else if (i == 1 && trigger == TRUE)
 		{
 			if (m_pr[1].my_turn == FALSE)
+			{
 				m_pr[0].my_turn = TRUE;
+			}
 		}
-
+		trigger = 0;
 	}
 }
 
@@ -160,7 +172,7 @@ void Game_System::Set_All_Pawn_Pos()
 
 void Game_System::All_Pawn_Pos(int player_num)
 {
-	if (m_pr[player_num].tmp_rt.x != NULL)
+	if (m_pr[player_num].tmp_rt.x != -1)
 	{
 		if (player_num == 0)
 		{
@@ -174,27 +186,32 @@ void Game_System::All_Pawn_Pos(int player_num)
 			m_All_Pawn[m_pr[player_num].clicked_object_num + 8].y = m_pr[player_num].tmp_rt.y;
 			m_All_Pawn[m_pr[player_num].clicked_object_num + 8].rt = m_pr[player_num].tmp_rt.rt;
 		}
-
 	}
+
+	m_pr[player_num].tmp_rt.x = -1;
 }
 
 void Game_System::Pawn_Check(int num)
 {
-	if (m_pr[num].m_player_num == 0 && m_pr[num].clicked_object_num != NULL)
+	if (m_pr[num].m_player_num == 0 && m_pr[num].clicked_object_num != -1 && m_pr[num].select_what == SELECT_PAWN)
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			if (m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left)
+			if (m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left && m_All_Pawn[i].status != DEAD)
 			{
 				m_pr[num].pawn_front = TRUE;
 				m_pr[num].someting = TRUE;
 			}
-			if (m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left - 75)
+			if (m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 150 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left && m_All_Pawn[i].status != DEAD)
+			{
+				m_pr[num].someting = TRUE;
+			}
+			if (m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left - 75 && m_All_Pawn[i].status != DEAD)
 			{
 				m_pr[num].pawn_diagonal1 = TRUE;
 				m_pr[num].someting = TRUE;
 			}
-			if (m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left + 75)
+			if (m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left + 75 && m_All_Pawn[i].status != DEAD)
 			{
 				m_pr[num].pawn_diagonal2 = TRUE;
 				m_pr[num].someting = TRUE;
@@ -202,21 +219,25 @@ void Game_System::Pawn_Check(int num)
 		}
 
 	}
-	else if (m_pr[num].m_player_num == 1 && m_pr[num].clicked_object_num != NULL)
+	else if (m_pr[num].m_player_num == 1 && m_pr[num].clicked_object_num != -1 && m_pr[num].select_what == SELECT_PAWN)
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			if (m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left)
+			if (m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left && m_All_Pawn[i].status != DEAD)
 			{
 				m_pr[num].pawn_front = TRUE;
 				m_pr[num].someting = TRUE;
 			}
-			if (m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left - 75)
+			if (m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 150 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left && m_All_Pawn[i].status != DEAD)
+			{
+				m_pr[num].someting = TRUE;
+			}
+			if (m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left - 75 && m_All_Pawn[i].status != DEAD)
 			{
 				m_pr[num].pawn_diagonal1 = TRUE;
 				m_pr[num].someting = TRUE;
 			}
-			if (m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left + 75)
+			if (m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left + 75 && m_All_Pawn[i].status != DEAD)
 			{
 				m_pr[num].pawn_diagonal2 = TRUE;
 				m_pr[num].someting = TRUE;
@@ -224,6 +245,57 @@ void Game_System::Pawn_Check(int num)
 		}
 	}
 
+}
+
+void Game_System::Rook_Check(int num)
+{
+	if (m_pr[num].m_player_num == 0 && m_pr[num].clicked_object_num != -1 && m_pr[num].select_what == SELECT_ROOK)
+	{
+
+	}
+
+	else if (m_pr[num].m_player_num == 1 && m_pr[num].clicked_object_num != -1 && m_pr[num].select_what == SELECT_ROOK)
+	{
+
+	}
+}
+
+void Game_System::Die_Check(int player_num)
+{
+	if (player_num == 0 && m_All_Pawn[m_pr[player_num].who_is_moved].status != DEAD)
+	{
+		for (int i = 8; i < 16; i++) // pawn
+		{
+			if (m_All_Pawn[m_pr[player_num].who_is_moved].x == m_All_Pawn[i].x && m_All_Pawn[m_pr[player_num].who_is_moved].y == m_All_Pawn[i].y)
+			{
+				m_All_Pawn[i].status = DEAD;
+				pawn_dead_num = i - 8;
+				m_pr[1].Player_Die_Check(10, pawn_dead_num);
+				break;
+			}
+		}
+	}
+	else if (player_num == 1 && m_All_Pawn[m_pr[player_num].who_is_moved + 8].status != DEAD)
+	{
+		for (int i = 0; i < 8; i++) // pawn
+		{
+			if (m_All_Pawn[m_pr[player_num].who_is_moved + 8].x == m_All_Pawn[i].x && m_All_Pawn[m_pr[player_num].who_is_moved + 8].y == m_All_Pawn[i].y)
+			{
+				m_All_Pawn[i].status = DEAD;
+				pawn_dead_num = i;
+				m_pr[0].Player_Die_Check(10, pawn_dead_num);
+				break;
+			}
+		}
+	}
+}
+
+void Game_System::Pawn_Rules(int num)
+{
+	m_pr[num].someting = FALSE;
+	m_pr[num].pawn_front = FALSE;
+	m_pr[num].pawn_diagonal1 = FALSE;
+	m_pr[num].pawn_diagonal2 = FALSE;
 }
 
 Game_System::~Game_System()

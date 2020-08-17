@@ -2,6 +2,7 @@
 #pragma once
 
 #define SELECT_PAWN 8
+#define SELECT_ROOK 9
 
 class Player
 {
@@ -24,7 +25,10 @@ public:
 	int my_turn;
 	int someting;
 	RECT_AND_STATUS tmp_rt;
+	int who_is_moved;
+	int select_what;
 
+	//// pawn 이동규칙
 	int pawn_front;
 	int pawn_diagonal1;
 	int pawn_diagonal2;
@@ -33,7 +37,8 @@ public:
 	void Player_Pieces_Draw(HDC hdc);
 	void Move_Able_Point(HDC hdc);
 	void Click_Check(HDC hdc, int player_num, int x, int y);
-	void Move_Check(HDC hdc, int x, int y);
+	int Move_Check(HDC hdc, int x, int y);
+	void Player_Die_Check(int piece_num, int dead_num);
 
 	~Player();
 };
