@@ -32,6 +32,11 @@ public:
 	int pawn_front;
 	int pawn_diagonal1;
 	int pawn_diagonal2;
+	//// rook 이동규칙
+	int rook_front;
+	int rook_back;
+	int rook_left;
+	int rook_right;
 
 	void Init_Player(HDC hdc, int player_num);
 	void Player_Pieces_Draw(HDC hdc);

@@ -107,7 +107,8 @@ void Game_System::Click(HDC hdc, int x, int y)
 		Die_Check(i);
 
 		m_pr[i].Click_Check(hdc, i, x, y);
-		Pawn_Check(i);
+		Pawn_Check(i); // 나중에 check 함수 다 합치기
+		Rook_Check(i);
 
 		if (i == 0 && trigger == TRUE)
 		{
@@ -131,7 +132,7 @@ void Game_System::Set_All_Pawn_Pos()
 {
 	int num_x = 0;
 
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < 16; i++) // pawn
 	{
 		m_All_Pawn[i].status = ALIVE;
 		if (i < 8)
@@ -168,6 +169,27 @@ void Game_System::Set_All_Pawn_Pos()
 		}
 
 	}
+
+	for (int i = 0; i < 4; i++) // rook
+	{
+		m_All_Rook[i].status = ALIVE;
+		if (i < 2)
+			m_All_Rook[i].player_num = 0;
+		else
+			m_All_Rook[i].player_num = 1;
+	}
+	m_All_Rook[0].x = 0;
+	m_All_Rook[0].y = 525;
+	m_All_Rook[0].rt = { 0, 525, 75, 600 };
+	m_All_Rook[1].x = 525;
+	m_All_Rook[1].y = 525;
+	m_All_Rook[1].rt = { 525, 525, 600, 600 };
+	m_All_Rook[2].x = 0;
+	m_All_Rook[2].y = 0;
+	m_All_Rook[2].rt = { 0, 0, 75, 75 };
+	m_All_Rook[3].x = 525;
+	m_All_Rook[3].y = 0;
+	m_All_Rook[3].rt = { 525, 0, 600, 75 };
 }
 
 void Game_System::All_Pawn_Pos(int player_num)
@@ -193,6 +215,7 @@ void Game_System::All_Pawn_Pos(int player_num)
 
 void Game_System::Pawn_Check(int num)
 {
+	//// +다른 말들도 비교하는 구문을 추가해야한다
 	if (m_pr[num].m_player_num == 0 && m_pr[num].clicked_object_num != -1 && m_pr[num].select_what == SELECT_PAWN)
 	{
 		for (int i = 0; i < 16; i++)
@@ -249,15 +272,20 @@ void Game_System::Pawn_Check(int num)
 
 void Game_System::Rook_Check(int num)
 {
+	int rt_num = 75;
+
+	// 일단 pawn와 rook만 비교해보기, 재귀함수 고려하기
 	if (m_pr[num].m_player_num == 0 && m_pr[num].clicked_object_num != -1 && m_pr[num].select_what == SELECT_ROOK)
 	{
-
+		
 	}
 
 	else if (m_pr[num].m_player_num == 1 && m_pr[num].clicked_object_num != -1 && m_pr[num].select_what == SELECT_ROOK)
 	{
 
 	}
+
+	m_pr[num].rook_front += 5;
 }
 
 void Game_System::Die_Check(int player_num)
