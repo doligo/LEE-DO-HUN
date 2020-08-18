@@ -28,11 +28,11 @@ public:
 	int who_is_moved;
 	int select_what;
 
-	//// pawn 이동규칙
+	//// pawn 이동규칙변수
 	int pawn_front;
 	int pawn_diagonal1;
 	int pawn_diagonal2;
-	//// rook 이동규칙
+	//// rook 이동규칙변수
 	int rook_front;
 	int rook_back;
 	int rook_left;

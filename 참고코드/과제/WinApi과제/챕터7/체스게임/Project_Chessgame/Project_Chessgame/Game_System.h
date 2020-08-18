@@ -12,7 +12,7 @@ public:
 	Game_System();
 
 	RECT_AND_STATUS m_All_Pawn[16];
-	RECT_AND_STATUS m_All_Rook[2];
+	RECT_AND_STATUS m_All_Rook[4];
 	int pawn_dead_num;
 
 	void Init_System(HDC hdc, HINSTANCE hinst);
@@ -22,7 +22,7 @@ public:
 	void All_Pawn_Pos(int player_num);
 	void Pawn_Check(int num);
 	void Rook_Check(int num);
-	void Pawn_Rules(int num);
+	void Piece_Rules(int num);
 	void Die_Check(int player_num);
 
 	~Game_System();

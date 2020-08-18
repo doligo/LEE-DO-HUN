@@ -100,7 +100,7 @@ void Game_System::Click(HDC hdc, int x, int y)
 	for (int i = 0; i < 2; i++)
 	{
 		trigger = m_pr[i].Move_Check(hdc, x, y);
-		Pawn_Rules(i);
+		Piece_Rules(i);
 		All_Pawn_Pos(i); // 이동했을때 좌표저장
 
 		if (m_pr[i].who_is_moved != -1)
@@ -272,20 +272,139 @@ void Game_System::Pawn_Check(int num)
 
 void Game_System::Rook_Check(int num)
 {
+	int i = 0;
 	int rt_num = 75;
 
 	// 일단 pawn와 rook만 비교해보기, 재귀함수 고려하기
 	if (m_pr[num].m_player_num == 0 && m_pr[num].clicked_object_num != -1 && m_pr[num].select_what == SELECT_ROOK)
 	{
+		while (1) // 앞
+		{
+			if (i == 16)
+			{
+				m_pr[0].rook_front++;
+				i = 0;
+				rt_num += 75;
+			}
+
+			if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top - rt_num && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left || m_All_Rook[m_pr[num].clicked_object_num].rt.top == 0)
+			{
+				break;
+			}
+			else if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top - rt_num && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left || m_All_Rook[m_pr[num].clicked_object_num].rt.top == 0)
+			{
+				if (m_All_Rook[m_pr[num].clicked_object_num].rt.top != 0) // 출력확인
+				m_pr[0].rook_front++;
+				break;
+			}
+			else
+			{
+				i++;
+			}
+		}
+
+		while (1) // 뒤
+		{
+			if (i == 16)
+			{
+				m_pr[0].rook_back++;
+				i = 0;
+				rt_num += 75;
+			}
+			if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left || m_All_Rook[m_pr[num].clicked_object_num].rt.top == 525)
+			{
+				break;
+			}
+			else if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left || m_All_Rook[m_pr[num].clicked_object_num].rt.top == 525)
+			{
+				if (m_All_Rook[m_pr[num].clicked_object_num].rt.top != 525)
+				m_pr[0].rook_back++;
+				break;
+			}
+			else
+			{
+				i++;
+			}
+		}
 		
+		while (1) // 왼쪽
+		{
+			if (i == 16)
+			{
+				m_pr[0].rook_left++;
+				i = 0;
+				rt_num += 75;
+			}
+			if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left - rt_num || m_All_Rook[m_pr[num].clicked_object_num].rt.left == 0)
+			{
+				break;
+			}
+			else if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left - rt_num || m_All_Rook[m_pr[num].clicked_object_num].rt.left == 0)
+			{
+				if (m_All_Rook[m_pr[num].clicked_object_num].rt.left != 0)
+					m_pr[0].rook_left++;
+				break;
+			}
+			else
+			{
+				i++;
+			}
+		}
+		/*
+		while (1) // 오른쪽
+		{
+			if (i == 16)
+			{
+				m_pr[0].rook_right++;
+				i = 0;
+				rt_num += 75;
+			}
+			if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left + rt_num || m_All_Rook[m_pr[num].clicked_object_num].rt.left == 525)
+			{
+				break;
+			}
+			else if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left + rt_num || m_All_Rook[m_pr[num].clicked_object_num].rt.left == 525)
+			{
+				if (m_All_Rook[m_pr[num].clicked_object_num].rt.left != 525)
+					m_pr[0].rook_right++;
+				break;
+			}
+			else
+			{
+				i++;
+			}
+		}*/
 	}
+
+	////////////////////////////////////////
 
 	else if (m_pr[num].m_player_num == 1 && m_pr[num].clicked_object_num != -1 && m_pr[num].select_what == SELECT_ROOK)
 	{
+		while (1)
+		{
+			if (i == 16)
+			{
+				m_pr[1].rook_front++;
+				i = 0;
+				rt_num += 75;
+			}
 
+			if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left)
+			{
+				break;
+			}
+			else if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left)
+			{
+				m_pr[1].rook_front++;
+				break;
+			}
+			else
+			{
+				i++;
+			}
+		}
 	}
 
-	m_pr[num].rook_front += 5;
 }
 
 void Game_System::Die_Check(int player_num)
@@ -318,12 +437,18 @@ void Game_System::Die_Check(int player_num)
 	}
 }
 
-void Game_System::Pawn_Rules(int num)
+void Game_System::Piece_Rules(int num)
 {
 	m_pr[num].someting = FALSE;
 	m_pr[num].pawn_front = FALSE;
 	m_pr[num].pawn_diagonal1 = FALSE;
 	m_pr[num].pawn_diagonal2 = FALSE;
+
+	m_pr[num].rook_front = FALSE;
+	m_pr[num].rook_back = FALSE;
+	m_pr[num].rook_left = FALSE;
+	m_pr[num].rook_right = FALSE;
+
 }
 
 Game_System::~Game_System()

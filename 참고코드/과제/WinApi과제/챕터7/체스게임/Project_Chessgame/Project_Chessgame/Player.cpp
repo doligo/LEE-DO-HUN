@@ -14,7 +14,7 @@ void Player::Init_Player(HDC hdc, int player_num)
 
 	MemDC = CreateCompatibleDC(hdc);
 
-	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Desktop\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 	old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 	GetObject(hbtmap, sizeof(BITMAP), &btmap);
@@ -63,6 +63,7 @@ void Player::Player_Pieces_Draw(HDC hdc)
 
 void Player::Move_Able_Point(HDC hdc)
 {
+	int path_num = 75;
 
 	int draw_pawn_path = 0;
 
@@ -112,12 +113,50 @@ void Player::Move_Able_Point(HDC hdc)
 	//// rook
 	else if (select_num == SELECT_ROOK && m_player_num == 0 && my_turn == TRUE)
 	{
-		for (int i = 0; i < rook_front; i++)
-			TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+		if (rook_front != NULL)
+		{
+			for (int i = 0; i < rook_front; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y - path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+		}
+		if (rook_back != NULL)
+		{
+			for (int i = 0; i < rook_back; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y + path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+		}
+		if (rook_left != NULL)
+		{
+			for (int i = 0; i < rook_left; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x - path_num + 20, clicked_pos_y + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+		}
+		if (rook_right != NULL)
+		{
+			for (int i = 0; i < rook_right; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + path_num + 20, clicked_pos_y + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+		}
 	}
+
 	else if (select_num == SELECT_ROOK && m_player_num == 1 && my_turn == TRUE)
 	{
-
+		if (rook_front != NULL)
+		{
+			for (int i = 0; i < rook_front; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y + path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+		}
 	}
 
 }
@@ -282,7 +321,7 @@ void Player::Click_Check(HDC hdc, int player_num, int x, int y)
 				selected_object_rt = { Cp->m_Pawn[i].rt.left, Cp->m_Pawn[i].rt.top, Cp->m_Pawn[i].rt.right, Cp->m_Pawn[i].rt.bottom };
 				break;
 			}
-			else if (Cp->m_Rook[i].rt.left <= x && Cp->m_Rook[i].rt.right >= x && Cp->m_Rook[i].rt.top <= y && Cp->m_Rook[i].rt.bottom >= y && Cp->m_Rook[i].status == ALIVE)
+			else if (i < 2 && Cp->m_Rook[i].rt.left <= x && Cp->m_Rook[i].rt.right >= x && Cp->m_Rook[i].rt.top <= y && Cp->m_Rook[i].rt.bottom >= y && Cp->m_Rook[i].status == ALIVE)
 			{
 				// rook
 				select_num = SELECT_ROOK;
