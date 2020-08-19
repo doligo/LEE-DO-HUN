@@ -417,12 +417,15 @@ void Game_System::Rook_Check(int num)
 				i++;
 			}
 		}
+		i = 0;
+		rt_num = 75;
 	}
 
 	////////////////////////////////////////
 
 	else if (m_pr[num].m_player_num == 1 && m_pr[num].clicked_object_num != -1 && m_pr[num].select_what == SELECT_ROOK)
 	{
+
 		while (1) // 앞
 		{
 			if (i == 16)
@@ -431,20 +434,108 @@ void Game_System::Rook_Check(int num)
 				i = 0;
 				rt_num += 75;
 			}
-
 			if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left || m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top == 525 ||
 				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 1 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
 				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 1 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left)
 			{
 				break;
 			}
-			//// 여기서 무한루프먹음
-			else if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left || m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top == 525 ||
+			else if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left || m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top == 525 ||
+				i < 2 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
+				i < 2 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left)
+			{
+				if (m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top != 525)
+					m_pr[1].rook_front++;
+				break;
+			}
+			else
+			{
+				i++;
+			}
+		}
+		i = 0;
+		rt_num = 75;
+
+		while (1) // 뒤
+		{
+			if (i == 16)
+			{
+				m_pr[1].rook_back++;
+				i = 0;
+				rt_num += 75;
+			}
+			if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left || m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top == 0 ||
+				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 1 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
+				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 1 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left)
+			{
+				break;
+			}
+			else if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left || m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top == 0 ||
 				i < 2 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
 				i < 2 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left)
 			{
-				if (m_All_Rook[m_pr[num].clicked_object_num].rt.top != 525)
-					m_pr[1].rook_front++;
+				if (m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top != 0)
+					m_pr[1].rook_back++;
+				break;
+			}
+			else
+			{
+				i++;
+			}
+		}
+		i = 0;
+		rt_num = 75;
+
+		while (1) // 왼쪽
+		{
+			if (i == 16)
+			{
+				m_pr[1].rook_left++;
+				i = 0;
+				rt_num += 75;
+			}
+			if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num || m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left == 0 ||
+				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 1 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num ||
+				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 1 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num)
+			{
+				break;
+			}
+			else if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num || m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left == 0 ||
+				i < 2 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num ||
+				i < 2 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num)
+			{
+				if (m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left != 0)
+					m_pr[1].rook_left++;
+				break;
+			}
+			else
+			{
+				i++;
+			}
+		}
+		i = 0;
+		rt_num = 75;
+		
+		while (1) // 오른쪽
+		{
+			if (i == 16)
+			{
+				m_pr[1].rook_right++;
+				i = 0;
+				rt_num += 75;
+			}
+			if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num || m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left == 525 ||
+				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 1 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num ||
+				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 1 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num)
+			{
+				break;
+			}
+			else if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num || m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left == 525 ||
+				i < 2 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num ||
+				i < 2 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num)
+			{
+				if (m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left != 525)
+					m_pr[1].rook_right++;
 				break;
 			}
 			else
