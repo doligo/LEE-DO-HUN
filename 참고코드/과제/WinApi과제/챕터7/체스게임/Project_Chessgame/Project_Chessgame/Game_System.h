@@ -20,7 +20,7 @@ public:
 	void Draw(HDC hdc);
 	void Click(HDC hdc, int x , int y);
 	void Set_All_Pawn_Pos();
-	void All_Pawn_Pos(int player_num);
+	void All_Piece_Pos(int player_num);
 	void Pawn_Check(int num);
 	void Rook_Check(int num);
 	void Piece_Rules(int num);

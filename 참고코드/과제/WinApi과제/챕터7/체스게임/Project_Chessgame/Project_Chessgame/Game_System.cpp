@@ -99,9 +99,12 @@ void Game_System::Click(HDC hdc, int x, int y)
 
 	for (int i = 0; i < 2; i++)
 	{
+		//m_pr[i].select_what = 0;
+		// 무한루프 해결하고 select_what 초기화 자리 찾기**
+		// 두개 다하고 die_check, pawn_check에 다른말들추가 **
 		trigger = m_pr[i].Move_Check(hdc, x, y);
 		Piece_Rules(i);
-		All_Pawn_Pos(i); // 이동했을때 좌표저장
+		All_Piece_Pos(i); // 이동했을때 좌표저장
 
 		if (m_pr[i].who_is_moved != -1)
 		Die_Check(i);
@@ -214,21 +217,40 @@ void Game_System::Set_All_Pawn_Pos()
 
 }
 
-void Game_System::All_Pawn_Pos(int player_num)
+void Game_System::All_Piece_Pos(int player_num)
 {
 	if (m_pr[player_num].tmp_rt.x != -1)
 	{
 		if (player_num == 0)
 		{
-			m_All_Pawn[m_pr[player_num].clicked_object_num].x = m_pr[player_num].tmp_rt.x;
-			m_All_Pawn[m_pr[player_num].clicked_object_num].y = m_pr[player_num].tmp_rt.y;
-			m_All_Pawn[m_pr[player_num].clicked_object_num].rt = m_pr[player_num].tmp_rt.rt;
+			if (m_pr[player_num].select_what == SELECT_PAWN)
+			{
+				m_All_Pawn[m_pr[player_num].clicked_object_num].x = m_pr[player_num].tmp_rt.x;
+				m_All_Pawn[m_pr[player_num].clicked_object_num].y = m_pr[player_num].tmp_rt.y;
+				m_All_Pawn[m_pr[player_num].clicked_object_num].rt = m_pr[player_num].tmp_rt.rt;
+			}
+			else if (m_pr[player_num].select_what == SELECT_ROOK)
+			{
+				m_All_Rook[m_pr[player_num].clicked_object_num].x = m_pr[player_num].tmp_rt.x;
+				m_All_Rook[m_pr[player_num].clicked_object_num].y = m_pr[player_num].tmp_rt.y;
+				m_All_Rook[m_pr[player_num].clicked_object_num].rt = m_pr[player_num].tmp_rt.rt;
+			}
 		}
+
 		else if (player_num == 1)
 		{
-			m_All_Pawn[m_pr[player_num].clicked_object_num + 8].x = m_pr[player_num].tmp_rt.x;
-			m_All_Pawn[m_pr[player_num].clicked_object_num + 8].y = m_pr[player_num].tmp_rt.y;
-			m_All_Pawn[m_pr[player_num].clicked_object_num + 8].rt = m_pr[player_num].tmp_rt.rt;
+			if (m_pr[player_num].select_what == SELECT_PAWN)
+			{
+				m_All_Pawn[m_pr[player_num].clicked_object_num + 8].x = m_pr[player_num].tmp_rt.x;
+				m_All_Pawn[m_pr[player_num].clicked_object_num + 8].y = m_pr[player_num].tmp_rt.y;
+				m_All_Pawn[m_pr[player_num].clicked_object_num + 8].rt = m_pr[player_num].tmp_rt.rt;
+			}
+			else if (m_pr[player_num].select_what == SELECT_ROOK)
+			{
+				m_All_Rook[m_pr[player_num].clicked_object_num + 2].x = m_pr[player_num].tmp_rt.x;
+				m_All_Rook[m_pr[player_num].clicked_object_num + 2].y = m_pr[player_num].tmp_rt.y;
+				m_All_Rook[m_pr[player_num].clicked_object_num + 2].rt = m_pr[player_num].tmp_rt.rt;
+			}
 		}
 	}
 
@@ -338,6 +360,9 @@ void Game_System::Rook_Check(int num)
 				i = 0;
 				rt_num += 75;
 			}
+			if (m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num == 600) // 무한루프에 넣어줬음
+				// 오른쪽도 뜸, 다른 구문들도 전부확인**
+				break;
 			if (m_All_Pawn[i].status == ALIVE && m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Pawn[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left || m_All_Rook[m_pr[num].clicked_object_num].rt.top == 525 ||
 				i < 2 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left ||
 				i < 2 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left)
@@ -546,7 +571,6 @@ void Game_System::Rook_Check(int num)
 		i = 0;
 		rt_num = 75;
 	}
-
 }
 
 void Game_System::Die_Check(int player_num)

@@ -14,7 +14,7 @@ void Player::Init_Player(HDC hdc, int player_num)
 
 	MemDC = CreateCompatibleDC(hdc);
 
-	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 	old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 	GetObject(hbtmap, sizeof(BITMAP), &btmap);
@@ -300,25 +300,162 @@ int Player::Move_Check(HDC hdc, int x, int y)
 
 	else if (select_num == SELECT_ROOK && m_player_num == 0 && my_turn == TRUE) // 룩
 	{
-	    if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y)
-	    {
-		
-		Cp->m_Rook[clicked_object_num].x = selected_object_rt.left;
-		Cp->m_Rook[clicked_object_num].y = selected_object_rt.top - path_num;
-		Cp->m_Rook[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top - path_num, selected_object_rt.left + 75, selected_object_rt.top - path_num + 75 };
+		while (1)
+		{
+			//앞
+			if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y)
+			{
 
-		tmp_rt.x = selected_object_rt.left;
-		tmp_rt.y = selected_object_rt.top - path_num;
-		tmp_rt.rt = { selected_object_rt.left, selected_object_rt.top - path_num, selected_object_rt.left + 75, selected_object_rt.top - path_num + 75 };
+				Cp->m_Rook[clicked_object_num].x = selected_object_rt.left;
+				Cp->m_Rook[clicked_object_num].y = selected_object_rt.top - path_num;
+				Cp->m_Rook[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top - path_num, selected_object_rt.left + 75, selected_object_rt.top - path_num + 75 };
 
-		select_num = 0;
-		my_turn = FALSE;
-		Cp->m_Rook[clicked_object_num].first_move = TRUE;
-		who_is_moved = clicked_object_num;
-		return TRUE;
+				tmp_rt.x = selected_object_rt.left;
+				tmp_rt.y = selected_object_rt.top - path_num;
+				tmp_rt.rt = { selected_object_rt.left, selected_object_rt.top - path_num, selected_object_rt.left + 75, selected_object_rt.top - path_num + 75 };
 
-	    }
+				select_num = 0;
+				my_turn = FALSE;
+				Cp->m_Rook[clicked_object_num].first_move = TRUE;
+				who_is_moved = clicked_object_num;
+				return TRUE;
+
+			}
+			//뒤
+			else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y)
+			{
+				Cp->m_Rook[clicked_object_num].x = selected_object_rt.left;
+				Cp->m_Rook[clicked_object_num].y = selected_object_rt.top + path_num;
+				Cp->m_Rook[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top + path_num, selected_object_rt.left + 75, selected_object_rt.top + path_num + 75 };
+
+				tmp_rt.x = selected_object_rt.left;
+				tmp_rt.y = selected_object_rt.top + path_num;
+				tmp_rt.rt = { selected_object_rt.left, selected_object_rt.top + path_num, selected_object_rt.left + 75, selected_object_rt.top + path_num + 75 };
+
+				select_num = 0;
+				my_turn = FALSE;
+				Cp->m_Rook[clicked_object_num].first_move = TRUE;
+				who_is_moved = clicked_object_num;
+				return TRUE;
+			}
+			//왼쪽
+			else if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y)
+			{
+				Cp->m_Rook[clicked_object_num].x = selected_object_rt.left - path_num;
+				Cp->m_Rook[clicked_object_num].y = selected_object_rt.top;
+				Cp->m_Rook[clicked_object_num].rt = { selected_object_rt.left - path_num, selected_object_rt.top, selected_object_rt.left - path_num + 75, selected_object_rt.top + 75 };
+
+				tmp_rt.x = selected_object_rt.left - path_num;
+				tmp_rt.y = selected_object_rt.top;
+				tmp_rt.rt = { selected_object_rt.left - path_num, selected_object_rt.top, selected_object_rt.left - path_num + 75, selected_object_rt.top + 75 };
+
+				select_num = 0;
+				my_turn = FALSE;
+				Cp->m_Rook[clicked_object_num].first_move = TRUE;
+				who_is_moved = clicked_object_num;
+				return TRUE;
+			}
+			//오른쪽
+			else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y)
+			{
+				Cp->m_Rook[clicked_object_num].x = selected_object_rt.left + path_num;
+				Cp->m_Rook[clicked_object_num].y = selected_object_rt.top;
+				Cp->m_Rook[clicked_object_num].rt = { selected_object_rt.left + path_num, selected_object_rt.top, selected_object_rt.left + path_num + 75, selected_object_rt.top + 75 };
+
+				tmp_rt.x = selected_object_rt.left + path_num;
+				tmp_rt.y = selected_object_rt.top;
+				tmp_rt.rt = { selected_object_rt.left + path_num, selected_object_rt.top, selected_object_rt.left + path_num + 75, selected_object_rt.top + 75 };
+
+				select_num = 0;
+				my_turn = FALSE;
+				Cp->m_Rook[clicked_object_num].first_move = TRUE;
+				who_is_moved = clicked_object_num;
+				return TRUE;
+			}
+			else
+				path_num += 75;
+		}
 	}
+
+	else if (select_num == SELECT_ROOK && m_player_num == 1 && my_turn == TRUE)
+	{
+	while (1)
+	{
+		//앞
+		if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y)
+		{
+
+			Cp->m_Rook[clicked_object_num].x = selected_object_rt.left;
+			Cp->m_Rook[clicked_object_num].y = selected_object_rt.top + path_num;
+			Cp->m_Rook[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top + path_num, selected_object_rt.left + 75, selected_object_rt.top + path_num + 75 };
+
+			tmp_rt.x = selected_object_rt.left;
+			tmp_rt.y = selected_object_rt.top + path_num;
+			tmp_rt.rt = { selected_object_rt.left, selected_object_rt.top + path_num, selected_object_rt.left + 75, selected_object_rt.top + path_num + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Rook[clicked_object_num].first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+
+		}
+		//뒤
+		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y)
+		{
+			Cp->m_Rook[clicked_object_num].x = selected_object_rt.left;
+			Cp->m_Rook[clicked_object_num].y = selected_object_rt.top - path_num;
+			Cp->m_Rook[clicked_object_num].rt = { selected_object_rt.left, selected_object_rt.top - path_num, selected_object_rt.left + 75, selected_object_rt.top - path_num + 75 };
+
+			tmp_rt.x = selected_object_rt.left;
+			tmp_rt.y = selected_object_rt.top - path_num;
+			tmp_rt.rt = { selected_object_rt.left, selected_object_rt.top - path_num, selected_object_rt.left + 75, selected_object_rt.top - path_num + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Rook[clicked_object_num].first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		//왼쪽
+		else if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y)
+		{
+			Cp->m_Rook[clicked_object_num].x = selected_object_rt.left - path_num;
+			Cp->m_Rook[clicked_object_num].y = selected_object_rt.top;
+			Cp->m_Rook[clicked_object_num].rt = { selected_object_rt.left - path_num, selected_object_rt.top, selected_object_rt.left - path_num + 75, selected_object_rt.top + 75 };
+
+			tmp_rt.x = selected_object_rt.left - path_num;
+			tmp_rt.y = selected_object_rt.top;
+			tmp_rt.rt = { selected_object_rt.left - path_num, selected_object_rt.top, selected_object_rt.left - path_num + 75, selected_object_rt.top + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Rook[clicked_object_num].first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		//오른쪽
+		else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y)
+		{
+			Cp->m_Rook[clicked_object_num].x = selected_object_rt.left + path_num;
+			Cp->m_Rook[clicked_object_num].y = selected_object_rt.top;
+			Cp->m_Rook[clicked_object_num].rt = { selected_object_rt.left + path_num, selected_object_rt.top, selected_object_rt.left + path_num + 75, selected_object_rt.top + 75 };
+
+			tmp_rt.x = selected_object_rt.left + path_num;
+			tmp_rt.y = selected_object_rt.top;
+			tmp_rt.rt = { selected_object_rt.left + path_num, selected_object_rt.top, selected_object_rt.left + path_num + 75, selected_object_rt.top + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Rook[clicked_object_num].first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else
+			path_num += 75;
+	}
+	}
+
 
 	who_is_moved = -1;
 	tmp_rt.x = -1;
