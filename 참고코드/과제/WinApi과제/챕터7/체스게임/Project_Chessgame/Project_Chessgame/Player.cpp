@@ -14,7 +14,7 @@ void Player::Init_Player(HDC hdc, int player_num)
 
 	MemDC = CreateCompatibleDC(hdc);
 
-	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 	old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 	GetObject(hbtmap, sizeof(BITMAP), &btmap);
@@ -120,6 +120,7 @@ void Player::Move_Able_Point(HDC hdc)
 				TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y - path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
 				path_num += 75;
 			}
+			path_num = 75;
 		}
 		if (rook_back != NULL)
 		{
@@ -128,6 +129,7 @@ void Player::Move_Able_Point(HDC hdc)
 				TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y + path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
 				path_num += 75;
 			}
+			path_num = 75;
 		}
 		if (rook_left != NULL)
 		{
@@ -136,6 +138,7 @@ void Player::Move_Able_Point(HDC hdc)
 				TransparentBlt(hdc, clicked_pos_x - path_num + 20, clicked_pos_y + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
 				path_num += 75;
 			}
+			path_num = 75;
 		}
 		if (rook_right != NULL)
 		{
@@ -144,6 +147,7 @@ void Player::Move_Able_Point(HDC hdc)
 				TransparentBlt(hdc, clicked_pos_x + path_num + 20, clicked_pos_y + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
 				path_num += 75;
 			}
+			path_num = 75;
 		}
 	}
 
@@ -156,6 +160,34 @@ void Player::Move_Able_Point(HDC hdc)
 				TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y + path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
 				path_num += 75;
 			}
+			path_num = 75;
+		}
+		if (rook_back != NULL)
+		{
+			for (int i = 0; i < rook_back; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y - path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (rook_left != NULL)
+		{
+			for (int i = 0; i < rook_left; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x - path_num + 20, clicked_pos_y + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (rook_right != NULL)
+		{
+			for (int i = 0; i < rook_right; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + path_num + 20, clicked_pos_y + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
 		}
 	}
 
@@ -164,6 +196,7 @@ void Player::Move_Able_Point(HDC hdc)
 int Player::Move_Check(HDC hdc, int x, int y)
 {
 	int path_num = 75;
+	int count = 0;
 
 	// 클릭한곳으로 말을 옮기는 함수
 	if (select_num == SELECT_PAWN && m_player_num == 0 && my_turn == TRUE) // 폰
@@ -303,6 +336,10 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		while (1)
 		{
 			//앞
+			if (count == rook_front + rook_back + rook_left + rook_right)
+			{
+				break;
+			}
 			if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y)
 			{
 
@@ -373,7 +410,10 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				return TRUE;
 			}
 			else
+			{
 				path_num += 75;
+				count++;
+			}
 		}
 	}
 
@@ -382,6 +422,10 @@ int Player::Move_Check(HDC hdc, int x, int y)
 	while (1)
 	{
 		//앞
+		if (count == rook_front + rook_back + rook_left + rook_right)
+		{
+			break;
+		}
 		if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y)
 		{
 
@@ -452,7 +496,10 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			return TRUE;
 		}
 		else
+		{
 			path_num += 75;
+			count++;
+		}
 	}
 	}
 
