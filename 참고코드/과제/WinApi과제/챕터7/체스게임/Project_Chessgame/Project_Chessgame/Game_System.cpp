@@ -100,7 +100,7 @@ void Game_System::Click(HDC hdc, int x, int y)
 	for (int i = 0; i < 2; i++)
 	{
 		//m_pr[i].select_what = 0;
-		// 무한루프 해결하고 select_what 초기화 자리 찾기**
+		// select_what 초기화 자리 찾기**
 		// 두개 다하고 die_check, pawn_check에 다른말들추가 **
 		trigger = m_pr[i].Move_Check(hdc, x, y);
 		Piece_Rules(i);
@@ -318,7 +318,7 @@ void Game_System::Rook_Check(int num)
 {
 	int i = 0;
 	int rt_num = 75;
-
+	// 여기에 rook_front 초기화?
 	// 재귀함수 고려하기
 	if (m_pr[num].m_player_num == 0 && m_pr[num].clicked_object_num != -1 && m_pr[num].select_what == SELECT_ROOK)
 	{

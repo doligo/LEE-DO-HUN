@@ -336,6 +336,7 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		while (1)
 		{
 			//앞
+			// front_count, back_count 변수 추가해서 해보기**
 			if (count == rook_front + rook_back + rook_left + rook_right)
 			{
 				break;
