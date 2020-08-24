@@ -14,7 +14,7 @@ void Player::Init_Player(HDC hdc, int player_num)
 
 	MemDC = CreateCompatibleDC(hdc);
 
-	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A09\\Desktop\\LEE-DO-HUN\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 	old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 	GetObject(hbtmap, sizeof(BITMAP), &btmap);
@@ -197,6 +197,10 @@ int Player::Move_Check(HDC hdc, int x, int y)
 {
 	int path_num = 75;
 	int count = 0;
+	int front_count = 0;
+	int back_count = 0;
+	int left_count = 0;
+	int right_count = 0;
 
 	// 클릭한곳으로 말을 옮기는 함수
 	if (select_num == SELECT_PAWN && m_player_num == 0 && my_turn == TRUE) // 폰
@@ -336,12 +340,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		while (1)
 		{
 			//앞
-			// front_count, back_count 변수 추가해서 해보기**
 			if (count == rook_front + rook_back + rook_left + rook_right)
 			{
 				break;
 			}
-			if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y)
+			if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y && front_count < rook_front)
 			{
 
 				Cp->m_Rook[clicked_object_num].x = selected_object_rt.left;
@@ -360,7 +363,7 @@ int Player::Move_Check(HDC hdc, int x, int y)
 
 			}
 			//뒤
-			else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y)
+			else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y && back_count < rook_back)
 			{
 				Cp->m_Rook[clicked_object_num].x = selected_object_rt.left;
 				Cp->m_Rook[clicked_object_num].y = selected_object_rt.top + path_num;
@@ -377,7 +380,7 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				return TRUE;
 			}
 			//왼쪽
-			else if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y)
+			else if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && left_count < rook_left)
 			{
 				Cp->m_Rook[clicked_object_num].x = selected_object_rt.left - path_num;
 				Cp->m_Rook[clicked_object_num].y = selected_object_rt.top;
@@ -394,7 +397,7 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				return TRUE;
 			}
 			//오른쪽
-			else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y)
+			else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && right_count < rook_right)
 			{
 				Cp->m_Rook[clicked_object_num].x = selected_object_rt.left + path_num;
 				Cp->m_Rook[clicked_object_num].y = selected_object_rt.top;
@@ -414,6 +417,10 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			{
 				path_num += 75;
 				count++;
+				front_count++;
+				back_count++;
+				left_count++;
+				right_count++;
 			}
 		}
 	}
@@ -427,7 +434,7 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		{
 			break;
 		}
-		if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y)
+		if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y && front_count < rook_front)
 		{
 
 			Cp->m_Rook[clicked_object_num].x = selected_object_rt.left;
@@ -446,7 +453,7 @@ int Player::Move_Check(HDC hdc, int x, int y)
 
 		}
 		//뒤
-		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y)
+		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y && back_count < rook_back)
 		{
 			Cp->m_Rook[clicked_object_num].x = selected_object_rt.left;
 			Cp->m_Rook[clicked_object_num].y = selected_object_rt.top - path_num;
@@ -463,7 +470,7 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			return TRUE;
 		}
 		//왼쪽
-		else if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y)
+		else if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && left_count < rook_left)
 		{
 			Cp->m_Rook[clicked_object_num].x = selected_object_rt.left - path_num;
 			Cp->m_Rook[clicked_object_num].y = selected_object_rt.top;
@@ -480,7 +487,7 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			return TRUE;
 		}
 		//오른쪽
-		else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y)
+		else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && right_count < rook_right)
 		{
 			Cp->m_Rook[clicked_object_num].x = selected_object_rt.left + path_num;
 			Cp->m_Rook[clicked_object_num].y = selected_object_rt.top;
@@ -500,6 +507,10 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		{
 			path_num += 75;
 			count++;
+			front_count++;
+			back_count++;
+			left_count++;
+			right_count++;
 		}
 	}
 	}
