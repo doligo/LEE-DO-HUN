@@ -1,8 +1,9 @@
 #include "chess_pieces.h"
 #pragma once
 
-#define SELECT_PAWN 8
-#define SELECT_ROOK 9
+#define SELECT_PAWN 58
+#define SELECT_ROOK 59
+#define SELECT_KNIGHT 60
 
 class Player
 {

@@ -14,7 +14,7 @@ void Player::Init_Player(HDC hdc, int player_num)
 
 	MemDC = CreateCompatibleDC(hdc);
 
-	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A09\\Desktop\\LEE-DO-HUN\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 	old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 	GetObject(hbtmap, sizeof(BITMAP), &btmap);
@@ -43,7 +43,9 @@ void Player::Player_Pieces_Draw(HDC hdc)
 
 	Cp->Pieces_Draw(hdc, Cp->m_King.x, Cp->m_King.y, "king");
 	Cp->Pieces_Draw(hdc, Cp->m_Queen.x, Cp->m_Queen.y, "queen");
+	if (Cp->m_Rook[0].status == ALIVE)
 	Cp->Pieces_Draw(hdc, Cp->m_Rook[0].x, Cp->m_Rook[0].y, "rook1");
+	if (Cp->m_Rook[1].status == ALIVE)
 	Cp->Pieces_Draw(hdc, Cp->m_Rook[1].x, Cp->m_Rook[1].y, "rook2");
 	Cp->Pieces_Draw(hdc, Cp->m_Bishop[0].x, Cp->m_Bishop[0].y, "bishop1");
 	Cp->Pieces_Draw(hdc, Cp->m_Bishop[1].x, Cp->m_Bishop[1].y, "bishop2");
@@ -92,7 +94,7 @@ void Player::Move_Able_Point(HDC hdc)
 		}
 		if (pawn_front != TRUE)
 			TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
-		if (draw_pawn_path == FALSE && someting == FALSE)
+		if (draw_pawn_path == FALSE && pawn_front != TRUE)
 			TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y - 150 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
 	}
 	else if (select_num == SELECT_PAWN && m_player_num == 1 && my_turn == TRUE)
@@ -106,7 +108,7 @@ void Player::Move_Able_Point(HDC hdc)
 		}
 		if (pawn_front != TRUE)
 			TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y + 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
-		if (draw_pawn_path == FALSE && someting == FALSE)
+		if (draw_pawn_path == FALSE && pawn_front != TRUE)
 			TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y + 150 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
 	}
 
@@ -552,6 +554,17 @@ void Player::Click_Check(HDC hdc, int player_num, int x, int y)
 				selected_object_rt = { Cp->m_Rook[i].rt.left, Cp->m_Rook[i].rt.top, Cp->m_Rook[i].rt.right, Cp->m_Rook[i].rt.bottom };
 				break;
 			}
+			else if (i < 2 && Cp->m_Knight[i].rt.left <= x && Cp->m_Knight[i].rt.right >= x && Cp->m_Knight[i].rt.top <= y && Cp->m_Knight[i].rt.bottom >= y && Cp->m_Knight[i].status == ALIVE)
+			{
+				// knight
+				select_num = SELECT_KNIGHT;
+				select_what = SELECT_KNIGHT;
+				clicked_pos_x = Cp->m_Knight[i].rt.left;
+				clicked_pos_y = Cp->m_Knight[i].rt.top;
+				clicked_object_num = i;
+				selected_object_rt = { Cp->m_Knight[i].rt.left, Cp->m_Knight[i].rt.top, Cp->m_Knight[i].rt.right, Cp->m_Knight[i].rt.bottom };
+				break;
+			}
 			else
 			{
 				clicked_object_num = -1;
@@ -566,6 +579,10 @@ void Player::Player_Die_Check(int piece_num, int dead_num)
 	if (piece_num == 10) // pawn
 	{
 		Cp->m_Pawn[dead_num].status = DEAD;
+	}
+	else if (piece_num == 20) // rook
+	{
+		Cp->m_Rook[dead_num].status = DEAD;
 	}
 }
 
