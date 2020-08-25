@@ -38,6 +38,15 @@ public:
 	int rook_back;
 	int rook_left;
 	int rook_right;
+	//// knight 이동규칙변수
+	int knight_front_left_diagonal1;
+	int knight_front_left_diagonal2;
+	int knight_front_right_diagonal1;
+	int knight_front_right_diagonal2;
+	int knight_back_left_diagonal1;
+	int knight_back_left_diagonal2;
+	int knight_back_right_diagonal1;
+	int knight_back_right_diagonal2;
 
 	void Init_Player(HDC hdc, int player_num);
 	void Player_Pieces_Draw(HDC hdc);

@@ -193,6 +193,28 @@ void Player::Move_Able_Point(HDC hdc)
 		}
 	}
 
+	//// knight
+	else if (select_num == SELECT_KNIGHT && m_player_num == 0 && my_turn == TRUE)
+	{
+	if (knight_front_left_diagonal1 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x - 75 + 20, clicked_pos_y - 150 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (knight_front_left_diagonal2 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x - 150 + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (knight_front_right_diagonal1 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 75 + 20, clicked_pos_y - 150 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (knight_front_right_diagonal2 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 150 + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+    }
+
+
 }
 
 int Player::Move_Check(HDC hdc, int x, int y)
