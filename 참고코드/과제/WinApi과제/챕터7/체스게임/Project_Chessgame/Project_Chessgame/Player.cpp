@@ -14,7 +14,7 @@ void Player::Init_Player(HDC hdc, int player_num)
 
 	MemDC = CreateCompatibleDC(hdc);
 
-	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A09\\Desktop\\LEE-DO-HUN\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 	old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 	GetObject(hbtmap, sizeof(BITMAP), &btmap);
@@ -49,7 +49,9 @@ void Player::Player_Pieces_Draw(HDC hdc)
 	Cp->Pieces_Draw(hdc, Cp->m_Rook[1].x, Cp->m_Rook[1].y, "rook2");
 	Cp->Pieces_Draw(hdc, Cp->m_Bishop[0].x, Cp->m_Bishop[0].y, "bishop1");
 	Cp->Pieces_Draw(hdc, Cp->m_Bishop[1].x, Cp->m_Bishop[1].y, "bishop2");
+	if (Cp->m_Knight[0].status == ALIVE)
 	Cp->Pieces_Draw(hdc, Cp->m_Knight[0].x, Cp->m_Knight[0].y, "knight1");
+	if (Cp->m_Knight[1].status == ALIVE)
 	Cp->Pieces_Draw(hdc, Cp->m_Knight[1].x, Cp->m_Knight[1].y, "knight2");
 
 	for (int i = 0; i < 8; i++)
@@ -212,6 +214,59 @@ void Player::Move_Able_Point(HDC hdc)
 	{
 		TransparentBlt(hdc, clicked_pos_x + 150 + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
 	}
+	if (knight_back_left_diagonal1 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x - 75 + 20, clicked_pos_y + 150 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (knight_back_left_diagonal2 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x - 150 + 20, clicked_pos_y + 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (knight_back_right_diagonal1 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 75 + 20, clicked_pos_y + 150 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (knight_back_right_diagonal2 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 150 + 20, clicked_pos_y + 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+    }
+
+	else if (select_num == SELECT_KNIGHT && m_player_num == 1 && my_turn == TRUE)
+	{
+	if (knight_front_left_diagonal1 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x - 75 + 20, clicked_pos_y + 150 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (knight_front_left_diagonal2 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x - 150 + 20, clicked_pos_y + 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (knight_front_right_diagonal1 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 75 + 20, clicked_pos_y + 150 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (knight_front_right_diagonal2 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 150 + 20, clicked_pos_y + 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (knight_back_left_diagonal1 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x - 75 + 20, clicked_pos_y - 150 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (knight_back_left_diagonal2 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x - 150 + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (knight_back_right_diagonal1 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 75 + 20, clicked_pos_y - 150 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (knight_back_right_diagonal2 != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 150 + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+
     }
 
 
@@ -539,6 +594,14 @@ int Player::Move_Check(HDC hdc, int x, int y)
 	}
 	}
 
+	else if (select_num == SELECT_KNIGHT && m_player_num == 0 && my_turn == TRUE) // 나이트
+	{
+	if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && knight_front_left_diagonal1 != TRUE)
+	{
+
+	}
+    }
+
 
 	who_is_moved = -1;
 	tmp_rt.x = -1;
@@ -605,6 +668,10 @@ void Player::Player_Die_Check(int piece_num, int dead_num)
 	else if (piece_num == 20) // rook
 	{
 		Cp->m_Rook[dead_num].status = DEAD;
+	}
+	else if (piece_num == 30)
+	{
+		Cp->m_Knight[dead_num].status = DEAD;
 	}
 }
 
