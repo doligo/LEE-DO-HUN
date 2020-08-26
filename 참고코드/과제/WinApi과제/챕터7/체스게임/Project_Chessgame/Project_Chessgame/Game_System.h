@@ -14,6 +14,7 @@ public:
 	RECT_AND_STATUS m_All_Pawn[16];
 	RECT_AND_STATUS m_All_Rook[4];
 	RECT_AND_STATUS m_All_Knight[4];
+	RECT_AND_STATUS m_All_Bishop[4];
 	int dead_num;
 
 	void Init_System(HDC hdc, HINSTANCE hinst);
@@ -24,6 +25,7 @@ public:
 	void Pawn_Check(int num);
 	void Rook_Check(int num);
 	void Knight_Check(int num);
+	void Bishop_Check(int num);
 	void Piece_Rules(int num);
 	void Die_Check(int player_num);
 

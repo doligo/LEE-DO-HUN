@@ -4,6 +4,7 @@
 #define SELECT_PAWN 58
 #define SELECT_ROOK 59
 #define SELECT_KNIGHT 60
+#define SELECT_BISHOP 61
 
 class Player
 {

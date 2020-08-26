@@ -14,7 +14,7 @@ void Player::Init_Player(HDC hdc, int player_num)
 
 	MemDC = CreateCompatibleDC(hdc);
 
-	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A09\\Desktop\\LEE-DO-HUN\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 	old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 	GetObject(hbtmap, sizeof(BITMAP), &btmap);
@@ -596,9 +596,249 @@ int Player::Move_Check(HDC hdc, int x, int y)
 
 	else if (select_num == SELECT_KNIGHT && m_player_num == 0 && my_turn == TRUE) // 나이트
 	{
-	if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && knight_front_left_diagonal1 != TRUE)
+	if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top - 150 <= y && selected_object_rt.bottom - 150 >= y && knight_front_left_diagonal1 != TRUE)
 	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left - 75;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top - 150;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left - 75, selected_object_rt.top - 150, selected_object_rt.left - 75 + 75, selected_object_rt.top - 150 + 75 };
 
+		tmp_rt.x = selected_object_rt.left - 75;
+		tmp_rt.y = selected_object_rt.top - 150;
+		tmp_rt.rt = { selected_object_rt.left - 75, selected_object_rt.top - 150, selected_object_rt.left - 75 + 75, selected_object_rt.top - 150 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+	else if (selected_object_rt.left - 150 <= x && selected_object_rt.right - 150 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && knight_front_left_diagonal2 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left - 150;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top - 75;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left - 150, selected_object_rt.top - 75, selected_object_rt.left - 150 + 75, selected_object_rt.top - 75 + 75 };
+
+		tmp_rt.x = selected_object_rt.left - 150;
+		tmp_rt.y = selected_object_rt.top - 75;
+		tmp_rt.rt = { selected_object_rt.left - 150, selected_object_rt.top - 75, selected_object_rt.left - 150 + 75, selected_object_rt.top - 75 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+	else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top - 150 <= y && selected_object_rt.bottom - 150 >= y && knight_front_right_diagonal1 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left + 75;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top - 150;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left + 75, selected_object_rt.top - 150, selected_object_rt.left + 75 + 75, selected_object_rt.top - 150 + 75 };
+
+		tmp_rt.x = selected_object_rt.left + 75;
+		tmp_rt.y = selected_object_rt.top - 150;
+		tmp_rt.rt = { selected_object_rt.left + 75, selected_object_rt.top - 150, selected_object_rt.left + 75 + 75, selected_object_rt.top - 150 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+	else if (selected_object_rt.left + 150 <= x && selected_object_rt.right + 150 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && knight_front_right_diagonal2 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left + 150;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top - 75;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left + 150, selected_object_rt.top - 75, selected_object_rt.left + 150 + 75, selected_object_rt.top - 75 + 75 };
+
+		tmp_rt.x = selected_object_rt.left + 150;
+		tmp_rt.y = selected_object_rt.top - 75;
+		tmp_rt.rt = { selected_object_rt.left + 150, selected_object_rt.top - 75, selected_object_rt.left + 150 + 75, selected_object_rt.top - 75 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+	else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top + 150 <= y && selected_object_rt.bottom + 150 >= y && knight_back_left_diagonal1 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left - 75;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top + 150;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left - 75, selected_object_rt.top + 150, selected_object_rt.left - 75 + 75, selected_object_rt.top + 150 + 75 };
+
+		tmp_rt.x = selected_object_rt.left - 75;
+		tmp_rt.y = selected_object_rt.top + 150;
+		tmp_rt.rt = { selected_object_rt.left - 75, selected_object_rt.top + 150, selected_object_rt.left - 75 + 75, selected_object_rt.top + 150 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+	else if (selected_object_rt.left - 150 <= x && selected_object_rt.right - 150 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && knight_back_left_diagonal2 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left - 150;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top + 75;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left - 150, selected_object_rt.top + 75, selected_object_rt.left - 150 + 75, selected_object_rt.top + 75 + 75 };
+
+		tmp_rt.x = selected_object_rt.left - 150;
+		tmp_rt.y = selected_object_rt.top + 75;
+		tmp_rt.rt = { selected_object_rt.left - 150, selected_object_rt.top + 75, selected_object_rt.left - 150 + 75, selected_object_rt.top + 75 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+	else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top + 150 <= y && selected_object_rt.bottom + 150 >= y && knight_back_right_diagonal1 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left + 75;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top + 150;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left + 75, selected_object_rt.top + 150, selected_object_rt.left + 75 + 75, selected_object_rt.top + 150 + 75 };
+
+		tmp_rt.x = selected_object_rt.left + 75;
+		tmp_rt.y = selected_object_rt.top + 150;
+		tmp_rt.rt = { selected_object_rt.left + 75, selected_object_rt.top + 150, selected_object_rt.left + 75 + 75, selected_object_rt.top + 150 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+	else if (selected_object_rt.left + 150 <= x && selected_object_rt.right + 150 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && knight_back_right_diagonal2 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left + 150;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top + 75;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left + 150, selected_object_rt.top + 75, selected_object_rt.left + 150 + 75, selected_object_rt.top + 75 + 75 };
+
+		tmp_rt.x = selected_object_rt.left + 150;
+		tmp_rt.y = selected_object_rt.top + 75;
+		tmp_rt.rt = { selected_object_rt.left + 150, selected_object_rt.top + 75, selected_object_rt.left + 150 + 75, selected_object_rt.top + 75 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+    }
+
+	else if (select_num == SELECT_KNIGHT && m_player_num == 1 && my_turn == TRUE)
+	{
+	if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top + 150 <= y && selected_object_rt.bottom + 150 >= y && knight_front_left_diagonal1 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left - 75;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top + 150;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left - 75, selected_object_rt.top + 150, selected_object_rt.left - 75 + 75, selected_object_rt.top + 150 + 75 };
+
+		tmp_rt.x = selected_object_rt.left - 75;
+		tmp_rt.y = selected_object_rt.top + 150;
+		tmp_rt.rt = { selected_object_rt.left - 75, selected_object_rt.top + 150, selected_object_rt.left - 75 + 75, selected_object_rt.top + 150 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+	else if (selected_object_rt.left - 150 <= x && selected_object_rt.right - 150 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && knight_front_left_diagonal2 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left - 150;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top + 75;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left - 150, selected_object_rt.top + 75, selected_object_rt.left - 150 + 75, selected_object_rt.top + 75 + 75 };
+
+		tmp_rt.x = selected_object_rt.left - 150;
+		tmp_rt.y = selected_object_rt.top + 75;
+		tmp_rt.rt = { selected_object_rt.left - 150, selected_object_rt.top + 75, selected_object_rt.left - 150 + 75, selected_object_rt.top + 75 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+	else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top + 150 <= y && selected_object_rt.bottom + 150 >= y && knight_front_right_diagonal1 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left + 75;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top + 150;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left + 75, selected_object_rt.top + 150, selected_object_rt.left + 75 + 75, selected_object_rt.top + 150 + 75 };
+
+		tmp_rt.x = selected_object_rt.left + 75;
+		tmp_rt.y = selected_object_rt.top + 150;
+		tmp_rt.rt = { selected_object_rt.left + 75, selected_object_rt.top + 150, selected_object_rt.left + 75 + 75, selected_object_rt.top + 150 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+	else if (selected_object_rt.left + 150 <= x && selected_object_rt.right + 150 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && knight_front_right_diagonal2 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left + 150;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top + 75;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left + 150, selected_object_rt.top + 75, selected_object_rt.left + 150 + 75, selected_object_rt.top + 75 + 75 };
+
+		tmp_rt.x = selected_object_rt.left + 150;
+		tmp_rt.y = selected_object_rt.top + 75;
+		tmp_rt.rt = { selected_object_rt.left + 150, selected_object_rt.top + 75, selected_object_rt.left + 150 + 75, selected_object_rt.top + 75 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+	else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top - 150 <= y && selected_object_rt.bottom - 150 >= y && knight_back_left_diagonal1 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left - 75;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top - 150;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left - 75, selected_object_rt.top - 150, selected_object_rt.left - 75 + 75, selected_object_rt.top - 150 + 75 };
+
+		tmp_rt.x = selected_object_rt.left - 75;
+		tmp_rt.y = selected_object_rt.top - 150;
+		tmp_rt.rt = { selected_object_rt.left - 75, selected_object_rt.top - 150, selected_object_rt.left - 75 + 75, selected_object_rt.top - 150 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+	else if (selected_object_rt.left - 150 <= x && selected_object_rt.right - 150 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && knight_back_left_diagonal2 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left - 150;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top - 75;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left - 150, selected_object_rt.top - 75, selected_object_rt.left - 150 + 75, selected_object_rt.top - 75 + 75 };
+
+		tmp_rt.x = selected_object_rt.left - 150;
+		tmp_rt.y = selected_object_rt.top - 75;
+		tmp_rt.rt = { selected_object_rt.left - 150, selected_object_rt.top - 75, selected_object_rt.left - 150 + 75, selected_object_rt.top - 75 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+	else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top - 150 <= y && selected_object_rt.bottom - 150 >= y && knight_back_right_diagonal1 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left + 75;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top - 150;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left + 75, selected_object_rt.top - 150, selected_object_rt.left + 75 + 75, selected_object_rt.top - 150 + 75 };
+
+		tmp_rt.x = selected_object_rt.left + 75;
+		tmp_rt.y = selected_object_rt.top - 150;
+		tmp_rt.rt = { selected_object_rt.left + 75, selected_object_rt.top - 150, selected_object_rt.left + 75 + 75, selected_object_rt.top - 150 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+	}
+	else if (selected_object_rt.left + 150 <= x && selected_object_rt.right + 150 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && knight_back_right_diagonal2 != TRUE)
+	{
+		Cp->m_Knight[clicked_object_num].x = selected_object_rt.left + 150;
+		Cp->m_Knight[clicked_object_num].y = selected_object_rt.top - 75;
+		Cp->m_Knight[clicked_object_num].rt = { selected_object_rt.left + 150, selected_object_rt.top - 75, selected_object_rt.left + 150 + 75, selected_object_rt.top - 75 + 75 };
+
+		tmp_rt.x = selected_object_rt.left + 150;
+		tmp_rt.y = selected_object_rt.top - 75;
+		tmp_rt.rt = { selected_object_rt.left + 150, selected_object_rt.top - 75, selected_object_rt.left + 150 + 75, selected_object_rt.top - 75 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
 	}
     }
 
@@ -648,6 +888,17 @@ void Player::Click_Check(HDC hdc, int player_num, int x, int y)
 				clicked_pos_y = Cp->m_Knight[i].rt.top;
 				clicked_object_num = i;
 				selected_object_rt = { Cp->m_Knight[i].rt.left, Cp->m_Knight[i].rt.top, Cp->m_Knight[i].rt.right, Cp->m_Knight[i].rt.bottom };
+				break;
+			}
+			else if (i < 2 && Cp->m_Bishop[i].rt.left <= x && Cp->m_Bishop[i].rt.right >= x && Cp->m_Bishop[i].rt.top <= y && Cp->m_Bishop[i].rt.bottom >= y && Cp->m_Bishop[i].status == ALIVE)
+			{
+				// bishop
+				select_num = SELECT_BISHOP;
+				select_what = SELECT_BISHOP;
+				clicked_pos_x = Cp->m_Bishop[i].rt.left;
+				clicked_pos_y = Cp->m_Bishop[i].rt.top;
+				clicked_object_num = i;
+				selected_object_rt = { Cp->m_Bishop[i].rt.left, Cp->m_Bishop[i].rt.top, Cp->m_Bishop[i].rt.right, Cp->m_Bishop[i].rt.bottom };
 				break;
 			}
 			else
