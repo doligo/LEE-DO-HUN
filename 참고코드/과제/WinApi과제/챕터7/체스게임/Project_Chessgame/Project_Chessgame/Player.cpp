@@ -14,7 +14,7 @@ void Player::Init_Player(HDC hdc, int player_num)
 
 	MemDC = CreateCompatibleDC(hdc);
 
-	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 	old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 	GetObject(hbtmap, sizeof(BITMAP), &btmap);
@@ -269,6 +269,68 @@ void Player::Move_Able_Point(HDC hdc)
 
     }
 
+	//// bishop
+	else if (select_num == SELECT_BISHOP && m_player_num == 0 && my_turn == TRUE)
+	{
+		if (bishop_front_left_diagonal != NULL)
+		{
+			for (int i = 0; i < bishop_front_left_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x - path_num + 20, clicked_pos_y - path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (bishop_front_right_diagonal != NULL)
+		{
+			for (int i = 0; i < bishop_front_right_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + path_num + 20, clicked_pos_y - path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (bishop_back_left_diagonal != NULL)
+		{
+			for (int i = 0; i < bishop_back_left_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x - path_num + 20, clicked_pos_y + path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (bishop_back_right_diagonal != NULL)
+		{
+			for (int i = 0; i < bishop_back_right_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + path_num + 20, clicked_pos_y + path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+    }
+
+	else if (select_num == SELECT_BISHOP && m_player_num == 1 && my_turn == TRUE)
+	{
+		if (bishop_front_left_diagonal != NULL)
+		{
+			for (int i = 0; i < bishop_front_left_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x - path_num + 20, clicked_pos_y + path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (bishop_front_right_diagonal != NULL)
+		{
+			for (int i = 0; i < bishop_front_right_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + path_num + 20, clicked_pos_y + path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+    }
 
 }
 

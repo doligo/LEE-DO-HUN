@@ -48,6 +48,11 @@ public:
 	int knight_back_left_diagonal2;
 	int knight_back_right_diagonal1;
 	int knight_back_right_diagonal2;
+	//// bishop 이동규칙변수
+	int bishop_front_left_diagonal;
+	int bishop_front_right_diagonal;
+	int bishop_back_left_diagonal;
+	int bishop_back_right_diagonal;
 
 	void Init_Player(HDC hdc, int player_num);
 	void Player_Pieces_Draw(HDC hdc);
