@@ -15,6 +15,7 @@ public:
 	RECT_AND_STATUS m_All_Rook[4];
 	RECT_AND_STATUS m_All_Knight[4];
 	RECT_AND_STATUS m_All_Bishop[4];
+	RECT_AND_STATUS m_All_Queen[2];
 	int dead_num;
 
 	void Init_System(HDC hdc, HINSTANCE hinst);

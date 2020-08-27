@@ -14,7 +14,7 @@ void Player::Init_Player(HDC hdc, int player_num)
 
 	MemDC = CreateCompatibleDC(hdc);
 
-	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\A-12\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 	old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 	GetObject(hbtmap, sizeof(BITMAP), &btmap);
@@ -47,7 +47,9 @@ void Player::Player_Pieces_Draw(HDC hdc)
 	Cp->Pieces_Draw(hdc, Cp->m_Rook[0].x, Cp->m_Rook[0].y, "rook1");
 	if (Cp->m_Rook[1].status == ALIVE)
 	Cp->Pieces_Draw(hdc, Cp->m_Rook[1].x, Cp->m_Rook[1].y, "rook2");
+	if (Cp->m_Bishop[0].status == ALIVE)
 	Cp->Pieces_Draw(hdc, Cp->m_Bishop[0].x, Cp->m_Bishop[0].y, "bishop1");
+	if (Cp->m_Bishop[1].status == ALIVE)
 	Cp->Pieces_Draw(hdc, Cp->m_Bishop[1].x, Cp->m_Bishop[1].y, "bishop2");
 	if (Cp->m_Knight[0].status == ALIVE)
 	Cp->Pieces_Draw(hdc, Cp->m_Knight[0].x, Cp->m_Knight[0].y, "knight1");
@@ -330,6 +332,24 @@ void Player::Move_Able_Point(HDC hdc)
 			}
 			path_num = 75;
 		}
+		if (bishop_back_left_diagonal != NULL)
+		{
+			for (int i = 0; i < bishop_back_left_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x - path_num + 20, clicked_pos_y - path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (bishop_back_right_diagonal != NULL)
+		{
+			for (int i = 0; i < bishop_back_right_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + path_num + 20, clicked_pos_y - path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
     }
 
 }
@@ -338,10 +358,16 @@ int Player::Move_Check(HDC hdc, int x, int y)
 {
 	int path_num = 75;
 	int count = 0;
+
 	int front_count = 0;
 	int back_count = 0;
 	int left_count = 0;
 	int right_count = 0;
+
+	int front_left_count = 0;
+	int front_right_count = 0;
+	int back_left_count = 0;
+	int back_right_count = 0;
 
 	// 클릭한곳으로 말을 옮기는 함수
 	if (select_num == SELECT_PAWN && m_player_num == 0 && my_turn == TRUE) // 폰
@@ -904,6 +930,186 @@ int Player::Move_Check(HDC hdc, int x, int y)
 	}
     }
 
+	else if (select_num == SELECT_BISHOP && m_player_num == 0 && my_turn == TRUE)
+	{
+		while (1)
+		{
+			//앞의 왼쪽대각
+			if (count == bishop_front_left_diagonal + bishop_front_right_diagonal + bishop_back_left_diagonal + bishop_back_right_diagonal)
+			{
+				break;
+			}
+			if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y && front_left_count < bishop_front_left_diagonal)
+			{
+
+				Cp->m_Bishop[clicked_object_num].x = selected_object_rt.left - path_num;
+				Cp->m_Bishop[clicked_object_num].y = selected_object_rt.top - path_num;
+				Cp->m_Bishop[clicked_object_num].rt = { selected_object_rt.left - path_num, selected_object_rt.top - path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top - path_num + 75 };
+
+				tmp_rt.x = selected_object_rt.left - path_num;
+				tmp_rt.y = selected_object_rt.top - path_num;
+				tmp_rt.rt = { selected_object_rt.left - path_num, selected_object_rt.top - path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top - path_num + 75 };
+
+				select_num = 0;
+				my_turn = FALSE;
+				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
+				who_is_moved = clicked_object_num;
+				return TRUE;
+
+			}
+			//앞의 오른쪽대각
+			else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y && front_right_count < bishop_front_right_diagonal)
+			{
+				Cp->m_Bishop[clicked_object_num].x = selected_object_rt.left + path_num;
+				Cp->m_Bishop[clicked_object_num].y = selected_object_rt.top - path_num;
+				Cp->m_Bishop[clicked_object_num].rt = { selected_object_rt.left + path_num, selected_object_rt.top - path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top - path_num + 75 };
+
+				tmp_rt.x = selected_object_rt.left + path_num;
+				tmp_rt.y = selected_object_rt.top - path_num;
+				tmp_rt.rt = { selected_object_rt.left + path_num, selected_object_rt.top - path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top - path_num + 75 };
+
+				select_num = 0;
+				my_turn = FALSE;
+				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
+				who_is_moved = clicked_object_num;
+				return TRUE;
+			}
+			//뒤의 왼쪽대각
+			else if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y && back_left_count < bishop_back_left_diagonal)
+			{
+
+				Cp->m_Bishop[clicked_object_num].x = selected_object_rt.left - path_num;
+				Cp->m_Bishop[clicked_object_num].y = selected_object_rt.top + path_num;
+				Cp->m_Bishop[clicked_object_num].rt = { selected_object_rt.left - path_num, selected_object_rt.top + path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top + path_num + 75 };
+
+				tmp_rt.x = selected_object_rt.left - path_num;
+				tmp_rt.y = selected_object_rt.top + path_num;
+				tmp_rt.rt = { selected_object_rt.left - path_num, selected_object_rt.top + path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top + path_num + 75 };
+
+				select_num = 0;
+				my_turn = FALSE;
+				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
+				who_is_moved = clicked_object_num;
+				return TRUE;
+
+			}
+			//뒤의 오른쪽대각
+			else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y && back_right_count < bishop_back_right_diagonal)
+			{
+				Cp->m_Bishop[clicked_object_num].x = selected_object_rt.left + path_num;
+				Cp->m_Bishop[clicked_object_num].y = selected_object_rt.top + path_num;
+				Cp->m_Bishop[clicked_object_num].rt = { selected_object_rt.left + path_num, selected_object_rt.top + path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top + path_num + 75 };
+
+				tmp_rt.x = selected_object_rt.left + path_num;
+				tmp_rt.y = selected_object_rt.top + path_num;
+				tmp_rt.rt = { selected_object_rt.left + path_num, selected_object_rt.top + path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top + path_num + 75 };
+
+				select_num = 0;
+				my_turn = FALSE;
+				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
+				who_is_moved = clicked_object_num;
+				return TRUE;
+			}
+			else
+			{
+				path_num += 75;
+				count++;
+				front_left_count++;
+				front_right_count++;
+				back_left_count++;
+				back_right_count++;
+			}
+		}
+    }
+
+	else if (select_num == SELECT_BISHOP && m_player_num == 1 && my_turn == TRUE)
+	{
+		while (1)
+		{
+			//앞의 왼쪽대각
+			if (count == bishop_front_left_diagonal + bishop_front_right_diagonal + bishop_back_left_diagonal + bishop_back_right_diagonal)
+			{
+				break;
+			}
+			if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y && front_left_count < bishop_front_left_diagonal)
+			{
+				Cp->m_Bishop[clicked_object_num].x = selected_object_rt.left - path_num;
+				Cp->m_Bishop[clicked_object_num].y = selected_object_rt.top + path_num;
+				Cp->m_Bishop[clicked_object_num].rt = { selected_object_rt.left - path_num, selected_object_rt.top + path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top + path_num + 75 };
+
+				tmp_rt.x = selected_object_rt.left - path_num;
+				tmp_rt.y = selected_object_rt.top + path_num;
+				tmp_rt.rt = { selected_object_rt.left - path_num, selected_object_rt.top + path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top + path_num + 75 };
+
+				select_num = 0;
+				my_turn = FALSE;
+				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
+				who_is_moved = clicked_object_num;
+				return TRUE;
+			}
+			//앞의 오른쪽대각
+			else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y && front_right_count < bishop_front_right_diagonal)
+			{
+				Cp->m_Bishop[clicked_object_num].x = selected_object_rt.left + path_num;
+				Cp->m_Bishop[clicked_object_num].y = selected_object_rt.top + path_num;
+				Cp->m_Bishop[clicked_object_num].rt = { selected_object_rt.left + path_num, selected_object_rt.top + path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top + path_num + 75 };
+
+				tmp_rt.x = selected_object_rt.left + path_num;
+				tmp_rt.y = selected_object_rt.top + path_num;
+				tmp_rt.rt = { selected_object_rt.left + path_num, selected_object_rt.top + path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top + path_num + 75 };
+
+				select_num = 0;
+				my_turn = FALSE;
+				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
+				who_is_moved = clicked_object_num;
+				return TRUE;
+			}
+			//뒤의 왼쪽대각
+			else if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y && back_left_count < bishop_back_left_diagonal)
+			{
+				Cp->m_Bishop[clicked_object_num].x = selected_object_rt.left - path_num;
+				Cp->m_Bishop[clicked_object_num].y = selected_object_rt.top - path_num;
+				Cp->m_Bishop[clicked_object_num].rt = { selected_object_rt.left - path_num, selected_object_rt.top - path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top - path_num + 75 };
+
+				tmp_rt.x = selected_object_rt.left - path_num;
+				tmp_rt.y = selected_object_rt.top - path_num;
+				tmp_rt.rt = { selected_object_rt.left - path_num, selected_object_rt.top - path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top - path_num + 75 };
+
+				select_num = 0;
+				my_turn = FALSE;
+				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
+				who_is_moved = clicked_object_num;
+				return TRUE;
+			}
+			//뒤의 오른쪽대각
+			else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y && back_right_count < bishop_back_right_diagonal)
+			{
+				Cp->m_Bishop[clicked_object_num].x = selected_object_rt.left + path_num;
+				Cp->m_Bishop[clicked_object_num].y = selected_object_rt.top - path_num;
+				Cp->m_Bishop[clicked_object_num].rt = { selected_object_rt.left + path_num, selected_object_rt.top - path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top - path_num + 75 };
+
+				tmp_rt.x = selected_object_rt.left + path_num;
+				tmp_rt.y = selected_object_rt.top - path_num;
+				tmp_rt.rt = { selected_object_rt.left + path_num, selected_object_rt.top - path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top - path_num + 75 };
+
+				select_num = 0;
+				my_turn = FALSE;
+				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
+				who_is_moved = clicked_object_num;
+				return TRUE;
+			}
+			else
+			{
+				path_num += 75;
+				count++;
+				front_left_count++;
+				front_right_count++;
+				back_left_count++;
+				back_right_count++;
+			}
+		}
+    }
+
 
 	who_is_moved = -1;
 	tmp_rt.x = -1;
@@ -963,6 +1169,10 @@ void Player::Click_Check(HDC hdc, int player_num, int x, int y)
 				selected_object_rt = { Cp->m_Bishop[i].rt.left, Cp->m_Bishop[i].rt.top, Cp->m_Bishop[i].rt.right, Cp->m_Bishop[i].rt.bottom };
 				break;
 			}
+			else if (i < 1 && Cp->m_Queen[i].rt.left <= x && Cp->m_Queen[i].rt.right >= x && Cp->m_Queen[i].rt.top <= y && Cp->m_Queen[i].rt.bottom >= y && Cp->m_Queen[i].status == ALIVE)
+			{
+				Cp->m_Queen[i].
+			}
 			else
 			{
 				clicked_object_num = -1;
@@ -985,6 +1195,10 @@ void Player::Player_Die_Check(int piece_num, int dead_num)
 	else if (piece_num == 30)
 	{
 		Cp->m_Knight[dead_num].status = DEAD;
+	}
+	else if (piece_num == 40)
+	{
+		Cp->m_Bishop[dead_num].status = DEAD;
 	}
 }
 
