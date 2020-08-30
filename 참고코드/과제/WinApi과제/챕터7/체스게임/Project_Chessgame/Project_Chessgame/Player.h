@@ -5,6 +5,7 @@
 #define SELECT_ROOK 59
 #define SELECT_KNIGHT 60
 #define SELECT_BISHOP 61
+#define SELECT_QUEEN 62
 
 class Player
 {
@@ -53,6 +54,15 @@ public:
 	int bishop_front_right_diagonal;
 	int bishop_back_left_diagonal;
 	int bishop_back_right_diagonal;
+	//// queen 이동규칙변수
+	int queen_front;
+	int queen_front_left_diagonal;
+	int queen_front_right_diagonal;
+	int queen_left;
+	int queen_right;
+	int queen_back;
+	int queen_back_left_diagonal;
+	int queen_back_right_diagonal;
 
 	void Init_Player(HDC hdc, int player_num);
 	void Player_Pieces_Draw(HDC hdc);

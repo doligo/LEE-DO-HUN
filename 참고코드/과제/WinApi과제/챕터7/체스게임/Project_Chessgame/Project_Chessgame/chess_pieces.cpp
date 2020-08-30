@@ -92,7 +92,7 @@ void chess_pieces::Init_pieces(HDC hdc, int player_num)
 		m_Queen.x = 225;
 		m_Queen.y = 0;
 		m_Queen.draw = FALSE;
-		m_Queen.rt = { 255, 0, 300, 75 };
+		m_Queen.rt = { 225, 0, 300, 75 };
 		m_Queen.status = ALIVE;
 
 		m_Rook[0].x = 0;

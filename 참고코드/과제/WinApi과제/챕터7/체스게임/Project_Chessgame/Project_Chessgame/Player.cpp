@@ -352,6 +352,158 @@ void Player::Move_Able_Point(HDC hdc)
 		}
     }
 
+	//// queen
+	else if (select_num == SELECT_QUEEN && m_player_num == 0 && my_turn == TRUE)
+	{
+		if (queen_front != NULL)
+		{
+			for (int i = 0; i < queen_front; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y - path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (queen_front_left_diagonal != NULL)
+		{
+			for (int i = 0; i < queen_front_left_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x - path_num + 20, clicked_pos_y - path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (queen_front_right_diagonal != NULL)
+		{
+			for (int i = 0; i < queen_front_right_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + path_num + 20, clicked_pos_y - path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (queen_left != NULL)
+		{
+			for (int i = 0; i < queen_left; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x - path_num + 20, clicked_pos_y + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (queen_right != NULL)
+		{
+			for (int i = 0; i < queen_right; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + path_num + 20, clicked_pos_y + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (queen_back != NULL)
+		{
+			for (int i = 0; i < queen_back; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y + path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (queen_back_left_diagonal != NULL)
+		{
+			for (int i = 0; i < queen_back_left_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x - path_num + 20, clicked_pos_y + path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (queen_back_right_diagonal != NULL)
+		{
+			for (int i = 0; i < queen_back_right_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + path_num + 20, clicked_pos_y + path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+    }
+
+	else if (select_num == SELECT_QUEEN && m_player_num == 1 && my_turn == TRUE)
+	{
+		if (queen_front != NULL)
+		{
+			for (int i = 0; i < queen_front; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y + path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (queen_front_left_diagonal != NULL)
+		{
+			for (int i = 0; i < queen_front_left_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x - path_num + 20, clicked_pos_y + path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (queen_front_right_diagonal != NULL)
+		{
+			for (int i = 0; i < queen_front_right_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + path_num + 20, clicked_pos_y + path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (queen_left != NULL)
+		{
+			for (int i = 0; i < queen_left; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x - path_num + 20, clicked_pos_y + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (queen_right != NULL)
+		{
+			for (int i = 0; i < queen_right; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + path_num + 20, clicked_pos_y + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (queen_back != NULL)
+		{
+			for (int i = 0; i < queen_back; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y - path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (queen_back_left_diagonal != NULL)
+		{
+			for (int i = 0; i < queen_back_left_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x - path_num + 20, clicked_pos_y - path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+		if (queen_back_right_diagonal != NULL)
+		{
+			for (int i = 0; i < queen_back_right_diagonal; i++)
+			{
+				TransparentBlt(hdc, clicked_pos_x + path_num + 20, clicked_pos_y - path_num + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+				path_num += 75;
+			}
+			path_num = 75;
+		}
+    }
 }
 
 int Player::Move_Check(HDC hdc, int x, int y)
@@ -1110,6 +1262,34 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		}
     }
 
+	else if (select_num == SELECT_QUEEN && m_player_num == 0 && my_turn == TRUE) // Äý
+	{
+	while (1)
+	{
+		if (count == queen_front + queen_front_left_diagonal + queen_front_right_diagonal + queen_left + queen_right + queen_back + queen_back_left_diagonal + queen_back_right_diagonal)
+		{
+			break;
+		}
+		if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y && front_count < queen_front)
+		{
+			Cp->m_Queen.x = selected_object_rt.left;
+			Cp->m_Queen.y = selected_object_rt.top - path_num;
+			Cp->m_Queen.rt = { selected_object_rt.left, selected_object_rt.top - path_num, selected_object_rt.left + 75, selected_object_rt.top - path_num + 75 };
+
+			tmp_rt.x = selected_object_rt.left;
+			tmp_rt.y = selected_object_rt.top - path_num;
+			tmp_rt.rt = { selected_object_rt.left, selected_object_rt.top - path_num, selected_object_rt.left + 75, selected_object_rt.top - path_num + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Queen.first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+
+		}
+	}
+    }
+
 
 	who_is_moved = -1;
 	tmp_rt.x = -1;
@@ -1169,9 +1349,15 @@ void Player::Click_Check(HDC hdc, int player_num, int x, int y)
 				selected_object_rt = { Cp->m_Bishop[i].rt.left, Cp->m_Bishop[i].rt.top, Cp->m_Bishop[i].rt.right, Cp->m_Bishop[i].rt.bottom };
 				break;
 			}
-			else if (i < 1 && Cp->m_Queen[i].rt.left <= x && Cp->m_Queen[i].rt.right >= x && Cp->m_Queen[i].rt.top <= y && Cp->m_Queen[i].rt.bottom >= y && Cp->m_Queen[i].status == ALIVE)
+			else if (i < 1 && Cp->m_Queen.rt.left <= x && Cp->m_Queen.rt.right >= x && Cp->m_Queen.rt.top <= y && Cp->m_Queen.rt.bottom >= y && Cp->m_Queen.status == ALIVE)
 			{
-				Cp->m_Queen[i].
+				select_num = SELECT_QUEEN;
+				select_what = SELECT_QUEEN;
+				clicked_pos_x = Cp->m_Queen.rt.left;
+				clicked_pos_y = Cp->m_Queen.rt.top;
+				clicked_object_num = i;
+				selected_object_rt = { Cp->m_Queen.rt.left, Cp->m_Queen.rt.top, Cp->m_Queen.rt.right, Cp->m_Queen.rt.bottom };
+				break;
 			}
 			else
 			{
