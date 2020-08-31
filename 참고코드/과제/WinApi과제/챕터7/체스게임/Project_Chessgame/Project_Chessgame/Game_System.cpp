@@ -111,7 +111,7 @@ void Game_System::Click(HDC hdc, int x, int y)
 		m_pr[i].Click_Check(hdc, i, x, y);
 		Pawn_Check(i); // 나중에 check 함수 다 합치기
 		Rook_Check(i); // **다른체크들에 queen 추가, move_check, die_check
-		Knight_Check(i);
+		Knight_Check(i); // ** queen_check 오류수정
 		Bishop_Check(i);
 		Queen_Check(i);
 
@@ -283,6 +283,12 @@ void Game_System::All_Piece_Pos(int player_num)
 				m_All_Bishop[m_pr[player_num].clicked_object_num].y = m_pr[player_num].tmp_rt.y;
 				m_All_Bishop[m_pr[player_num].clicked_object_num].rt = m_pr[player_num].tmp_rt.rt;
 			}
+			else if (m_pr[player_num].select_what == SELECT_QUEEN)
+			{
+				m_All_Queen[m_pr[player_num].clicked_object_num].x = m_pr[player_num].tmp_rt.x;
+				m_All_Queen[m_pr[player_num].clicked_object_num].y = m_pr[player_num].tmp_rt.y;
+				m_All_Queen[m_pr[player_num].clicked_object_num].rt = m_pr[player_num].tmp_rt.rt;
+			}
 		}
 
 		else if (player_num == 1)
@@ -310,6 +316,12 @@ void Game_System::All_Piece_Pos(int player_num)
 				m_All_Bishop[m_pr[player_num].clicked_object_num + 2].x = m_pr[player_num].tmp_rt.x;
 				m_All_Bishop[m_pr[player_num].clicked_object_num + 2].y = m_pr[player_num].tmp_rt.y;
 				m_All_Bishop[m_pr[player_num].clicked_object_num + 2].rt = m_pr[player_num].tmp_rt.rt;
+			}
+			else if (m_pr[player_num].select_what == SELECT_QUEEN)
+			{
+				m_All_Queen[m_pr[player_num].clicked_object_num].x = m_pr[player_num].tmp_rt.x;
+				m_All_Queen[m_pr[player_num].clicked_object_num].y = m_pr[player_num].tmp_rt.y;
+				m_All_Queen[m_pr[player_num].clicked_object_num].rt = m_pr[player_num].tmp_rt.rt;
 			}
 		}
 	}

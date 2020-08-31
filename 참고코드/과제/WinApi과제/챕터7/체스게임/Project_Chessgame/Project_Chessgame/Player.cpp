@@ -1272,6 +1272,7 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		}
 		if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y && front_count < queen_front)
 		{
+			// 앞
 			Cp->m_Queen.x = selected_object_rt.left;
 			Cp->m_Queen.y = selected_object_rt.top - path_num;
 			Cp->m_Queen.rt = { selected_object_rt.left, selected_object_rt.top - path_num, selected_object_rt.left + 75, selected_object_rt.top - path_num + 75 };
@@ -1286,6 +1287,313 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			who_is_moved = clicked_object_num;
 			return TRUE;
 
+		}
+		else if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y && front_left_count < queen_front_left_diagonal)
+		{
+			// 앞의 왼쪽대각
+			Cp->m_Queen.x = selected_object_rt.left - path_num;
+			Cp->m_Queen.y = selected_object_rt.top - path_num;
+			Cp->m_Queen.rt = { selected_object_rt.left - path_num, selected_object_rt.top - path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top - path_num + 75 };
+
+			tmp_rt.x = selected_object_rt.left - path_num;
+			tmp_rt.y = selected_object_rt.top - path_num;
+			tmp_rt.rt = { selected_object_rt.left - path_num, selected_object_rt.top - path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top - path_num + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Queen.first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+
+		}
+		else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y && front_right_count < queen_front_right_diagonal)
+		{
+			// 앞의 오른쪽대각
+			Cp->m_Queen.x = selected_object_rt.left + path_num;
+			Cp->m_Queen.y = selected_object_rt.top - path_num;
+			Cp->m_Queen.rt = { selected_object_rt.left + path_num, selected_object_rt.top - path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top - path_num + 75 };
+
+			tmp_rt.x = selected_object_rt.left + path_num;
+			tmp_rt.y = selected_object_rt.top - path_num;
+			tmp_rt.rt = { selected_object_rt.left + path_num, selected_object_rt.top - path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top - path_num + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Queen.first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+
+		}
+		else if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && left_count < queen_left)
+		{
+			// 왼쪽
+			Cp->m_Queen.x = selected_object_rt.left - path_num;
+			Cp->m_Queen.y = selected_object_rt.top;
+			Cp->m_Queen.rt = { selected_object_rt.left - path_num, selected_object_rt.top, selected_object_rt.left - path_num + 75, selected_object_rt.top + 75 };
+
+			tmp_rt.x = selected_object_rt.left - path_num;
+			tmp_rt.y = selected_object_rt.top;
+			tmp_rt.rt = { selected_object_rt.left - path_num, selected_object_rt.top, selected_object_rt.left - path_num + 75, selected_object_rt.top + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Queen.first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+
+		}
+		else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && right_count < queen_right)
+		{
+			// 오른쪽
+			Cp->m_Queen.x = selected_object_rt.left + path_num;
+			Cp->m_Queen.y = selected_object_rt.top;
+			Cp->m_Queen.rt = { selected_object_rt.left + path_num, selected_object_rt.top, selected_object_rt.left + path_num + 75, selected_object_rt.top + 75 };
+
+			tmp_rt.x = selected_object_rt.left + path_num;
+			tmp_rt.y = selected_object_rt.top;
+			tmp_rt.rt = { selected_object_rt.left + path_num, selected_object_rt.top, selected_object_rt.left + path_num + 75, selected_object_rt.top + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Queen.first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+
+		}
+		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y && back_count < queen_back)
+		{
+			// 뒤
+			Cp->m_Queen.x = selected_object_rt.left;
+			Cp->m_Queen.y = selected_object_rt.top + path_num;
+			Cp->m_Queen.rt = { selected_object_rt.left, selected_object_rt.top + path_num, selected_object_rt.left + 75, selected_object_rt.top + path_num + 75 };
+
+			tmp_rt.x = selected_object_rt.left;
+			tmp_rt.y = selected_object_rt.top + path_num;
+			tmp_rt.rt = { selected_object_rt.left, selected_object_rt.top + path_num, selected_object_rt.left + 75, selected_object_rt.top + path_num + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Queen.first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+
+		}
+		else if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y && back_left_count < queen_back_left_diagonal)
+		{
+		// 뒤의 왼쪽대각
+		Cp->m_Queen.x = selected_object_rt.left - path_num;
+		Cp->m_Queen.y = selected_object_rt.top + path_num;
+		Cp->m_Queen.rt = { selected_object_rt.left - path_num, selected_object_rt.top + path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top + path_num + 75 };
+
+		tmp_rt.x = selected_object_rt.left - path_num;
+		tmp_rt.y = selected_object_rt.top + path_num;
+		tmp_rt.rt = { selected_object_rt.left - path_num, selected_object_rt.top + path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top + path_num + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		Cp->m_Queen.first_move = TRUE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+
+		}
+		else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y && back_right_count < queen_back_right_diagonal)
+		{
+		// 뒤의 오른쪽대각
+		Cp->m_Queen.x = selected_object_rt.left + path_num;
+		Cp->m_Queen.y = selected_object_rt.top + path_num;
+		Cp->m_Queen.rt = { selected_object_rt.left + path_num, selected_object_rt.top + path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top + path_num + 75 };
+
+		tmp_rt.x = selected_object_rt.left + path_num;
+		tmp_rt.y = selected_object_rt.top + path_num;
+		tmp_rt.rt = { selected_object_rt.left + path_num, selected_object_rt.top + path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top + path_num + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		Cp->m_Queen.first_move = TRUE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+
+		}
+		else
+		{
+			path_num += 75;
+			count++;
+			front_count++;
+			back_count++;
+			left_count++;
+			right_count++;
+			front_left_count++;
+			front_right_count++;
+			back_left_count++;
+			back_right_count++;
+		}
+	}
+    }
+
+	else if (select_num == SELECT_QUEEN && m_player_num == 1 && my_turn == TRUE)
+	{
+	while (1)
+	{
+		if (count == queen_front + queen_front_left_diagonal + queen_front_right_diagonal + queen_left + queen_right + queen_back + queen_back_left_diagonal + queen_back_right_diagonal)
+		{
+			break;
+		}
+		if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y && front_count < queen_front)
+		{
+			// 앞
+			Cp->m_Queen.x = selected_object_rt.left;
+			Cp->m_Queen.y = selected_object_rt.top + path_num;
+			Cp->m_Queen.rt = { selected_object_rt.left, selected_object_rt.top + path_num, selected_object_rt.left + 75, selected_object_rt.top + path_num + 75 };
+
+			tmp_rt.x = selected_object_rt.left;
+			tmp_rt.y = selected_object_rt.top + path_num;
+			tmp_rt.rt = { selected_object_rt.left, selected_object_rt.top + path_num, selected_object_rt.left + 75, selected_object_rt.top + path_num + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Queen.first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+
+		}
+		else if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y && front_left_count < queen_front_left_diagonal)
+		{
+			// 앞의 왼쪽대각
+			Cp->m_Queen.x = selected_object_rt.left - path_num;
+			Cp->m_Queen.y = selected_object_rt.top + path_num;
+			Cp->m_Queen.rt = { selected_object_rt.left - path_num, selected_object_rt.top + path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top + path_num + 75 };
+
+			tmp_rt.x = selected_object_rt.left - path_num;
+			tmp_rt.y = selected_object_rt.top + path_num;
+			tmp_rt.rt = { selected_object_rt.left - path_num, selected_object_rt.top + path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top + path_num + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Queen.first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+
+		}
+		else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top + path_num <= y && selected_object_rt.bottom + path_num >= y && front_right_count < queen_front_right_diagonal)
+		{
+			// 앞의 오른쪽대각
+			Cp->m_Queen.x = selected_object_rt.left + path_num;
+			Cp->m_Queen.y = selected_object_rt.top + path_num;
+			Cp->m_Queen.rt = { selected_object_rt.left + path_num, selected_object_rt.top + path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top + path_num + 75 };
+
+			tmp_rt.x = selected_object_rt.left + path_num;
+			tmp_rt.y = selected_object_rt.top + path_num;
+			tmp_rt.rt = { selected_object_rt.left + path_num, selected_object_rt.top + path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top + path_num + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Queen.first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+
+		}
+		else if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && left_count < queen_left)
+		{
+			// 왼쪽
+			Cp->m_Queen.x = selected_object_rt.left - path_num;
+			Cp->m_Queen.y = selected_object_rt.top;
+			Cp->m_Queen.rt = { selected_object_rt.left - path_num, selected_object_rt.top, selected_object_rt.left - path_num + 75, selected_object_rt.top + 75 };
+
+			tmp_rt.x = selected_object_rt.left - path_num;
+			tmp_rt.y = selected_object_rt.top;
+			tmp_rt.rt = { selected_object_rt.left - path_num, selected_object_rt.top, selected_object_rt.left - path_num + 75, selected_object_rt.top + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Queen.first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+
+		}
+		else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && right_count < queen_right)
+		{
+			// 오른쪽
+			Cp->m_Queen.x = selected_object_rt.left + path_num;
+			Cp->m_Queen.y = selected_object_rt.top;
+			Cp->m_Queen.rt = { selected_object_rt.left + path_num, selected_object_rt.top, selected_object_rt.left + path_num + 75, selected_object_rt.top + 75 };
+
+			tmp_rt.x = selected_object_rt.left + path_num;
+			tmp_rt.y = selected_object_rt.top;
+			tmp_rt.rt = { selected_object_rt.left + path_num, selected_object_rt.top, selected_object_rt.left + path_num + 75, selected_object_rt.top + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Queen.first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+
+		}
+		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y && back_count < queen_back)
+		{
+			// 뒤
+			Cp->m_Queen.x = selected_object_rt.left;
+			Cp->m_Queen.y = selected_object_rt.top - path_num;
+			Cp->m_Queen.rt = { selected_object_rt.left, selected_object_rt.top - path_num, selected_object_rt.left + 75, selected_object_rt.top - path_num + 75 };
+
+			tmp_rt.x = selected_object_rt.left;
+			tmp_rt.y = selected_object_rt.top - path_num;
+			tmp_rt.rt = { selected_object_rt.left, selected_object_rt.top - path_num, selected_object_rt.left + 75, selected_object_rt.top - path_num + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			Cp->m_Queen.first_move = TRUE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+
+		}
+		else if (selected_object_rt.left - path_num <= x && selected_object_rt.right - path_num >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y && back_left_count < queen_back_left_diagonal)
+		{
+		// 뒤의 왼쪽대각
+		Cp->m_Queen.x = selected_object_rt.left - path_num;
+		Cp->m_Queen.y = selected_object_rt.top - path_num;
+		Cp->m_Queen.rt = { selected_object_rt.left - path_num, selected_object_rt.top - path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top - path_num + 75 };
+
+		tmp_rt.x = selected_object_rt.left - path_num;
+		tmp_rt.y = selected_object_rt.top - path_num;
+		tmp_rt.rt = { selected_object_rt.left - path_num, selected_object_rt.top - path_num, selected_object_rt.left - path_num + 75, selected_object_rt.top - path_num + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		Cp->m_Queen.first_move = TRUE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+
+		}
+		else if (selected_object_rt.left + path_num <= x && selected_object_rt.right + path_num >= x && selected_object_rt.top - path_num <= y && selected_object_rt.bottom - path_num >= y && back_right_count < queen_back_right_diagonal)
+		{
+		// 뒤의 오른쪽대각
+		Cp->m_Queen.x = selected_object_rt.left + path_num;
+		Cp->m_Queen.y = selected_object_rt.top - path_num;
+		Cp->m_Queen.rt = { selected_object_rt.left + path_num, selected_object_rt.top - path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top - path_num + 75 };
+
+		tmp_rt.x = selected_object_rt.left + path_num;
+		tmp_rt.y = selected_object_rt.top - path_num;
+		tmp_rt.rt = { selected_object_rt.left + path_num, selected_object_rt.top - path_num, selected_object_rt.left + path_num + 75, selected_object_rt.top - path_num + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		Cp->m_Queen.first_move = TRUE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+
+		}
+		else
+		{
+			path_num += 75;
+			count++;
+			front_count++;
+			back_count++;
+			left_count++;
+			right_count++;
+			front_left_count++;
+			front_right_count++;
+			back_left_count++;
+			back_right_count++;
 		}
 	}
     }
