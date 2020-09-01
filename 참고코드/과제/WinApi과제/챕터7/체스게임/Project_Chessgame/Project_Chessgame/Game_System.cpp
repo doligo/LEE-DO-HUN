@@ -110,8 +110,8 @@ void Game_System::Click(HDC hdc, int x, int y)
 
 		m_pr[i].Click_Check(hdc, i, x, y);
 		Pawn_Check(i); // 나중에 check 함수 다 합치기
-		Rook_Check(i); // **다른체크들에 queen 추가, move_check, die_check
-		Knight_Check(i); // ** queen_check 오류수정
+		Rook_Check(i); // **다른체크들에 queen 추가(나이트하는중), die_check
+		Knight_Check(i);
 		Bishop_Check(i);
 		Queen_Check(i);
 
@@ -319,9 +319,9 @@ void Game_System::All_Piece_Pos(int player_num)
 			}
 			else if (m_pr[player_num].select_what == SELECT_QUEEN)
 			{
-				m_All_Queen[m_pr[player_num].clicked_object_num].x = m_pr[player_num].tmp_rt.x;
-				m_All_Queen[m_pr[player_num].clicked_object_num].y = m_pr[player_num].tmp_rt.y;
-				m_All_Queen[m_pr[player_num].clicked_object_num].rt = m_pr[player_num].tmp_rt.rt;
+				m_All_Queen[m_pr[player_num].clicked_object_num + 1].x = m_pr[player_num].tmp_rt.x;
+				m_All_Queen[m_pr[player_num].clicked_object_num + 1].y = m_pr[player_num].tmp_rt.y;
+				m_All_Queen[m_pr[player_num].clicked_object_num + 1].rt = m_pr[player_num].tmp_rt.rt;
 			}
 		}
 	}
@@ -339,7 +339,8 @@ void Game_System::Pawn_Check(int num)
 			if (m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left && m_All_Pawn[i].status != DEAD ||
 				i < 4 && m_All_Rook[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Rook[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left && m_All_Rook[i].status != DEAD ||
 				i < 4 && m_All_Knight[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Knight[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left && m_All_Knight[i].status != DEAD ||
-				i < 4 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left && m_All_Bishop[i].status != DEAD)
+				i < 4 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left && m_All_Bishop[i].status != DEAD ||
+				i < 1 && m_All_Queen[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Queen[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left && m_All_Queen[i].status != DEAD)
 			{
 				m_pr[num].pawn_front = TRUE;
 				m_pr[num].someting = TRUE;
@@ -347,14 +348,16 @@ void Game_System::Pawn_Check(int num)
 			if (m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 150 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left && m_All_Pawn[i].status != DEAD ||
 				i < 4 && m_All_Rook[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 150 && m_All_Rook[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left && m_All_Rook[i].status != DEAD ||
 				i < 4 && m_All_Knight[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 150 && m_All_Knight[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left && m_All_Knight[i].status != DEAD ||
-				i < 4 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 150 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left && m_All_Bishop[i].status != DEAD)
+				i < 4 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 150 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left && m_All_Bishop[i].status != DEAD ||
+				i < 1 && m_All_Queen[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 150 && m_All_Queen[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left && m_All_Queen[i].status != DEAD)
 			{
 				m_pr[num].someting = TRUE;
 			}
 			if (m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left - 75 && m_All_Pawn[i].status != DEAD ||
 				i < 4 && m_All_Rook[i].player_num == 1 && m_All_Rook[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Rook[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left - 75 && m_All_Rook[i].status != DEAD ||
 				i < 4 && m_All_Knight[i].player_num == 1 && m_All_Knight[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Knight[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left - 75 && m_All_Knight[i].status != DEAD ||
-				i < 4 && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left - 75 && m_All_Bishop[i].status != DEAD)
+				i < 4 && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left - 75 && m_All_Bishop[i].status != DEAD ||
+				i < 2 && m_All_Queen[i].player_num == 1 && m_All_Queen[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Queen[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left - 75 && m_All_Queen[i].status != DEAD)
 			{
 				m_pr[num].pawn_diagonal1 = TRUE;
 				m_pr[num].someting = TRUE;
@@ -362,7 +365,8 @@ void Game_System::Pawn_Check(int num)
 			if (m_All_Pawn[i].player_num == 1 && m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left + 75 && m_All_Pawn[i].status != DEAD ||
 				i < 4 && m_All_Rook[i].player_num == 1 && m_All_Rook[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Rook[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left + 75 && m_All_Rook[i].status != DEAD ||
 				i < 4 && m_All_Knight[i].player_num == 1 && m_All_Knight[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Knight[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left + 75 && m_All_Knight[i].status != DEAD ||
-				i < 4 && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left + 75 && m_All_Bishop[i].status != DEAD)
+				i < 4 && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left + 75 && m_All_Bishop[i].status != DEAD ||
+				i < 2 && m_All_Queen[i].player_num == 1 && m_All_Queen[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num].rt.top - 75 && m_All_Queen[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num].rt.left + 75 && m_All_Queen[i].status != DEAD)
 			{
 				m_pr[num].pawn_diagonal2 = TRUE;
 				m_pr[num].someting = TRUE;
@@ -377,7 +381,8 @@ void Game_System::Pawn_Check(int num)
 			if (m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left && m_All_Pawn[i].status != DEAD ||
 				i < 4 && m_All_Rook[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Rook[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left && m_All_Rook[i].status != DEAD ||
 				i < 4 && m_All_Knight[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Knight[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left && m_All_Knight[i].status != DEAD ||
-				i < 4 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left && m_All_Bishop[i].status != DEAD)
+				i < 4 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left && m_All_Bishop[i].status != DEAD ||
+				i < 2 && m_All_Queen[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Queen[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left && m_All_Queen[i].status != DEAD)
 			{
 				m_pr[num].pawn_front = TRUE;
 				m_pr[num].someting = TRUE;
@@ -385,14 +390,16 @@ void Game_System::Pawn_Check(int num)
 			if (m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 150 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left && m_All_Pawn[i].status != DEAD ||
 				i < 4 && m_All_Rook[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 150 && m_All_Rook[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left && m_All_Rook[i].status != DEAD ||
 				i < 4 && m_All_Knight[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 150 && m_All_Knight[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left && m_All_Knight[i].status != DEAD ||
-				i < 4 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 150 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left && m_All_Bishop[i].status != DEAD)
+				i < 4 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 150 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left && m_All_Bishop[i].status != DEAD ||
+				i < 2 && m_All_Queen[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 150 && m_All_Queen[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left && m_All_Queen[i].status != DEAD)
 			{
 				m_pr[num].someting = TRUE;
 			}
 			if (m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left - 75 && m_All_Pawn[i].status != DEAD ||
 				m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Rook[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left - 75 && m_All_Rook[i].status != DEAD ||
 				m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Knight[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left - 75 && m_All_Knight[i].status != DEAD ||
-				m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left - 75 && m_All_Bishop[i].status != DEAD)
+				m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left - 75 && m_All_Bishop[i].status != DEAD ||
+				m_All_Queen[i].player_num == 0 && m_All_Queen[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Queen[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left - 75 && m_All_Queen[i].status != DEAD)
 			{
 				m_pr[num].pawn_diagonal1 = TRUE;
 				m_pr[num].someting = TRUE;
@@ -400,7 +407,8 @@ void Game_System::Pawn_Check(int num)
 			if (m_All_Pawn[i].player_num == 0 && m_All_Pawn[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Pawn[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left + 75 && m_All_Pawn[i].status != DEAD ||
 				m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Rook[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left + 75 && m_All_Rook[i].status != DEAD ||
 				m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Knight[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left + 75 && m_All_Knight[i].status != DEAD ||
-				m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left + 75 && m_All_Bishop[i].status != DEAD)
+				m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Bishop[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left + 75 && m_All_Bishop[i].status != DEAD ||
+				m_All_Queen[i].player_num == 0 && m_All_Queen[i].rt.top == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.top + 75 && m_All_Queen[i].rt.left == m_All_Pawn[m_pr[num].clicked_object_num + 8].rt.left + 75 && m_All_Queen[i].status != DEAD)
 			{
 				m_pr[num].pawn_diagonal2 = TRUE;
 				m_pr[num].someting = TRUE;
@@ -430,7 +438,8 @@ void Game_System::Rook_Check(int num)
 				i < 2 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top - rt_num && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left ||
 				i < 2 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top - rt_num && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left ||
 				m_All_Rook[m_pr[num].clicked_object_num].rt.top - rt_num == -75 ||
-				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top - rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left)
+				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top - rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left ||
+				i < 1 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 0 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top - rt_num && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left)
 			{
 				break;
 			}
@@ -438,7 +447,8 @@ void Game_System::Rook_Check(int num)
 				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 1 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top - rt_num && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left ||
 				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 1 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top - rt_num && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left ||
 				m_All_Rook[m_pr[num].clicked_object_num].rt.top - rt_num == -75 ||
-				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top - rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left)
+				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top - rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left ||
+				i < 2 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 1 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top - rt_num && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left)
 			{
 				if (m_All_Rook[m_pr[num].clicked_object_num].rt.top != 0) // 출력확인
 				m_pr[0].rook_front++;
@@ -463,7 +473,8 @@ void Game_System::Rook_Check(int num)
 				i < 2 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left ||
 				i < 2 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left ||
 				m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num == 600 ||
-				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left)
+				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left ||
+				i < 1 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 0 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left)
 			{
 				break;
 			}
@@ -471,7 +482,8 @@ void Game_System::Rook_Check(int num)
 				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 1 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left ||
 				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 1 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left ||
 				m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num == 600 ||
-				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left)
+				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left ||
+				i < 2 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 1 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top + rt_num && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left)
 			{
 				if (m_All_Rook[m_pr[num].clicked_object_num].rt.top != 525)
 				m_pr[0].rook_back++;
@@ -496,7 +508,8 @@ void Game_System::Rook_Check(int num)
 				i < 2 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left - rt_num ||
 				i < 2 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left - rt_num ||
 				m_All_Rook[m_pr[num].clicked_object_num].rt.left - rt_num == -75 ||
-				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left - rt_num)
+				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left - rt_num ||
+				i < 1 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 0 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left - rt_num)
 			{
 				break;
 			}
@@ -505,7 +518,8 @@ void Game_System::Rook_Check(int num)
 				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 1 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left - rt_num ||
 				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 1 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left - rt_num ||
 				m_All_Rook[m_pr[num].clicked_object_num].rt.left - rt_num == -75 ||
-				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left - rt_num)
+				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left - rt_num ||
+				i < 2 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 1 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left - rt_num)
 			{
 				if (m_All_Rook[m_pr[num].clicked_object_num].rt.left != 0)
 					m_pr[0].rook_left++;
@@ -531,7 +545,8 @@ void Game_System::Rook_Check(int num)
 				i < 2 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left + rt_num ||
 				i < 2 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left + rt_num ||
 				m_All_Rook[m_pr[num].clicked_object_num].rt.left + rt_num == 600 ||
-				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left + rt_num)
+				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left + rt_num ||
+				i < 1 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 0 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left + rt_num)
 			{
 				break;
 			}
@@ -540,7 +555,8 @@ void Game_System::Rook_Check(int num)
 				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 1 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left + rt_num ||
 				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 1 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left + rt_num ||
 				m_All_Rook[m_pr[num].clicked_object_num].rt.left + rt_num == 600 ||
-				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left + rt_num)
+				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left + rt_num ||
+				i < 2 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 1 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num].rt.top && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num].rt.left + rt_num)
 			{
 				if (m_All_Rook[m_pr[num].clicked_object_num].rt.left != 525)
 					m_pr[0].rook_right++;
@@ -572,7 +588,8 @@ void Game_System::Rook_Check(int num)
 				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 1 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
 				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 1 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
 				m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num == 600 ||
-				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left)
+				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
+				i < 2 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 1 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left)
 			{
 				break;
 			}
@@ -580,7 +597,8 @@ void Game_System::Rook_Check(int num)
 				i < 2 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
 				i < 2 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
 				m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num == 600 ||
-				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left)
+				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
+				i < 1 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 0 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top + rt_num && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left)
 			{
 				if (m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top != 525)
 					m_pr[1].rook_front++;
@@ -606,7 +624,8 @@ void Game_System::Rook_Check(int num)
 				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 1 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
 				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 1 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
 				m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num == -75 ||
-				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left)
+				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
+				i < 2 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 1 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left)
 			{
 				break;
 			}
@@ -614,7 +633,8 @@ void Game_System::Rook_Check(int num)
 				i < 2 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
 				i < 2 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
 				m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num == -75 ||
-				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left)
+				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left ||
+				i < 1 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 0 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top - rt_num && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left)
 			{
 				if (m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top != 0)
 					m_pr[1].rook_back++;
@@ -640,7 +660,8 @@ void Game_System::Rook_Check(int num)
 				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 1 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num ||
 				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 1 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num ||
 				m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num == -75 ||
-				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num)
+				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num ||
+				i < 2 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 1 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num)
 			{
 				break;
 			}
@@ -648,7 +669,8 @@ void Game_System::Rook_Check(int num)
 				i < 2 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num ||
 				i < 2 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num ||
 				m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num == -75 ||
-				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num)
+				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num ||
+				i < 1 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 0 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left - rt_num)
 			{
 				if (m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left != 0)
 					m_pr[1].rook_left++;
@@ -674,7 +696,8 @@ void Game_System::Rook_Check(int num)
 				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 1 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num ||
 				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 1 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num ||
 				m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num == 600 ||
-				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num)
+				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num ||
+				i < 2 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 1 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num)
 			{
 				break;
 			}
@@ -682,7 +705,8 @@ void Game_System::Rook_Check(int num)
 				i < 2 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Knight[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num ||
 				i < 2 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Rook[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Rook[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num ||
 				m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num == 600 ||
-				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num)
+				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Bishop[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num ||
+				i < 1 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 0 && m_All_Queen[i].rt.top == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.top && m_All_Queen[i].rt.left == m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left + rt_num)
 			{
 				if (m_All_Rook[m_pr[num].clicked_object_num + 2].rt.left != 525)
 					m_pr[1].rook_right++;
@@ -708,7 +732,8 @@ void Game_System::Knight_Check(int num)
 				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 150 == m_All_Rook[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 75 == m_All_Rook[i].rt.left ||
 				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 150 == m_All_Knight[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 75 == m_All_Knight[i].rt.left ||
 				m_All_Knight[m_pr[num].clicked_object_num].rt.top - 150 <= -75 || m_All_Knight[m_pr[num].clicked_object_num].rt.left - 75 <= -75 ||
-				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 150 == m_All_Bishop[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 75 == m_All_Bishop[i].rt.left)
+				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 150 == m_All_Bishop[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 75 == m_All_Bishop[i].rt.left ||
+				i < 1 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 150 == m_All_Queen[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 75 == m_All_Queen[i].rt.left)
 			{
 				m_pr[num].knight_front_left_diagonal1 = TRUE;
 			}
@@ -716,7 +741,8 @@ void Game_System::Knight_Check(int num)
 				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 75 == m_All_Rook[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 150 == m_All_Rook[i].rt.left ||
 				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 75 == m_All_Knight[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 150 == m_All_Knight[i].rt.left ||
 				m_All_Knight[m_pr[num].clicked_object_num].rt.top - 75 <= -75 || m_All_Knight[m_pr[num].clicked_object_num].rt.left - 150 <= -75 ||
-				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 75 == m_All_Bishop[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 150 == m_All_Bishop[i].rt.left)
+				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 75 == m_All_Bishop[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 150 == m_All_Bishop[i].rt.left ||
+				i < 1 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 75 == m_All_Queen[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 150 == m_All_Queen[i].rt.left)
 			{
 				m_pr[num].knight_front_left_diagonal2 = TRUE;
 			}
@@ -724,7 +750,8 @@ void Game_System::Knight_Check(int num)
 				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 150 == m_All_Rook[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left + 75 == m_All_Rook[i].rt.left ||
 				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 150 == m_All_Knight[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left + 75 == m_All_Knight[i].rt.left ||
 				m_All_Knight[m_pr[num].clicked_object_num].rt.top - 150 <= -75 || m_All_Knight[m_pr[num].clicked_object_num].rt.left + 75 >= 600 ||
-				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 150 == m_All_Bishop[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left + 75 == m_All_Bishop[i].rt.left)
+				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 150 == m_All_Bishop[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left + 75 == m_All_Bishop[i].rt.left ||
+				i < 1 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 150 == m_All_Queen[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left + 75 == m_All_Queen[i].rt.left)
 			{
 				m_pr[num].knight_front_right_diagonal1 = TRUE;
 			}
@@ -732,7 +759,8 @@ void Game_System::Knight_Check(int num)
 				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 75 == m_All_Rook[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left + 150 == m_All_Rook[i].rt.left ||
 				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 75 == m_All_Knight[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left + 150 == m_All_Knight[i].rt.left ||
 				m_All_Knight[m_pr[num].clicked_object_num].rt.top - 75 <= -75 || m_All_Knight[m_pr[num].clicked_object_num].rt.left + 150 >= 600 ||
-				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 75 == m_All_Bishop[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left + 150 == m_All_Bishop[i].rt.left)
+				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 75 == m_All_Bishop[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left + 150 == m_All_Bishop[i].rt.left ||
+				i < 1 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top - 75 == m_All_Queen[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left + 150 == m_All_Queen[i].rt.left)
 			{
 				m_pr[num].knight_front_right_diagonal2 = TRUE;
 			}
@@ -740,7 +768,8 @@ void Game_System::Knight_Check(int num)
 				i < 4 && m_All_Rook[i].status == ALIVE && m_All_Rook[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top + 150 == m_All_Rook[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 75 == m_All_Rook[i].rt.left ||
 				i < 4 && m_All_Knight[i].status == ALIVE && m_All_Knight[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top + 150 == m_All_Knight[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 75 == m_All_Knight[i].rt.left ||
 				m_All_Knight[m_pr[num].clicked_object_num].rt.top + 150 >= 600 || m_All_Knight[m_pr[num].clicked_object_num].rt.left - 75 <= -75 ||
-				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top + 150 == m_All_Bishop[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 75 == m_All_Bishop[i].rt.left)
+				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top + 150 == m_All_Bishop[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 75 == m_All_Bishop[i].rt.left ||
+				i < 1 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 0 && m_All_Knight[m_pr[num].clicked_object_num].rt.top + 150 == m_All_Queen[i].rt.top && m_All_Knight[m_pr[num].clicked_object_num].rt.left - 75 == m_All_Queen[i].rt.left)
 			{
 				m_pr[num].knight_back_left_diagonal1 = TRUE;
 			}
