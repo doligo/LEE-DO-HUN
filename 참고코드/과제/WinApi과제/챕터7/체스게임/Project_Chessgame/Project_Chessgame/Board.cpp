@@ -11,9 +11,9 @@ void Board::Board_Init(HDC hdc, HINSTANCE hinst, int x, int y)
 	MemDC = CreateCompatibleDC(hdc);
 
 	if (board_num == 10)
-	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\sos\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block01.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block01.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 	else if (board_num == 20)
-	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\sos\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block00.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block00.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 	old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 	GetObject(hbtmap, sizeof(BITMAP), &btmap);

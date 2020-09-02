@@ -6,6 +6,7 @@
 #define SELECT_KNIGHT 60
 #define SELECT_BISHOP 61
 #define SELECT_QUEEN 62
+#define SELECT_KING 63
 
 class Player
 {
@@ -63,6 +64,15 @@ public:
 	int queen_back;
 	int queen_back_left_diagonal;
 	int queen_back_right_diagonal;
+	//// king 이동규칙변수
+	int king_front;
+	int king_front_left_diagonal;
+	int king_front_right_diagonal;
+	int king_left;
+	int king_right;
+	int king_back;
+	int king_back_left_diagonal;
+	int king_back_right_diagonal;
 
 	void Init_Player(HDC hdc, int player_num);
 	void Player_Pieces_Draw(HDC hdc);

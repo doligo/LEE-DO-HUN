@@ -14,7 +14,7 @@ void Player::Init_Player(HDC hdc, int player_num)
 
 	MemDC = CreateCompatibleDC(hdc);
 
-	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\sos\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hbtmap = (HBITMAP)LoadImage(NULL, "C:\\Users\\L\\Documents\\GitHub\\LEE-DO-HUN\\참고코드\\과제\\WinApi과제\\챕터7\\체스게임\\block03.bmp", IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 
 	old_hbtmap = (HBITMAP)SelectObject(MemDC, hbtmap);
 	GetObject(hbtmap, sizeof(BITMAP), &btmap);
@@ -42,6 +42,7 @@ void Player::Player_Pieces_Draw(HDC hdc)
 	char buf[30] = {};
 
 	Cp->Pieces_Draw(hdc, Cp->m_King.x, Cp->m_King.y, "king");
+	if (Cp->m_Queen.status == ALIVE)
 	Cp->Pieces_Draw(hdc, Cp->m_Queen.x, Cp->m_Queen.y, "queen");
 	if (Cp->m_Rook[0].status == ALIVE)
 	Cp->Pieces_Draw(hdc, Cp->m_Rook[0].x, Cp->m_Rook[0].y, "rook1");
@@ -1667,6 +1668,16 @@ void Player::Click_Check(HDC hdc, int player_num, int x, int y)
 				selected_object_rt = { Cp->m_Queen.rt.left, Cp->m_Queen.rt.top, Cp->m_Queen.rt.right, Cp->m_Queen.rt.bottom };
 				break;
 			}
+			else if (i < 1 && Cp->m_King.rt.left <= x && Cp->m_King.rt.right >= x && Cp->m_King.rt.top <= y && Cp->m_King.rt.bottom >= y && Cp->m_King.status == ALIVE)
+			{
+				select_num = SELECT_KING;
+				select_what = SELECT_KING;
+				clicked_pos_x = Cp->m_King.rt.left;
+				clicked_pos_y = Cp->m_King.rt.top;
+				clicked_object_num = i;
+				selected_object_rt = { Cp->m_King.rt.left, Cp->m_King.rt.top, Cp->m_King.rt.right, Cp->m_King.rt.bottom };
+				break;
+			}
 			else
 			{
 				clicked_object_num = -1;
@@ -1693,6 +1704,10 @@ void Player::Player_Die_Check(int piece_num, int dead_num)
 	else if (piece_num == 40)
 	{
 		Cp->m_Bishop[dead_num].status = DEAD;
+	}
+	else if (piece_num == 50)
+	{
+		Cp->m_Queen.status = DEAD;
 	}
 }
 
