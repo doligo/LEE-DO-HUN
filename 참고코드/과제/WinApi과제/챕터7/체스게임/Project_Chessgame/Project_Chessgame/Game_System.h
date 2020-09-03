@@ -21,7 +21,7 @@ public:
 
 	void Init_System(HDC hdc, HINSTANCE hinst);
 	void Draw(HDC hdc);
-	void Click(HDC hdc, int x , int y);
+	int Click(HDC hdc, int x , int y);
 	void Set_All_Pawn_Pos();
 	void All_Piece_Pos(int player_num);
 	void Pawn_Check(int num);
@@ -32,6 +32,7 @@ public:
 	void King_Check(int num);
 	void Piece_Rules(int num);
 	void Die_Check(int player_num);
+	int Game_Over_Check(int num);
 
 	~Game_System();
 };

@@ -34,6 +34,7 @@ public:
 
 	//// pawn 이동규칙변수
 	int pawn_front;
+	int pawn_double_front;
 	int pawn_diagonal1;
 	int pawn_diagonal2;
 	//// rook 이동규칙변수

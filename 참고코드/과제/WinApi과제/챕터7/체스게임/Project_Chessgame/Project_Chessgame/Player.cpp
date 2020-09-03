@@ -41,6 +41,7 @@ void Player::Player_Pieces_Draw(HDC hdc)
 {
 	char buf[30] = {};
 
+	if (Cp->m_King.status == ALIVE)
 	Cp->Pieces_Draw(hdc, Cp->m_King.x, Cp->m_King.y, "king");
 	if (Cp->m_Queen.status == ALIVE)
 	Cp->Pieces_Draw(hdc, Cp->m_Queen.x, Cp->m_Queen.y, "queen");
@@ -99,7 +100,7 @@ void Player::Move_Able_Point(HDC hdc)
 		}
 		if (pawn_front != TRUE)
 			TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
-		if (draw_pawn_path == FALSE && pawn_front != TRUE)
+		if (draw_pawn_path == FALSE && pawn_front != TRUE && pawn_double_front != TRUE)
 			TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y - 150 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
 	}
 	else if (select_num == SELECT_PAWN && m_player_num == 1 && my_turn == TRUE)
@@ -113,7 +114,7 @@ void Player::Move_Able_Point(HDC hdc)
 		}
 		if (pawn_front != TRUE)
 			TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y + 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
-		if (draw_pawn_path == FALSE && pawn_front != TRUE)
+		if (draw_pawn_path == FALSE && pawn_front != TRUE && pawn_double_front != TRUE)
 			TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y + 150 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
 	}
 
@@ -504,6 +505,79 @@ void Player::Move_Able_Point(HDC hdc)
 			}
 			path_num = 75;
 		}
+    }
+
+	//// king
+	else if (select_num == SELECT_KING && m_player_num == 0 && my_turn == TRUE)
+	{
+	if (king_front != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (king_front_left_diagonal != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x - 75 + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (king_front_right_diagonal != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 75 + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (king_left != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x - 75 + 20, clicked_pos_y + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (king_right != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 75 + 20, clicked_pos_y + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (king_back != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y + 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (king_back_left_diagonal != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x - 75 + 20, clicked_pos_y + 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (king_back_right_diagonal != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 75 + 20, clicked_pos_y + 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+    }
+
+	else if (select_num == SELECT_KING && m_player_num == 1 && my_turn == TRUE)
+	{
+	if (king_front != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y + 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (king_front_left_diagonal != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x - 75 + 20, clicked_pos_y + 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (king_front_right_diagonal != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 75 + 20, clicked_pos_y + 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (king_left != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x - 75 + 20, clicked_pos_y + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (king_right != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 75 + 20, clicked_pos_y + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (king_back != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (king_back_left_diagonal != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x - 75 + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
+	if (king_back_right_diagonal != TRUE)
+	{
+		TransparentBlt(hdc, clicked_pos_x + 75 + 20, clicked_pos_y - 75 + 20, m_x - 90, m_y - 90, MemDC, 0, 0, m_x, m_y, RGB(255, 0, 255));
+	}
     }
 }
 
@@ -1599,6 +1673,254 @@ int Player::Move_Check(HDC hdc, int x, int y)
 	}
     }
 
+	else if (select_num == SELECT_KING && m_player_num == 0 && my_turn == TRUE) // ŷ
+	{
+		if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && king_front != TRUE)
+		{
+			Cp->m_King.x = selected_object_rt.left;
+			Cp->m_King.y = selected_object_rt.top - 75;
+			Cp->m_King.rt = { selected_object_rt.left, selected_object_rt.top - 75, selected_object_rt.left + 75, selected_object_rt.top - 75 + 75 };
+
+			tmp_rt.x = selected_object_rt.left;
+			tmp_rt.y = selected_object_rt.top - 75;
+			tmp_rt.rt = { selected_object_rt.left, selected_object_rt.top - 75, selected_object_rt.left + 75, selected_object_rt.top - 75 + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && king_front_left_diagonal != TRUE)
+		{
+			Cp->m_King.x = selected_object_rt.left - 75;
+			Cp->m_King.y = selected_object_rt.top - 75;
+			Cp->m_King.rt = { selected_object_rt.left - 75, selected_object_rt.top - 75, selected_object_rt.left - 75 + 75, selected_object_rt.top - 75 + 75 };
+
+			tmp_rt.x = selected_object_rt.left - 75;
+			tmp_rt.y = selected_object_rt.top - 75;
+			tmp_rt.rt = { selected_object_rt.left - 75, selected_object_rt.top - 75, selected_object_rt.left - 75 + 75, selected_object_rt.top - 75 + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && king_front_right_diagonal != TRUE)
+		{
+			Cp->m_King.x = selected_object_rt.left + 75;
+			Cp->m_King.y = selected_object_rt.top - 75;
+			Cp->m_King.rt = { selected_object_rt.left + 75, selected_object_rt.top - 75, selected_object_rt.left + 75 + 75, selected_object_rt.top - 75 + 75 };
+
+			tmp_rt.x = selected_object_rt.left + 75;
+			tmp_rt.y = selected_object_rt.top - 75;
+			tmp_rt.rt = { selected_object_rt.left + 75, selected_object_rt.top - 75, selected_object_rt.left + 75 + 75, selected_object_rt.top - 75 + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && king_left != TRUE)
+		{
+			Cp->m_King.x = selected_object_rt.left - 75;
+			Cp->m_King.y = selected_object_rt.top;
+			Cp->m_King.rt = { selected_object_rt.left - 75, selected_object_rt.top, selected_object_rt.left - 75 + 75, selected_object_rt.top + 75 };
+
+			tmp_rt.x = selected_object_rt.left - 75;
+			tmp_rt.y = selected_object_rt.top;
+			tmp_rt.rt = { selected_object_rt.left - 75, selected_object_rt.top, selected_object_rt.left - 75 + 75, selected_object_rt.top + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && king_right != TRUE)
+		{
+			Cp->m_King.x = selected_object_rt.left + 75;
+			Cp->m_King.y = selected_object_rt.top;
+			Cp->m_King.rt = { selected_object_rt.left + 75, selected_object_rt.top, selected_object_rt.left + 75 + 75, selected_object_rt.top + 75 };
+
+			tmp_rt.x = selected_object_rt.left + 75;
+			tmp_rt.y = selected_object_rt.top;
+			tmp_rt.rt = { selected_object_rt.left + 75, selected_object_rt.top, selected_object_rt.left + 75 + 75, selected_object_rt.top + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && king_back != TRUE)
+		{
+			Cp->m_King.x = selected_object_rt.left;
+			Cp->m_King.y = selected_object_rt.top + 75;
+			Cp->m_King.rt = { selected_object_rt.left, selected_object_rt.top + 75, selected_object_rt.left + 75, selected_object_rt.top + 75 + 75 };
+
+			tmp_rt.x = selected_object_rt.left;
+			tmp_rt.y = selected_object_rt.top + 75;
+			tmp_rt.rt = { selected_object_rt.left, selected_object_rt.top + 75, selected_object_rt.left + 75, selected_object_rt.top + 75 + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && king_back_left_diagonal != TRUE)
+		{
+			Cp->m_King.x = selected_object_rt.left - 75;
+			Cp->m_King.y = selected_object_rt.top + 75;
+			Cp->m_King.rt = { selected_object_rt.left - 75, selected_object_rt.top + 75, selected_object_rt.left - 75 + 75, selected_object_rt.top + 75 + 75 };
+
+			tmp_rt.x = selected_object_rt.left - 75;
+			tmp_rt.y = selected_object_rt.top + 75;
+			tmp_rt.rt = { selected_object_rt.left - 75, selected_object_rt.top + 75, selected_object_rt.left - 75 + 75, selected_object_rt.top + 75 + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && king_back_right_diagonal != TRUE)
+		{
+		Cp->m_King.x = selected_object_rt.left + 75;
+		Cp->m_King.y = selected_object_rt.top + 75;
+		Cp->m_King.rt = { selected_object_rt.left + 75, selected_object_rt.top + 75, selected_object_rt.left + 75 + 75, selected_object_rt.top + 75 + 75 };
+
+		tmp_rt.x = selected_object_rt.left + 75;
+		tmp_rt.y = selected_object_rt.top + 75;
+		tmp_rt.rt = { selected_object_rt.left + 75, selected_object_rt.top + 75, selected_object_rt.left + 75 + 75, selected_object_rt.top + 75 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+		}
+	}
+
+	else if (select_num == SELECT_KING && m_player_num == 1 && my_turn == TRUE) // ŷ
+	{
+		if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && king_front != TRUE)
+		{
+			Cp->m_King.x = selected_object_rt.left;
+			Cp->m_King.y = selected_object_rt.top + 75;
+			Cp->m_King.rt = { selected_object_rt.left, selected_object_rt.top + 75, selected_object_rt.left + 75, selected_object_rt.top + 75 + 75 };
+
+			tmp_rt.x = selected_object_rt.left;
+			tmp_rt.y = selected_object_rt.top + 75;
+			tmp_rt.rt = { selected_object_rt.left, selected_object_rt.top + 75, selected_object_rt.left + 75, selected_object_rt.top + 75 + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && king_front_left_diagonal != TRUE)
+		{
+			Cp->m_King.x = selected_object_rt.left - 75;
+			Cp->m_King.y = selected_object_rt.top + 75;
+			Cp->m_King.rt = { selected_object_rt.left - 75, selected_object_rt.top + 75, selected_object_rt.left - 75 + 75, selected_object_rt.top + 75 + 75 };
+
+			tmp_rt.x = selected_object_rt.left - 75;
+			tmp_rt.y = selected_object_rt.top + 75;
+			tmp_rt.rt = { selected_object_rt.left - 75, selected_object_rt.top + 75, selected_object_rt.left - 75 + 75, selected_object_rt.top + 75 + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && king_front_right_diagonal != TRUE)
+		{
+			Cp->m_King.x = selected_object_rt.left + 75;
+			Cp->m_King.y = selected_object_rt.top + 75;
+			Cp->m_King.rt = { selected_object_rt.left + 75, selected_object_rt.top + 75, selected_object_rt.left + 75 + 75, selected_object_rt.top + 75 + 75 };
+
+			tmp_rt.x = selected_object_rt.left + 75;
+			tmp_rt.y = selected_object_rt.top + 75;
+			tmp_rt.rt = { selected_object_rt.left + 75, selected_object_rt.top + 75, selected_object_rt.left + 75 + 75, selected_object_rt.top + 75 + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && king_left != TRUE)
+		{
+			Cp->m_King.x = selected_object_rt.left - 75;
+			Cp->m_King.y = selected_object_rt.top;
+			Cp->m_King.rt = { selected_object_rt.left - 75, selected_object_rt.top, selected_object_rt.left - 75 + 75, selected_object_rt.top + 75 };
+
+			tmp_rt.x = selected_object_rt.left - 75;
+			tmp_rt.y = selected_object_rt.top;
+			tmp_rt.rt = { selected_object_rt.left - 75, selected_object_rt.top, selected_object_rt.left - 75 + 75, selected_object_rt.top + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && king_right != TRUE)
+		{
+			Cp->m_King.x = selected_object_rt.left + 75;
+			Cp->m_King.y = selected_object_rt.top;
+			Cp->m_King.rt = { selected_object_rt.left + 75, selected_object_rt.top, selected_object_rt.left + 75 + 75, selected_object_rt.top + 75 };
+
+			tmp_rt.x = selected_object_rt.left + 75;
+			tmp_rt.y = selected_object_rt.top;
+			tmp_rt.rt = { selected_object_rt.left + 75, selected_object_rt.top, selected_object_rt.left + 75 + 75, selected_object_rt.top + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && king_back != TRUE)
+		{
+			Cp->m_King.x = selected_object_rt.left;
+			Cp->m_King.y = selected_object_rt.top - 75;
+			Cp->m_King.rt = { selected_object_rt.left, selected_object_rt.top - 75, selected_object_rt.left + 75, selected_object_rt.top - 75 + 75 };
+
+			tmp_rt.x = selected_object_rt.left;
+			tmp_rt.y = selected_object_rt.top - 75;
+			tmp_rt.rt = { selected_object_rt.left, selected_object_rt.top - 75, selected_object_rt.left + 75, selected_object_rt.top - 75 + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && king_back_left_diagonal != TRUE)
+		{
+			Cp->m_King.x = selected_object_rt.left - 75;
+			Cp->m_King.y = selected_object_rt.top - 75;
+			Cp->m_King.rt = { selected_object_rt.left - 75, selected_object_rt.top - 75, selected_object_rt.left - 75 + 75, selected_object_rt.top - 75 + 75 };
+
+			tmp_rt.x = selected_object_rt.left - 75;
+			tmp_rt.y = selected_object_rt.top - 75;
+			tmp_rt.rt = { selected_object_rt.left - 75, selected_object_rt.top - 75, selected_object_rt.left - 75 + 75, selected_object_rt.top - 75 + 75 };
+
+			select_num = 0;
+			my_turn = FALSE;
+			who_is_moved = clicked_object_num;
+			return TRUE;
+		}
+		else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && king_back_right_diagonal != TRUE)
+		{
+		Cp->m_King.x = selected_object_rt.left + 75;
+		Cp->m_King.y = selected_object_rt.top - 75;
+		Cp->m_King.rt = { selected_object_rt.left + 75, selected_object_rt.top - 75, selected_object_rt.left + 75 + 75, selected_object_rt.top - 75 + 75 };
+
+		tmp_rt.x = selected_object_rt.left + 75;
+		tmp_rt.y = selected_object_rt.top - 75;
+		tmp_rt.rt = { selected_object_rt.left + 75, selected_object_rt.top - 75, selected_object_rt.left + 75 + 75, selected_object_rt.top - 75 + 75 };
+
+		select_num = 0;
+		my_turn = FALSE;
+		who_is_moved = clicked_object_num;
+		return TRUE;
+		}
+    }
+
 
 	who_is_moved = -1;
 	tmp_rt.x = -1;
@@ -1708,6 +2030,10 @@ void Player::Player_Die_Check(int piece_num, int dead_num)
 	else if (piece_num == 50)
 	{
 		Cp->m_Queen.status = DEAD;
+	}
+	else if (piece_num == 60)
+	{
+		Cp->m_King.status = DEAD;
 	}
 }
 
