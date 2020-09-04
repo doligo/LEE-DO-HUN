@@ -42,6 +42,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 
 HDC hdc;
 Game_System gs;
+int game_result = 0;
+int game_over = 0;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
@@ -59,12 +61,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		SendMessage(hWnd, WM_TIMER, 1, 0);
 		return 0;
 	case WM_TIMER:
+			if (game_result == 10 && game_over == FALSE)
+			{
+				game_over = TRUE;
+
+				if (MessageBox(hWnd, TEXT("ÈæÆÀ½Â¸®!!"), TEXT("Black Win"), MB_OK) == IDOK)
+				{
+					game_result = 0;
+				}
+			}
+			else if (game_result == 20 && game_over == FALSE)
+			{
+				game_over = TRUE;
+
+				if (MessageBox(hWnd, TEXT("¹éÆÀ½Â¸®!!"), TEXT("White Win"), MB_OK) == IDOK)
+				{
+					game_result = 0;
+				}
+			}
 		return 0;
 	case WM_LBUTTONDOWN:
 		mouse_x = LOWORD(lParam);
 		mouse_y = HIWORD(lParam);
 
-		gs.Click(hdc, mouse_x, mouse_y);
+		game_result = gs.Click(hdc, mouse_x, mouse_y);
 
 		InvalidateRect(hWnd, NULL, TRUE);
 		return 0;

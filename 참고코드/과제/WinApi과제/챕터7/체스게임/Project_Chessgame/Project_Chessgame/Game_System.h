@@ -32,7 +32,7 @@ public:
 	void King_Check(int num);
 	void Piece_Rules(int num);
 	void Die_Check(int player_num);
-	int Game_Over_Check(int num);
+	int Game_Over_Check();
 
 	~Game_System();
 };

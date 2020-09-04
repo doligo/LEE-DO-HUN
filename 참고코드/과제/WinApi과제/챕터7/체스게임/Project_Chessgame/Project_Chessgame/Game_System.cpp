@@ -96,9 +96,16 @@ void Game_System::Draw(HDC hdc)
 int Game_System::Click(HDC hdc, int x, int y)
 {
 	int trigger = 0;
+	int result = 0;
 
 	for (int i = 0; i < 2; i++)
 	{
+		result = Game_Over_Check();
+		if (result == 10)
+			return 10;
+		else if (result == 20)
+			return 20;
+
 		trigger = m_pr[i].Move_Check(hdc, x, y);
 		Piece_Rules(i);
 		All_Piece_Pos(i); // 이동했을때 좌표저장
@@ -2765,8 +2772,13 @@ void Game_System::Piece_Rules(int num)
 	m_pr[num].king_back_right_diagonal = FALSE;
 }
 
-int Game_System::Game_Over_Check(int num)
+int Game_System::Game_Over_Check()
 {
+	if (m_All_King[0].status == DEAD)
+		return 10;
+	else if (m_All_King[1].status == DEAD)
+		return 20;
+
 	return 0;
 }
 
