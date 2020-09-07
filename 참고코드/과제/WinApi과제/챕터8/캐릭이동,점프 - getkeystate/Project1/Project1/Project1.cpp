@@ -1,6 +1,6 @@
 ﻿#include <windows.h>
 #include <vector>
-#include "BitMapManager.h"
+#include "Move_Character.h"
 using namespace std;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -40,18 +40,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	return (int)Message.wParam;
 }
 
-int x = 300;
-int y = 500;
+Move_Character *MC;
+int Jump_Trigger = TRUE;
+int Jump_Degree = 0;
+int X_Trigger = TRUE;
+int Y_Trigger = TRUE;
 
-HDC g_playerDC, g_backDC;
-HBITMAP g_btPlayer, g_btBack;
-HBITMAP g_btOldPlayer, g_btOldBack;
-BITMAP g_mapInfo;
-SIZE g_size;
-
-HDC hdc;
-BitMapManager bmm;
-BitMap bm;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
@@ -64,38 +58,75 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 		SetTimer(hWnd, 1, 10, NULL);
 
-		bmm.GetInstance();
-		bmm.Init(hWnd, hdc, g_hInst);
+		MC = new Move_Character();
+		MC->Init(hWnd, g_hInst);
 
+		return 0;
+	case WM_KEYDOWN:
+		if (GetKeyState(VK_LEFT) & 0x8000)
+		{
+
+		}
+		if (GetKeyState(VK_RIGHT) & 0x8000)
+		{
+
+		}
+		if (GetKeyState(VK_UP) & 0x8000)
+		{
+
+		}
+		if (GetKeyState(VK_DOWN) & 0x8000)
+		{
+
+		}
+		if (GetKeyState(VK_SPACE) & 0x8000)
+		{
+			if (Jump_Trigger == TRUE)
+			{
+				Jump_Trigger = FALSE;
+				SetTimer(hWnd, 1, 10, NULL);
+			}
+		}
 		return 0;
 	case WM_PAINT:
 
 		hdc = BeginPaint(hWnd, &ps);
 
-		StretchBlt(hdc, 0, 0, 1024, 768, g_backDC, 0, 0, 102, 768, SRCCOPY);
-		TransparentBlt(hdc, x, y, g_size.cx / 4, g_size.cy / 4, g_playerDC, 0, 0, g_size.cx / 4, g_size.cy / 4, RGB(255, 0, 255));
+		MC->Draw(hdc);
 
 		EndPaint(hWnd, &ps);
 
 		return 0;
-
 	case WM_TIMER:
+		switch (wParam)
+		{
+		case 1:
+			MC->Jump(Jump_Degree);
+			Jump_Degree += 10;
+			if (Jump_Degree == 180)
+			{
+				Jump_Trigger = FALSE;
+				KillTimer(hWnd, 1);
+				Jump_Degree = 0;
+			}
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		}
 
-		if (GetKeyState(VK_LEFT) & 0x8000)
-			x -= 10;
-		if (GetKeyState(VK_RIGHT) & 0x8000)
-			x += 10;
-		if (GetKeyState(VK_UP) & 0x8000)
-			y -= 10;
-		if (GetKeyState(VK_DOWN) & 0x8000)
-			y += 10;
-
-		InvalidateRect(hWnd, NULL, false);
+		InvalidateRect(hWnd, NULL, TRUE);
 
 		return 0;
 
 	case WM_DESTROY:
 
+		delete MC;
 		KillTimer(hWnd, 1);
 		PostQuitMessage(0);
 

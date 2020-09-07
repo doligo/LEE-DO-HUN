@@ -18,18 +18,12 @@
     <ClCompile Include="Project1.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="BitMap.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="BitMapManager.cpp">
+    <ClCompile Include="Move_Character.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BitMap.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="BitMapManager.h">
+    <ClInclude Include="Move_Character.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
