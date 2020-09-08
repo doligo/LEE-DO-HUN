@@ -23,18 +23,40 @@ void Move_Character::Init(HWND hWnd, HINSTANCE hInst)
 	x = 300;
 	y = 500;
 	jump_y = 0;
+	jump_y_2 = 0;
 	jump_x = 0;
+	direct = 0;
+	pre_direct = 0;
+	pose = 0;
 }
 
 void Move_Character::Draw(HDC hdc)
 {
-	TransparentBlt(hdc, x + jump_x, y + jump_y, m_size.cx / 4, m_size.cy / 4, MemDC, 0, 0, m_size.cx / 4, m_size.cy / 4, RGB(255, 0, 255));
+	TransparentBlt(hdc, x + jump_x, y + jump_y + jump_y_2, m_size.cx / 4, m_size.cy / 4, MemDC, (m_size.cx / 4) * pose, (m_size.cy / 4) * direct, m_size.cx / 4, m_size.cy / 4, RGB(255, 0, 255));
 }
 
 void Move_Character::Jump(int degree)
 {
 	jump_y = sin(degree * 3.14 / 180) * -50;
-	jump_x = cos(degree * 3.14 / 180) * -30;
+
+	if (direct == 2)
+		jump_x -= 2;
+	else if (direct == 3)
+		jump_x += 2;
+	else if (direct == 1)
+		jump_y_2 -= 2;
+	else if (direct == 0)
+		jump_y_2 += 2;
+}
+
+void Move_Character::Move_X(int x)
+{
+	this->x += x;
+}
+
+void Move_Character::Move_Y(int y)
+{
+	this->y += y;
 }
 
 Move_Character::~Move_Character()

@@ -41,43 +41,119 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 }
 
 Move_Character *MC;
+
 int Jump_Trigger = TRUE;
 int Jump_Degree = 0;
-int X_Trigger = TRUE;
-int Y_Trigger = TRUE;
 
+int Up_Trigger = TRUE;
+int Down_Trigger = TRUE;
+int Left_Trigger = TRUE;
+int Right_Trigger = TRUE;
+
+int X_Move_Count = 0;
+int Y_Move_Count = 0;
+
+int Pre_Direct = 0;
+int Cur_Direct = 0;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
+	int Double_Check = FALSE;
 
 	switch (iMessage)
 	{
 	case WM_CREATE:
-
-		SetTimer(hWnd, 1, 10, NULL);
 
 		MC = new Move_Character();
 		MC->Init(hWnd, g_hInst);
 
 		return 0;
 	case WM_KEYDOWN:
-		if (GetKeyState(VK_LEFT) & 0x8000)
-		{
-
-		}
-		if (GetKeyState(VK_RIGHT) & 0x8000)
-		{
-
-		}
 		if (GetKeyState(VK_UP) & 0x8000)
 		{
+			if (Up_Trigger == TRUE)
+			{
+				Up_Trigger = FALSE;
 
+				MC->pre_direct = MC->direct;
+				MC->direct = 1;
+				if (MC->pre_direct == MC->direct)
+					MC->pose++;
+				else
+					MC->pose = 0;
+
+				if (MC->pose == 4)
+					MC->pose = 0;
+
+				Double_Check = TRUE;
+				SetTimer(hWnd, 2, 10, NULL);
+			}
 		}
 		if (GetKeyState(VK_DOWN) & 0x8000)
 		{
+			if (Down_Trigger == TRUE)
+			{
+				Down_Trigger = FALSE;
 
+				MC->pre_direct = MC->direct;
+				MC->direct = 0;
+				if (MC->pre_direct == MC->direct)
+					MC->pose++;
+				else
+					MC->pose = 0;
+
+				if (MC->pose == 4)
+					MC->pose = 0;
+
+				Double_Check = TRUE;
+				SetTimer(hWnd, 3, 10, NULL);
+			}
+		}
+		if (GetKeyState(VK_LEFT) & 0x8000)
+		{
+			if (Left_Trigger == TRUE)
+			{
+				Left_Trigger = FALSE;
+
+				if (Double_Check != TRUE)
+				{
+					MC->pre_direct = MC->direct;
+					MC->direct = 2;
+					if (MC->pre_direct == MC->direct)
+						MC->pose++;
+					else
+						MC->pose = 0;
+
+					if (MC->pose == 4)
+						MC->pose = 0;
+				}
+
+				SetTimer(hWnd, 4, 10, NULL);
+			}
+		}
+		if (GetKeyState(VK_RIGHT) & 0x8000)
+		{
+			if (Right_Trigger == TRUE)
+			{
+				Right_Trigger = FALSE;
+
+				if (Double_Check != TRUE)
+				{
+					MC->pre_direct = MC->direct;
+					MC->direct = 3;
+					if (MC->pre_direct == MC->direct)
+						MC->pose++;
+					else
+						MC->pose = 0;
+
+					if (MC->pose == 4)
+						MC->pose = 0;
+				}
+
+				SetTimer(hWnd, 5, 10, NULL);
+			}
 		}
 		if (GetKeyState(VK_SPACE) & 0x8000)
 		{
@@ -105,18 +181,50 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			Jump_Degree += 10;
 			if (Jump_Degree == 180)
 			{
-				Jump_Trigger = FALSE;
+				Jump_Trigger = TRUE;
 				KillTimer(hWnd, 1);
 				Jump_Degree = 0;
 			}
 			break;
 		case 2:
+			MC->Move_Y(-3);
+			Y_Move_Count++;
+			if (Y_Move_Count == 5)
+			{
+				Up_Trigger = TRUE;
+				KillTimer(hWnd, 2);
+				Y_Move_Count = 0;
+			}
 			break;
 		case 3:
+			MC->Move_Y(+3);
+			Y_Move_Count++;
+			if (Y_Move_Count == 5)
+			{
+				Down_Trigger = TRUE;
+				KillTimer(hWnd, 3);
+				Y_Move_Count = 0;
+			}
 			break;
 		case 4:
+			MC->Move_X(-3);
+			X_Move_Count++;
+			if (X_Move_Count == 5)
+			{
+				Left_Trigger = TRUE;
+				KillTimer(hWnd, 4);
+				X_Move_Count = 0;
+			}
 			break;
 		case 5:
+			MC->Move_X(+3);
+			X_Move_Count++;
+			if (X_Move_Count == 5)
+			{
+				Right_Trigger = TRUE;
+				KillTimer(hWnd, 5);
+				X_Move_Count = 0;
+			}
 			break;
 		}
 

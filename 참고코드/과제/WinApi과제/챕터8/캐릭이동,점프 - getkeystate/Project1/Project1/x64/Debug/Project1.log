@@ -1,4 +1,2 @@
-﻿  Move_Character.cpp
-c:\users\l\documents\github\lee-do-hun\참고코드\과제\winapi과제\챕터8\캐릭이동,점프 - getkeystate\project1\project1\move_character.cpp(36): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\l\documents\github\lee-do-hun\참고코드\과제\winapi과제\챕터8\캐릭이동,점프 - getkeystate\project1\project1\move_character.cpp(37): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+﻿  Project1.cpp
   Project1.vcxproj -> C:\Users\L\Documents\GitHub\LEE-DO-HUN\참고코드\과제\WinApi과제\챕터8\캐릭이동,점프 - getkeystate\Project1\x64\Debug\Project1.exe
