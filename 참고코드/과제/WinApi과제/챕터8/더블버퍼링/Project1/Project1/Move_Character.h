@@ -5,7 +5,7 @@
 class Move_Character
 {
 private:
-	HDC		MemDC[3];
+	HDC MemDC[3];
 	HBITMAP	m_BitMap[3];
 	HBITMAP	m_Old_BitMap[3];
 	BITMAP B_Info;
