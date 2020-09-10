@@ -27,6 +27,14 @@ public:
 	void Jump(int degree);
 	void Move_X(int x);
 	void Move_Y(int y);
+	void Key_Up();
+	void Key_Down();
+	void Key_Left();
+	void Key_Right();
+
+	int Double_Check;
+	int Jump_Degree;
+	int Jump_Trigger;
 
 	~Move_Character();
 };

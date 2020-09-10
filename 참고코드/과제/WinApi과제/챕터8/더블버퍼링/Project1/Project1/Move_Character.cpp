@@ -35,6 +35,7 @@ void Move_Character::Init(HWND hWnd, HINSTANCE hInst)
 	direct = 0;
 	pre_direct = 0;
 	pose = 0;
+	Jump_Degree = 0;
 }
 
 void Move_Character::Draw(HDC hdc)
@@ -66,6 +67,98 @@ void Move_Character::Move_X(int x)
 void Move_Character::Move_Y(int y)
 {
 	this->y += y;
+}
+
+void Move_Character::Key_Up()
+{
+	pre_direct = direct;
+	direct = 1;
+	if (pre_direct == direct)
+		pose++;
+	else
+		pose = 0;
+
+	if (pose == 4)
+		pose = 0;
+	Double_Check = TRUE;
+
+	Move_Y(-5);
+
+}
+
+void Move_Character::Key_Down()
+{
+	pre_direct = direct;
+	direct = 0;
+	if (pre_direct == direct)
+		pose++;
+	else
+		pose = 0;
+
+	if (pose == 4)
+		pose = 0;
+	Double_Check = TRUE;
+
+	Move_Y(+5);
+}
+
+void Move_Character::Key_Left()
+{
+	if (Double_Check != TRUE)
+	{
+		pre_direct = direct;
+		direct = 2;
+		if (pre_direct == direct)
+			pose++;
+		else
+			pose = 0;
+
+		if (pose == 4)
+			pose = 0;
+	}
+	else
+	{
+		pre_direct = direct;
+		if (pre_direct == direct)
+			pose++;
+		else
+			pose = 0;
+
+		if (pose == 4)
+			pose = 0;
+	}
+
+	Move_X(-5);
+}
+
+void Move_Character::Key_Right()
+{
+	if (Double_Check != TRUE)
+	{
+		pre_direct = direct;
+		direct = 3;
+		if (pre_direct == direct)
+			pose++;
+		else
+			pose = 0;
+
+		if (pose == 4)
+			pose = 0;
+	}
+	else
+	{
+		pre_direct = direct;
+		if (pre_direct == direct)
+			pose++;
+		else
+			pose = 0;
+
+		if (pose == 4)
+			pose = 0;
+	}
+
+	Move_X(+5);
+
 }
 
 Move_Character::~Move_Character()
