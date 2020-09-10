@@ -33,8 +33,6 @@ public:
 	void Key_Right();
 
 	int Double_Check;
-	int Jump_Degree;
-	int Jump_Trigger;
 
 	~Move_Character();
 };

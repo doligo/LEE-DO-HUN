@@ -35,7 +35,6 @@ void Move_Character::Init(HWND hWnd, HINSTANCE hInst)
 	direct = 0;
 	pre_direct = 0;
 	pose = 0;
-	Jump_Degree = 0;
 }
 
 void Move_Character::Draw(HDC hdc)
