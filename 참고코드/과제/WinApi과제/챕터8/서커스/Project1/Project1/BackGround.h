@@ -14,7 +14,10 @@ private:
 public:
 	BackGround();
 
+	RECT star_rt[3];
+	
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
+	void Draw_TitleScreen(HDC hdc);
 
 	~BackGround();
 };

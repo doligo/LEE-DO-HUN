@@ -10,7 +10,7 @@ void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
 	HDC hdc = GetDC(hWnd);
 
 	MemDC[0] = CreateCompatibleDC(hdc); // 검은배경
-	m_BitMap[0] = CreateCompatibleBitmap(hdc, 1024, 768);
+	m_BitMap[0] = CreateCompatibleBitmap(hdc, 1024, 533);
 	m_Old_BitMap[0] = (HBITMAP)SelectObject(MemDC[0], m_BitMap[0]);
 	
 	/////////////////////////////
@@ -38,13 +38,21 @@ void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
 	/////////////////////////////
 
 	MemDC[3] = CreateCompatibleDC(MemDC[0]);
-	m_BitMap[3] = (HBITMAP)LoadImage(NULL, TEXT("star1.bmp"),
+	m_BitMap[3] = (HBITMAP)LoadImage(NULL, TEXT("star2.bmp"),
 		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	m_Old_BitMap[3] = (HBITMAP)SelectObject(MemDC[3], m_BitMap[3]);
 
 	GetObject(m_BitMap[3], sizeof(B_Info), &B_Info); // 별2의 크기
 	m_size[2].cx = B_Info.bmWidth;
 	m_size[2].cy = B_Info.bmHeight;
+}
+
+void BackGround::Draw_TitleScreen(HDC hdc)
+{
+	BitBlt(hdc, 0, 0, 1024, 533, MemDC[0], 0, 0, SRCCOPY); // 검은배경
+
+	RECT rt = rt = { 440, 100, 560, 150 };
+	DrawText(hdc, "★서커스 찰리★", -1, &rt, DT_CENTER | DT_WORDBREAK);
 }
 
 BackGround::~BackGround()

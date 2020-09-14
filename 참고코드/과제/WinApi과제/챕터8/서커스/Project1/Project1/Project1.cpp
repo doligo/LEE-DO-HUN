@@ -1,6 +1,7 @@
 ﻿#include <windows.h>
 #include <iostream>
 #include <vector>
+#include "GameSystem.h"
 using namespace std;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -28,8 +29,17 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	RegisterClass(&WndClass);
 
 	hWnd = CreateWindow(g_szClassName, g_szClassName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-		CW_USEDEFAULT, CW_USEDEFAULT, NULL, (HMENU)NULL, hInstance, NULL);
+		1024, 533, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
+
+	HDC hdc = NULL;
+	GameSystem *GS;
+
+	GS = new GameSystem();
+
+	hdc = GetDC(hWnd);
+
+	GS->Init(hWnd, g_hInst);
 
 	while (1)
 	{
@@ -43,11 +53,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		}
 		else
 		{
+			GS->Draw(hdc);
 			//// 일단 게임 메인화면창 띄워놓기
 		}
 	}
 
-
+	ReleaseDC(hWnd, hdc);
 	return (int)Message.wParam;
 }
 
