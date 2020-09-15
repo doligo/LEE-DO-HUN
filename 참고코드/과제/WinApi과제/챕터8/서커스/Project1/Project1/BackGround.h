@@ -6,11 +6,11 @@
 class BackGround
 {
 private:
-	HDC MemDC[4];
-	HBITMAP	m_BitMap[4];
-	HBITMAP	m_Old_BitMap[4];
+	HDC MemDC[5];
+	HBITMAP	m_BitMap[5];
+	HBITMAP	m_Old_BitMap[5];
 	BITMAP B_Info;
-	SIZE m_size[3];
+	SIZE m_size[4];
 public:
 	BackGround();
 
