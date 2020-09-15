@@ -6,15 +6,13 @@
 class BackGround
 {
 private:
-	HDC MemDC[5];
-	HBITMAP	m_BitMap[5];
-	HBITMAP	m_Old_BitMap[5];
+	HDC MemDC[9];
+	HBITMAP	m_BitMap[9];
+	HBITMAP	m_Old_BitMap[9];
 	BITMAP B_Info;
-	SIZE m_size[4];
+	SIZE m_size[8];
 public:
 	BackGround();
-
-	RECT star_rt[3];
 	
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
 	void Draw_TitleScreen(HDC hdc);

@@ -54,7 +54,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		else
 		{
 			GS->Draw(hdc);
-			//// 일단 게임 메인화면창 띄워놓기
 		}
 	}
 
