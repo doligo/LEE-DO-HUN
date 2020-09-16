@@ -11,9 +11,16 @@ void GameSystem::Init(HWND hWnd, HINSTANCE hlnst)
 	BG->Init_BackGround(hWnd, hlnst);
 }
 
-void GameSystem::Draw(HDC hdc)
+int GameSystem::Draw(HDC hdc)
 {
-	BG->Draw_TitleScreen(hdc);
+	static int check = 0;
+
+	if (check != 30)
+		check = BG->Draw_TitleScreen(hdc);
+	else
+		BG->Draw_GameScreen(hdc);
+	
+	return 0;
 }
 
 GameSystem::~GameSystem()

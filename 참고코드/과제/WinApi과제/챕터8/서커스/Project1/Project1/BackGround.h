@@ -6,16 +6,24 @@
 class BackGround
 {
 private:
+	BITMAP B_Info;
+
 	HDC MemDC[9];
 	HBITMAP	m_BitMap[9];
 	HBITMAP	m_Old_BitMap[9];
-	BITMAP B_Info;
 	SIZE m_size[8];
+
+	HDC GameDC[5];
+	HBITMAP m_GameBitMap[5];
+	HBITMAP m_Old_GameBitMap[5];
+	SIZE m_Gamesize[4];
+
 public:
 	BackGround();
 	
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
-	void Draw_TitleScreen(HDC hdc);
+	int Draw_TitleScreen(HDC hdc);
+	void Draw_GameScreen(HDC hdc);
 
 	~BackGround();
 };

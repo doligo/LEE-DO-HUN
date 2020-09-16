@@ -9,7 +9,7 @@ public:
 	BackGround *BG;
 
 	void Init(HWND hWnd, HINSTANCE hlnst);
-	void Draw(HDC hdc);
+	int Draw(HDC hdc);
 
 	~GameSystem();
 };
