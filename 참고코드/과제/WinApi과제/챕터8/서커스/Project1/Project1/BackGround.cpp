@@ -2,7 +2,7 @@
 
 BackGround::BackGround()
 {
-
+	menu_select = 0;
 }
 
 void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
@@ -101,6 +101,20 @@ void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
 	m_size[7].cx = B_Info.bmWidth;
 	m_size[7].cy = B_Info.bmHeight;
 
+	////////////////////////////////
+
+	StageDC[0] = CreateCompatibleDC(hdc); // 검은배경
+	m_StageBitMap[0] = CreateCompatibleBitmap(hdc, 1024, 533);
+	m_Old_StageBitMap[0] = (HBITMAP)SelectObject(StageDC[0], m_StageBitMap[0]);
+
+	StageDC[1] = CreateCompatibleDC(StageDC[0]);
+	m_StageBitMap[1] = (HBITMAP)LoadImage(NULL, TEXT("ddd6.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_StageBitMap[1] = (HBITMAP)SelectObject(StageDC[1], m_StageBitMap[1]);
+	GetObject(m_StageBitMap[1], sizeof(B_Info), &B_Info);
+	m_Stagesize.cx = B_Info.bmWidth;
+	m_Stagesize.cy = B_Info.bmHeight;
+
 	//////////////////////////////////////////////////////////////////// 여기서부터는 게임화면**
 
 	GameDC[0] = CreateCompatibleDC(hdc); // 검은배경
@@ -139,6 +153,78 @@ void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
 	GetObject(m_GameBitMap[3], sizeof(B_Info), &B_Info);
 	m_Gamesize[2].cx = B_Info.bmWidth;
 	m_Gamesize[2].cy = B_Info.bmHeight;
+}
+
+void BackGround::Init_Player(HWND hWnd, HINSTANCE hInst)
+{
+	HDC hdc = GetDC(hWnd);
+
+	CharacterDC[0] = CreateCompatibleDC(GameDC[0]);
+	m_CharacterBitMap[0] = (HBITMAP)LoadImage(NULL, TEXT("player0.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_CharacterBitMap[0] = (HBITMAP)SelectObject(CharacterDC[0], m_CharacterBitMap[0]);
+
+	GetObject(m_CharacterBitMap[0], sizeof(B_Info), &B_Info); // 캐릭터이동
+	m_Charactersize[0].cx = B_Info.bmWidth;
+	m_Charactersize[0].cy = B_Info.bmHeight;
+
+	///////////////////////////////////
+
+	CharacterDC[1] = CreateCompatibleDC(GameDC[0]);
+	m_CharacterBitMap[1] = (HBITMAP)LoadImage(NULL, TEXT("player1.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_CharacterBitMap[1] = (HBITMAP)SelectObject(CharacterDC[1], m_CharacterBitMap[1]);
+
+	GetObject(m_CharacterBitMap[1], sizeof(B_Info), &B_Info); // 캐릭터이동2
+	m_Charactersize[1].cx = B_Info.bmWidth;
+	m_Charactersize[1].cy = B_Info.bmHeight;
+
+	//////////////////////////////////////
+
+	CharacterDC[2] = CreateCompatibleDC(GameDC[0]);
+	m_CharacterBitMap[2] = (HBITMAP)LoadImage(NULL, TEXT("player2.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_CharacterBitMap[2] = (HBITMAP)SelectObject(CharacterDC[2], m_CharacterBitMap[2]);
+
+	GetObject(m_CharacterBitMap[2], sizeof(B_Info), &B_Info); // 캐릭터점프
+	m_Charactersize[2].cx = B_Info.bmWidth;
+	m_Charactersize[2].cy = B_Info.bmHeight;
+
+	/////////////////////////////////////////
+
+	CharacterDC[3] = CreateCompatibleDC(GameDC[0]);
+	m_CharacterBitMap[3] = (HBITMAP)LoadImage(NULL, TEXT("die.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_CharacterBitMap[3] = (HBITMAP)SelectObject(CharacterDC[3], m_CharacterBitMap[3]);
+
+	GetObject(m_CharacterBitMap[3], sizeof(B_Info), &B_Info); // 캐릭터죽음
+	m_Charactersize[3].cx = B_Info.bmWidth;
+	m_Charactersize[3].cy = B_Info.bmHeight;
+
+	///////////////////////////
+
+	CharacterDC[4] = CreateCompatibleDC(GameDC[0]);
+	m_CharacterBitMap[4] = (HBITMAP)LoadImage(NULL, TEXT("win.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_CharacterBitMap[4] = (HBITMAP)SelectObject(CharacterDC[4], m_CharacterBitMap[4]);
+
+	GetObject(m_CharacterBitMap[4], sizeof(B_Info), &B_Info); // 캐릭터승리
+	m_Charactersize[4].cx = B_Info.bmWidth;
+	m_Charactersize[4].cy = B_Info.bmHeight;
+
+	///////////////////////////
+
+	CharacterDC[5] = CreateCompatibleDC(GameDC[0]);
+	m_CharacterBitMap[5] = (HBITMAP)LoadImage(NULL, TEXT("win2.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_CharacterBitMap[5] = (HBITMAP)SelectObject(CharacterDC[5], m_CharacterBitMap[5]);
+
+	GetObject(m_CharacterBitMap[5], sizeof(B_Info), &B_Info); // 캐릭터승리2
+	m_Charactersize[5].cx = B_Info.bmWidth;
+	m_Charactersize[5].cy = B_Info.bmHeight;
+
+	player_x = 0;
+	player_y = 385;
 }
 
 int BackGround::Draw_TitleScreen(HDC hdc)
@@ -208,11 +294,17 @@ int BackGround::Draw_TitleScreen(HDC hdc)
 	BitBlt(hdc, 0, 0, 1024, 533, MemDC[0], 0, 0, SRCCOPY);
 
 	if (GetKeyState(VK_UP) & 0x8000)
+	{
 		value = 10;
+	}
 	else if (GetKeyState(VK_DOWN) & 0x8000)
+	{
 		value = 20;
+	}
 	else if (GetKeyState(VK_RETURN) & 0x8000)
 		return 30;
+
+	menu_select = value;
 }
 
 void BackGround::Draw_GameScreen(HDC hdc)
@@ -222,29 +314,59 @@ void BackGround::Draw_GameScreen(HDC hdc)
 
 	TransparentBlt(GameDC[0], 0, 210, m_Gamesize[0].cx * 16, m_Gamesize[0].cy + 150, GameDC[1], 0, 0, m_Gamesize[0].cx, m_Gamesize[0].cy, SRCCOPY); // 초록색배경
 
-	TransparentBlt(GameDC[0], _x, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
-	TransparentBlt(GameDC[0], 90, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
-	TransparentBlt(GameDC[0], 180, 115, m_Gamesize[1].cx + 30, m_Gamesize[1].cy + 30, GameDC[2], 0, 0, m_Gamesize[1].cx, m_Gamesize[1].cy, SRCCOPY); // 코끼리
-	TransparentBlt(GameDC[0], 270, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
-	TransparentBlt(GameDC[0], 360, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
-	TransparentBlt(GameDC[0], 450, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
-	TransparentBlt(GameDC[0], 540, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
-	TransparentBlt(GameDC[0], 630, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
-	TransparentBlt(GameDC[0], 720, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
-	TransparentBlt(GameDC[0], 810, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
-	TransparentBlt(GameDC[0], 900, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
-	TransparentBlt(GameDC[0], 990, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
+	for (int i = 0; i < 13; i++)
+	{
+		if (i == 2)
+		{
+			TransparentBlt(GameDC[0], _x, 115, m_Gamesize[1].cx + 30, m_Gamesize[1].cy + 30, GameDC[2], 0, 0, m_Gamesize[1].cx, m_Gamesize[1].cy, SRCCOPY); // 코끼리
+		}
+		else
+		{
+			TransparentBlt(GameDC[0], _x, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
+		}
+		_x += 90;
+	}
+
+	Draw_Character(hdc);
 
 	BitBlt(hdc, 0, 0, 1024, 533, GameDC[0], 0, 0, SRCCOPY);
 }
 
+void BackGround::Draw_StageScreen(HDC hdc)
+{
+	TransparentBlt(StageDC[0], 450, 200, m_Stagesize.cx, m_Stagesize.cy, StageDC[1], 0, 0, m_Stagesize.cx, m_Stagesize.cy, SRCCOPY);
+	BitBlt(hdc, 0, 0, 1024, 533, StageDC[0], 0, 0, SRCCOPY);
+}
+
+void BackGround::Draw_Character(HDC hdc)
+{
+	TransparentBlt(GameDC[0], player_x, player_y, m_Charactersize[0].cx, m_Charactersize[0].cy, CharacterDC[0], 0, 0, m_Charactersize[0].cx, m_Charactersize[0].cy, RGB(255, 0, 255));
+}
+
 BackGround::~BackGround()
 {
-	
 	for (int i = 0; i < 9; i++)
 	{
 		DeleteObject(m_BitMap[i]);
 		DeleteObject(m_Old_BitMap[i]);
 		DeleteDC(MemDC[i]);
+	}
+	for (int i = 0; i < 2; i++)
+	{
+		DeleteObject(m_StageBitMap[i]);
+		DeleteObject(m_Old_StageBitMap[i]);
+		DeleteDC(StageDC[i]);
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		DeleteObject(m_GameBitMap[i]);
+		DeleteObject(m_Old_GameBitMap[i]);
+		DeleteDC(GameDC[i]);
+	}
+	for (int i = 0; i < 6; i++)
+	{
+		DeleteObject(m_CharacterBitMap[i]);
+		DeleteObject(m_Old_CharacterBitMap[i]);
+		DeleteDC(CharacterDC[i]);
 	}
 }
