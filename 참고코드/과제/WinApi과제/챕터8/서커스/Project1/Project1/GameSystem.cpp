@@ -29,11 +29,14 @@ int GameSystem::Draw(HDC hdc)
 				game_start_check = TRUE;
 			}
 			BG->Draw_GameScreen(hdc);
+			BG->Control_Character();
+			
 		}
 	}
 	
 	return 0;
 }
+
 
 GameSystem::~GameSystem()
 {

@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <iostream>
 #include <string>
+#include <time.h>
 #pragma once
 
 class BackGround
@@ -33,6 +34,13 @@ public:
 
 	int player_x;
 	int player_y;
+	int player_pose;
+	int count_x;
+	int count_y;
+	int jump_x;
+	int jump_y;
+	int degree;
+	int jump_trigger;
 	int menu_select;
 
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
@@ -41,6 +49,7 @@ public:
 	void Draw_StageScreen(HDC hdc);
 	void Draw_GameScreen(HDC hdc);
 	void Draw_Character(HDC hdc);
+	void Control_Character();
 
 	~BackGround();
 };

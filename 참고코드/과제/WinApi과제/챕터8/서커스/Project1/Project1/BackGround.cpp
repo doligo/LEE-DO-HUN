@@ -3,6 +3,10 @@
 BackGround::BackGround()
 {
 	menu_select = 0;
+	count_x = 0;
+	count_y = 0;
+	degree = 0;
+	jump_trigger = FALSE;
 }
 
 void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
@@ -175,7 +179,7 @@ void BackGround::Init_Player(HWND hWnd, HINSTANCE hInst)
 		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	m_Old_CharacterBitMap[1] = (HBITMAP)SelectObject(CharacterDC[1], m_CharacterBitMap[1]);
 
-	GetObject(m_CharacterBitMap[1], sizeof(B_Info), &B_Info); // 캐릭터이동2
+	GetObject(m_CharacterBitMap[1], sizeof(B_Info), &B_Info); // 캐릭터뒷이동
 	m_Charactersize[1].cx = B_Info.bmWidth;
 	m_Charactersize[1].cy = B_Info.bmHeight;
 
@@ -186,7 +190,7 @@ void BackGround::Init_Player(HWND hWnd, HINSTANCE hInst)
 		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	m_Old_CharacterBitMap[2] = (HBITMAP)SelectObject(CharacterDC[2], m_CharacterBitMap[2]);
 
-	GetObject(m_CharacterBitMap[2], sizeof(B_Info), &B_Info); // 캐릭터점프
+	GetObject(m_CharacterBitMap[2], sizeof(B_Info), &B_Info); // 캐릭터앞이동, 점프
 	m_Charactersize[2].cx = B_Info.bmWidth;
 	m_Charactersize[2].cy = B_Info.bmHeight;
 
@@ -225,6 +229,9 @@ void BackGround::Init_Player(HWND hWnd, HINSTANCE hInst)
 
 	player_x = 0;
 	player_y = 385;
+	player_pose = 0;
+	jump_x = 0;
+	jump_y = 0;
 }
 
 int BackGround::Draw_TitleScreen(HDC hdc)
@@ -309,7 +316,7 @@ int BackGround::Draw_TitleScreen(HDC hdc)
 
 void BackGround::Draw_GameScreen(HDC hdc)
 {
-	int _x = 0; // 캐릭터 움직일떄마다 -나 + 해주기
+	int _x = 0; // 캐릭터 움직일떄마다 배경도 -나 + 해주기
 	int _y = 0;
 
 	TransparentBlt(GameDC[0], 0, 210, m_Gamesize[0].cx * 16, m_Gamesize[0].cy + 150, GameDC[1], 0, 0, m_Gamesize[0].cx, m_Gamesize[0].cy, SRCCOPY); // 초록색배경
@@ -340,7 +347,58 @@ void BackGround::Draw_StageScreen(HDC hdc)
 
 void BackGround::Draw_Character(HDC hdc)
 {
-	TransparentBlt(GameDC[0], player_x, player_y, m_Charactersize[0].cx, m_Charactersize[0].cy, CharacterDC[0], 0, 0, m_Charactersize[0].cx, m_Charactersize[0].cy, RGB(255, 0, 255));
+	TransparentBlt(GameDC[0], player_x, player_y + jump_y, m_Charactersize[0].cx + 10, m_Charactersize[0].cy + 25, CharacterDC[player_pose], 0, 0, m_Charactersize[0].cx, m_Charactersize[0].cy, RGB(255, 0, 255));
+}
+
+void BackGround::Control_Character()
+{
+
+	if (GetKeyState(VK_LEFT) & 0x8000)
+	{
+		player_x -= 1;
+		count_x++;
+		if (count_x >= 20)
+		{
+			if (player_pose == 0)
+				player_pose = 1;
+			else
+				player_pose = 0;
+
+			count_x = 0;
+		}
+	}
+	if (GetKeyState(VK_RIGHT) & 0x8000)
+	{
+		player_x += 1;
+		count_y++;
+		if (count_y >= 20)
+		{
+			if (player_pose == 0)
+				player_pose = 2;
+			else
+				player_pose = 0;
+
+			count_y = 0;
+		}
+	}
+	if (GetKeyState(VK_SPACE) & 0x8000)
+	{
+		player_pose = 2;
+		jump_trigger = TRUE;
+	}
+
+	if (jump_trigger == TRUE)
+	{
+		degree += 1;
+		if (degree == 180)
+		{
+			degree = 0;
+			player_pose = 0;
+			jump_trigger = FALSE;
+		}
+		jump_y = sin(degree * 3.14 / 180) * -130;
+	}
+
 }
 
 BackGround::~BackGround()
