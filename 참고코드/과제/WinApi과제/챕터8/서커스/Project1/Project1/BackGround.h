@@ -24,10 +24,15 @@ private:
 	HBITMAP m_Old_GameBitMap[4];
 	SIZE m_Gamesize[3];
 
-	HDC CharacterDC[6]; ///////// 플레이어 캐릭터
-	HBITMAP m_CharacterBitMap[6];
-	HBITMAP m_Old_CharacterBitMap[6];
+	HDC CharacterDC[5]; ///////// 플레이어 캐릭터
+	HBITMAP m_CharacterBitMap[5];
+	HBITMAP m_Old_CharacterBitMap[5];
 	SIZE m_Charactersize[5];
+
+	HDC EnemyDC[12]; ///////// 장애물 (적)
+	HBITMAP m_EnemyBitMap[12];
+	HBITMAP m_Old_EnemyBitMap[12];
+	SIZE m_Enemysize[12];
 
 public:
 	BackGround();
@@ -45,6 +50,7 @@ public:
 
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
 	void Init_Player(HWND hWnd, HINSTANCE hInst);
+	void Init_Enemy(HWND hWnd, HINSTANCE hInst);
 	int Draw_TitleScreen(HDC hdc);
 	void Draw_StageScreen(HDC hdc);
 	void Draw_GameScreen(HDC hdc);

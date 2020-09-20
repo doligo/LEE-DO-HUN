@@ -234,6 +234,11 @@ void BackGround::Init_Player(HWND hWnd, HINSTANCE hInst)
 	jump_y = 0;
 }
 
+void BackGround::Init_Enemy(HWND hWnd, HINSTANCE hInst)
+{
+	HDC hdc = GetDC(hWnd);
+}
+
 int BackGround::Draw_TitleScreen(HDC hdc)
 {
 	int _x = 390;
@@ -355,7 +360,7 @@ void BackGround::Control_Character()
 
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
-		player_x -= 1;
+		player_x -= 2;
 		count_x++;
 		if (count_x >= 20)
 		{
@@ -369,7 +374,7 @@ void BackGround::Control_Character()
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
-		player_x += 1;
+		player_x += 2;
 		count_y++;
 		if (count_y >= 20)
 		{
@@ -389,7 +394,7 @@ void BackGround::Control_Character()
 
 	if (jump_trigger == TRUE)
 	{
-		degree += 1;
+		degree += 2;
 		if (degree == 180)
 		{
 			degree = 0;
@@ -421,10 +426,16 @@ BackGround::~BackGround()
 		DeleteObject(m_Old_GameBitMap[i]);
 		DeleteDC(GameDC[i]);
 	}
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		DeleteObject(m_CharacterBitMap[i]);
 		DeleteObject(m_Old_CharacterBitMap[i]);
 		DeleteDC(CharacterDC[i]);
+	}
+	for (int i = 0; i < 12; i++)
+	{
+		DeleteObject(m_EnemyBitMap[i]);
+		DeleteObject(m_Old_EnemyBitMap[i]);
+		DeleteDC(EnemyDC[i]);
 	}
 }
