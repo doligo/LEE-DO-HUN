@@ -4,8 +4,10 @@ BackGround::BackGround()
 {
 	menu_select = 0;
 	count_x = 0;
-	count_y = 0;
+	count_x2 = 0;
 	degree = 0;
+	fire_ring_draw = FALSE;
+	enemy_change_count = 0;
 	jump_trigger = FALSE;
 }
 
@@ -157,6 +159,9 @@ void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
 	GetObject(m_GameBitMap[3], sizeof(B_Info), &B_Info);
 	m_Gamesize[2].cx = B_Info.bmWidth;
 	m_Gamesize[2].cy = B_Info.bmHeight;
+
+	back_ground_x = 0;
+	back_ground_y = 115;
 }
 
 void BackGround::Init_Player(HWND hWnd, HINSTANCE hInst)
@@ -237,6 +242,128 @@ void BackGround::Init_Player(HWND hWnd, HINSTANCE hInst)
 void BackGround::Init_Enemy(HWND hWnd, HINSTANCE hInst)
 {
 	HDC hdc = GetDC(hWnd);
+
+	EnemyDC[0] = CreateCompatibleDC(GameDC[0]);
+	m_EnemyBitMap[0] = (HBITMAP)LoadImage(NULL, TEXT("enemy.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_EnemyBitMap[0] = (HBITMAP)SelectObject(EnemyDC[0], m_EnemyBitMap[0]);
+
+	GetObject(m_EnemyBitMap[0], sizeof(B_Info), &B_Info); // 불타는 링
+	m_Enemysize[0].cx = B_Info.bmWidth;
+	m_Enemysize[0].cy = B_Info.bmHeight;
+
+	//////////////////////
+
+	EnemyDC[1] = CreateCompatibleDC(GameDC[0]);
+	m_EnemyBitMap[1] = (HBITMAP)LoadImage(NULL, TEXT("enemy_b.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_EnemyBitMap[1] = (HBITMAP)SelectObject(EnemyDC[1], m_EnemyBitMap[1]);
+
+	GetObject(m_EnemyBitMap[1], sizeof(B_Info), &B_Info); // 불타는 링_back
+	m_Enemysize[1].cx = B_Info.bmWidth;
+	m_Enemysize[1].cy = B_Info.bmHeight;
+
+	///////////////////////////
+
+	EnemyDC[2] = CreateCompatibleDC(GameDC[0]);
+	m_EnemyBitMap[2] = (HBITMAP)LoadImage(NULL, TEXT("enemy_f.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_EnemyBitMap[2] = (HBITMAP)SelectObject(EnemyDC[2], m_EnemyBitMap[2]);
+
+	GetObject(m_EnemyBitMap[2], sizeof(B_Info), &B_Info); // 불타는 링_front
+	m_Enemysize[2].cx = B_Info.bmWidth;
+	m_Enemysize[2].cy = B_Info.bmHeight;
+
+	///////////////////////////
+
+	EnemyDC[3] = CreateCompatibleDC(GameDC[0]);
+	m_EnemyBitMap[3] = (HBITMAP)LoadImage(NULL, TEXT("enemy1.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_EnemyBitMap[3] = (HBITMAP)SelectObject(EnemyDC[3], m_EnemyBitMap[3]);
+
+	GetObject(m_EnemyBitMap[3], sizeof(B_Info), &B_Info); // 불타는 링2
+	m_Enemysize[3].cx = B_Info.bmWidth;
+	m_Enemysize[3].cy = B_Info.bmHeight;
+
+	///////////////////////////
+
+	EnemyDC[4] = CreateCompatibleDC(GameDC[0]);
+	m_EnemyBitMap[4] = (HBITMAP)LoadImage(NULL, TEXT("enemy_1b.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_EnemyBitMap[4] = (HBITMAP)SelectObject(EnemyDC[4], m_EnemyBitMap[4]);
+
+	GetObject(m_EnemyBitMap[4], sizeof(B_Info), &B_Info); // 불타는 링2_back
+	m_Enemysize[4].cx = B_Info.bmWidth;
+	m_Enemysize[4].cy = B_Info.bmHeight;
+
+	///////////////////////////////
+
+	EnemyDC[5] = CreateCompatibleDC(GameDC[0]);
+	m_EnemyBitMap[5] = (HBITMAP)LoadImage(NULL, TEXT("enemy_1f.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_EnemyBitMap[5] = (HBITMAP)SelectObject(EnemyDC[5], m_EnemyBitMap[5]);
+
+	GetObject(m_EnemyBitMap[5], sizeof(B_Info), &B_Info); // 불타는 링2_front
+	m_Enemysize[5].cx = B_Info.bmWidth;
+	m_Enemysize[5].cy = B_Info.bmHeight;
+
+	///////////////////////////////////
+
+	EnemyDC[6] = CreateCompatibleDC(GameDC[0]);
+	m_EnemyBitMap[6] = (HBITMAP)LoadImage(NULL, TEXT("enemy_l.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_EnemyBitMap[6] = (HBITMAP)SelectObject(EnemyDC[6], m_EnemyBitMap[6]);
+
+	GetObject(m_EnemyBitMap[6], sizeof(B_Info), &B_Info); // 불타는 링3(돈)
+	m_Enemysize[6].cx = B_Info.bmWidth;
+	m_Enemysize[6].cy = B_Info.bmHeight;
+
+	/////////////////////////////////
+
+	EnemyDC[7] = CreateCompatibleDC(GameDC[0]);
+	m_EnemyBitMap[7] = (HBITMAP)LoadImage(NULL, TEXT("enemy_l_b.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_EnemyBitMap[7] = (HBITMAP)SelectObject(EnemyDC[7], m_EnemyBitMap[7]);
+
+	GetObject(m_EnemyBitMap[7], sizeof(B_Info), &B_Info); // 불타는 링3(돈)_back
+	m_Enemysize[7].cx = B_Info.bmWidth;
+	m_Enemysize[7].cy = B_Info.bmHeight;
+
+	////////////////////////////////
+
+	EnemyDC[8] = CreateCompatibleDC(GameDC[0]);
+	m_EnemyBitMap[8] = (HBITMAP)LoadImage(NULL, TEXT("enemy_l_f.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_EnemyBitMap[8] = (HBITMAP)SelectObject(EnemyDC[8], m_EnemyBitMap[8]);
+
+	GetObject(m_EnemyBitMap[8], sizeof(B_Info), &B_Info); // 불타는 링3(돈)_front
+	m_Enemysize[8].cx = B_Info.bmWidth;
+	m_Enemysize[8].cy = B_Info.bmHeight;
+
+	///////////////////////////////
+
+	EnemyDC[9] = CreateCompatibleDC(GameDC[0]);
+	m_EnemyBitMap[9] = (HBITMAP)LoadImage(NULL, TEXT("front.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_EnemyBitMap[9] = (HBITMAP)SelectObject(EnemyDC[9], m_EnemyBitMap[9]);
+
+	GetObject(m_EnemyBitMap[9], sizeof(B_Info), &B_Info); // 항아리불
+	m_Enemysize[9].cx = B_Info.bmWidth;
+	m_Enemysize[9].cy = B_Info.bmHeight;
+
+	/////////////////////////////////////
+
+	EnemyDC[10] = CreateCompatibleDC(GameDC[0]);
+	m_EnemyBitMap[10] = (HBITMAP)LoadImage(NULL, TEXT("front2.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_EnemyBitMap[10] = (HBITMAP)SelectObject(EnemyDC[10], m_EnemyBitMap[10]);
+
+	GetObject(m_EnemyBitMap[10], sizeof(B_Info), &B_Info); // 항아리불2
+	m_Enemysize[10].cx = B_Info.bmWidth;
+	m_Enemysize[10].cy = B_Info.bmHeight;
+
+	enemy_x = 600;
+	enemy_y = 200;
 }
 
 int BackGround::Draw_TitleScreen(HDC hdc)
@@ -321,7 +448,7 @@ int BackGround::Draw_TitleScreen(HDC hdc)
 
 void BackGround::Draw_GameScreen(HDC hdc)
 {
-	int _x = 0; // 캐릭터 움직일떄마다 배경도 -나 + 해주기
+	int _x = 0; // 캐릭터 움직일떄마다 배경도 -나 + 해주기 back_ground_x, back_ground_y 이용 **
 	int _y = 0;
 
 	TransparentBlt(GameDC[0], 0, 210, m_Gamesize[0].cx * 16, m_Gamesize[0].cy + 150, GameDC[1], 0, 0, m_Gamesize[0].cx, m_Gamesize[0].cy, SRCCOPY); // 초록색배경
@@ -330,16 +457,17 @@ void BackGround::Draw_GameScreen(HDC hdc)
 	{
 		if (i == 2)
 		{
-			TransparentBlt(GameDC[0], _x, 115, m_Gamesize[1].cx + 30, m_Gamesize[1].cy + 30, GameDC[2], 0, 0, m_Gamesize[1].cx, m_Gamesize[1].cy, SRCCOPY); // 코끼리
+			TransparentBlt(GameDC[0], _x + back_ground_x, 115, m_Gamesize[1].cx + 30, m_Gamesize[1].cy + 30, GameDC[2], 0, 0, m_Gamesize[1].cx, m_Gamesize[1].cy, SRCCOPY); // 코끼리
 		}
 		else
 		{
-			TransparentBlt(GameDC[0], _x, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
+			TransparentBlt(GameDC[0], _x + back_ground_x, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
 		}
 		_x += 90;
 	}
 
 	Draw_Character(hdc);
+	Draw_Enemy(hdc);
 
 	BitBlt(hdc, 0, 0, 1024, 533, GameDC[0], 0, 0, SRCCOPY);
 }
@@ -355,12 +483,45 @@ void BackGround::Draw_Character(HDC hdc)
 	TransparentBlt(GameDC[0], player_x, player_y + jump_y, m_Charactersize[0].cx + 10, m_Charactersize[0].cy + 25, CharacterDC[player_pose], 0, 0, m_Charactersize[0].cx, m_Charactersize[0].cy, RGB(255, 0, 255));
 }
 
+void BackGround::Draw_Enemy(HDC hdc)
+{
+	static int enemy_move = 0;
+
+	if (fire_ring_draw == FALSE)
+	{
+		TransparentBlt(GameDC[0], enemy_x, enemy_y, m_Enemysize[0].cx + 10, m_Enemysize[0].cy + 60, EnemyDC[0], 0, 0, m_Enemysize[0].cx, m_Enemysize[0].cy, RGB(255, 0, 255));
+		enemy_change_count++;
+		if (enemy_change_count >= 30)
+		{
+			fire_ring_draw = TRUE;
+			enemy_change_count = 0;
+		}
+	}
+	else if (fire_ring_draw == TRUE)
+	{
+		TransparentBlt(GameDC[0], enemy_x, enemy_y, m_Enemysize[3].cx + 10, m_Enemysize[3].cy + 60, EnemyDC[3], 0, 0, m_Enemysize[3].cx, m_Enemysize[3].cy, RGB(255, 0, 255));
+		enemy_change_count++;
+		if (enemy_change_count >= 30)
+		{
+			fire_ring_draw = FALSE;
+			enemy_change_count = 0;
+		}
+	}
+
+	enemy_move++;
+	if (enemy_move >= 5)
+	{
+		enemy_x--;
+		enemy_move = 0;
+	}
+}
+
 void BackGround::Control_Character()
 {
 
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
-		player_x -= 2;
+		player_x -= 1;
 		count_x++;
 		if (count_x >= 20)
 		{
@@ -374,16 +535,16 @@ void BackGround::Control_Character()
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
-		player_x += 2;
-		count_y++;
-		if (count_y >= 20)
+		player_x += 1;
+		count_x2++;
+		if (count_x2 >= 20)
 		{
 			if (player_pose == 0)
 				player_pose = 2;
 			else
 				player_pose = 0;
 
-			count_y = 0;
+			count_x2 = 0;
 		}
 	}
 	if (GetKeyState(VK_SPACE) & 0x8000)
@@ -394,7 +555,7 @@ void BackGround::Control_Character()
 
 	if (jump_trigger == TRUE)
 	{
-		degree += 2;
+		degree += 1;
 		if (degree == 180)
 		{
 			degree = 0;
@@ -426,13 +587,13 @@ BackGround::~BackGround()
 		DeleteObject(m_Old_GameBitMap[i]);
 		DeleteDC(GameDC[i]);
 	}
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		DeleteObject(m_CharacterBitMap[i]);
 		DeleteObject(m_Old_CharacterBitMap[i]);
 		DeleteDC(CharacterDC[i]);
 	}
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 11; i++)
 	{
 		DeleteObject(m_EnemyBitMap[i]);
 		DeleteObject(m_Old_EnemyBitMap[i]);

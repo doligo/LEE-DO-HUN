@@ -10,6 +10,7 @@ void GameSystem::Init(HWND hWnd, HINSTANCE hlnst)
 	BG = new BackGround();
 	BG->Init_BackGround(hWnd, hlnst);
 	BG->Init_Player(hWnd, hlnst);
+	BG->Init_Enemy(hWnd, hlnst);
 }
 
 int GameSystem::Draw(HDC hdc)

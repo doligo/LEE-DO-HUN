@@ -24,15 +24,15 @@ private:
 	HBITMAP m_Old_GameBitMap[4];
 	SIZE m_Gamesize[3];
 
-	HDC CharacterDC[5]; ///////// 플레이어 캐릭터
-	HBITMAP m_CharacterBitMap[5];
-	HBITMAP m_Old_CharacterBitMap[5];
-	SIZE m_Charactersize[5];
+	HDC CharacterDC[6]; ///////// 플레이어 캐릭터
+	HBITMAP m_CharacterBitMap[6];
+	HBITMAP m_Old_CharacterBitMap[6];
+	SIZE m_Charactersize[6];
 
-	HDC EnemyDC[12]; ///////// 장애물 (적)
-	HBITMAP m_EnemyBitMap[12];
-	HBITMAP m_Old_EnemyBitMap[12];
-	SIZE m_Enemysize[12];
+	HDC EnemyDC[11]; ///////// 장애물 (적)
+	HBITMAP m_EnemyBitMap[11];
+	HBITMAP m_Old_EnemyBitMap[11];
+	SIZE m_Enemysize[11];
 
 public:
 	BackGround();
@@ -41,12 +41,20 @@ public:
 	int player_y;
 	int player_pose;
 	int count_x;
-	int count_y;
+	int count_x2;
 	int jump_x;
 	int jump_y;
 	int degree;
 	int jump_trigger;
 	int menu_select;
+
+	int back_ground_x;
+	int back_ground_y;
+
+	int enemy_x;
+	int enemy_y;
+	int enemy_change_count;
+	int fire_ring_draw;
 
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
 	void Init_Player(HWND hWnd, HINSTANCE hInst);
@@ -55,6 +63,7 @@ public:
 	void Draw_StageScreen(HDC hdc);
 	void Draw_GameScreen(HDC hdc);
 	void Draw_Character(HDC hdc);
+	void Draw_Enemy(HDC hdc);
 	void Control_Character();
 
 	~BackGround();
