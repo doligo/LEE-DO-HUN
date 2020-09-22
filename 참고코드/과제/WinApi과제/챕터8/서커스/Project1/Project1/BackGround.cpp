@@ -232,7 +232,7 @@ void BackGround::Init_Player(HWND hWnd, HINSTANCE hInst)
 	m_Charactersize[5].cx = B_Info.bmWidth;
 	m_Charactersize[5].cy = B_Info.bmHeight;
 
-	player_x = 0;
+	player_x = 350;
 	player_y = 385;
 	player_pose = 0;
 	jump_x = 0;
@@ -362,7 +362,7 @@ void BackGround::Init_Enemy(HWND hWnd, HINSTANCE hInst)
 	m_Enemysize[10].cx = B_Info.bmWidth;
 	m_Enemysize[10].cy = B_Info.bmHeight;
 
-	enemy_x = 600;
+	enemy_x = 800;
 	enemy_y = 200;
 }
 
@@ -448,14 +448,14 @@ int BackGround::Draw_TitleScreen(HDC hdc)
 
 void BackGround::Draw_GameScreen(HDC hdc)
 {
-	int _x = 0; // 캐릭터 움직일떄마다 배경도 -나 + 해주기 back_ground_x, back_ground_y 이용 **
+	int _x = 0;
 	int _y = 0;
 
 	TransparentBlt(GameDC[0], 0, 210, m_Gamesize[0].cx * 16, m_Gamesize[0].cy + 150, GameDC[1], 0, 0, m_Gamesize[0].cx, m_Gamesize[0].cy, SRCCOPY); // 초록색배경
 
-	for (int i = 0; i < 13; i++)
+	for (int i = 0; i < 51; i++)
 	{
-		if (i == 2)
+		if (i == 2 || i == 15 || i == 28 || i == 41)
 		{
 			TransparentBlt(GameDC[0], _x + back_ground_x, 115, m_Gamesize[1].cx + 30, m_Gamesize[1].cy + 30, GameDC[2], 0, 0, m_Gamesize[1].cx, m_Gamesize[1].cy, SRCCOPY); // 코끼리
 		}
@@ -480,16 +480,17 @@ void BackGround::Draw_StageScreen(HDC hdc)
 
 void BackGround::Draw_Character(HDC hdc)
 {
-	TransparentBlt(GameDC[0], player_x, player_y + jump_y, m_Charactersize[0].cx + 10, m_Charactersize[0].cy + 25, CharacterDC[player_pose], 0, 0, m_Charactersize[0].cx, m_Charactersize[0].cy, RGB(255, 0, 255));
+	TransparentBlt(GameDC[0], player_x + back_ground_x, player_y + jump_y, m_Charactersize[0].cx + 10, m_Charactersize[0].cy + 25, CharacterDC[player_pose], 0, 0, m_Charactersize[0].cx, m_Charactersize[0].cy, RGB(255, 0, 255));
 }
 
 void BackGround::Draw_Enemy(HDC hdc)
 {
+	///////////// 캐릭이 적을 넘어가면 새로운 적 생성하도록 하기, 바닥적도 깔기**
 	static int enemy_move = 0;
 
 	if (fire_ring_draw == FALSE)
 	{
-		TransparentBlt(GameDC[0], enemy_x, enemy_y, m_Enemysize[0].cx + 10, m_Enemysize[0].cy + 60, EnemyDC[0], 0, 0, m_Enemysize[0].cx, m_Enemysize[0].cy, RGB(255, 0, 255));
+		TransparentBlt(GameDC[0], enemy_x + back_ground_x, enemy_y, m_Enemysize[0].cx + 10, m_Enemysize[0].cy + 60, EnemyDC[0], 0, 0, m_Enemysize[0].cx, m_Enemysize[0].cy, RGB(255, 0, 255));
 		enemy_change_count++;
 		if (enemy_change_count >= 30)
 		{
@@ -499,7 +500,7 @@ void BackGround::Draw_Enemy(HDC hdc)
 	}
 	else if (fire_ring_draw == TRUE)
 	{
-		TransparentBlt(GameDC[0], enemy_x, enemy_y, m_Enemysize[3].cx + 10, m_Enemysize[3].cy + 60, EnemyDC[3], 0, 0, m_Enemysize[3].cx, m_Enemysize[3].cy, RGB(255, 0, 255));
+		TransparentBlt(GameDC[0], enemy_x + back_ground_x, enemy_y, m_Enemysize[3].cx + 10, m_Enemysize[3].cy + 60, EnemyDC[3], 0, 0, m_Enemysize[3].cx, m_Enemysize[3].cy, RGB(255, 0, 255));
 		enemy_change_count++;
 		if (enemy_change_count >= 30)
 		{
@@ -509,7 +510,7 @@ void BackGround::Draw_Enemy(HDC hdc)
 	}
 
 	enemy_move++;
-	if (enemy_move >= 5)
+	if (enemy_move >= 2)
 	{
 		enemy_x--;
 		enemy_move = 0;
@@ -521,8 +522,13 @@ void BackGround::Control_Character()
 
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
-		player_x -= 1;
-		count_x++;
+		if (player_x >= 350)
+		{
+			player_x -= 2;
+			count_x++;
+			back_ground_x += 2;
+		}
+
 		if (count_x >= 20)
 		{
 			if (player_pose == 0)
@@ -535,8 +541,9 @@ void BackGround::Control_Character()
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
-		player_x += 1;
+		player_x += 2;
 		count_x2++;
+		back_ground_x -= 2;
 		if (count_x2 >= 20)
 		{
 			if (player_pose == 0)
@@ -555,7 +562,7 @@ void BackGround::Control_Character()
 
 	if (jump_trigger == TRUE)
 	{
-		degree += 1;
+		degree += 2;
 		if (degree == 180)
 		{
 			degree = 0;
