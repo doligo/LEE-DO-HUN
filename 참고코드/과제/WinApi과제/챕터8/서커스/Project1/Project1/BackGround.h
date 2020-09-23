@@ -34,7 +34,7 @@ private:
 	HBITMAP m_Old_EnemyBitMap[11];
 	SIZE m_Enemysize[11];
 
-	RECT m_Enemy_rt;
+	RECT m_Enemy_rt[2];
 	RECT m_Player_rt;
 
 public:
@@ -55,11 +55,13 @@ public:
 	int back_ground_x;
 	int back_ground_y;
 
-	int enemy_x;
-	int enemy_y;
+	int enemy_x[2];
+	int enemy_y[2];
 	int enemy_change_count;
 	int fire_ring_draw;
 	int enemy_create_trigger;
+	int first_ring_trigger;
+	int next_ring_trigger;
 
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
 	void Init_Player(HWND hWnd, HINSTANCE hInst);
@@ -71,6 +73,7 @@ public:
 	void Draw_Die_Character(HDC hdc);
 	void Draw_Enemy(HDC hdc);
 	void Control_Character();
+	void Refresh_Ring();
 
 	~BackGround();
 };

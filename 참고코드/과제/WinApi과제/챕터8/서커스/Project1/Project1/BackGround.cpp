@@ -11,6 +11,8 @@ BackGround::BackGround()
 	jump_trigger = FALSE;
 	die_check = FALSE;
 	enemy_create_trigger = FALSE;
+	next_ring_trigger = FALSE;
+	first_ring_trigger = TRUE;
 }
 
 void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
@@ -364,8 +366,11 @@ void BackGround::Init_Enemy(HWND hWnd, HINSTANCE hInst)
 	m_Enemysize[10].cx = B_Info.bmWidth;
 	m_Enemysize[10].cy = B_Info.bmHeight;
 
-	enemy_x = 800;
-	enemy_y = 200;
+	enemy_x[0] = 800;
+	enemy_y[0] = 200;
+
+	enemy_x[1] = 1200;
+	enemy_y[1] = 200;
 }
 
 int BackGround::Draw_TitleScreen(HDC hdc)
@@ -503,7 +508,12 @@ void BackGround::Draw_Enemy(HDC hdc)
 
 	if (fire_ring_draw == FALSE)
 	{
-		TransparentBlt(GameDC[0], enemy_x + back_ground_x, enemy_y, m_Enemysize[0].cx + 10, m_Enemysize[0].cy + 60, EnemyDC[0], 0, 0, m_Enemysize[0].cx, m_Enemysize[0].cy, RGB(255, 0, 255));
+		if (first_ring_trigger == TRUE)
+		TransparentBlt(GameDC[0], enemy_x[0] + back_ground_x, enemy_y[0], m_Enemysize[0].cx + 10, m_Enemysize[0].cy + 60, EnemyDC[0], 0, 0, m_Enemysize[0].cx, m_Enemysize[0].cy, RGB(255, 0, 255));
+
+		if (next_ring_trigger == TRUE)
+			TransparentBlt(GameDC[0], enemy_x[1] + back_ground_x, enemy_y[1], m_Enemysize[0].cx + 10, m_Enemysize[0].cy + 60, EnemyDC[0], 0, 0, m_Enemysize[0].cx, m_Enemysize[0].cy, RGB(255, 0, 255));
+
 		enemy_change_count++;
 		if (enemy_change_count >= 30)
 		{
@@ -513,7 +523,12 @@ void BackGround::Draw_Enemy(HDC hdc)
 	}
 	else if (fire_ring_draw == TRUE)
 	{
-		TransparentBlt(GameDC[0], enemy_x + back_ground_x, enemy_y, m_Enemysize[3].cx + 10, m_Enemysize[3].cy + 60, EnemyDC[3], 0, 0, m_Enemysize[3].cx, m_Enemysize[3].cy, RGB(255, 0, 255));
+		if (first_ring_trigger == TRUE)
+		TransparentBlt(GameDC[0], enemy_x[0] + back_ground_x, enemy_y[0], m_Enemysize[3].cx + 10, m_Enemysize[3].cy + 60, EnemyDC[3], 0, 0, m_Enemysize[3].cx, m_Enemysize[3].cy, RGB(255, 0, 255));
+
+		if (next_ring_trigger == TRUE)
+			TransparentBlt(GameDC[0], enemy_x[1] + back_ground_x, enemy_y[1], m_Enemysize[3].cx + 10, m_Enemysize[3].cy + 60, EnemyDC[3], 0, 0, m_Enemysize[3].cx, m_Enemysize[3].cy, RGB(255, 0, 255));
+
 		enemy_change_count++;
 		if (enemy_change_count >= 30)
 		{
@@ -525,11 +540,15 @@ void BackGround::Draw_Enemy(HDC hdc)
 	enemy_move++;
 	if (enemy_move >= 2)
 	{
-		enemy_x--;
+		enemy_x[0]--;
+
+		if (next_ring_trigger == TRUE)
+		enemy_x[1]--;
+
 		enemy_move = 0;
 	}
 
-	m_Enemy_rt = { enemy_x, enemy_y + 160, enemy_x + 60, enemy_y + 160 + 10 };
+	m_Enemy_rt[0] = { enemy_x[0], enemy_y[0] + 160, enemy_x[0] + 60, enemy_y[0] + 160 + 10 };
 }
 
 void BackGround::Control_Character()
@@ -539,9 +558,9 @@ void BackGround::Control_Character()
 	{
 		if (player_x >= 350)
 		{
-			player_x -= 1;
+			player_x -= 2;
 			count_x++;
-			back_ground_x += 1;
+			back_ground_x += 2;
 		}
 
 		if (count_x >= 20)
@@ -556,9 +575,9 @@ void BackGround::Control_Character()
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
-		player_x += 1;
+		player_x += 2;
 		count_x2++;
-		back_ground_x -= 1;
+		back_ground_x -= 2;
 		if (count_x2 >= 20)
 		{
 			if (player_pose == 0)
@@ -577,7 +596,7 @@ void BackGround::Control_Character()
 
 	if (jump_trigger == TRUE)
 	{
-		degree += 1;
+		degree += 2;
 		if (degree == 180)
 		{
 			degree = 0;
@@ -589,12 +608,39 @@ void BackGround::Control_Character()
 
 	m_Player_rt = { player_x, player_y, player_x + 10, player_y + 60 };
 
-	if (m_Player_rt.right >= m_Enemy_rt.left && m_Player_rt.top + jump_y >= m_Enemy_rt.bottom)
+	for (int i = 0; i < 300; i++) // 범위설정다시하기**
 	{
-		die_check = TRUE;
+		if (m_Player_rt.right == m_Enemy_rt[0].left - 20 && m_Player_rt.top + jump_y >= m_Enemy_rt[0].bottom + i ||
+			m_Player_rt.left == m_Enemy_rt[0].right - 40 && m_Player_rt.top + jump_y >= m_Enemy_rt[0].bottom + i)
+		{
+			system("pause");
+			//die_check = TRUE;
+		}
+	}
+	if (m_Player_rt.left + 10 == m_Enemy_rt[0].left) // 새로운 링이 생김
+	{
 		enemy_create_trigger = TRUE;
 	}
 
+	Refresh_Ring();
+}
+
+void BackGround::Refresh_Ring()
+{
+	if (enemy_create_trigger == TRUE) // 다음 불링 만들기
+	{
+		enemy_create_trigger = FALSE;
+		next_ring_trigger = TRUE;
+	}
+
+	if (m_Player_rt.left >= m_Enemy_rt[0].left + 300)
+	{
+		first_ring_trigger = FALSE;
+	}
+	else if (m_Player_rt.left >= m_Enemy_rt[0].left + 300)
+	{
+		next_ring_trigger = FALSE;
+	}
 }
 
 BackGround::~BackGround()
