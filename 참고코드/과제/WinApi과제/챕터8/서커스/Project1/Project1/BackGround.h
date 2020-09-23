@@ -34,12 +34,16 @@ private:
 	HBITMAP m_Old_EnemyBitMap[11];
 	SIZE m_Enemysize[11];
 
+	RECT m_Enemy_rt;
+	RECT m_Player_rt;
+
 public:
 	BackGround();
 
 	int player_x;
 	int player_y;
 	int player_pose;
+	int die_check;
 	int count_x;
 	int count_x2;
 	int jump_x;
@@ -55,6 +59,7 @@ public:
 	int enemy_y;
 	int enemy_change_count;
 	int fire_ring_draw;
+	int enemy_create_trigger;
 
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
 	void Init_Player(HWND hWnd, HINSTANCE hInst);
@@ -63,6 +68,7 @@ public:
 	void Draw_StageScreen(HDC hdc);
 	void Draw_GameScreen(HDC hdc);
 	void Draw_Character(HDC hdc);
+	void Draw_Die_Character(HDC hdc);
 	void Draw_Enemy(HDC hdc);
 	void Control_Character();
 

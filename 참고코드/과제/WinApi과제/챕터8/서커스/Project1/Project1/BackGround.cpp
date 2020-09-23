@@ -9,6 +9,8 @@ BackGround::BackGround()
 	fire_ring_draw = FALSE;
 	enemy_change_count = 0;
 	jump_trigger = FALSE;
+	die_check = FALSE;
+	enemy_create_trigger = FALSE;
 }
 
 void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
@@ -466,8 +468,14 @@ void BackGround::Draw_GameScreen(HDC hdc)
 		_x += 90;
 	}
 
-	Draw_Character(hdc);
-	Draw_Enemy(hdc);
+	if (die_check == FALSE)
+	{
+		Draw_Character(hdc);
+		Draw_Enemy(hdc);
+	}
+	else
+		Draw_Die_Character(hdc);
+
 
 	BitBlt(hdc, 0, 0, 1024, 533, GameDC[0], 0, 0, SRCCOPY);
 }
@@ -481,6 +489,11 @@ void BackGround::Draw_StageScreen(HDC hdc)
 void BackGround::Draw_Character(HDC hdc)
 {
 	TransparentBlt(GameDC[0], player_x + back_ground_x, player_y + jump_y, m_Charactersize[0].cx + 10, m_Charactersize[0].cy + 25, CharacterDC[player_pose], 0, 0, m_Charactersize[0].cx, m_Charactersize[0].cy, RGB(255, 0, 255));
+}
+
+void BackGround::Draw_Die_Character(HDC hdc)
+{
+	TransparentBlt(GameDC[0], player_x + back_ground_x, player_y + jump_y, m_Charactersize[3].cx + 10, m_Charactersize[3].cy + 25, CharacterDC[3], 0, 0, m_Charactersize[3].cx, m_Charactersize[3].cy, RGB(255, 0, 255));
 }
 
 void BackGround::Draw_Enemy(HDC hdc)
@@ -515,6 +528,8 @@ void BackGround::Draw_Enemy(HDC hdc)
 		enemy_x--;
 		enemy_move = 0;
 	}
+
+	m_Enemy_rt = { enemy_x, enemy_y + 160, enemy_x + 60, enemy_y + 160 + 10 };
 }
 
 void BackGround::Control_Character()
@@ -524,9 +539,9 @@ void BackGround::Control_Character()
 	{
 		if (player_x >= 350)
 		{
-			player_x -= 2;
+			player_x -= 1;
 			count_x++;
-			back_ground_x += 2;
+			back_ground_x += 1;
 		}
 
 		if (count_x >= 20)
@@ -541,9 +556,9 @@ void BackGround::Control_Character()
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
-		player_x += 2;
+		player_x += 1;
 		count_x2++;
-		back_ground_x -= 2;
+		back_ground_x -= 1;
 		if (count_x2 >= 20)
 		{
 			if (player_pose == 0)
@@ -562,7 +577,7 @@ void BackGround::Control_Character()
 
 	if (jump_trigger == TRUE)
 	{
-		degree += 2;
+		degree += 1;
 		if (degree == 180)
 		{
 			degree = 0;
@@ -570,6 +585,14 @@ void BackGround::Control_Character()
 			jump_trigger = FALSE;
 		}
 		jump_y = sin(degree * 3.14 / 180) * -130;
+	}
+
+	m_Player_rt = { player_x, player_y, player_x + 10, player_y + 60 };
+
+	if (m_Player_rt.right >= m_Enemy_rt.left && m_Player_rt.top + jump_y >= m_Enemy_rt.bottom)
+	{
+		die_check = TRUE;
+		enemy_create_trigger = TRUE;
 	}
 
 }
