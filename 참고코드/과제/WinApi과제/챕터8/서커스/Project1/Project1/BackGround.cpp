@@ -10,9 +10,8 @@ BackGround::BackGround()
 	enemy_change_count = 0;
 	jump_trigger = FALSE;
 	die_check = FALSE;
-	enemy_create_trigger = FALSE;
-	next_ring_trigger = FALSE;
-	first_ring_trigger = TRUE;
+	first_ring_created = FALSE;
+	second_ring_created = FALSE;
 }
 
 void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
@@ -125,7 +124,7 @@ void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
 	m_Stagesize.cx = B_Info.bmWidth;
 	m_Stagesize.cy = B_Info.bmHeight;
 
-	//////////////////////////////////////////////////////////////////// 여기서부터는 게임화면**
+	//////////////////////////////////////////////////////////////////// 여기서부터는 게임화면
 
 	GameDC[0] = CreateCompatibleDC(hdc); // 검은배경
 	m_GameBitMap[0] = CreateCompatibleBitmap(hdc, 1024, 533);
@@ -241,6 +240,7 @@ void BackGround::Init_Player(HWND hWnd, HINSTANCE hInst)
 	player_pose = 0;
 	jump_x = 0;
 	jump_y = 0;
+	m_Player_rt = { player_x, player_y, player_x + 10, player_y + 60 };
 }
 
 void BackGround::Init_Enemy(HWND hWnd, HINSTANCE hInst)
@@ -366,11 +366,8 @@ void BackGround::Init_Enemy(HWND hWnd, HINSTANCE hInst)
 	m_Enemysize[10].cx = B_Info.bmWidth;
 	m_Enemysize[10].cy = B_Info.bmHeight;
 
-	enemy_x[0] = 800;
-	enemy_y[0] = 200;
-
-	enemy_x[1] = 1200;
-	enemy_y[1] = 200;
+	m_Enemy_rt[0] = { 0, 0, 0, 0 };
+	m_Enemy_rt[1] = { 0, 0, 0, 0 };
 }
 
 int BackGround::Draw_TitleScreen(HDC hdc)
@@ -508,10 +505,10 @@ void BackGround::Draw_Enemy(HDC hdc)
 
 	if (fire_ring_draw == FALSE)
 	{
-		if (first_ring_trigger == TRUE)
+		if (first_ring_created == TRUE)
 		TransparentBlt(GameDC[0], enemy_x[0] + back_ground_x, enemy_y[0], m_Enemysize[0].cx + 10, m_Enemysize[0].cy + 60, EnemyDC[0], 0, 0, m_Enemysize[0].cx, m_Enemysize[0].cy, RGB(255, 0, 255));
 
-		if (next_ring_trigger == TRUE)
+		if (second_ring_created == TRUE)
 			TransparentBlt(GameDC[0], enemy_x[1] + back_ground_x, enemy_y[1], m_Enemysize[0].cx + 10, m_Enemysize[0].cy + 60, EnemyDC[0], 0, 0, m_Enemysize[0].cx, m_Enemysize[0].cy, RGB(255, 0, 255));
 
 		enemy_change_count++;
@@ -523,10 +520,10 @@ void BackGround::Draw_Enemy(HDC hdc)
 	}
 	else if (fire_ring_draw == TRUE)
 	{
-		if (first_ring_trigger == TRUE)
+		if (first_ring_created == TRUE)
 		TransparentBlt(GameDC[0], enemy_x[0] + back_ground_x, enemy_y[0], m_Enemysize[3].cx + 10, m_Enemysize[3].cy + 60, EnemyDC[3], 0, 0, m_Enemysize[3].cx, m_Enemysize[3].cy, RGB(255, 0, 255));
 
-		if (next_ring_trigger == TRUE)
+		if (second_ring_created == TRUE)
 			TransparentBlt(GameDC[0], enemy_x[1] + back_ground_x, enemy_y[1], m_Enemysize[3].cx + 10, m_Enemysize[3].cy + 60, EnemyDC[3], 0, 0, m_Enemysize[3].cx, m_Enemysize[3].cy, RGB(255, 0, 255));
 
 		enemy_change_count++;
@@ -540,9 +537,9 @@ void BackGround::Draw_Enemy(HDC hdc)
 	enemy_move++;
 	if (enemy_move >= 2)
 	{
+		if (first_ring_created == TRUE)
 		enemy_x[0]--;
-
-		if (next_ring_trigger == TRUE)
+		if (second_ring_created == TRUE)
 		enemy_x[1]--;
 
 		enemy_move = 0;
@@ -554,13 +551,15 @@ void BackGround::Draw_Enemy(HDC hdc)
 void BackGround::Control_Character()
 {
 
+	Set_Ring(); // 링 반복생성
+
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
 		if (player_x >= 350)
 		{
-			player_x -= 2;
+			player_x -= 3;
 			count_x++;
-			back_ground_x += 2;
+			back_ground_x += 3;
 		}
 
 		if (count_x >= 20)
@@ -575,9 +574,9 @@ void BackGround::Control_Character()
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
-		player_x += 2;
+		player_x += 3;
 		count_x2++;
-		back_ground_x -= 2;
+		back_ground_x -= 3;
 		if (count_x2 >= 20)
 		{
 			if (player_pose == 0)
@@ -596,7 +595,7 @@ void BackGround::Control_Character()
 
 	if (jump_trigger == TRUE)
 	{
-		degree += 2;
+		degree += 3;
 		if (degree == 180)
 		{
 			degree = 0;
@@ -608,38 +607,57 @@ void BackGround::Control_Character()
 
 	m_Player_rt = { player_x, player_y, player_x + 10, player_y + 60 };
 
-	for (int i = 0; i < 300; i++) // 범위설정다시하기**
+	/*for (int i = 0; i < 300; i++) // 범위설정다시하기**
 	{
 		if (m_Player_rt.right == m_Enemy_rt[0].left - 20 && m_Player_rt.top + jump_y >= m_Enemy_rt[0].bottom + i ||
 			m_Player_rt.left == m_Enemy_rt[0].right - 40 && m_Player_rt.top + jump_y >= m_Enemy_rt[0].bottom + i)
 		{
-			system("pause");
+			//system("pause");
 			//die_check = TRUE;
 		}
-	}
-	if (m_Player_rt.left + 10 == m_Enemy_rt[0].left) // 새로운 링이 생김
-	{
-		enemy_create_trigger = TRUE;
-	}
-
-	Refresh_Ring();
+	}*/
 }
 
-void BackGround::Refresh_Ring()
+void BackGround::Set_Ring()
 {
-	if (enemy_create_trigger == TRUE) // 다음 불링 만들기
+
+	if (first_ring_created == FALSE)
 	{
-		enemy_create_trigger = FALSE;
-		next_ring_trigger = TRUE;
+		Set_Enemy_Pos(0);
+		first_ring_created = TRUE;
 	}
 
+	if (first_ring_created == TRUE && second_ring_created == FALSE && player_x >= enemy_x[0])
+	{
+		Set_Enemy_Pos(1);
+		second_ring_created = TRUE;
+	}
+
+	/*
 	if (m_Player_rt.left >= m_Enemy_rt[0].left + 300)
 	{
 		first_ring_trigger = FALSE;
+		next_ring_trigger = TRUE;
 	}
-	else if (m_Player_rt.left >= m_Enemy_rt[0].left + 300)
+
+	if (m_Player_rt.left >= m_Enemy_rt[1].left + 300)
 	{
 		next_ring_trigger = FALSE;
+	}*/
+}
+
+void BackGround::Set_Enemy_Pos(int num)
+{
+	if (num == 0)
+	{
+		enemy_x[0] = player_x * 2.2;
+		enemy_y[0] = 200;
+	}
+	else if (num == 1)
+	{
+		enemy_x[1] = player_x * 2.2;
+		enemy_y[1] = 200;
+
 	}
 }
 

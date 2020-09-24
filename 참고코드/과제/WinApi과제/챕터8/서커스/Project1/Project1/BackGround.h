@@ -59,9 +59,8 @@ public:
 	int enemy_y[2];
 	int enemy_change_count;
 	int fire_ring_draw;
-	int enemy_create_trigger;
-	int first_ring_trigger;
-	int next_ring_trigger;
+	int first_ring_created;
+	int second_ring_created;
 
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
 	void Init_Player(HWND hWnd, HINSTANCE hInst);
@@ -73,7 +72,8 @@ public:
 	void Draw_Die_Character(HDC hdc);
 	void Draw_Enemy(HDC hdc);
 	void Control_Character();
-	void Refresh_Ring();
+	void Set_Ring();
+	void Set_Enemy_Pos(int num);
 
 	~BackGround();
 };
