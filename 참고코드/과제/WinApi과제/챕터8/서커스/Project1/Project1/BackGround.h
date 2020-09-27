@@ -19,10 +19,10 @@ private:
 	HBITMAP	m_Old_StageBitMap[2];
 	SIZE m_Stagesize;
 
-	HDC GameDC[4]; ///////// 인게임 배경화면,플레이 등등
-	HBITMAP m_GameBitMap[4];
-	HBITMAP m_Old_GameBitMap[4];
-	SIZE m_Gamesize[3];
+	HDC GameDC[6]; ///////// 인게임 배경화면,플레이 등등
+	HBITMAP m_GameBitMap[6];
+	HBITMAP m_Old_GameBitMap[6];
+	SIZE m_Gamesize[5];
 
 	HDC CharacterDC[6]; ///////// 플레이어 캐릭터
 	HBITMAP m_CharacterBitMap[6];
@@ -36,6 +36,7 @@ private:
 
 	RECT m_Enemy_rt[2];
 	RECT m_Player_rt;
+	RECT m_Money_rt[2];
 
 public:
 	BackGround();
@@ -58,9 +59,13 @@ public:
 	int enemy_x[2];
 	int enemy_y[2];
 	int enemy_change_count;
-	int fire_ring_draw;
+	int ring_draw;
 	int first_ring_created;
 	int second_ring_created;
+	int money_x[2];
+	int money_y[2];
+	int select_money1;
+	int select_money2;
 
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
 	void Init_Player(HWND hWnd, HINSTANCE hInst);
