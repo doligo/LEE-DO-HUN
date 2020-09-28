@@ -9,14 +9,3 @@
 불링이 back, front 있는데
 따로 구분해야하는 이유를 모르겠음
 현재 따로 이상한점도 잘 모르겠음
-
-
-	for (int i = 0; i < 11; i++) {
-		if (i * 1000 >= BackgroundMove - 86 && i * 1000 <= BackgroundMove + 1024) {
-			bitmap[METER]->Draw(MemDC, i * 1000 - BackgroundMove, 460);
-			wchar_t buffer[256];
-			RECT rt = { i * 1000 - BackgroundMove, 470, i * 1000 + 86 - BackgroundMove , 470 + 20 };
-			wsprintfW(buffer, L"%d", (100 - 10 * i));
-			DrawText(MemDC, buffer, -1, &rt, DT_CENTER | DT_WORDBREAK);
-		}
-	}

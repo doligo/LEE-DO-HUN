@@ -12,6 +12,8 @@ BackGround::BackGround()
 	die_check = FALSE;
 	first_ring_created = FALSE;
 	second_ring_created = FALSE;
+	first_front_created = FALSE;
+	second_front_created = FALSE;
 	select_money1 = FALSE;
 	select_money2 = FALSE;
 }
@@ -392,6 +394,8 @@ void BackGround::Init_Enemy(HWND hWnd, HINSTANCE hInst)
 
 	m_Enemy_rt[0] = { 0, 0, 0, 0 };
 	m_Enemy_rt[1] = { 0, 0, 0, 0 };
+	m_Front_rt[0] = { 0, 0, 0, 0 };
+	m_Front_rt[1] = { 0, 0, 0, 0 };
 }
 
 int BackGround::Draw_TitleScreen(HDC hdc)
@@ -481,9 +485,9 @@ void BackGround::Draw_GameScreen(HDC hdc)
 
 	TransparentBlt(GameDC[0], 0, 210, m_Gamesize[0].cx * 16, m_Gamesize[0].cy + 150, GameDC[1], 0, 0, m_Gamesize[0].cx, m_Gamesize[0].cy, SRCCOPY); // 초록색배경
 
-	for (int i = 0; i < 51; i++)
+	for (int i = 0; i < 77; i++)
 	{
-		if (i == 2 || i == 15 || i == 28 || i == 41)
+		if (i == 2 || i == 15 || i == 28 || i == 41 || i == 54 || i == 67)
 		{
 			TransparentBlt(GameDC[0], _x + back_ground_x, 115, m_Gamesize[1].cx + 30, m_Gamesize[1].cy + 30, GameDC[2], 0, 0, m_Gamesize[1].cx, m_Gamesize[1].cy, SRCCOPY); // 코끼리
 		}
@@ -493,6 +497,8 @@ void BackGround::Draw_GameScreen(HDC hdc)
 		}
 		_x += 90;
 	}
+
+	Draw_Miter();
 
 	if (die_check == FALSE)
 	{
@@ -538,6 +544,8 @@ void BackGround::Draw_Enemy(HDC hdc)
 		if (second_ring_created == TRUE)
 		{
 			TransparentBlt(GameDC[0], enemy_x[1] + back_ground_x, enemy_y[1], m_Enemysize[0].cx + 10, m_Enemysize[0].cy + 60, EnemyDC[0], 0, 0, m_Enemysize[0].cx, m_Enemysize[0].cy, RGB(255, 0, 255));
+			if (select_money2 == 1)
+				TransparentBlt(GameDC[0], money_x[1] + back_ground_x, money_y[1], m_Gamesize[3].cx + 10, m_Gamesize[3].cy + 10, GameDC[4], 0, 0, m_Gamesize[3].cx, m_Gamesize[3].cy, RGB(255, 0, 255));
 		}
 
 		enemy_change_count++;
@@ -557,7 +565,11 @@ void BackGround::Draw_Enemy(HDC hdc)
 		}
 
 		if (second_ring_created == TRUE)
+		{
 			TransparentBlt(GameDC[0], enemy_x[1] + back_ground_x, enemy_y[1], m_Enemysize[3].cx + 10, m_Enemysize[3].cy + 60, EnemyDC[3], 0, 0, m_Enemysize[3].cx, m_Enemysize[3].cy, RGB(255, 0, 255));
+			if (select_money2 == 1)
+				TransparentBlt(GameDC[0], money_x[1] + back_ground_x, money_y[1], m_Gamesize[3].cx + 10, m_Gamesize[3].cy + 10, GameDC[4], 0, 0, m_Gamesize[3].cx, m_Gamesize[3].cy, RGB(255, 0, 255));
+		}
 
 		enemy_change_count++;
 		if (enemy_change_count >= 30)
@@ -580,6 +592,25 @@ void BackGround::Draw_Enemy(HDC hdc)
 
 	m_Enemy_rt[0] = { enemy_x[0], enemy_y[0] + 160, enemy_x[0] + 60, enemy_y[0] + 160 + 10 };
 	m_Enemy_rt[1] = { enemy_x[1], enemy_y[1] + 160, enemy_x[1] + 60, enemy_y[1] + 160 + 10 };
+	m_Front_rt[0] = {};
+	m_Front_rt[1] = {};
+}
+
+void BackGround::Draw_Miter()
+{
+	int num = 0;
+	char buffer[256];
+
+	for (int i = 0; i < 11; i++)
+	{
+		TransparentBlt(GameDC[0], 290 + back_ground_x + num, 485, m_Gamesize[4].cx + 10, m_Gamesize[4].cy + 10, GameDC[5], 0, 0, m_Gamesize[4].cx, m_Gamesize[4].cy, RGB(255, 0, 255));
+
+		RECT rt = { 300 + num + back_ground_x, 495, 300 + num + back_ground_x + 60, 495 + 20 };
+		sprintf_s(buffer, "%d", (100 - 10 * i));
+		DrawText(GameDC[0], buffer, -1, &rt, DT_CENTER | DT_WORDBREAK);
+
+		num += 650;
+	}
 }
 
 void BackGround::Control_Character()
@@ -591,9 +622,9 @@ void BackGround::Control_Character()
 	{
 		if (player_x >= 350)
 		{
-			player_x -= 2;
+			player_x -= 1;
 			count_x++;
-			back_ground_x += 2;
+			back_ground_x += 1;
 		}
 
 		if (count_x >= 20)
@@ -608,9 +639,9 @@ void BackGround::Control_Character()
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
-		player_x += 2;
+		player_x += 1;
 		count_x2++;
-		back_ground_x -= 2;
+		back_ground_x -= 1;
 		if (count_x2 >= 20)
 		{
 			if (player_pose == 0)
@@ -629,7 +660,7 @@ void BackGround::Control_Character()
 
 	if (jump_trigger == TRUE)
 	{
-		degree += 2;
+		degree += 1;
 		if (degree == 180)
 		{
 			degree = 0;
@@ -641,7 +672,7 @@ void BackGround::Control_Character()
 
 	m_Player_rt = { player_x, player_y, player_x + 10, player_y + 60 };
 
-	/*for (int i = 0; i < 300; i++) // 죽는범위설정다시하기**, 금전확률, 미터기깔기 **
+	/*for (int i = 0; i < 300; i++) // 죽는범위설정다시하기**
 	{
 		if (m_Player_rt.right == m_Enemy_rt[0].left - 20 && m_Player_rt.top + jump_y >= m_Enemy_rt[0].bottom + i ||
 			m_Player_rt.left == m_Enemy_rt[0].right - 40 && m_Player_rt.top + jump_y >= m_Enemy_rt[0].bottom + i)
@@ -659,20 +690,20 @@ void BackGround::Set_Ring()
 	if (trigger == FALSE)
 	{
 		trigger = TRUE;
-		select_money1 = rand() % 2;
+		select_money1 = rand() % 3;
 		Set_Enemy_Pos(0);
 		first_ring_created = TRUE;
 	}
 
 	if (second_ring_created == TRUE && first_ring_created == FALSE && player_x >= enemy_x[1])
 	{
-		select_money1 = rand() % 2;
+		select_money1 = rand() % 3;
 		Set_Enemy_Pos(0);
 		first_ring_created = TRUE;
 	}
 	else if (first_ring_created == TRUE && second_ring_created == FALSE && player_x >= enemy_x[0])
 	{
-		select_money2 = rand() % 2;
+		select_money2 = rand() % 3;
 		Set_Enemy_Pos(1);
 		second_ring_created = TRUE;
 	}
@@ -688,7 +719,7 @@ void BackGround::Set_Ring()
 		select_money2 = FALSE;
 	}
 
-	if (select_money1 == 1)
+	if (select_money1 == 1) // 돈주머니 좌표설정
 	{
 		money_x[0] = enemy_x[0] + 10;
 		money_y[0] = enemy_y[0] + 40;
@@ -711,6 +742,49 @@ void BackGround::Set_Enemy_Pos(int num)
 	{
 		enemy_x[1] = player_x + 600;
 		enemy_y[1] = 200;
+	}
+}
+
+void BackGround::Set_Front()
+{
+	static int trigger2 = FALSE;
+
+	if (trigger2 == FALSE)
+	{
+		trigger2 = TRUE;
+		Set_Enemy_Pos2(0);
+		first_front_created = TRUE;
+	}
+
+	if (second_front_created == TRUE && first_front_created == FALSE && player_x >= enemy_x_2[1])
+	{
+		Set_Enemy_Pos2(0);
+		first_front_created = TRUE;
+	}
+	else if (first_front_created == TRUE && second_front_created == FALSE && player_x >= enemy_x_2[0])
+	{
+		Set_Enemy_Pos2(1);
+		second_front_created = TRUE;
+	}
+
+	if (m_Player_rt.left >= enemy_x_2[0] + 300)
+		first_front_created = FALSE;
+	else if (m_Player_rt.left >= enemy_x_2[1] + 300)
+		second_front_created = FALSE;
+
+}
+
+void BackGround::Set_Enemy_Pos2(int num)
+{
+	if (num == 0)
+	{
+		enemy_x_2[0] = player_x + 300;
+		enemy_y_2[0] = 200;
+	}
+	else if (num == 1)
+	{
+		enemy_x_2[1] = player_x + 400;
+		enemy_y_2[1] = 200;
 	}
 }
 

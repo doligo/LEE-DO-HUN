@@ -34,9 +34,10 @@ private:
 	HBITMAP m_Old_EnemyBitMap[11];
 	SIZE m_Enemysize[11];
 
-	RECT m_Enemy_rt[2];
-	RECT m_Player_rt;
-	RECT m_Money_rt[2];
+	RECT m_Enemy_rt[2]; //불링
+	RECT m_Player_rt; // 플레이어
+	RECT m_Money_rt[2]; // 돈주머니
+	RECT m_Front_rt[2]; // 항아리불
 
 public:
 	BackGround();
@@ -58,10 +59,14 @@ public:
 
 	int enemy_x[2];
 	int enemy_y[2];
+	int enemy_x_2[2];
+	int enemy_y_2[2];
 	int enemy_change_count;
 	int ring_draw;
 	int first_ring_created;
 	int second_ring_created;
+	int first_front_created;
+	int second_front_created;
 	int money_x[2];
 	int money_y[2];
 	int select_money1;
@@ -76,9 +81,12 @@ public:
 	void Draw_Character(HDC hdc);
 	void Draw_Die_Character(HDC hdc);
 	void Draw_Enemy(HDC hdc);
+	void Draw_Miter();
 	void Control_Character();
 	void Set_Ring();
 	void Set_Enemy_Pos(int num);
+	void Set_Front();
+	void Set_Enemy_Pos2(int num);
 
 	~BackGround();
 };
