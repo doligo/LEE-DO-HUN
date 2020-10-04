@@ -7,7 +7,9 @@ BackGround::BackGround()
 	count_x2 = 0;
 	degree = 0;
 	ring_draw = FALSE;
+	front_draw = FALSE;
 	enemy_change_count = 0;
+	enemy_change_count_2 = 0;
 	jump_trigger = FALSE;
 	die_check = FALSE;
 	first_ring_created = FALSE;
@@ -16,6 +18,7 @@ BackGround::BackGround()
 	second_front_created = FALSE;
 	select_money1 = FALSE;
 	select_money2 = FALSE;
+	save_x = 0;
 }
 
 void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
@@ -188,6 +191,17 @@ void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
 	GetObject(m_GameBitMap[5], sizeof(B_Info), &B_Info);
 	m_Gamesize[4].cx = B_Info.bmWidth;
 	m_Gamesize[4].cy = B_Info.bmHeight;
+
+	//////////////////////////////////
+
+	GameDC[6] = CreateCompatibleDC(GameDC[0]);
+	m_GameBitMap[6] = (HBITMAP)LoadImage(NULL, TEXT("end.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_GameBitMap[6] = (HBITMAP)SelectObject(GameDC[6], m_GameBitMap[6]);
+
+	GetObject(m_GameBitMap[6], sizeof(B_Info), &B_Info);
+	m_Gamesize[5].cx = B_Info.bmWidth;
+	m_Gamesize[5].cy = B_Info.bmHeight;
 
 	back_ground_x = 0;
 	back_ground_y = 115;
@@ -394,8 +408,7 @@ void BackGround::Init_Enemy(HWND hWnd, HINSTANCE hInst)
 
 	m_Enemy_rt[0] = { 0, 0, 0, 0 };
 	m_Enemy_rt[1] = { 0, 0, 0, 0 };
-	m_Front_rt[0] = { 0, 0, 0, 0 };
-	m_Front_rt[1] = { 0, 0, 0, 0 };
+	m_Front_rt = { 0, 0, 0, 0 };
 }
 
 int BackGround::Draw_TitleScreen(HDC hdc)
@@ -485,17 +498,39 @@ void BackGround::Draw_GameScreen(HDC hdc)
 
 	TransparentBlt(GameDC[0], 0, 210, m_Gamesize[0].cx * 16, m_Gamesize[0].cy + 150, GameDC[1], 0, 0, m_Gamesize[0].cx, m_Gamesize[0].cy, SRCCOPY); // ÃÊ·Ï»ö¹è°æ
 
-	for (int i = 0; i < 77; i++)
+	if (player_x <= END_MAP)
 	{
-		if (i == 2 || i == 15 || i == 28 || i == 41 || i == 54 || i == 67)
+		for (int i = 0; i < 77; i++)
 		{
-			TransparentBlt(GameDC[0], _x + back_ground_x, 115, m_Gamesize[1].cx + 30, m_Gamesize[1].cy + 30, GameDC[2], 0, 0, m_Gamesize[1].cx, m_Gamesize[1].cy, SRCCOPY); // ÄÚ³¢¸®
+			if (i == 2 || i == 15 || i == 28 || i == 41 || i == 54 || i == 67)
+			{
+				TransparentBlt(GameDC[0], _x + back_ground_x, 115, m_Gamesize[1].cx + 30, m_Gamesize[1].cy + 30, GameDC[2], 0, 0, m_Gamesize[1].cx, m_Gamesize[1].cy, SRCCOPY); // ÄÚ³¢¸®
+			}
+			else
+			{
+				TransparentBlt(GameDC[0], _x + back_ground_x, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
+			}
+			_x += 90;
 		}
-		else
+		TransparentBlt(GameDC[0], 6800 + back_ground_x, 390, m_Gamesize[5].cx + 20, m_Gamesize[5].cy + 30, GameDC[6], 0, 0, m_Gamesize[5].cx, m_Gamesize[5].cy, RGB(255, 0, 255)); //end
+
+		save_x = 6800 + back_ground_x;
+	}
+	else
+	{
+		for (int i = 0; i < 13; i++)
 		{
-			TransparentBlt(GameDC[0], _x + back_ground_x, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
+			if (i == 2)
+			{
+				TransparentBlt(GameDC[0], _x + save_x - 950, 115, m_Gamesize[1].cx + 30, m_Gamesize[1].cy + 30, GameDC[2], 0, 0, m_Gamesize[1].cx, m_Gamesize[1].cy, SRCCOPY); // ÄÚ³¢¸®
+			}
+			else
+			{
+				TransparentBlt(GameDC[0], _x + save_x - 950, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
+			}
+			_x += 90;
 		}
-		_x += 90;
+		TransparentBlt(GameDC[0], save_x, 390, m_Gamesize[5].cx + 20, m_Gamesize[5].cy + 30, GameDC[6], 0, 0, m_Gamesize[5].cx, m_Gamesize[5].cy, RGB(255, 0, 255)); //end
 	}
 
 	Draw_Miter();
@@ -530,7 +565,6 @@ void BackGround::Draw_Die_Character(HDC hdc)
 
 void BackGround::Draw_Enemy(HDC hdc)
 {
-	///////////// ¹Ù´ÚÀûµµ ±ò±â**
 	static int enemy_move = 0;
 
 	if (ring_draw == FALSE)
@@ -578,22 +612,51 @@ void BackGround::Draw_Enemy(HDC hdc)
 			enemy_change_count = 0;
 		}
 	}
+	//////////////////////////// ¹Ù·Î¹ØÀº ¹Ù´ÚºÒ
+	if (front_draw == FALSE)
+	{
+		if (first_front_created == TRUE)
+		{
+			TransparentBlt(GameDC[0], enemy_x_2 + back_ground_x, enemy_y_2, m_Enemysize[9].cx + 10, m_Enemysize[9].cy + 20, EnemyDC[9], 0, 0, m_Enemysize[9].cx, m_Enemysize[9].cy, RGB(255, 0, 255));
+		}
+
+		enemy_change_count_2++;
+		if (enemy_change_count_2 >= 30)
+		{
+			front_draw = TRUE;
+			enemy_change_count_2 = 0;
+		}
+	}
+	else if (front_draw == TRUE)
+	{
+		if (first_front_created == TRUE)
+		{
+			TransparentBlt(GameDC[0], enemy_x_2 + back_ground_x, enemy_y_2, m_Enemysize[10].cx + 10, m_Enemysize[10].cy + 20, EnemyDC[10], 0, 0, m_Enemysize[10].cx, m_Enemysize[10].cy, RGB(255, 0, 255));
+		}
+
+		enemy_change_count_2++;
+		if (enemy_change_count_2 >= 30)
+		{
+			front_draw = FALSE;
+			enemy_change_count_2 = 0;
+		}
+	}
 
 	enemy_move++;
 	if (enemy_move >= 2)
 	{
 		if (first_ring_created == TRUE)
-		enemy_x[0]--;
+			enemy_x[0]--;
 		if (second_ring_created == TRUE)
-		enemy_x[1]--;
+			enemy_x[1]--;
 
 		enemy_move = 0;
 	}
 
 	m_Enemy_rt[0] = { enemy_x[0], enemy_y[0] + 160, enemy_x[0] + 60, enemy_y[0] + 160 + 10 };
 	m_Enemy_rt[1] = { enemy_x[1], enemy_y[1] + 160, enemy_x[1] + 60, enemy_y[1] + 160 + 10 };
-	m_Front_rt[0] = {};
-	m_Front_rt[1] = {};
+
+	m_Front_rt = { enemy_x_2, enemy_y_2, enemy_x_2 + 60, enemy_y_2 + 20 };
 }
 
 void BackGround::Draw_Miter()
@@ -617,14 +680,17 @@ void BackGround::Control_Character()
 {
 
 	Set_Ring(); // ¸µ ¹Ýº¹»ý¼º
+	Set_Front();
 
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
 		if (player_x >= 350)
 		{
-			player_x -= 1;
+			player_x -= 2;
 			count_x++;
-			back_ground_x += 1;
+
+			if (player_x <= END_MAP)
+			back_ground_x += 2;
 		}
 
 		if (count_x >= 20)
@@ -639,9 +705,12 @@ void BackGround::Control_Character()
 	}
 	if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
-		player_x += 1;
+		player_x += 2;
 		count_x2++;
-		back_ground_x -= 1;
+
+		if (player_x <= END_MAP)
+		back_ground_x -= 2;
+
 		if (count_x2 >= 20)
 		{
 			if (player_pose == 0)
@@ -660,7 +729,7 @@ void BackGround::Control_Character()
 
 	if (jump_trigger == TRUE)
 	{
-		degree += 1;
+		degree += 2;
 		if (degree == 180)
 		{
 			degree = 0;
@@ -747,44 +816,22 @@ void BackGround::Set_Enemy_Pos(int num)
 
 void BackGround::Set_Front()
 {
-	static int trigger2 = FALSE;
-
-	if (trigger2 == FALSE)
-	{
-		trigger2 = TRUE;
-		Set_Enemy_Pos2(0);
-		first_front_created = TRUE;
-	}
-
-	if (second_front_created == TRUE && first_front_created == FALSE && player_x >= enemy_x_2[1])
+	if (first_front_created == FALSE)
 	{
 		Set_Enemy_Pos2(0);
 		first_front_created = TRUE;
 	}
-	else if (first_front_created == TRUE && second_front_created == FALSE && player_x >= enemy_x_2[0])
-	{
-		Set_Enemy_Pos2(1);
-		second_front_created = TRUE;
-	}
 
-	if (m_Player_rt.left >= enemy_x_2[0] + 300)
+	if (m_Player_rt.left >= enemy_x_2 + 300)
 		first_front_created = FALSE;
-	else if (m_Player_rt.left >= enemy_x_2[1] + 300)
-		second_front_created = FALSE;
-
 }
 
 void BackGround::Set_Enemy_Pos2(int num)
 {
 	if (num == 0)
 	{
-		enemy_x_2[0] = player_x + 300;
-		enemy_y_2[0] = 200;
-	}
-	else if (num == 1)
-	{
-		enemy_x_2[1] = player_x + 400;
-		enemy_y_2[1] = 200;
+		enemy_x_2 = player_x + 700;
+		enemy_y_2 = 405;
 	}
 }
 

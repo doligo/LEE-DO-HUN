@@ -9,3 +9,13 @@
 불링이 back, front 있는데
 따로 구분해야하는 이유를 모르겠음
 현재 따로 이상한점도 잘 모르겠음
+
+
+범위 참조
+	RECT PlayerRect = { PlayerX, PlayerY - JumpY, PlayerX + 30, PlayerY - JumpY + 30};
+	int x = 0;
+	RECT temp;
+	for (int i = 0; i < Front.size(); i++) {
+		RECT FrontRect = { Front[i], 300 + 100,   Front[i]+ 30, 300 + 50 + 100 };
+		if (IntersectRect(&temp, &PlayerRect, &FrontRect)) {
+			Die();

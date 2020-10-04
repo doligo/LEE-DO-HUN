@@ -4,6 +4,10 @@
 #include <time.h>
 #pragma once
 
+using namespace std;
+
+#define END_MAP 6272
+
 class BackGround
 {
 private:
@@ -19,10 +23,10 @@ private:
 	HBITMAP	m_Old_StageBitMap[2];
 	SIZE m_Stagesize;
 
-	HDC GameDC[6]; ///////// 인게임 배경화면,플레이 등등
-	HBITMAP m_GameBitMap[6];
-	HBITMAP m_Old_GameBitMap[6];
-	SIZE m_Gamesize[5];
+	HDC GameDC[7]; ///////// 인게임 배경화면,플레이 등등
+	HBITMAP m_GameBitMap[7];
+	HBITMAP m_Old_GameBitMap[7];
+	SIZE m_Gamesize[6];
 
 	HDC CharacterDC[6]; ///////// 플레이어 캐릭터
 	HBITMAP m_CharacterBitMap[6];
@@ -37,7 +41,7 @@ private:
 	RECT m_Enemy_rt[2]; //불링
 	RECT m_Player_rt; // 플레이어
 	RECT m_Money_rt[2]; // 돈주머니
-	RECT m_Front_rt[2]; // 항아리불
+	RECT m_Front_rt; // 항아리불
 
 public:
 	BackGround();
@@ -59,10 +63,12 @@ public:
 
 	int enemy_x[2];
 	int enemy_y[2];
-	int enemy_x_2[2];
-	int enemy_y_2[2];
+	int enemy_x_2;
+	int enemy_y_2;
 	int enemy_change_count;
+	int enemy_change_count_2;
 	int ring_draw;
+	int front_draw;
 	int first_ring_created;
 	int second_ring_created;
 	int first_front_created;
@@ -71,6 +77,8 @@ public:
 	int money_y[2];
 	int select_money1;
 	int select_money2;
+
+	int save_x;
 
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
 	void Init_Player(HWND hWnd, HINSTANCE hInst);
