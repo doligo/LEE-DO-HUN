@@ -277,10 +277,11 @@ void BackGround::Init_Player(HWND hWnd, HINSTANCE hInst)
 
 	player_x = 350;
 	player_y = 385;
+	player_rt_y = 385;
 	player_pose = 0;
 	jump_x = 0;
 	jump_y = 0;
-	m_Player_rt = { player_x, player_y, player_x + 10, player_y + 60 };
+	m_Player_rt = { player_x, player_rt_y, player_x + 10, player_rt_y + 60 };
 }
 
 void BackGround::Init_Enemy(HWND hWnd, HINSTANCE hInst)
@@ -681,6 +682,7 @@ void BackGround::Control_Character()
 
 	Set_Ring(); // 링 반복생성
 	Set_Front();
+	Die_Check();
 
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
@@ -730,6 +732,7 @@ void BackGround::Control_Character()
 	if (jump_trigger == TRUE)
 	{
 		degree += 2;
+		player_rt_y -= 2;
 		if (degree == 180)
 		{
 			degree = 0;
@@ -739,7 +742,12 @@ void BackGround::Control_Character()
 		jump_y = sin(degree * 3.14 / 180) * -130;
 	}
 
-	m_Player_rt = { player_x, player_y, player_x + 10, player_y + 60 };
+	if (player_rt_y != 385 && jump_trigger == FALSE)
+	{
+		player_rt_y += 2;
+	}
+
+	m_Player_rt = { player_x, player_rt_y, player_x + 10, player_rt_y + 60 };
 
 	/*for (int i = 0; i < 300; i++) // 죽는범위설정다시하기**
 	{
@@ -832,6 +840,19 @@ void BackGround::Set_Enemy_Pos2(int num)
 	{
 		enemy_x_2 = player_x + 700;
 		enemy_y_2 = 405;
+	}
+}
+
+void BackGround::Die_Check()
+{
+	RECT check;
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (IntersectRect(&check, &m_Player_rt, &m_Enemy_rt[i]))
+		{
+			die_check = TRUE;
+		}
 	}
 }
 

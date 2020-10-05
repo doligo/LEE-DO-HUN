@@ -48,6 +48,7 @@ public:
 
 	int player_x;
 	int player_y;
+	int player_rt_y;
 	int player_pose;
 	int die_check;
 	int count_x;
@@ -95,6 +96,7 @@ public:
 	void Set_Enemy_Pos(int num);
 	void Set_Front();
 	void Set_Enemy_Pos2(int num);
+	void Die_Check();
 
 	~BackGround();
 };
