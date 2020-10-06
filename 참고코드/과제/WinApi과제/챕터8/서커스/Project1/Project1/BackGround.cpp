@@ -409,7 +409,7 @@ void BackGround::Init_Enemy(HWND hWnd, HINSTANCE hInst)
 
 	m_Enemy_rt[0] = { 0, 0, 0, 0 };
 	m_Enemy_rt[1] = { 0, 0, 0, 0 };
-	m_Front_rt = { 0, 0, 0, 0 };
+	m_Fire_rt = { 0, 0, 0, 0 };
 }
 
 int BackGround::Draw_TitleScreen(HDC hdc)
@@ -536,8 +536,10 @@ void BackGround::Draw_GameScreen(HDC hdc)
 
 	Draw_Miter();
 
+	Draw_Back_Ring(hdc);
 	Draw_Character(hdc);
-	Draw_Enemy(hdc);
+	Draw_Front_Ring(hdc);
+	Draw_Fire(hdc);
 
 	BitBlt(hdc, 0, 0, 1024, 533, GameDC[0], 0, 0, SRCCOPY);
 }
@@ -559,58 +561,76 @@ void BackGround::Draw_Die_Character(HDC hdc)
 	BitBlt(hdc, 0, 0, 1024, 533, GameDC[0], 0, 0, SRCCOPY);
 }
 
-void BackGround::Draw_Enemy(HDC hdc)
+void BackGround::Draw_Back_Ring(HDC hdc)
 {
-	///// fire ring back front 구별해서 그려주고
-	//// 넘는순간 그리는 순서는 back -> 캐릭터 -> front 순으로 그려준다**
-	static int enemy_move = 0;
-
 	if (ring_draw == FALSE)
 	{
 		if (first_ring_created == TRUE)
 		{
-			TransparentBlt(GameDC[0], enemy_x[0] + back_ground_x, enemy_y[0], m_Enemysize[0].cx + 10, m_Enemysize[0].cy + 60, EnemyDC[0], 0, 0, m_Enemysize[0].cx, m_Enemysize[0].cy, RGB(255, 0, 255));
+			TransparentBlt(GameDC[0], enemy_back_x[0] + back_ground_x, enemy_back_y[0], m_Enemysize[1].cx + 10, m_Enemysize[1].cy + 60, EnemyDC[1], 0, 0, m_Enemysize[1].cx, m_Enemysize[1].cy, RGB(255, 0, 255));
+
 			if (select_money1 == 1)
 				TransparentBlt(GameDC[0], money_x[0] + back_ground_x, money_y[0], m_Gamesize[3].cx + 10, m_Gamesize[3].cy + 10, GameDC[4], 0, 0, m_Gamesize[3].cx, m_Gamesize[3].cy, RGB(255, 0, 255));
 		}
 		if (second_ring_created == TRUE)
 		{
-			TransparentBlt(GameDC[0], enemy_x[1] + back_ground_x, enemy_y[1], m_Enemysize[0].cx + 10, m_Enemysize[0].cy + 60, EnemyDC[0], 0, 0, m_Enemysize[0].cx, m_Enemysize[0].cy, RGB(255, 0, 255));
+			TransparentBlt(GameDC[0], enemy_back_x[1] + back_ground_x, enemy_back_y[1], m_Enemysize[1].cx + 10, m_Enemysize[1].cy + 60, EnemyDC[1], 0, 0, m_Enemysize[1].cx, m_Enemysize[1].cy, RGB(255, 0, 255));
+
 			if (select_money2 == 1)
 				TransparentBlt(GameDC[0], money_x[1] + back_ground_x, money_y[1], m_Gamesize[3].cx + 10, m_Gamesize[3].cy + 10, GameDC[4], 0, 0, m_Gamesize[3].cx, m_Gamesize[3].cy, RGB(255, 0, 255));
-		}
-
-		enemy_change_count++;
-		if (enemy_change_count >= 30)
-		{
-			ring_draw = TRUE;
-			enemy_change_count = 0;
 		}
 	}
 	else if (ring_draw == TRUE)
 	{
 		if (first_ring_created == TRUE)
 		{
-			TransparentBlt(GameDC[0], enemy_x[0] + back_ground_x, enemy_y[0], m_Enemysize[3].cx + 10, m_Enemysize[3].cy + 60, EnemyDC[3], 0, 0, m_Enemysize[3].cx, m_Enemysize[3].cy, RGB(255, 0, 255));
+			TransparentBlt(GameDC[0], enemy_back_x[0] + back_ground_x, enemy_back_y[0], m_Enemysize[4].cx + 10, m_Enemysize[4].cy + 60, EnemyDC[4], 0, 0, m_Enemysize[4].cx, m_Enemysize[4].cy, RGB(255, 0, 255));
+
 			if (select_money1 == 1)
 				TransparentBlt(GameDC[0], money_x[0] + back_ground_x, money_y[0], m_Gamesize[3].cx + 10, m_Gamesize[3].cy + 10, GameDC[4], 0, 0, m_Gamesize[3].cx, m_Gamesize[3].cy, RGB(255, 0, 255));
 		}
 
 		if (second_ring_created == TRUE)
 		{
-			TransparentBlt(GameDC[0], enemy_x[1] + back_ground_x, enemy_y[1], m_Enemysize[3].cx + 10, m_Enemysize[3].cy + 60, EnemyDC[3], 0, 0, m_Enemysize[3].cx, m_Enemysize[3].cy, RGB(255, 0, 255));
+			TransparentBlt(GameDC[0], enemy_back_x[1] + back_ground_x, enemy_back_y[1], m_Enemysize[4].cx + 10, m_Enemysize[4].cy + 60, EnemyDC[4], 0, 0, m_Enemysize[4].cx, m_Enemysize[4].cy, RGB(255, 0, 255));
+
 			if (select_money2 == 1)
 				TransparentBlt(GameDC[0], money_x[1] + back_ground_x, money_y[1], m_Gamesize[3].cx + 10, m_Gamesize[3].cy + 10, GameDC[4], 0, 0, m_Gamesize[3].cx, m_Gamesize[3].cy, RGB(255, 0, 255));
 		}
+	}
+}
 
-		enemy_change_count++;
-		if (enemy_change_count >= 30)
+void BackGround::Draw_Front_Ring(HDC hdc)
+{
+	if (ring_draw == FALSE)
+	{
+		if (first_ring_created == TRUE)
 		{
-			ring_draw = FALSE;
-			enemy_change_count = 0;
+			TransparentBlt(GameDC[0], enemy_front_x[0] + back_ground_x, enemy_front_y[0], m_Enemysize[2].cx + 10, m_Enemysize[2].cy + 60, EnemyDC[2], 0, 0, m_Enemysize[2].cx, m_Enemysize[2].cy, RGB(255, 0, 255));
+		}
+		if (second_ring_created == TRUE)
+		{
+			TransparentBlt(GameDC[0], enemy_front_x[1] + back_ground_x, enemy_front_y[1], m_Enemysize[2].cx + 10, m_Enemysize[2].cy + 60, EnemyDC[2], 0, 0, m_Enemysize[2].cx, m_Enemysize[2].cy, RGB(255, 0, 255));
 		}
 	}
-	//////////////////////////// 바로밑은 바닥불
+	else if (ring_draw == TRUE)
+	{
+		if (first_ring_created == TRUE)
+		{
+			TransparentBlt(GameDC[0], enemy_front_x[0] + back_ground_x, enemy_front_y[0], m_Enemysize[5].cx + 10, m_Enemysize[5].cy + 60, EnemyDC[5], 0, 0, m_Enemysize[5].cx, m_Enemysize[5].cy, RGB(255, 0, 255));
+		}
+
+		if (second_ring_created == TRUE)
+		{
+			TransparentBlt(GameDC[0], enemy_front_x[1] + back_ground_x, enemy_front_y[1], m_Enemysize[5].cx + 10, m_Enemysize[5].cy + 60, EnemyDC[5], 0, 0, m_Enemysize[5].cx, m_Enemysize[5].cy, RGB(255, 0, 255));
+		}
+	}
+}
+
+void BackGround::Draw_Fire(HDC hdc)
+{
+	static int enemy_move = 0;
+
 	if (front_draw == FALSE)
 	{
 		if (first_front_created == TRUE)
@@ -640,21 +660,48 @@ void BackGround::Draw_Enemy(HDC hdc)
 		}
 	}
 
+	/////////////////// 조건부 변환사항들
+	if (ring_draw == FALSE)
+	{
+		enemy_change_count++;
+		if (enemy_change_count >= 30)
+		{
+			ring_draw = TRUE;
+			enemy_change_count = 0;
+		}
+	}
+	else if (ring_draw == TRUE)
+	{
+		enemy_change_count++;
+		if (enemy_change_count >= 30)
+		{
+			ring_draw = FALSE;
+			enemy_change_count = 0;
+		}
+	}
+
 	enemy_move++;
 	if (enemy_move >= 2)
 	{
 		if (first_ring_created == TRUE)
-			enemy_x[0]--;
+		{
+			enemy_back_x[0]--;
+			enemy_front_x[0]--;
+		}
 		if (second_ring_created == TRUE)
-			enemy_x[1]--;
+		{
+			enemy_back_x[1]--;
+			enemy_front_x[1]--;
+		}
 
 		enemy_move = 0;
 	}
 
-	m_Enemy_rt[0] = { enemy_x[0] - 15, enemy_y[0] + 170, enemy_x[0] - 10 + 40, enemy_y[0] + 160 + 30 };
-	m_Enemy_rt[1] = { enemy_x[1] - 15, enemy_y[1] + 170, enemy_x[1] - 10 + 40, enemy_y[1] + 160 + 30 };
+	//// 범위 제대로 다시 설정하기**
+	m_Enemy_rt[0] = { enemy_front_x[0] - 15, enemy_front_y[0] + 170, enemy_front_x[0] - 10 + 40, enemy_front_y[0] + 160 + 30 };
+	m_Enemy_rt[1] = { enemy_front_x[1] - 15, enemy_front_y[1] + 170, enemy_front_x[1] - 10 + 40, enemy_front_y[1] + 160 + 30 };
 
-	m_Front_rt = { enemy_x_2, enemy_y_2, enemy_x_2 + 60, enemy_y_2 + 20 };
+	m_Fire_rt = { enemy_x_2, enemy_y_2, enemy_x_2 + 60, enemy_y_2 + 20 };
 }
 
 void BackGround::Draw_Miter()
@@ -676,7 +723,6 @@ void BackGround::Draw_Miter()
 
 void BackGround::Control_Character()
 {
-
 	Set_Ring(); // 링 반복생성
 	Set_Front();
 	Die_Check();
@@ -687,11 +733,11 @@ void BackGround::Control_Character()
 		{
 			if (player_x >= 350)
 			{
-				player_x -= 1;
+				player_x -= 2;
 				count_x++;
 
 				if (player_x <= END_MAP)
-					back_ground_x += 1;
+					back_ground_x += 2;
 			}
 
 			if (count_x >= 20)
@@ -706,11 +752,11 @@ void BackGround::Control_Character()
 		}
 		if (GetKeyState(VK_RIGHT) & 0x8000)
 		{
-			player_x += 1;
+			player_x += 2;
 			count_x2++;
 
 			if (player_x <= END_MAP)
-				back_ground_x -= 1;
+				back_ground_x -= 2;
 
 			if (count_x2 >= 20)
 			{
@@ -732,12 +778,12 @@ void BackGround::Control_Character()
 
 	if (jump_trigger == TRUE)
 	{
-		degree += 1;
-		player_rt_y -= 1;
-		player_x += 1;
+		degree += 2;
+		player_rt_y -= 2;
+		player_x += 2;
 
 		if (player_x <= END_MAP)
-			back_ground_x -= 1;
+			back_ground_x -= 2;
 
 		if (degree == 180)
 		{
@@ -750,11 +796,10 @@ void BackGround::Control_Character()
 
 	if (player_rt_y != 385 && jump_trigger == FALSE)
 	{
-		player_rt_y += 1;
+		player_rt_y += 2;
 	}
 
 	m_Player_rt = { player_x, player_rt_y, player_x + 10, player_rt_y + 60 };
-
 }
 
 void BackGround::Set_Ring()
@@ -769,25 +814,25 @@ void BackGround::Set_Ring()
 		first_ring_created = TRUE;
 	}
 
-	if (second_ring_created == TRUE && first_ring_created == FALSE && player_x >= enemy_x[1])
+	if (second_ring_created == TRUE && first_ring_created == FALSE && player_x >= enemy_front_x[1])
 	{
 		select_money1 = rand() % 3;
 		Set_Enemy_Pos(0);
 		first_ring_created = TRUE;
 	}
-	else if (first_ring_created == TRUE && second_ring_created == FALSE && player_x >= enemy_x[0])
+	else if (first_ring_created == TRUE && second_ring_created == FALSE && player_x >= enemy_front_x[0])
 	{
 		select_money2 = rand() % 3;
 		Set_Enemy_Pos(1);
 		second_ring_created = TRUE;
 	}
 
-	if (m_Player_rt.left >= enemy_x[0] + 300)
+	if (m_Player_rt.left >= enemy_front_x[0] + 300)
 	{
 		first_ring_created = FALSE;
 		select_money1 = FALSE;
 	}
-	else if (m_Player_rt.left >= enemy_x[1] + 300)
+	else if (m_Player_rt.left >= enemy_front_x[1] + 300)
 	{
 		second_ring_created = FALSE;
 		select_money2 = FALSE;
@@ -795,13 +840,13 @@ void BackGround::Set_Ring()
 
 	if (select_money1 == 1) // 돈주머니 좌표설정
 	{
-		money_x[0] = enemy_x[0] + 10;
-		money_y[0] = enemy_y[0] + 40;
+		money_x[0] = enemy_back_x[0] + 12;
+		money_y[0] = enemy_back_y[0] + 40;
 	}
 	if (select_money2 == 1)
 	{
-		money_x[1] = enemy_x[1] + 10;
-		money_y[1] = enemy_y[1] + 40;
+		money_x[1] = enemy_back_x[1] + 12;
+		money_y[1] = enemy_back_y[1] + 40;
 	}
 }
 
@@ -809,13 +854,17 @@ void BackGround::Set_Enemy_Pos(int num)
 {
 	if (num == 0)
 	{
-		enemy_x[0] = player_x + 500;
-		enemy_y[0] = 200;
+		enemy_back_x[0] = player_x + 600;
+		enemy_back_y[0] = 200;
+		enemy_front_x[0] = player_x + 630;
+		enemy_front_y[0] = 200;
 	}
 	else if (num == 1)
 	{
-		enemy_x[1] = player_x + 600;
-		enemy_y[1] = 200;
+		enemy_back_x[1] = player_x + 700;
+		enemy_back_y[1] = 200;
+		enemy_front_x[1] = player_x + 730;
+		enemy_front_y[1] = 200;
 	}
 }
 

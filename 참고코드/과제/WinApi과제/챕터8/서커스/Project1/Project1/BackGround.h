@@ -38,10 +38,10 @@ private:
 	HBITMAP m_Old_EnemyBitMap[11];
 	SIZE m_Enemysize[11];
 
-	RECT m_Enemy_rt[2]; //불링
-	RECT m_Player_rt; // 플레이어
-	RECT m_Money_rt[2]; // 돈주머니
-	RECT m_Front_rt; // 항아리불
+	RECT m_Enemy_rt[2]; //불링범위
+	RECT m_Player_rt; // 플레이어범위
+	RECT m_Money_rt[2]; // 돈주머니범위
+	RECT m_Fire_rt; // 항아리불범위
 
 public:
 	BackGround();
@@ -58,12 +58,12 @@ public:
 	int degree;
 	int jump_trigger;
 	int menu_select;
-
 	int back_ground_x;
 	int back_ground_y;
-
-	int enemy_x[2];
-	int enemy_y[2];
+	int enemy_back_x[2];
+	int enemy_back_y[2];
+	int enemy_front_x[2];
+	int enemy_front_y[2];
 	int enemy_x_2;
 	int enemy_y_2;
 	int enemy_change_count;
@@ -78,7 +78,6 @@ public:
 	int money_y[2];
 	int select_money1;
 	int select_money2;
-
 	int save_x;
 
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
@@ -89,7 +88,9 @@ public:
 	void Draw_GameScreen(HDC hdc);
 	void Draw_Character(HDC hdc);
 	void Draw_Die_Character(HDC hdc);
-	void Draw_Enemy(HDC hdc);
+	void Draw_Front_Ring(HDC hdc);
+	void Draw_Back_Ring(HDC hdc);
+	void Draw_Fire(HDC hdc);
 	void Draw_Miter();
 	void Control_Character();
 	void Set_Ring();
