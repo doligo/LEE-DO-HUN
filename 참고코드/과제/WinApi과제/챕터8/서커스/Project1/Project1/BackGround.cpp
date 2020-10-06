@@ -536,14 +536,8 @@ void BackGround::Draw_GameScreen(HDC hdc)
 
 	Draw_Miter();
 
-	if (die_check == FALSE)
-	{
-		Draw_Character(hdc);
-		Draw_Enemy(hdc);
-	}
-	else
-		Draw_Die_Character(hdc);
-
+	Draw_Character(hdc);
+	Draw_Enemy(hdc);
 
 	BitBlt(hdc, 0, 0, 1024, 533, GameDC[0], 0, 0, SRCCOPY);
 }
@@ -562,10 +556,13 @@ void BackGround::Draw_Character(HDC hdc)
 void BackGround::Draw_Die_Character(HDC hdc)
 {
 	TransparentBlt(GameDC[0], player_x + back_ground_x, player_y + jump_y, m_Charactersize[3].cx + 10, m_Charactersize[3].cy + 25, CharacterDC[3], 0, 0, m_Charactersize[3].cx, m_Charactersize[3].cy, RGB(255, 0, 255));
+	BitBlt(hdc, 0, 0, 1024, 533, GameDC[0], 0, 0, SRCCOPY);
 }
 
 void BackGround::Draw_Enemy(HDC hdc)
 {
+	///// fire ring back front 구별해서 그려주고
+	//// 넘는순간 그리는 순서는 back -> 캐릭터 -> front 순으로 그려준다**
 	static int enemy_move = 0;
 
 	if (ring_draw == FALSE)
@@ -654,8 +651,8 @@ void BackGround::Draw_Enemy(HDC hdc)
 		enemy_move = 0;
 	}
 
-	m_Enemy_rt[0] = { enemy_x[0], enemy_y[0] + 160, enemy_x[0] + 60, enemy_y[0] + 160 + 10 };
-	m_Enemy_rt[1] = { enemy_x[1], enemy_y[1] + 160, enemy_x[1] + 60, enemy_y[1] + 160 + 10 };
+	m_Enemy_rt[0] = { enemy_x[0] - 15, enemy_y[0] + 170, enemy_x[0] - 10 + 40, enemy_y[0] + 160 + 30 };
+	m_Enemy_rt[1] = { enemy_x[1] - 15, enemy_y[1] + 170, enemy_x[1] - 10 + 40, enemy_y[1] + 160 + 30 };
 
 	m_Front_rt = { enemy_x_2, enemy_y_2, enemy_x_2 + 60, enemy_y_2 + 20 };
 }
@@ -684,55 +681,64 @@ void BackGround::Control_Character()
 	Set_Front();
 	Die_Check();
 
-	if (GetKeyState(VK_LEFT) & 0x8000)
+	if (jump_trigger == FALSE)
 	{
-		if (player_x >= 350)
+		if (GetKeyState(VK_LEFT) & 0x8000)
 		{
-			player_x -= 2;
-			count_x++;
+			if (player_x >= 350)
+			{
+				player_x -= 1;
+				count_x++;
+
+				if (player_x <= END_MAP)
+					back_ground_x += 1;
+			}
+
+			if (count_x >= 20)
+			{
+				if (player_pose == 0)
+					player_pose = 1;
+				else
+					player_pose = 0;
+
+				count_x = 0;
+			}
+		}
+		if (GetKeyState(VK_RIGHT) & 0x8000)
+		{
+			player_x += 1;
+			count_x2++;
 
 			if (player_x <= END_MAP)
-			back_ground_x += 2;
-		}
+				back_ground_x -= 1;
 
-		if (count_x >= 20)
+			if (count_x2 >= 20)
+			{
+				if (player_pose == 0)
+					player_pose = 2;
+				else
+					player_pose = 0;
+
+				count_x2 = 0;
+			}
+		}
+		if (GetKeyState(VK_SPACE) & 0x8000)
 		{
-			if (player_pose == 0)
-				player_pose = 1;
-			else
-				player_pose = 0;
-
-			count_x = 0;
+			player_pose = 2;
+			jump_trigger = TRUE;
 		}
 	}
-	if (GetKeyState(VK_RIGHT) & 0x8000)
-	{
-		player_x += 2;
-		count_x2++;
 
-		if (player_x <= END_MAP)
-		back_ground_x -= 2;
-
-		if (count_x2 >= 20)
-		{
-			if (player_pose == 0)
-				player_pose = 2;
-			else
-				player_pose = 0;
-
-			count_x2 = 0;
-		}
-	}
-	if (GetKeyState(VK_SPACE) & 0x8000)
-	{
-		player_pose = 2;
-		jump_trigger = TRUE;
-	}
 
 	if (jump_trigger == TRUE)
 	{
-		degree += 2;
-		player_rt_y -= 2;
+		degree += 1;
+		player_rt_y -= 1;
+		player_x += 1;
+
+		if (player_x <= END_MAP)
+			back_ground_x -= 1;
+
 		if (degree == 180)
 		{
 			degree = 0;
@@ -744,20 +750,11 @@ void BackGround::Control_Character()
 
 	if (player_rt_y != 385 && jump_trigger == FALSE)
 	{
-		player_rt_y += 2;
+		player_rt_y += 1;
 	}
 
 	m_Player_rt = { player_x, player_rt_y, player_x + 10, player_rt_y + 60 };
 
-	/*for (int i = 0; i < 300; i++) // 죽는범위설정다시하기**
-	{
-		if (m_Player_rt.right == m_Enemy_rt[0].left - 20 && m_Player_rt.top + jump_y >= m_Enemy_rt[0].bottom + i ||
-			m_Player_rt.left == m_Enemy_rt[0].right - 40 && m_Player_rt.top + jump_y >= m_Enemy_rt[0].bottom + i)
-		{
-			//system("pause");
-			//die_check = TRUE;
-		}
-	}*/
 }
 
 void BackGround::Set_Ring()

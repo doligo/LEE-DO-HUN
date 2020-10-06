@@ -29,8 +29,17 @@ int GameSystem::Draw(HDC hdc)
 				Sleep(1500);
 				game_start_check = TRUE;
 			}
-			BG->Draw_GameScreen(hdc);
-			BG->Control_Character();
+
+			if (BG->die_check != TRUE)
+			{
+				BG->Draw_GameScreen(hdc);
+				BG->Control_Character();
+			}
+			else
+			{
+				BG->Draw_Die_Character(hdc);
+				Sleep(1500);
+			}
 			
 		}
 	}
