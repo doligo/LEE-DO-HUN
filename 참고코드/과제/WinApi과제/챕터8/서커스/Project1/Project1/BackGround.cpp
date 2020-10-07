@@ -19,6 +19,7 @@ BackGround::BackGround()
 	select_money1 = FALSE;
 	select_money2 = FALSE;
 	save_x = 0;
+	set_ring_trigger = FALSE;
 }
 
 void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
@@ -277,11 +278,12 @@ void BackGround::Init_Player(HWND hWnd, HINSTANCE hInst)
 
 	player_x = 350;
 	player_y = 385;
-	player_rt_y = 385;
+	player_rt_y = 280;
 	player_pose = 0;
 	jump_x = 0;
 	jump_y = 0;
-	m_Player_rt = { player_x, player_rt_y, player_x + 10, player_rt_y + 60 };
+	m_Player_rt = { player_x - 30, player_rt_y, player_x - 30 + 50, player_rt_y + 30 };
+	///// 캐릭터 범위는 320, 280, 380, 310 임
 }
 
 void BackGround::Init_Enemy(HWND hWnd, HINSTANCE hInst)
@@ -697,11 +699,10 @@ void BackGround::Draw_Fire(HDC hdc)
 		enemy_move = 0;
 	}
 
-	//// 범위 제대로 다시 설정하기**
-	m_Enemy_rt[0] = { enemy_front_x[0] - 15, enemy_front_y[0] + 170, enemy_front_x[0] - 10 + 40, enemy_front_y[0] + 160 + 30 };
-	m_Enemy_rt[1] = { enemy_front_x[1] - 15, enemy_front_y[1] + 170, enemy_front_x[1] - 10 + 40, enemy_front_y[1] + 160 + 30 };
+	m_Enemy_rt[0] = { enemy_front_x[0] - 50, enemy_front_y[0] + 175, enemy_front_x[0] - 50 + 10, enemy_front_y[0] + 175 + 11 };
+	m_Enemy_rt[1] = { enemy_front_x[1] - 50, enemy_front_y[1] + 175, enemy_front_x[1] - 50 + 10, enemy_front_y[1] + 175 + 11 };
 
-	m_Fire_rt = { enemy_x_2, enemy_y_2, enemy_x_2 + 60, enemy_y_2 + 20 };
+	m_Fire_rt = { enemy_x_2 - 40, enemy_y_2 - 20, enemy_x_2 - 40 + 50, enemy_y_2 - 20 + 20 };
 }
 
 void BackGround::Draw_Miter()
@@ -733,11 +734,11 @@ void BackGround::Control_Character()
 		{
 			if (player_x >= 350)
 			{
-				player_x -= 2;
+				player_x -= 1;
 				count_x++;
 
 				if (player_x <= END_MAP)
-					back_ground_x += 2;
+					back_ground_x += 1;
 			}
 
 			if (count_x >= 20)
@@ -752,11 +753,11 @@ void BackGround::Control_Character()
 		}
 		if (GetKeyState(VK_RIGHT) & 0x8000)
 		{
-			player_x += 2;
+			player_x += 1;
 			count_x2++;
 
 			if (player_x <= END_MAP)
-				back_ground_x -= 2;
+				back_ground_x -= 1;
 
 			if (count_x2 >= 20)
 			{
@@ -778,12 +779,12 @@ void BackGround::Control_Character()
 
 	if (jump_trigger == TRUE)
 	{
-		degree += 2;
-		player_rt_y -= 2;
-		player_x += 2;
+		degree += 1;
+		player_rt_y -= 1;
+		player_x += 1;
 
 		if (player_x <= END_MAP)
-			back_ground_x -= 2;
+			back_ground_x -= 1;
 
 		if (degree == 180)
 		{
@@ -796,19 +797,17 @@ void BackGround::Control_Character()
 
 	if (player_rt_y != 385 && jump_trigger == FALSE)
 	{
-		player_rt_y += 2;
+		player_rt_y += 1;
 	}
 
-	m_Player_rt = { player_x, player_rt_y, player_x + 10, player_rt_y + 60 };
+	m_Player_rt = { player_x - 30, player_rt_y, player_x - 30 + 50, player_rt_y + 30 };
 }
 
 void BackGround::Set_Ring()
 {
-	static int trigger = FALSE;
-
-	if (trigger == FALSE)
+	if (set_ring_trigger == FALSE)
 	{
-		trigger = TRUE;
+		set_ring_trigger = TRUE;
 		select_money1 = rand() % 3;
 		Set_Enemy_Pos(0);
 		first_ring_created = TRUE;
@@ -900,6 +899,39 @@ void BackGround::Die_Check()
 			die_check = TRUE;
 		}
 	}
+	if (IntersectRect(&check, &m_Player_rt, &m_Fire_rt))
+	{
+		die_check = TRUE;
+	}
+}
+
+void BackGround::Die_And_Init()
+{
+	back_ground_x = 0;
+	save_x = 0;
+	player_x = 350;
+	player_y = 385;
+	player_pose = 0;
+	jump_y = 0;
+
+	set_ring_trigger = FALSE;
+	ring_draw = FALSE;
+	first_ring_created = FALSE;
+	second_ring_created = FALSE;
+	first_front_created = FALSE;
+	second_front_created = FALSE;
+	front_draw = FALSE;
+	enemy_change_count = 0;
+	enemy_change_count_2 = 0;
+	jump_trigger = FALSE;
+	degree = 0;
+	count_x = 0;
+	count_x2 = 0;
+
+	m_Player_rt = { player_x - 30, player_rt_y, player_x - 30 + 50, player_rt_y + 30 };
+	m_Enemy_rt[0] = { 0, 0, 0, 0 };
+	m_Enemy_rt[1] = { 0, 0, 0, 0 };
+	m_Fire_rt = { 0, 0, 0, 0 };
 }
 
 BackGround::~BackGround()

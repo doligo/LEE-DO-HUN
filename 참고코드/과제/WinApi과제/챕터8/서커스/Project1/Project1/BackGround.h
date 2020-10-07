@@ -79,6 +79,7 @@ public:
 	int select_money1;
 	int select_money2;
 	int save_x;
+	int set_ring_trigger;
 
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
 	void Init_Player(HWND hWnd, HINSTANCE hInst);
@@ -98,6 +99,7 @@ public:
 	void Set_Front();
 	void Set_Enemy_Pos2(int num);
 	void Die_Check();
+	void Die_And_Init();
 
 	~BackGround();
 };

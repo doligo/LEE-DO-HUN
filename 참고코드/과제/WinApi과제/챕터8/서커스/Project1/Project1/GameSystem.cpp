@@ -39,6 +39,9 @@ int GameSystem::Draw(HDC hdc)
 			{
 				BG->Draw_Die_Character(hdc);
 				Sleep(1500);
+				game_start_check = FALSE;
+				BG->die_check = FALSE;
+				BG->Die_And_Init();
 			}
 			
 		}
