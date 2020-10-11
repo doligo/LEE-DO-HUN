@@ -2,6 +2,8 @@
 
 BackGround::BackGround()
 {
+	player_life = 5;
+	player_score = 0;
 	menu_select = 0;
 	count_x = 0;
 	count_x2 = 0;
@@ -203,6 +205,17 @@ void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
 	GetObject(m_GameBitMap[6], sizeof(B_Info), &B_Info);
 	m_Gamesize[5].cx = B_Info.bmWidth;
 	m_Gamesize[5].cy = B_Info.bmHeight;
+
+	/////////////////////////////////
+
+	GameDC[7] = CreateCompatibleDC(GameDC[0]);
+	m_GameBitMap[7] = (HBITMAP)LoadImage(NULL, TEXT("icon.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_GameBitMap[7] = (HBITMAP)SelectObject(GameDC[7], m_GameBitMap[7]);
+
+	GetObject(m_GameBitMap[7], sizeof(B_Info), &B_Info);
+	m_Gamesize[6].cx = B_Info.bmWidth;
+	m_Gamesize[6].cy = B_Info.bmHeight;
 
 	back_ground_x = 0;
 	back_ground_y = 115;
@@ -412,6 +425,8 @@ void BackGround::Init_Enemy(HWND hWnd, HINSTANCE hInst)
 	m_Enemy_rt[0] = { 0, 0, 0, 0 };
 	m_Enemy_rt[1] = { 0, 0, 0, 0 };
 	m_Fire_rt = { 0, 0, 0, 0 };
+	m_Money_rt[0] = { 0, 0, 0, 0 };
+	m_Money_rt[1] = { 0, 0, 0, 0 };
 }
 
 int BackGround::Draw_TitleScreen(HDC hdc)
@@ -499,6 +514,7 @@ void BackGround::Draw_GameScreen(HDC hdc)
 	int _x = 0;
 	int _y = 0;
 
+	TransparentBlt(GameDC[0], 0, 0, m_size[7].cx + 1000, m_size[7].cy + 90, MemDC[8], 0, 0, m_size[7].cx, m_size[7].cy, SRCCOPY); // 상단검은배경
 	TransparentBlt(GameDC[0], 0, 210, m_Gamesize[0].cx * 16, m_Gamesize[0].cy + 150, GameDC[1], 0, 0, m_Gamesize[0].cx, m_Gamesize[0].cy, SRCCOPY); // 초록색배경
 
 	if (player_x <= END_MAP)
@@ -537,6 +553,8 @@ void BackGround::Draw_GameScreen(HDC hdc)
 	}
 
 	Draw_Miter();
+	Draw_Life();
+	Draw_Score();
 
 	Draw_Back_Ring(hdc);
 	Draw_Character(hdc);
@@ -734,11 +752,11 @@ void BackGround::Control_Character()
 		{
 			if (player_x >= 350)
 			{
-				player_x -= 1;
+				player_x -= 3;
 				count_x++;
 
 				if (player_x <= END_MAP)
-					back_ground_x += 1;
+					back_ground_x += 3;
 			}
 
 			if (count_x >= 20)
@@ -753,11 +771,11 @@ void BackGround::Control_Character()
 		}
 		if (GetKeyState(VK_RIGHT) & 0x8000)
 		{
-			player_x += 1;
+			player_x += 3;
 			count_x2++;
 
 			if (player_x <= END_MAP)
-				back_ground_x -= 1;
+				back_ground_x -= 3;
 
 			if (count_x2 >= 20)
 			{
@@ -779,26 +797,32 @@ void BackGround::Control_Character()
 
 	if (jump_trigger == TRUE)
 	{
-		degree += 1;
-		player_rt_y -= 1;
-		player_x += 1;
+		degree += 2;
+		player_rt_y -= 2;
+		player_x += 3;
 
 		if (player_x <= END_MAP)
-			back_ground_x -= 1;
+			back_ground_x -= 3;
 
 		if (degree == 180)
 		{
 			degree = 0;
 			player_pose = 0;
 			jump_trigger = FALSE;
+			player_rt_y = 385;
 		}
+		else if (degree >= 90)
+			player_rt_y += 2;
+
 		jump_y = sin(degree * 3.14 / 180) * -130;
 	}
 
 	if (player_rt_y != 385 && jump_trigger == FALSE)
 	{
-		player_rt_y += 1;
+		player_rt_y += 2;
 	}
+	if (player_rt_y >= 386)
+		player_rt_y = 385;
 
 	m_Player_rt = { player_x - 30, player_rt_y, player_x - 30 + 50, player_rt_y + 30 };
 }
@@ -818,12 +842,14 @@ void BackGround::Set_Ring()
 		select_money1 = rand() % 3;
 		Set_Enemy_Pos(0);
 		first_ring_created = TRUE;
+		player_score += 50;
 	}
 	else if (first_ring_created == TRUE && second_ring_created == FALSE && player_x >= enemy_front_x[0])
 	{
 		select_money2 = rand() % 3;
 		Set_Enemy_Pos(1);
 		second_ring_created = TRUE;
+		player_score += 50;
 	}
 
 	if (m_Player_rt.left >= enemy_front_x[0] + 300)
@@ -837,15 +863,17 @@ void BackGround::Set_Ring()
 		select_money2 = FALSE;
 	}
 
-	if (select_money1 == 1) // 돈주머니 좌표설정
+	if (select_money1 == TRUE) // 돈주머니 좌표설정
 	{
 		money_x[0] = enemy_back_x[0] + 12;
 		money_y[0] = enemy_back_y[0] + 40;
+		m_Money_rt[0] = { money_x[0], money_y[0], money_x[0] + 30, money_y[0] + 30 };
 	}
-	if (select_money2 == 1)
+	if (select_money2 == TRUE)
 	{
 		money_x[1] = enemy_back_x[1] + 12;
 		money_y[1] = enemy_back_y[1] + 40;
+		m_Money_rt[1] = { money_x[1], money_y[1], money_x[1] + 30, money_y[1] + 30 };
 	}
 }
 
@@ -869,6 +897,8 @@ void BackGround::Set_Enemy_Pos(int num)
 
 void BackGround::Set_Front()
 {
+	static int plus_score = FALSE;
+
 	if (first_front_created == FALSE)
 	{
 		Set_Enemy_Pos2(0);
@@ -876,7 +906,17 @@ void BackGround::Set_Front()
 	}
 
 	if (m_Player_rt.left >= enemy_x_2 + 300)
+	{
 		first_front_created = FALSE;
+		plus_score = FALSE;
+	}
+
+	if (m_Player_rt.left >= enemy_x_2 && first_front_created == TRUE && plus_score == FALSE)
+	{
+		player_score += 100;
+		plus_score = TRUE;
+	}
+
 }
 
 void BackGround::Set_Enemy_Pos2(int num)
@@ -932,6 +972,41 @@ void BackGround::Die_And_Init()
 	m_Enemy_rt[0] = { 0, 0, 0, 0 };
 	m_Enemy_rt[1] = { 0, 0, 0, 0 };
 	m_Fire_rt = { 0, 0, 0, 0 };
+}
+
+void BackGround::Draw_Life()
+{
+	int value = 0;
+
+	RECT rt = { 700, 90, 700 + 60, 90 + 20 };
+	DrawText(GameDC[0], "Life : ", -1, &rt, DT_CENTER | DT_WORDBREAK);
+	for (int i = 0; i < player_life; i++)
+	{
+		TransparentBlt(GameDC[0], 760 + value, 85, m_Gamesize[6].cx + 10, m_Gamesize[6].cy + 10, GameDC[7], 0, 0, m_Gamesize[6].cx, m_Gamesize[6].cy, RGB(255, 0, 255));
+		value += 30;
+	}
+}
+
+void BackGround::Draw_Score()
+{
+	char buffer[256] = {};
+
+	RECT rt = { 700, 55, 700 + 100, 55 + 20 };
+	sprintf_s(buffer, "Score : %d", player_score);
+	DrawText(GameDC[0], buffer, -1, &rt, DT_CENTER | DT_WORDBREAK);
+}
+
+void BackGround::MoneyEat_Check()
+{
+	RECT check;
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (IntersectRect(&check, &m_Player_rt, &m_Money_rt[i]))
+		{
+
+		}
+	}
 }
 
 BackGround::~BackGround()

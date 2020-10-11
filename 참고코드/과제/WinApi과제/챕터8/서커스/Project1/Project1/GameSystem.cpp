@@ -42,6 +42,14 @@ int GameSystem::Draw(HDC hdc)
 				game_start_check = FALSE;
 				BG->die_check = FALSE;
 				BG->Die_And_Init();
+				BG->player_life -= 1;
+				BG->player_score = 0;
+			}
+
+			if (BG->player_life == 0)
+			{
+				check = 0; // 메인화면으로 back
+				BG->player_life = 5;
 			}
 			
 		}

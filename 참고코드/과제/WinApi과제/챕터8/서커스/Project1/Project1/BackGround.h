@@ -23,10 +23,10 @@ private:
 	HBITMAP	m_Old_StageBitMap[2];
 	SIZE m_Stagesize;
 
-	HDC GameDC[7]; ///////// 인게임 배경화면,플레이 등등
-	HBITMAP m_GameBitMap[7];
-	HBITMAP m_Old_GameBitMap[7];
-	SIZE m_Gamesize[6];
+	HDC GameDC[8]; ///////// 인게임 배경화면,플레이 등등
+	HBITMAP m_GameBitMap[8];
+	HBITMAP m_Old_GameBitMap[8];
+	SIZE m_Gamesize[7];
 
 	HDC CharacterDC[6]; ///////// 플레이어 캐릭터
 	HBITMAP m_CharacterBitMap[6];
@@ -46,6 +46,8 @@ private:
 public:
 	BackGround();
 
+	int player_life;
+	int player_score;
 	int player_x;
 	int player_y;
 	int player_rt_y;
@@ -100,6 +102,9 @@ public:
 	void Set_Enemy_Pos2(int num);
 	void Die_Check();
 	void Die_And_Init();
+	void Draw_Life();
+	void Draw_Score();
+	void MoneyEat_Check();
 
 	~BackGround();
 };
