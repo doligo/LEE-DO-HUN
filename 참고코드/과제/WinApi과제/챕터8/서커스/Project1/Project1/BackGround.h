@@ -42,6 +42,7 @@ private:
 	RECT m_Player_rt; // 플레이어범위
 	RECT m_Money_rt[2]; // 돈주머니범위
 	RECT m_Fire_rt; // 항아리불범위
+	RECT m_Clear_rt; // 클리어범위
 
 public:
 	BackGround();
@@ -105,6 +106,7 @@ public:
 	void Draw_Life();
 	void Draw_Score();
 	void MoneyEat_Check();
+	void Clear_Check();
 
 	~BackGround();
 };

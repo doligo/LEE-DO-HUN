@@ -427,6 +427,7 @@ void BackGround::Init_Enemy(HWND hWnd, HINSTANCE hInst)
 	m_Fire_rt = { 0, 0, 0, 0 };
 	m_Money_rt[0] = { 0, 0, 0, 0 };
 	m_Money_rt[1] = { 0, 0, 0, 0 };
+	m_Clear_rt = { 0, 0, 0, 0 };
 }
 
 int BackGround::Draw_TitleScreen(HDC hdc)
@@ -589,14 +590,14 @@ void BackGround::Draw_Back_Ring(HDC hdc)
 		{
 			TransparentBlt(GameDC[0], enemy_back_x[0] + back_ground_x, enemy_back_y[0], m_Enemysize[1].cx + 10, m_Enemysize[1].cy + 60, EnemyDC[1], 0, 0, m_Enemysize[1].cx, m_Enemysize[1].cy, RGB(255, 0, 255));
 
-			if (select_money1 == 1)
+			if (select_money1 == TRUE)
 				TransparentBlt(GameDC[0], money_x[0] + back_ground_x, money_y[0], m_Gamesize[3].cx + 10, m_Gamesize[3].cy + 10, GameDC[4], 0, 0, m_Gamesize[3].cx, m_Gamesize[3].cy, RGB(255, 0, 255));
 		}
 		if (second_ring_created == TRUE)
 		{
 			TransparentBlt(GameDC[0], enemy_back_x[1] + back_ground_x, enemy_back_y[1], m_Enemysize[1].cx + 10, m_Enemysize[1].cy + 60, EnemyDC[1], 0, 0, m_Enemysize[1].cx, m_Enemysize[1].cy, RGB(255, 0, 255));
 
-			if (select_money2 == 1)
+			if (select_money2 == TRUE)
 				TransparentBlt(GameDC[0], money_x[1] + back_ground_x, money_y[1], m_Gamesize[3].cx + 10, m_Gamesize[3].cy + 10, GameDC[4], 0, 0, m_Gamesize[3].cx, m_Gamesize[3].cy, RGB(255, 0, 255));
 		}
 	}
@@ -606,7 +607,7 @@ void BackGround::Draw_Back_Ring(HDC hdc)
 		{
 			TransparentBlt(GameDC[0], enemy_back_x[0] + back_ground_x, enemy_back_y[0], m_Enemysize[4].cx + 10, m_Enemysize[4].cy + 60, EnemyDC[4], 0, 0, m_Enemysize[4].cx, m_Enemysize[4].cy, RGB(255, 0, 255));
 
-			if (select_money1 == 1)
+			if (select_money1 == TRUE)
 				TransparentBlt(GameDC[0], money_x[0] + back_ground_x, money_y[0], m_Gamesize[3].cx + 10, m_Gamesize[3].cy + 10, GameDC[4], 0, 0, m_Gamesize[3].cx, m_Gamesize[3].cy, RGB(255, 0, 255));
 		}
 
@@ -614,7 +615,7 @@ void BackGround::Draw_Back_Ring(HDC hdc)
 		{
 			TransparentBlt(GameDC[0], enemy_back_x[1] + back_ground_x, enemy_back_y[1], m_Enemysize[4].cx + 10, m_Enemysize[4].cy + 60, EnemyDC[4], 0, 0, m_Enemysize[4].cx, m_Enemysize[4].cy, RGB(255, 0, 255));
 
-			if (select_money2 == 1)
+			if (select_money2 == TRUE)
 				TransparentBlt(GameDC[0], money_x[1] + back_ground_x, money_y[1], m_Gamesize[3].cx + 10, m_Gamesize[3].cy + 10, GameDC[4], 0, 0, m_Gamesize[3].cx, m_Gamesize[3].cy, RGB(255, 0, 255));
 		}
 	}
@@ -721,6 +722,13 @@ void BackGround::Draw_Fire(HDC hdc)
 	m_Enemy_rt[1] = { enemy_front_x[1] - 50, enemy_front_y[1] + 175, enemy_front_x[1] - 50 + 10, enemy_front_y[1] + 175 + 11 };
 
 	m_Fire_rt = { enemy_x_2 - 40, enemy_y_2 - 20, enemy_x_2 - 40 + 50, enemy_y_2 - 20 + 20 };
+
+	if (first_ring_created == FALSE) //// 적이 사라졌는데 뒤로가면 죽는것 방지
+		m_Enemy_rt[0] = { 0, 0, 0, 0 };
+	if (second_ring_created == FALSE)
+		m_Enemy_rt[1] = { 0, 0, 0, 0 };
+	if (first_front_created == FALSE)
+		m_Fire_rt = { 0, 0, 0, 0 };
 }
 
 void BackGround::Draw_Miter()
@@ -745,6 +753,7 @@ void BackGround::Control_Character()
 	Set_Ring(); // 링 반복생성
 	Set_Front();
 	Die_Check();
+	MoneyEat_Check();
 
 	if (jump_trigger == FALSE)
 	{
@@ -867,13 +876,13 @@ void BackGround::Set_Ring()
 	{
 		money_x[0] = enemy_back_x[0] + 12;
 		money_y[0] = enemy_back_y[0] + 40;
-		m_Money_rt[0] = { money_x[0], money_y[0], money_x[0] + 30, money_y[0] + 30 };
+		m_Money_rt[0] = { money_x[0] - 45, money_y[0] + 80, money_x[0] - 45 + 30, money_y[0] + 80 + 30 };
 	}
 	if (select_money2 == TRUE)
 	{
 		money_x[1] = enemy_back_x[1] + 12;
 		money_y[1] = enemy_back_y[1] + 40;
-		m_Money_rt[1] = { money_x[1], money_y[1], money_x[1] + 30, money_y[1] + 30 };
+		m_Money_rt[1] = { money_x[1] - 45, money_y[1] + 80, money_x[1] - 45 + 30, money_y[1] + 80 + 30 };
 	}
 }
 
@@ -1004,8 +1013,27 @@ void BackGround::MoneyEat_Check()
 	{
 		if (IntersectRect(&check, &m_Player_rt, &m_Money_rt[i]))
 		{
-
+			if (i == 0 && select_money1 == TRUE)
+			{
+				select_money1 = FALSE;
+				player_score += 500;
+			}
+			else if (i == 1 && select_money2 == TRUE)
+			{
+				select_money2 = FALSE;
+				player_score += 500;
+			}
 		}
+	}
+}
+
+void BackGround::Clear_Check()
+{
+	RECT check;
+
+	if (IntersectRect(&check, &m_Player_rt, &m_Clear_rt))
+	{
+
 	}
 }
 
