@@ -23,10 +23,10 @@ private:
 	HBITMAP	m_Old_StageBitMap[2];
 	SIZE m_Stagesize;
 
-	HDC GameDC[8]; ///////// 인게임 배경화면,플레이 등등
-	HBITMAP m_GameBitMap[8];
-	HBITMAP m_Old_GameBitMap[8];
-	SIZE m_Gamesize[7];
+	HDC GameDC[9]; ///////// 인게임 배경화면,플레이 등등
+	HBITMAP m_GameBitMap[9];
+	HBITMAP m_Old_GameBitMap[9];
+	SIZE m_Gamesize[8];
 
 	HDC CharacterDC[6]; ///////// 플레이어 캐릭터
 	HBITMAP m_CharacterBitMap[6];
@@ -83,6 +83,8 @@ public:
 	int select_money2;
 	int save_x;
 	int set_ring_trigger;
+	int clear_check;
+	int clear_performance_change_count;
 
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
 	void Init_Player(HWND hWnd, HINSTANCE hInst);
@@ -107,6 +109,8 @@ public:
 	void Draw_Score();
 	void MoneyEat_Check();
 	void Clear_Check();
+	void Draw_Clear_Dance(HDC hdc);
+	void Draw_Clear_BackGround();
 
 	~BackGround();
 };

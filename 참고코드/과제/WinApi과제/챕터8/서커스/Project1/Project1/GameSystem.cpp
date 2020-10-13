@@ -30,10 +30,15 @@ int GameSystem::Draw(HDC hdc)
 				game_start_check = TRUE;
 			}
 
-			if (BG->die_check != TRUE)
+			if (BG->die_check != TRUE && BG->clear_check == FALSE)
 			{
 				BG->Draw_GameScreen(hdc);
 				BG->Control_Character();
+			}
+			else if (BG->die_check != TRUE && BG->clear_check == TRUE)
+			{
+				BG->Draw_Clear_Dance(hdc);
+				//check = 0; // 메인화면으로 back
 			}
 			else
 			{

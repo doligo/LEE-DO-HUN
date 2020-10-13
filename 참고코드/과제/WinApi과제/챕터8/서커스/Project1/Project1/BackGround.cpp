@@ -22,6 +22,8 @@ BackGround::BackGround()
 	select_money2 = FALSE;
 	save_x = 0;
 	set_ring_trigger = FALSE;
+	clear_check = FALSE;
+	clear_performance_change_count = 0;
 }
 
 void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
@@ -216,6 +218,17 @@ void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
 	GetObject(m_GameBitMap[7], sizeof(B_Info), &B_Info);
 	m_Gamesize[6].cx = B_Info.bmWidth;
 	m_Gamesize[6].cy = B_Info.bmHeight;
+
+	/////////////////////////////////
+
+	GameDC[8] = CreateCompatibleDC(GameDC[0]);
+	m_GameBitMap[8] = (HBITMAP)LoadImage(NULL, TEXT("back_normal2.bmp"),
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	m_Old_GameBitMap[8] = (HBITMAP)SelectObject(GameDC[8], m_GameBitMap[8]);
+
+	GetObject(m_GameBitMap[8], sizeof(B_Info), &B_Info);
+	m_Gamesize[7].cx = B_Info.bmWidth;
+	m_Gamesize[7].cy = B_Info.bmHeight;
 
 	back_ground_x = 0;
 	back_ground_y = 115;
@@ -427,7 +440,7 @@ void BackGround::Init_Enemy(HWND hWnd, HINSTANCE hInst)
 	m_Fire_rt = { 0, 0, 0, 0 };
 	m_Money_rt[0] = { 0, 0, 0, 0 };
 	m_Money_rt[1] = { 0, 0, 0, 0 };
-	m_Clear_rt = { 0, 0, 0, 0 };
+	m_Clear_rt = { 6725, 280, 6850, 400 };
 }
 
 int BackGround::Draw_TitleScreen(HDC hdc)
@@ -754,6 +767,7 @@ void BackGround::Control_Character()
 	Set_Front();
 	Die_Check();
 	MoneyEat_Check();
+	Clear_Check();
 
 	if (jump_trigger == FALSE)
 	{
@@ -1033,8 +1047,123 @@ void BackGround::Clear_Check()
 
 	if (IntersectRect(&check, &m_Player_rt, &m_Clear_rt))
 	{
-
+		clear_check = TRUE;
 	}
+}
+
+void BackGround::Draw_Clear_Dance(HDC hdc)
+{
+	static int chage_trigger = FALSE;
+	static int move_trigger = TRUE;
+	static int count = 0;
+	static int count2 = 0;
+
+	Draw_Clear_BackGround();
+	TransparentBlt(GameDC[0], 0, 210, m_Gamesize[0].cx * 16, m_Gamesize[0].cy + 150, GameDC[1], 0, 0, m_Gamesize[0].cx, m_Gamesize[0].cy, SRCCOPY); // 초록색배경
+	TransparentBlt(GameDC[0], 6800 + back_ground_x, 390, m_Gamesize[5].cx + 20, m_Gamesize[5].cy + 30, GameDC[6], 0, 0, m_Gamesize[5].cx, m_Gamesize[5].cy, RGB(255, 0, 255)); //end
+	Draw_Miter();
+	Draw_Life();
+	Draw_Score();
+
+	if (chage_trigger == FALSE)
+		TransparentBlt(GameDC[0], player_x + back_ground_x + 80, player_y - 75, m_Charactersize[4].cx + 10, m_Charactersize[4].cy + 25, CharacterDC[4], 0, 0, m_Charactersize[4].cx, m_Charactersize[4].cy, RGB(255, 0, 255));
+	else if (chage_trigger == TRUE)
+		TransparentBlt(GameDC[0], player_x + back_ground_x + 80, player_y - 75, m_Charactersize[5].cx + 10, m_Charactersize[5].cy + 25, CharacterDC[5], 0, 0, m_Charactersize[5].cx, m_Charactersize[5].cy, RGB(255, 0, 255));
+
+	BitBlt(hdc, 0, 0, 1024, 533, GameDC[0], 0, 0, SRCCOPY);
+
+	if (chage_trigger == FALSE)
+	{
+		enemy_change_count++;
+		if (enemy_change_count >= 80)
+		{
+			chage_trigger = TRUE;
+			enemy_change_count = 0;
+		}
+	}
+	else if (chage_trigger == TRUE)
+	{
+		enemy_change_count++;
+		if (enemy_change_count >= 80)
+		{
+			chage_trigger = FALSE;
+			enemy_change_count = 0;
+		}
+	}
+
+	if (move_trigger == TRUE)
+	{
+		count++;
+		if (count >= 20)
+		{
+			player_x++;
+			count2++;
+			count = 0;
+		}
+		if (count2 == 15)
+			move_trigger = FALSE;
+	}
+}
+
+void BackGround::Draw_Clear_BackGround()
+{
+	/////////// 높낮이 확인하기**
+	int _x = 0;
+	static int back_chage_trigger = FALSE;
+	static int back_count = 0;
+
+	TransparentBlt(GameDC[0], 0, 0, m_size[7].cx + 1000, m_size[7].cy + 90, MemDC[8], 0, 0, m_size[7].cx, m_size[7].cy, SRCCOPY); // 상단검은배경
+
+	if (back_chage_trigger == FALSE)
+	{
+		for (int i = 0; i < 13; i++)
+		{
+			if (i == 2)
+			{
+				TransparentBlt(GameDC[0], _x + save_x - 950, 115, m_Gamesize[1].cx + 30, m_Gamesize[1].cy + 30, GameDC[2], 0, 0, m_Gamesize[1].cx, m_Gamesize[1].cy, SRCCOPY); // 코끼리
+			}
+			else
+			{
+				TransparentBlt(GameDC[0], _x + save_x - 950, 115, m_Gamesize[2].cx + 30, m_Gamesize[2].cy + 30, GameDC[3], 0, 0, m_Gamesize[2].cx, m_Gamesize[2].cy, SRCCOPY);
+			}
+			_x += 90;
+		}
+	}
+	else if (back_chage_trigger == TRUE)
+	{
+		for (int i = 0; i < 13; i++)
+		{
+			if (i == 2)
+			{
+				TransparentBlt(GameDC[0], _x + save_x - 950, 115, m_Gamesize[1].cx + 30, m_Gamesize[1].cy + 30, GameDC[2], 0, 0, m_Gamesize[1].cx, m_Gamesize[1].cy, SRCCOPY); // 코끼리
+			}
+			else
+			{
+				TransparentBlt(GameDC[0], _x + save_x - 950, 110, m_Gamesize[7].cx + 30, m_Gamesize[7].cy + 30, GameDC[8], 0, 0, m_Gamesize[7].cx, m_Gamesize[7].cy, SRCCOPY);
+			}
+			_x += 90;
+		}
+	}
+
+	if (back_chage_trigger == FALSE)
+	{
+		back_count++;
+		if (back_count <= 20)
+		{
+			back_count = 0;
+			back_chage_trigger = TRUE;
+		}
+	}
+	else if (back_chage_trigger == TRUE)
+	{
+		back_count++;
+		if (back_count <= 20)
+		{
+			back_count = 0;
+			back_chage_trigger = FALSE;
+		}
+	}
+
 }
 
 BackGround::~BackGround()
