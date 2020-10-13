@@ -24,6 +24,7 @@ BackGround::BackGround()
 	set_ring_trigger = FALSE;
 	clear_check = FALSE;
 	clear_performance_change_count = 0;
+	count_and_goto_title = 0;
 }
 
 void BackGround::Init_BackGround(HWND hWnd, HINSTANCE hInst)
@@ -591,7 +592,14 @@ void BackGround::Draw_Character(HDC hdc)
 
 void BackGround::Draw_Die_Character(HDC hdc)
 {
+	TransparentBlt(GameDC[0], 0, 210, m_Gamesize[0].cx * 16, m_Gamesize[0].cy + 150, GameDC[1], 0, 0, m_Gamesize[0].cx, m_Gamesize[0].cy, SRCCOPY); // 초록색배경
 	TransparentBlt(GameDC[0], player_x + back_ground_x, player_y + jump_y, m_Charactersize[3].cx + 10, m_Charactersize[3].cy + 25, CharacterDC[3], 0, 0, m_Charactersize[3].cx, m_Charactersize[3].cy, RGB(255, 0, 255));
+
+	Draw_Miter();
+	Draw_Back_Ring(hdc);
+	Draw_Front_Ring(hdc);
+	Draw_Fire(hdc);
+
 	BitBlt(hdc, 0, 0, 1024, 533, GameDC[0], 0, 0, SRCCOPY);
 }
 
@@ -775,11 +783,11 @@ void BackGround::Control_Character()
 		{
 			if (player_x >= 350)
 			{
-				player_x -= 3;
+				player_x -= 2;
 				count_x++;
 
 				if (player_x <= END_MAP)
-					back_ground_x += 3;
+					back_ground_x += 2;
 			}
 
 			if (count_x >= 20)
@@ -794,11 +802,11 @@ void BackGround::Control_Character()
 		}
 		if (GetKeyState(VK_RIGHT) & 0x8000)
 		{
-			player_x += 3;
+			player_x += 2;
 			count_x2++;
 
 			if (player_x <= END_MAP)
-				back_ground_x -= 3;
+				back_ground_x -= 2;
 
 			if (count_x2 >= 20)
 			{
@@ -822,10 +830,10 @@ void BackGround::Control_Character()
 	{
 		degree += 2;
 		player_rt_y -= 2;
-		player_x += 3;
+		player_x += 2;
 
 		if (player_x <= END_MAP)
-			back_ground_x -= 3;
+			back_ground_x -= 2;
 
 		if (degree == 180)
 		{
@@ -1074,27 +1082,29 @@ void BackGround::Draw_Clear_Dance(HDC hdc)
 
 	if (chage_trigger == FALSE)
 	{
-		enemy_change_count++;
-		if (enemy_change_count >= 80)
+		clear_performance_change_count++;
+		if (clear_performance_change_count >= 30)
 		{
 			chage_trigger = TRUE;
-			enemy_change_count = 0;
+			clear_performance_change_count = 0;
+			count_and_goto_title++;
 		}
 	}
 	else if (chage_trigger == TRUE)
 	{
-		enemy_change_count++;
-		if (enemy_change_count >= 80)
+		clear_performance_change_count++;
+		if (clear_performance_change_count >= 30)
 		{
 			chage_trigger = FALSE;
-			enemy_change_count = 0;
+			clear_performance_change_count = 0;
+			count_and_goto_title++;
 		}
 	}
 
 	if (move_trigger == TRUE)
 	{
 		count++;
-		if (count >= 20)
+		if (count >= 15)
 		{
 			player_x++;
 			count2++;
@@ -1107,7 +1117,6 @@ void BackGround::Draw_Clear_Dance(HDC hdc)
 
 void BackGround::Draw_Clear_BackGround()
 {
-	/////////// 높낮이 확인하기**
 	int _x = 0;
 	static int back_chage_trigger = FALSE;
 	static int back_count = 0;
@@ -1139,7 +1148,7 @@ void BackGround::Draw_Clear_BackGround()
 			}
 			else
 			{
-				TransparentBlt(GameDC[0], _x + save_x - 950, 110, m_Gamesize[7].cx + 30, m_Gamesize[7].cy + 30, GameDC[8], 0, 0, m_Gamesize[7].cx, m_Gamesize[7].cy, SRCCOPY);
+				TransparentBlt(GameDC[0], _x + save_x - 950, 118, m_Gamesize[7].cx + 30, m_Gamesize[7].cy + 30, GameDC[8], 0, 0, m_Gamesize[7].cx, m_Gamesize[7].cy, SRCCOPY);
 			}
 			_x += 90;
 		}
@@ -1148,7 +1157,7 @@ void BackGround::Draw_Clear_BackGround()
 	if (back_chage_trigger == FALSE)
 	{
 		back_count++;
-		if (back_count <= 20)
+		if (back_count <= 100)
 		{
 			back_count = 0;
 			back_chage_trigger = TRUE;
@@ -1157,7 +1166,7 @@ void BackGround::Draw_Clear_BackGround()
 	else if (back_chage_trigger == TRUE)
 	{
 		back_count++;
-		if (back_count <= 20)
+		if (back_count <= 100)
 		{
 			back_count = 0;
 			back_chage_trigger = FALSE;
@@ -1180,7 +1189,7 @@ BackGround::~BackGround()
 		DeleteObject(m_Old_StageBitMap[i]);
 		DeleteDC(StageDC[i]);
 	}
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 9; i++)
 	{
 		DeleteObject(m_GameBitMap[i]);
 		DeleteObject(m_Old_GameBitMap[i]);

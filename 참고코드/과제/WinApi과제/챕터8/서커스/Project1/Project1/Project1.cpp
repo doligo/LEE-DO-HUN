@@ -32,6 +32,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		1024, 570, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 
+	int num = 0;
 	HDC hdc = NULL;
 	GameSystem *GS;
 
@@ -53,8 +54,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		}
 		else
 		{
-			GS->Draw(hdc);
+			num = GS->Draw(hdc);
 		}
+		if (num == 20)
+			break;
 	}
 
 	ReleaseDC(hWnd, hdc);

@@ -85,6 +85,7 @@ public:
 	int set_ring_trigger;
 	int clear_check;
 	int clear_performance_change_count;
+	int count_and_goto_title;
 
 	void Init_BackGround(HWND hWnd, HINSTANCE hInst);
 	void Init_Player(HWND hWnd, HINSTANCE hInst);

@@ -38,7 +38,14 @@ int GameSystem::Draw(HDC hdc)
 			else if (BG->die_check != TRUE && BG->clear_check == TRUE)
 			{
 				BG->Draw_Clear_Dance(hdc);
-				//check = 0; // 메인화면으로 back
+				if (BG->count_and_goto_title == 12)
+				{
+					game_start_check = FALSE;
+					BG->clear_check = FALSE;
+					BG->player_score = 0;
+					BG->Die_And_Init();
+					check = 0; // 메인화면으로 back
+				}
 			}
 			else
 			{
@@ -54,10 +61,13 @@ int GameSystem::Draw(HDC hdc)
 			if (BG->player_life == 0)
 			{
 				check = 0; // 메인화면으로 back
+				BG->player_score = 0;
 				BG->player_life = 5;
 			}
-			
+
 		}
+		else if (BG->menu_select == 20)
+			return 20;
 	}
 	
 	return 0;
