@@ -151,7 +151,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Draw_And_Set.cpp" />
+    <ClCompile Include="GameSystem.cpp" />
     <ClCompile Include="Project8.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Draw_And_Set.h" />
+    <ClInclude Include="GameSystem.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Project8.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

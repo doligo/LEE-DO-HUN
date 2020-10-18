@@ -1,11 +1,16 @@
 ﻿#include <windows.h>
 #include <iostream>
 #include <vector>
+#include "resource.h"
+#include "GameSystem.h"
+#include <ctime>
+#include <cstdlib>
 using namespace std;
 
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+BOOL CALLBACK AboutDlgProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lParam); // 다이얼로그
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // 윈프록
 HINSTANCE g_hInst;
-char g_szClassName[256] = "지뢰찾기";
+LPCTSTR lpszClass = TEXT("지뢰찾기"); //창이름
 #pragma comment(lib, "msimg32.lib") // 링커 2019 오류 뜨면 추가해주면 된다.
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
@@ -22,15 +27,18 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	WndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	WndClass.hInstance = hInstance;
 	WndClass.lpfnWndProc = WndProc;
-	WndClass.lpszClassName = g_szClassName;
+	WndClass.lpszClassName = lpszClass;
 	WndClass.lpszMenuName = NULL;
+	WndClass.lpszMenuName = MAKEINTRESOURCE(IDR_MENU1); // 리소스-메뉴
 	WndClass.style = CS_HREDRAW | CS_VREDRAW;
 	RegisterClass(&WndClass);
 
-	hWnd = CreateWindow(g_szClassName, g_szClassName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
+
+	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 
+	srand((unsigned int)time(NULL)); // 시간설정
 	while (GetMessage(&Message, NULL, 0, 0))
 	{
 		TranslateMessage(&Message);
@@ -43,23 +51,60 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
+	PAINTSTRUCT ps;
+	GameSystem *GS;
 
 	switch (iMessage)
 	{
 	case WM_CREATE:
+		GS = new GameSystem();
+		GS->Init(hWnd);
 		return 0;
-	case WM_KEYDOWN:
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case ID_40001:
+			MessageBox(hWnd, TEXT("새 게임을 시작합니다"), TEXT("새로하기"), MB_OK);
+			break;
+		case ID_40003:
+			PostQuitMessage(0);
+			return 0;
+		}
 		return 0;
 	case WM_PAINT:
+		hdc = BeginPaint(hWnd, &ps);
+		EndPaint(hWnd, &ps);
+		return 0;
+	case WM_KEYDOWN:
 		return 0;
 	case WM_TIMER:
 		return 0;
 	case WM_DESTROY:
-
 		PostQuitMessage(0);
-
 		return 0;
 	}
 
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam));
+}
+
+BOOL CALLBACK AboutDlgProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lParam)
+{
+	HWND hRadio;
+
+	switch (iMessage)
+	{
+	case WM_INITDIALOG:
+		return TRUE;
+	case WM_COMMAND:
+		switch (wParam)
+		{
+		case IDOK:
+		case IDCANCEL:
+			EndDialog(hDlg, 0);
+			return TRUE;
+		}
+		break;
+	}
+
+	return FALSE;
 }
