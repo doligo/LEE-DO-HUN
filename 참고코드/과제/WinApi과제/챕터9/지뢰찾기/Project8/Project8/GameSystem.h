@@ -13,6 +13,7 @@ public:
 
 	Draw_And_Set *D_A_S;
 	void Init(HWND hWnd);
+	void Game_Flow(HDC hdc);
 
 	~GameSystem();
 };

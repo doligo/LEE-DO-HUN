@@ -48,11 +48,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	return (int)Message.wParam;
 }
 
+GameSystem *GS;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
-	GameSystem *GS;
 
 	switch (iMessage)
 	{
@@ -73,6 +74,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		return 0;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
+		GS->Game_Flow(hdc);
 		EndPaint(hWnd, &ps);
 		return 0;
 	case WM_KEYDOWN:
@@ -99,6 +101,8 @@ BOOL CALLBACK AboutDlgProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lPara
 		switch (wParam)
 		{
 		case IDOK:
+			EndDialog(hDlg, 0);
+			return TRUE;
 		case IDCANCEL:
 			EndDialog(hDlg, 0);
 			return TRUE;
