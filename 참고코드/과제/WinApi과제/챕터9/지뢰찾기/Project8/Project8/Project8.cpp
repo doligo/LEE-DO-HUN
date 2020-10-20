@@ -7,7 +7,7 @@
 #include <cstdlib>
 using namespace std;
 
-BOOL CALLBACK AboutDlgProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lParam); // 다이얼로그
+INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lParam); // 다이얼로그
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM); // 윈프록
 HINSTANCE g_hInst;
 LPCTSTR lpszClass = TEXT("지뢰찾기"); //창이름
@@ -35,10 +35,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 
 
 	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-		CW_USEDEFAULT, CW_USEDEFAULT, NULL, (HMENU)NULL, hInstance, NULL);
+		1175, 740, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 
-	srand((unsigned int)time(NULL)); // 시간설정
+	srand((unsigned int)time(NULL)); // 시간설정 (시간초)
 	while (GetMessage(&Message, NULL, 0, 0))
 	{
 		TranslateMessage(&Message);
@@ -48,12 +48,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	return (int)Message.wParam;
 }
 
-GameSystem *GS;
+GameSystem *GS; // 전역
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
+	POINT mouse_pt;
 
 	switch (iMessage)
 	{
@@ -61,12 +62,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		GS = new GameSystem();
 		GS->Init(hWnd);
 		return 0;
+	case WM_TIMER:
+		return 0;
+	case WM_LBUTTONDOWN:
+		mouse_pt.x = LOWORD(lParam);
+		mouse_pt.y = HIWORD(lParam);
+		InvalidateRect(hWnd, NULL, FALSE);
+		return 0;
+	case WM_RBUTTONDOWN:
+		mouse_pt.x = LOWORD(lParam);
+		mouse_pt.y = HIWORD(lParam);
+		InvalidateRect(hWnd, NULL, FALSE);
+		return 0;
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
 		case ID_40001:
-			MessageBox(hWnd, TEXT("새 게임을 시작합니다"), TEXT("새로하기"), MB_OK);
-			break;
+			if (MessageBox(hWnd, TEXT("새 게임을 시작합니다"), TEXT("새로하기"), MB_OKCANCEL) == IDOK)
+			{
+				GS->Init(hWnd);
+				InvalidateRect(hWnd, NULL, FALSE);
+			}
+			else
+				break;
+			return 0;
+		case ID_40002:
+			if (DialogBox(g_hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, AboutDlgProc) == TRUE)
+			{
+				GS->Init(hWnd);
+				InvalidateRect(hWnd, NULL, FALSE);
+			}
+			return 0;
 		case ID_40003:
 			PostQuitMessage(0);
 			return 0;
@@ -79,8 +105,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		return 0;
 	case WM_KEYDOWN:
 		return 0;
-	case WM_TIMER:
-		return 0;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
@@ -89,23 +113,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam));
 }
 
-BOOL CALLBACK AboutDlgProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
-	HWND hRadio;
 
 	switch (iMessage)
 	{
 	case WM_INITDIALOG:
-		return TRUE;
+		CheckRadioButton(hDlg, IDC_RADIO1, IDC_RADIO3, IDC_RADIO1);
+		GS->now_difficulty = 0;
+		return TRUE; // 윈도우에 알려준다
 	case WM_COMMAND:
 		switch (wParam)
 		{
+		case IDC_RADIO1:
+			GS->now_difficulty = 0;
+			break;
+		case IDC_RADIO2:
+			GS->now_difficulty = 1;
+			break;
+		case IDC_RADIO3:
+			GS->now_difficulty = 2;
+			break;
 		case IDOK:
-			EndDialog(hDlg, 0);
-			return TRUE;
+			EndDialog(hDlg, 1);
+			break;
 		case IDCANCEL:
 			EndDialog(hDlg, 0);
-			return TRUE;
+			break;
 		}
 		break;
 	}

@@ -12,6 +12,7 @@ public:
 	GameSystem();
 
 	Draw_And_Set *D_A_S;
+	int now_difficulty;
 	void Init(HWND hWnd);
 	void Game_Flow(HDC hdc);
 

@@ -15,7 +15,7 @@ void Draw_And_Set::Init_BitMap(HWND hWnd)
 	int num = 0;
 
 	MemDC[0] = CreateCompatibleDC(hdc); // 검은배경
-	m_BitMap[0] = CreateCompatibleBitmap(hdc, 1024, 533);
+	m_BitMap[0] = CreateCompatibleBitmap(hdc, 1200, 700);
 	m_Old_BitMap[0] = (HBITMAP)SelectObject(MemDC[0], m_BitMap[0]);
 
 	/////////////////////////////
@@ -81,13 +81,84 @@ void Draw_And_Set::Init_Game()
 		m_p_height = 9;
 		m_p_mine = 10;
 	}
+	else if (difficulty == INTERMEDIATE)
+	{
+		m_p_width = 16;
+		m_p_height = 16;
+		m_p_mine = 40;
+	}
+	else if (difficulty == ADVANCE)
+	{
+		m_p_width = 30;
+		m_p_height = 16;
+		m_p_mine = 99;
+	}
 }
 
 void Draw_And_Set::Draw_Game_Screen(HDC hdc)
 {
-	TransparentBlt(MemDC[0], 0, 0, m_size[0].cx + 100, m_size[0].cy + 100, MemDC[1], 0, 0, m_size[0].cx, m_size[0].cy, SRCCOPY);
+	//// 블럭 위치 각각 저장하기 **
+	BitBlt(hdc, 0, 0, 1160, 680, MemDC[0], 0, 0, RGB(255, 255, 255)); // 화면 덮어씌워지는것 방지
 
-	BitBlt(hdc, 0, 0, 1024, 533, MemDC[0], 0, 0, SRCCOPY);
+	if (difficulty == BEGINNER)
+	{
+		int _x = 15;
+		int _y = 32;
+
+		TransparentBlt(MemDC[0], 0, 0, m_size[0].cx - 520, m_size[0].cy - 130, MemDC[1], 0, 0, m_size[0].cx, m_size[0].cy, SRCCOPY);
+
+		for (int i = 0; i < m_p_height; i++)
+		{
+			for (int j = 0; j < m_p_width; j++)
+			{
+				TransparentBlt(MemDC[0], _x, _y, m_size[1].cx + 10, m_size[1].cy + 10, MemDC[2], 0, 0, m_size[1].cx, m_size[1].cy, SRCCOPY);
+				_x += 35;
+			}
+			_x = 15;
+			_y += 35;
+		}
+		BitBlt(hdc, 0, 0, 350, 380, MemDC[0], 0, 0, SRCCOPY);
+	}
+	else if (difficulty == INTERMEDIATE)
+	{
+		int _x = 30;
+		int _y = 58;
+
+		TransparentBlt(MemDC[0], 0, 0, m_size[0].cx - 246, m_size[0].cy + 170, MemDC[1], 0, 0, m_size[0].cx, m_size[0].cy, SRCCOPY);
+
+		for (int i = 0; i < m_p_height; i++)
+		{
+			for (int j = 0; j < m_p_width; j++)
+			{
+				TransparentBlt(MemDC[0], _x, _y, m_size[1].cx + 10, m_size[1].cy + 10, MemDC[2], 0, 0, m_size[1].cx, m_size[1].cy, SRCCOPY);
+				_x += 35;
+			}
+			_x = 30;
+			_y += 35;
+		}
+
+		BitBlt(hdc, 0, 0, 620, 680, MemDC[0], 0, 0, SRCCOPY);
+	}
+	else if (difficulty == ADVANCE)
+	{
+		int _x = 55;
+		int _y = 58;
+
+		TransparentBlt(MemDC[0], 0, 0, m_size[0].cx + 295, m_size[0].cy + 170, MemDC[1], 0, 0, m_size[0].cx, m_size[0].cy, SRCCOPY);
+
+		for (int i = 0; i < m_p_height; i++)
+		{
+			for (int j = 0; j < m_p_width; j++)
+			{
+				TransparentBlt(MemDC[0], _x, _y, m_size[1].cx + 10, m_size[1].cy + 10, MemDC[2], 0, 0, m_size[1].cx, m_size[1].cy, SRCCOPY);
+				_x += 35;
+			}
+			_x = 55;
+			_y += 35;
+		}
+
+		BitBlt(hdc, 0, 0, 1160, 680, MemDC[0], 0, 0, SRCCOPY);
+	}
 }
 
 Draw_And_Set::~Draw_And_Set()
