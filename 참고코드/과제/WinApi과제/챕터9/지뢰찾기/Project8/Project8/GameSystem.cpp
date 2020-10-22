@@ -25,6 +25,16 @@ void GameSystem::Game_Flow(HDC hdc)
 	D_A_S->Draw_Game_Screen(hdc);
 }
 
+void GameSystem::Left_Click_Check(int x, int y)
+{
+	D_A_S->Left_Click(x, y);
+}
+
+void GameSystem::Right_Click_Check(int x, int y)
+{
+	D_A_S->Right_Click(x, y);
+}
+
 GameSystem::~GameSystem()
 {
 

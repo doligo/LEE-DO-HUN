@@ -67,11 +67,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 		mouse_pt.x = LOWORD(lParam);
 		mouse_pt.y = HIWORD(lParam);
+
+		GS->Left_Click_Check(mouse_pt.x, mouse_pt.y);
+
 		InvalidateRect(hWnd, NULL, FALSE);
 		return 0;
 	case WM_RBUTTONDOWN:
 		mouse_pt.x = LOWORD(lParam);
 		mouse_pt.y = HIWORD(lParam);
+
+		GS->Right_Click_Check(mouse_pt.x, mouse_pt.y);
+
 		InvalidateRect(hWnd, NULL, FALSE);
 		return 0;
 	case WM_COMMAND:

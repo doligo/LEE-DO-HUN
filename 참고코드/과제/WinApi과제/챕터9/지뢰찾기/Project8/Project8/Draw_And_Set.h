@@ -33,6 +33,7 @@ private:
 	HBITMAP	m_Old_BitMap[BITMAP_MAX];
 	SIZE m_size[BITMAP_SIZE_MAX];
 
+	int playing;
 	int m_p_width;
 	int m_p_height;
 	int m_p_mine;
@@ -45,6 +46,8 @@ public:
 	void Init_BitMap(HWND hWnd);
 	void Init_Game();
 	void Draw_Game_Screen(HDC hdc);
+	void Left_Click(int x, int y);
+	void Right_Click(int x, int y);
 
 	~Draw_And_Set();
 };

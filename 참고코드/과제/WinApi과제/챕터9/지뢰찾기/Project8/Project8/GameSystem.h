@@ -15,6 +15,8 @@ public:
 	int now_difficulty;
 	void Init(HWND hWnd);
 	void Game_Flow(HDC hdc);
+	void Left_Click_Check(int x, int y);
+	void Right_Click_Check(int x, int y);
 
 	~GameSystem();
 };
