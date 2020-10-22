@@ -78,6 +78,7 @@ void Draw_And_Set::Init_Game()
 {
 	int num = 0;
 	int value = 0;
+	int mine_rand = 0;
 
 	while (num != BLOCK_MAX)
 	{
@@ -85,6 +86,7 @@ void Draw_And_Set::Init_Game()
 		map_block[num].click = FALSE;
 		map_block[num].mine = FALSE;
 		map_block[num].flag = FALSE;
+		map_block[num].count_mine = FALSE;
 		num++;
 	}
 
@@ -108,6 +110,17 @@ void Draw_And_Set::Init_Game()
 			_x = 15;
 			_y += 35;
 		}
+
+		while (m_p_mine != 0)
+		{
+			mine_rand = rand() % BEGINNER_BLOCK;
+
+			if (map_block[mine_rand].mine == FALSE)
+			{
+				map_block[mine_rand].mine = TRUE;
+				m_p_mine--;
+			}
+		}
 	}
 	else if (difficulty == INTERMEDIATE)
 	{
@@ -130,6 +143,17 @@ void Draw_And_Set::Init_Game()
 			_y += 35;
 		}
 
+		while (m_p_mine != 0)
+		{
+			mine_rand = rand() % INTERMEDIATE_BLOCK;
+
+			if (map_block[mine_rand].mine == FALSE)
+			{
+				map_block[mine_rand].mine = TRUE;
+				m_p_mine--;
+			}
+		}
+
 	}
 	else if (difficulty == ADVANCE)
 	{
@@ -150,6 +174,17 @@ void Draw_And_Set::Init_Game()
 			}
 			_x = 55;
 			_y += 35;
+		}
+
+		while (m_p_mine != 0)
+		{
+			mine_rand = rand() % ADVANCE_BLOCK;
+
+			if (map_block[mine_rand].mine == FALSE)
+			{
+				map_block[mine_rand].mine = TRUE;
+				m_p_mine--;
+			}
 		}
 	}
 }
@@ -176,13 +211,24 @@ void Draw_And_Set::Draw_Game_Screen(HDC hdc)
 			{
 				if (map_block[num].click == FALSE && map_block[num].flag == FALSE)
 					TransparentBlt(MemDC[0], _x, _y, m_size[1].cx + 10, m_size[1].cy + 10, MemDC[2], 0, 0, m_size[1].cx, m_size[1].cy, SRCCOPY);
+
 				else if (map_block[num].click == TRUE)
-					TransparentBlt(MemDC[0], _x, _y, m_size[2].cx + 10, m_size[2].cy + 10, MemDC[3], 0, 0, m_size[2].cx, m_size[2].cy, SRCCOPY);
+				{
+					if (map_block[num].mine == TRUE)
+					{
+						TransparentBlt(MemDC[0], _x, _y, m_size[12].cx + 10, m_size[12].cy + 10, MemDC[13], 0, 0, m_size[12].cx, m_size[12].cy, SRCCOPY);
+					}
+					else
+						TransparentBlt(MemDC[0], _x, _y, m_size[2].cx + 10, m_size[2].cy + 10, MemDC[3], 0, 0, m_size[2].cx, m_size[2].cy, SRCCOPY);
+				}
+
 				else if (map_block[num].click == FALSE && map_block[num].flag == TRUE)
 					TransparentBlt(MemDC[0], _x, _y, m_size[11].cx + 10, m_size[11].cy + 10, MemDC[12], 0, 0, m_size[11].cx, m_size[11].cy, SRCCOPY);
+
 				_x += 35;
 				num++;
 			}
+
 			_x = 15;
 			_y += 35;
 		}
@@ -201,13 +247,24 @@ void Draw_And_Set::Draw_Game_Screen(HDC hdc)
 			{
 				if (map_block[num].click == FALSE && map_block[num].flag == FALSE)
 					TransparentBlt(MemDC[0], _x, _y, m_size[1].cx + 10, m_size[1].cy + 10, MemDC[2], 0, 0, m_size[1].cx, m_size[1].cy, SRCCOPY);
+
 				else if (map_block[num].click == TRUE)
-					TransparentBlt(MemDC[0], _x, _y, m_size[2].cx + 10, m_size[2].cy + 10, MemDC[3], 0, 0, m_size[2].cx, m_size[2].cy, SRCCOPY);
+				{
+					if (map_block[num].mine == TRUE)
+					{
+						TransparentBlt(MemDC[0], _x, _y, m_size[12].cx + 10, m_size[12].cy + 10, MemDC[13], 0, 0, m_size[12].cx, m_size[12].cy, SRCCOPY);
+					}
+					else
+						TransparentBlt(MemDC[0], _x, _y, m_size[2].cx + 10, m_size[2].cy + 10, MemDC[3], 0, 0, m_size[2].cx, m_size[2].cy, SRCCOPY);
+				}
+
 				else if (map_block[num].click == FALSE && map_block[num].flag == TRUE)
 					TransparentBlt(MemDC[0], _x, _y, m_size[11].cx + 10, m_size[11].cy + 10, MemDC[12], 0, 0, m_size[11].cx, m_size[11].cy, SRCCOPY);
+
 				_x += 35;
 				num++;
 			}
+
 			_x = 30;
 			_y += 35;
 		}
@@ -227,13 +284,24 @@ void Draw_And_Set::Draw_Game_Screen(HDC hdc)
 			{
 				if (map_block[num].click == FALSE && map_block[num].flag == FALSE)
 					TransparentBlt(MemDC[0], _x, _y, m_size[1].cx + 10, m_size[1].cy + 10, MemDC[2], 0, 0, m_size[1].cx, m_size[1].cy, SRCCOPY);
+
 				else if (map_block[num].click == TRUE)
-					TransparentBlt(MemDC[0], _x, _y, m_size[2].cx + 10, m_size[2].cy + 10, MemDC[3], 0, 0, m_size[2].cx, m_size[2].cy, SRCCOPY);
+				{
+					if (map_block[num].mine == TRUE)
+					{
+						TransparentBlt(MemDC[0], _x, _y, m_size[12].cx + 10, m_size[12].cy + 10, MemDC[13], 0, 0, m_size[12].cx, m_size[12].cy, SRCCOPY);
+					}
+					else
+						TransparentBlt(MemDC[0], _x, _y, m_size[2].cx + 10, m_size[2].cy + 10, MemDC[3], 0, 0, m_size[2].cx, m_size[2].cy, SRCCOPY);
+				}
+
 				else if (map_block[num].click == FALSE && map_block[num].flag == TRUE)
 					TransparentBlt(MemDC[0], _x, _y, m_size[11].cx + 10, m_size[11].cy + 10, MemDC[12], 0, 0, m_size[11].cx, m_size[11].cy, SRCCOPY);
+
 				_x += 35;
 				num++;
 			}
+
 			_x = 55;
 			_y += 35;
 		}
@@ -244,7 +312,7 @@ void Draw_And_Set::Draw_Game_Screen(HDC hdc)
 
 void Draw_And_Set::Left_Click(int x, int y)
 {
-	///////////// 중단점, 카운트, 마인심기 **
+	///////////// 중단점 **
 	int num = 0;
 
 	while (map_block[num].block_pos.left != 0)
@@ -259,6 +327,25 @@ void Draw_And_Set::Left_Click(int x, int y)
 			num++;
 	}
 
+
+	if (map_block[num + 1].mine == TRUE)
+		map_block[num].count_mine++;
+	else if (map_block[num - 1].mine == TRUE)
+		map_block[num].count_mine++;
+	else if (map_block[num + 9].mine == TRUE)
+		map_block[num].count_mine++;
+	else if (map_block[num - 9].mine == TRUE)
+		map_block[num].count_mine++;
+	else if (map_block[num + 10].mine == TRUE)
+		map_block[num].count_mine++;
+	else if (map_block[num - 8].mine == TRUE)
+		map_block[num].count_mine++;
+	else if (map_block[num - 10].mine == TRUE)
+		map_block[num].count_mine++;
+	else if (map_block[num + 8].mine == TRUE)
+		map_block[num].count_mine++;
+
+	
 	Left_Click(x + 35, y);
 	Left_Click(x - 35, y);
 	Left_Click(x, y + 35);
@@ -268,6 +355,7 @@ void Draw_And_Set::Left_Click(int x, int y)
 	Left_Click(x + 35, y - 35);
 	Left_Click(x - 35, y - 35);
 	Left_Click(x - 35, y + 35);
+	
 }
 
 void Draw_And_Set::Right_Click(int x, int y)
