@@ -320,41 +320,40 @@ void Draw_And_Set::Left_Click(int x, int y)
 		if (map_block[num].block_pos.left <= x && map_block[num].block_pos.right >= x &&
 			map_block[num].block_pos.top <= y && map_block[num].block_pos.bottom >= y && map_block[num].click == FALSE && map_block[num].flag == FALSE)
 		{
-			map_block[num].click = TRUE;
+			map_block[num].click = TRUE; // 클릭이 제대로 인식됬으면 true하고 근처 마인탐색
+
+			if (map_block[num + 1].mine == TRUE)
+				map_block[num].count_mine++;
+			else if (map_block[num - 1].mine == TRUE)
+				map_block[num].count_mine++;
+			else if (map_block[num + 9].mine == TRUE)
+				map_block[num].count_mine++;
+			else if (map_block[num - 9].mine == TRUE)
+				map_block[num].count_mine++;
+			else if (map_block[num + 10].mine == TRUE)
+				map_block[num].count_mine++;
+			else if (map_block[num - 8].mine == TRUE)
+				map_block[num].count_mine++;
+			else if (map_block[num - 10].mine == TRUE)
+				map_block[num].count_mine++;
+			else if (map_block[num + 8].mine == TRUE)
+				map_block[num].count_mine++;
+
+			Left_Click(x + 35, y);
+			Left_Click(x - 35, y);
+			Left_Click(x, y + 35);
+			Left_Click(x, y - 35);
+
+			Left_Click(x + 35, y + 35);
+			Left_Click(x + 35, y - 35);
+			Left_Click(x - 35, y - 35);
+			Left_Click(x - 35, y + 35);
+
 			break;
 		}
 		else
 			num++;
 	}
-
-
-	if (map_block[num + 1].mine == TRUE)
-		map_block[num].count_mine++;
-	else if (map_block[num - 1].mine == TRUE)
-		map_block[num].count_mine++;
-	else if (map_block[num + 9].mine == TRUE)
-		map_block[num].count_mine++;
-	else if (map_block[num - 9].mine == TRUE)
-		map_block[num].count_mine++;
-	else if (map_block[num + 10].mine == TRUE)
-		map_block[num].count_mine++;
-	else if (map_block[num - 8].mine == TRUE)
-		map_block[num].count_mine++;
-	else if (map_block[num - 10].mine == TRUE)
-		map_block[num].count_mine++;
-	else if (map_block[num + 8].mine == TRUE)
-		map_block[num].count_mine++;
-
-	
-	Left_Click(x + 35, y);
-	Left_Click(x - 35, y);
-	Left_Click(x, y + 35);
-	Left_Click(x, y - 35);
-
-	Left_Click(x + 35, y + 35);
-	Left_Click(x + 35, y - 35);
-	Left_Click(x - 35, y - 35);
-	Left_Click(x - 35, y + 35);
 	
 }
 
