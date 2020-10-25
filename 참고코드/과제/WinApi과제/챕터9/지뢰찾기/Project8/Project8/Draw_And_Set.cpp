@@ -7,6 +7,8 @@ Draw_And_Set::Draw_And_Set()
 	m_p_width = 0;
 	m_p_height = 0;
 	m_p_mine = 0;
+	m_p_width_end = 0;
+	m_p_height_end = 0;
 }
 
 void Draw_And_Set::Init_BitMap(HWND hWnd)
@@ -111,6 +113,9 @@ void Draw_And_Set::Init_Game()
 			_y += 35;
 		}
 
+		m_p_width_end = map_block[value - 1].block_pos.right + 1;
+		m_p_height_end = map_block[value - 1].block_pos.bottom + 1;
+
 		while (m_p_mine != 0)
 		{
 			mine_rand = rand() % BEGINNER_BLOCK;
@@ -142,6 +147,9 @@ void Draw_And_Set::Init_Game()
 			_x = 30;
 			_y += 35;
 		}
+
+		m_p_width_end = map_block[value - 1].block_pos.right + 1;
+		m_p_height_end = map_block[value - 1].block_pos.bottom + 1;
 
 		while (m_p_mine != 0)
 		{
@@ -175,6 +183,9 @@ void Draw_And_Set::Init_Game()
 			_x = 55;
 			_y += 35;
 		}
+
+		m_p_width_end = map_block[value - 1].block_pos.right + 1;
+		m_p_height_end = map_block[value - 1].block_pos.bottom + 1;
 
 		while (m_p_mine != 0)
 		{
@@ -219,7 +230,13 @@ void Draw_And_Set::Draw_Game_Screen(HDC hdc)
 						TransparentBlt(MemDC[0], _x, _y, m_size[12].cx + 10, m_size[12].cy + 10, MemDC[13], 0, 0, m_size[12].cx, m_size[12].cy, SRCCOPY);
 					}
 					else
-						TransparentBlt(MemDC[0], _x, _y, m_size[2].cx + 10, m_size[2].cy + 10, MemDC[3], 0, 0, m_size[2].cx, m_size[2].cy, SRCCOPY);
+					{
+						for (int i = 0; i < 9; i++)
+						{
+							if (map_block[num].count_mine == i)
+								TransparentBlt(MemDC[0], _x, _y, m_size[i + 2].cx + 10, m_size[i + 2].cy + 10, MemDC[i + 3], 0, 0, m_size[i + 2].cx, m_size[i + 2].cy, SRCCOPY);
+						}
+					}
 				}
 
 				else if (map_block[num].click == FALSE && map_block[num].flag == TRUE)
@@ -255,7 +272,13 @@ void Draw_And_Set::Draw_Game_Screen(HDC hdc)
 						TransparentBlt(MemDC[0], _x, _y, m_size[12].cx + 10, m_size[12].cy + 10, MemDC[13], 0, 0, m_size[12].cx, m_size[12].cy, SRCCOPY);
 					}
 					else
-						TransparentBlt(MemDC[0], _x, _y, m_size[2].cx + 10, m_size[2].cy + 10, MemDC[3], 0, 0, m_size[2].cx, m_size[2].cy, SRCCOPY);
+					{
+						for (int i = 0; i < 9; i++)
+						{
+							if (map_block[num].count_mine == i)
+								TransparentBlt(MemDC[0], _x, _y, m_size[i + 2].cx + 10, m_size[i + 2].cy + 10, MemDC[i + 3], 0, 0, m_size[i + 2].cx, m_size[i + 2].cy, SRCCOPY);
+						}
+					}
 				}
 
 				else if (map_block[num].click == FALSE && map_block[num].flag == TRUE)
@@ -292,7 +315,13 @@ void Draw_And_Set::Draw_Game_Screen(HDC hdc)
 						TransparentBlt(MemDC[0], _x, _y, m_size[12].cx + 10, m_size[12].cy + 10, MemDC[13], 0, 0, m_size[12].cx, m_size[12].cy, SRCCOPY);
 					}
 					else
-						TransparentBlt(MemDC[0], _x, _y, m_size[2].cx + 10, m_size[2].cy + 10, MemDC[3], 0, 0, m_size[2].cx, m_size[2].cy, SRCCOPY);
+					{
+						for (int i = 0; i < 9; i++)
+						{
+							if (map_block[num].count_mine == i)
+								TransparentBlt(MemDC[0], _x, _y, m_size[i + 2].cx + 10, m_size[i + 2].cy + 10, MemDC[i + 3], 0, 0, m_size[i + 2].cx, m_size[i + 2].cy, SRCCOPY);
+						}
+					}
 				}
 
 				else if (map_block[num].click == FALSE && map_block[num].flag == TRUE)
@@ -312,32 +341,19 @@ void Draw_And_Set::Draw_Game_Screen(HDC hdc)
 
 void Draw_And_Set::Left_Click(int x, int y)
 {
-	///////////// 중단점 **
 	int num = 0;
 
-	while (map_block[num].block_pos.left != 0)
+	if (x < 0 || x >= m_p_width_end || y < 0 || y >= m_p_height_end)
+		return;
+
+	while (map_block[num].block_pos.left != NULL) // 맵블럭의 값이 유효한곳까지만
 	{
 		if (map_block[num].block_pos.left <= x && map_block[num].block_pos.right >= x &&
-			map_block[num].block_pos.top <= y && map_block[num].block_pos.bottom >= y && map_block[num].click == FALSE && map_block[num].flag == FALSE)
+			map_block[num].block_pos.top <= y && map_block[num].block_pos.bottom >= y && map_block[num].click == FALSE && map_block[num].flag == FALSE && map_block[num].mine == FALSE)
 		{
 			map_block[num].click = TRUE; // 클릭이 제대로 인식됬으면 true하고 근처 마인탐색
 
-			if (map_block[num + 1].mine == TRUE)
-				map_block[num].count_mine++;
-			else if (map_block[num - 1].mine == TRUE)
-				map_block[num].count_mine++;
-			else if (map_block[num + 9].mine == TRUE)
-				map_block[num].count_mine++;
-			else if (map_block[num - 9].mine == TRUE)
-				map_block[num].count_mine++;
-			else if (map_block[num + 10].mine == TRUE)
-				map_block[num].count_mine++;
-			else if (map_block[num - 8].mine == TRUE)
-				map_block[num].count_mine++;
-			else if (map_block[num - 10].mine == TRUE)
-				map_block[num].count_mine++;
-			else if (map_block[num + 8].mine == TRUE)
-				map_block[num].count_mine++;
+			Block_Count(num); // 난이도별 주변 마인카운트
 
 			Left_Click(x + 35, y);
 			Left_Click(x - 35, y);
@@ -354,7 +370,23 @@ void Draw_And_Set::Left_Click(int x, int y)
 		else
 			num++;
 	}
-	
+}
+
+void Draw_And_Set::Left_Click_Mine(int x, int y)
+{
+	int num = 0;
+
+	while (map_block[num].block_pos.left != NULL) // 맵블럭의 값이 유효한곳까지만
+	{
+		if (map_block[num].block_pos.left <= x && map_block[num].block_pos.right >= x &&
+			map_block[num].block_pos.top <= y && map_block[num].block_pos.bottom >= y && map_block[num].click == FALSE && map_block[num].flag == FALSE && map_block[num].mine == TRUE)
+		{
+			map_block[num].click = TRUE;
+			break;
+		}
+		else
+			num++;
+	}
 }
 
 void Draw_And_Set::Right_Click(int x, int y)
@@ -380,6 +412,67 @@ void Draw_And_Set::Right_Click(int x, int y)
 		}
 		else
 			num++;
+	}
+}
+
+void Draw_And_Set::Block_Count(int _num)
+{
+	if (difficulty == BEGINNER)
+	{
+		if (map_block[_num + 1].mine == TRUE && m_p_width_end != map_block[_num].block_pos.right + 1)
+			map_block[_num].count_mine++;
+		if (map_block[_num - 1].mine == TRUE && 41 != map_block[_num].block_pos.right)
+			map_block[_num].count_mine++;
+		if (map_block[_num + 9].mine == TRUE)
+			map_block[_num].count_mine++;
+		if (map_block[_num - 9].mine == TRUE)
+			map_block[_num].count_mine++;
+		if (map_block[_num + 10].mine == TRUE && m_p_width_end != map_block[_num].block_pos.right + 1)
+			map_block[_num].count_mine++;
+		if (map_block[_num - 8].mine == TRUE && m_p_width_end != map_block[_num].block_pos.right + 1)
+			map_block[_num].count_mine++;
+		if (map_block[_num - 10].mine == TRUE && 41 != map_block[_num].block_pos.right)
+			map_block[_num].count_mine++;
+		if (map_block[_num + 8].mine == TRUE && 41 != map_block[_num].block_pos.right)
+			map_block[_num].count_mine++;
+	}
+	else if (difficulty == INTERMEDIATE)
+	{
+		if (map_block[_num + 1].mine == TRUE && m_p_width_end != map_block[_num].block_pos.right + 1)
+			map_block[_num].count_mine++;
+		if (map_block[_num - 1].mine == TRUE && 56 != map_block[_num].block_pos.right)
+			map_block[_num].count_mine++;
+		if (map_block[_num + 16].mine == TRUE)
+			map_block[_num].count_mine++;
+		if (map_block[_num - 16].mine == TRUE)
+			map_block[_num].count_mine++;
+		if (map_block[_num + 17].mine == TRUE && m_p_width_end != map_block[_num].block_pos.right + 1)
+			map_block[_num].count_mine++;
+		if (map_block[_num - 15].mine == TRUE && m_p_width_end != map_block[_num].block_pos.right + 1)
+			map_block[_num].count_mine++;
+		if (map_block[_num + 15].mine == TRUE && 56 != map_block[_num].block_pos.right)
+			map_block[_num].count_mine++;
+		if (map_block[_num - 17].mine == TRUE && 56 != map_block[_num].block_pos.right)
+			map_block[_num].count_mine++;
+	}
+	else if (difficulty == ADVANCE)
+	{
+		if (map_block[_num + 1].mine == TRUE && m_p_width_end != map_block[_num].block_pos.right + 1)
+			map_block[_num].count_mine++;
+		if (map_block[_num - 1].mine == TRUE && 81 != map_block[_num].block_pos.right)
+			map_block[_num].count_mine++;
+		if (map_block[_num + 30].mine == TRUE)
+			map_block[_num].count_mine++;
+		if (map_block[_num - 30].mine == TRUE)
+			map_block[_num].count_mine++;
+		if (map_block[_num + 31].mine == TRUE && m_p_width_end != map_block[_num].block_pos.right + 1)
+			map_block[_num].count_mine++;
+		if (map_block[_num - 29].mine == TRUE && m_p_width_end != map_block[_num].block_pos.right + 1)
+			map_block[_num].count_mine++;
+		if (map_block[_num + 29].mine == TRUE && 81 != map_block[_num].block_pos.right)
+			map_block[_num].count_mine++;
+		if (map_block[_num - 31].mine == TRUE && 81 != map_block[_num].block_pos.right)
+			map_block[_num].count_mine++;
 	}
 }
 

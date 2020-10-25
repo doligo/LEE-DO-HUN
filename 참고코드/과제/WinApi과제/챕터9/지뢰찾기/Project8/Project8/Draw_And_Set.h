@@ -37,6 +37,8 @@ private:
 	int m_p_width;
 	int m_p_height;
 	int m_p_mine;
+	int m_p_width_end;
+	int m_p_height_end;
 	BLOCK map_block[BLOCK_MAX];
 public:
 	Draw_And_Set();
@@ -47,7 +49,9 @@ public:
 	void Init_Game();
 	void Draw_Game_Screen(HDC hdc);
 	void Left_Click(int x, int y);
+	void Left_Click_Mine(int x, int y);
 	void Right_Click(int x, int y);
+	void Block_Count(int _num);
 
 	~Draw_And_Set();
 };

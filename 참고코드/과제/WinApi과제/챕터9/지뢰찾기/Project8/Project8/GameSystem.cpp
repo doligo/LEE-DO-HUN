@@ -28,6 +28,7 @@ void GameSystem::Game_Flow(HDC hdc)
 void GameSystem::Left_Click_Check(int x, int y)
 {
 	D_A_S->Left_Click(x, y);
+	D_A_S->Left_Click_Mine(x, y);
 }
 
 void GameSystem::Right_Click_Check(int x, int y)
