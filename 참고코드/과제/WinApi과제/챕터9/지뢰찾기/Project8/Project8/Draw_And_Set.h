@@ -37,21 +37,26 @@ private:
 	int m_p_width;
 	int m_p_height;
 	int m_p_mine;
+	int m_p_remain_mine;
 	int m_p_width_end;
 	int m_p_height_end;
+	int m_p_remain_block;
 	BLOCK map_block[BLOCK_MAX];
 public:
 	Draw_And_Set();
 
 	int difficulty;
+	int start_game;
+	int clear_trigger;
 
 	void Init_BitMap(HWND hWnd);
 	void Init_Game();
-	void Draw_Game_Screen(HDC hdc);
+	void Draw_Game_Screen(HDC hdc, HWND hWnd);
 	void Left_Click(int x, int y);
-	void Left_Click_Mine(int x, int y);
+	int Left_Click_Mine(int x, int y);
 	void Right_Click(int x, int y);
 	void Block_Count(int _num);
+	void Draw_All_Mine(HDC hdc);
 
 	~Draw_And_Set();
 };

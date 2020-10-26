@@ -61,14 +61,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		GS = new GameSystem();
 		GS->Init(hWnd);
+		SetTimer(hWnd, 1, 1000, NULL);
 		return 0;
 	case WM_TIMER:
+		if (GS->check_game_start == TRUE && GS->game_over == FALSE && GS->game_clear == FALSE)
+			GS->Show_Time(hWnd);
 		return 0;
 	case WM_LBUTTONDOWN:
 		mouse_pt.x = LOWORD(lParam);
 		mouse_pt.y = HIWORD(lParam);
 
 		GS->Left_Click_Check(mouse_pt.x, mouse_pt.y);
+		if (GS->game_over == TRUE)
+		{
+			InvalidateRect(hWnd, NULL, FALSE);
+			if (MessageBox(hWnd, TEXT("재도전 하시겠습니까?"), TEXT("*게임 오바*"), MB_YESNO) == IDYES)
+			{
+				GS->Init(hWnd);
+				GS->game_time = 0;
+			}
+		}
+		else if (GS->game_clear == TRUE)
+		{
+			InvalidateRect(hWnd, NULL, FALSE);
+			if (MessageBox(hWnd, TEXT("축하합니다! 다시 하시겠습니까?"), TEXT("*게임 클리어*"), MB_YESNO) == IDYES)
+			{
+				GS->Init(hWnd);
+				GS->game_time = 0;
+			}
+		}
 
 		InvalidateRect(hWnd, NULL, FALSE);
 		return 0;
@@ -87,6 +108,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			if (MessageBox(hWnd, TEXT("새 게임을 시작합니다"), TEXT("새로하기"), MB_OKCANCEL) == IDOK)
 			{
 				GS->Init(hWnd);
+				GS->game_time = 0;
 				InvalidateRect(hWnd, NULL, FALSE);
 			}
 			else
@@ -96,22 +118,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			if (DialogBox(g_hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, AboutDlgProc) == TRUE)
 			{
 				GS->Init(hWnd);
+				GS->game_time = 0;
 				InvalidateRect(hWnd, NULL, FALSE);
 			}
 			return 0;
 		case ID_40003:
+			KillTimer(hWnd, 1);
 			PostQuitMessage(0);
 			return 0;
 		}
 		return 0;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
-		GS->Game_Flow(hdc);
+		GS->Game_Flow(hdc, hWnd);
 		EndPaint(hWnd, &ps);
 		return 0;
 	case WM_KEYDOWN:
 		return 0;
 	case WM_DESTROY:
+		KillTimer(hWnd, 1);
 		PostQuitMessage(0);
 		return 0;
 	}

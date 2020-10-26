@@ -7,8 +7,12 @@ Draw_And_Set::Draw_And_Set()
 	m_p_width = 0;
 	m_p_height = 0;
 	m_p_mine = 0;
+	m_p_remain_mine = 0;
 	m_p_width_end = 0;
 	m_p_height_end = 0;
+	start_game = FALSE;
+	m_p_remain_block = 0;
+	clear_trigger = FALSE;
 }
 
 void Draw_And_Set::Init_BitMap(HWND hWnd)
@@ -82,6 +86,8 @@ void Draw_And_Set::Init_Game()
 	int value = 0;
 	int mine_rand = 0;
 
+	start_game = FALSE;
+
 	while (num != BLOCK_MAX)
 	{
 		map_block[num].block_pos = { 0, 0, 0, 0 };
@@ -100,6 +106,8 @@ void Draw_And_Set::Init_Game()
 		m_p_width = 9;
 		m_p_height = 9;
 		m_p_mine = 10;
+		m_p_remain_mine = 10;
+		m_p_remain_block = 71;
 
 		for (int i = 0; i < m_p_height; i++)
 		{
@@ -135,6 +143,8 @@ void Draw_And_Set::Init_Game()
 		m_p_width = 16;
 		m_p_height = 16;
 		m_p_mine = 40;
+		m_p_remain_mine = 40;
+		m_p_remain_block = 216;
 
 		for (int i = 0; i < m_p_height; i++)
 		{
@@ -171,6 +181,8 @@ void Draw_And_Set::Init_Game()
 		m_p_width = 30;
 		m_p_height = 16;
 		m_p_mine = 99;
+		m_p_remain_mine = 99;
+		m_p_remain_block = 381;
 
 		for (int i = 0; i < m_p_height; i++)
 		{
@@ -200,9 +212,10 @@ void Draw_And_Set::Init_Game()
 	}
 }
 
-void Draw_And_Set::Draw_Game_Screen(HDC hdc)
+void Draw_And_Set::Draw_Game_Screen(HDC hdc , HWND hWnd)
 {
 	int num = 0;
+	char buffer[256] = {};
 
 	if (playing == FALSE)
 	BitBlt(hdc, 0, 0, 1160, 680, MemDC[0], 0, 0, RGB(255, 255, 255)); // 화면 덮어씌워지는것 방지
@@ -249,7 +262,12 @@ void Draw_And_Set::Draw_Game_Screen(HDC hdc)
 			_x = 15;
 			_y += 35;
 		}
+
 		BitBlt(hdc, 0, 0, 350, 380, MemDC[0], 0, 0, SRCCOPY);
+
+		RECT rt = { 223, 355, 223 + 100, 355 + 20 }; // 남은 마인갯수
+		sprintf_s(buffer, "%d", m_p_remain_mine);
+		DrawText(GetDC(hWnd), buffer, -1, &rt, DT_CENTER | DT_WORDBREAK);
 	}
 	else if (difficulty == INTERMEDIATE)
 	{
@@ -293,6 +311,10 @@ void Draw_And_Set::Draw_Game_Screen(HDC hdc)
 		}
 
 		BitBlt(hdc, 0, 0, 620, 680, MemDC[0], 0, 0, SRCCOPY);
+
+		RECT rt = { 435, 640, 435 + 100, 640 + 20 }; // 남은 마인갯수
+		sprintf_s(buffer, "%d", m_p_remain_mine);
+		DrawText(GetDC(hWnd), buffer, -1, &rt, DT_CENTER | DT_WORDBREAK);
 	}
 	else if (difficulty == ADVANCE)
 	{
@@ -336,6 +358,10 @@ void Draw_And_Set::Draw_Game_Screen(HDC hdc)
 		}
 
 		BitBlt(hdc, 0, 0, 1160, 680, MemDC[0], 0, 0, SRCCOPY);
+
+		RECT rt = { 860, 640, 860 + 100, 640 + 20 }; // 남은 마인갯수
+		sprintf_s(buffer, "%d", m_p_remain_mine);
+		DrawText(GetDC(hWnd), buffer, -1, &rt, DT_CENTER | DT_WORDBREAK);
 	}
 }
 
@@ -353,7 +379,18 @@ void Draw_And_Set::Left_Click(int x, int y)
 		{
 			map_block[num].click = TRUE; // 클릭이 제대로 인식됬으면 true하고 근처 마인탐색
 
+			m_p_remain_block--;
+			if (m_p_remain_block == 0)
+				clear_trigger = TRUE;
+
+
+			if (start_game == FALSE)
+				start_game = TRUE;
+
 			Block_Count(num); // 난이도별 주변 마인카운트
+
+			if (map_block[num].count_mine != NULL)
+				break;
 
 			Left_Click(x + 35, y);
 			Left_Click(x - 35, y);
@@ -372,7 +409,7 @@ void Draw_And_Set::Left_Click(int x, int y)
 	}
 }
 
-void Draw_And_Set::Left_Click_Mine(int x, int y)
+int Draw_And_Set::Left_Click_Mine(int x, int y)
 {
 	int num = 0;
 
@@ -382,11 +419,13 @@ void Draw_And_Set::Left_Click_Mine(int x, int y)
 			map_block[num].block_pos.top <= y && map_block[num].block_pos.bottom >= y && map_block[num].click == FALSE && map_block[num].flag == FALSE && map_block[num].mine == TRUE)
 		{
 			map_block[num].click = TRUE;
-			break;
+			return TRUE;
 		}
 		else
 			num++;
 	}
+
+	return 0;
 }
 
 void Draw_And_Set::Right_Click(int x, int y)
@@ -400,12 +439,15 @@ void Draw_And_Set::Right_Click(int x, int y)
 		{
 			if (map_block[num].flag == FALSE)
 			{
-				m_p_mine--;
+				m_p_remain_mine--;
 				map_block[num].flag = TRUE;
+
+				if (start_game == FALSE)
+					start_game = TRUE;
 			}
 			else if (map_block[num].flag == TRUE)
 			{
-				m_p_mine++;
+				m_p_remain_mine++;
 				map_block[num].flag = FALSE;
 			}
 			break;
@@ -473,6 +515,79 @@ void Draw_And_Set::Block_Count(int _num)
 			map_block[_num].count_mine++;
 		if (map_block[_num - 31].mine == TRUE && 81 != map_block[_num].block_pos.right)
 			map_block[_num].count_mine++;
+	}
+}
+
+void Draw_And_Set::Draw_All_Mine(HDC hdc)
+{
+	int num = 0;
+
+	if (difficulty == BEGINNER)
+	{
+		int _x = 15;
+		int _y = 32;
+
+		for (int i = 0; i < m_p_height; i++)
+		{
+			for (int j = 0; j < m_p_width; j++)
+			{
+				if (map_block[num].mine == TRUE)
+					TransparentBlt(MemDC[0], _x, _y, m_size[12].cx + 10, m_size[12].cy + 10, MemDC[13], 0, 0, m_size[12].cx, m_size[12].cy, SRCCOPY);
+
+				_x += 35;
+				num++;
+			}
+
+			_x = 15;
+			_y += 35;
+		}
+
+		BitBlt(hdc, 0, 0, 350, 380, MemDC[0], 0, 0, SRCCOPY);
+	}
+	else if (difficulty == INTERMEDIATE)
+	{
+		int _x = 30;
+		int _y = 58;
+
+		for (int i = 0; i < m_p_height; i++)
+		{
+			for (int j = 0; j < m_p_width; j++)
+			{
+				if (map_block[num].mine == TRUE)
+					TransparentBlt(MemDC[0], _x, _y, m_size[12].cx + 10, m_size[12].cy + 10, MemDC[13], 0, 0, m_size[12].cx, m_size[12].cy, SRCCOPY);
+
+				_x += 35;
+				num++;
+			}
+
+			_x = 30;
+			_y += 35;
+		}
+
+		BitBlt(hdc, 0, 0, 620, 680, MemDC[0], 0, 0, SRCCOPY);
+	}
+	else if (difficulty == ADVANCE)
+	{
+		int _x = 55;
+		int _y = 58;
+
+		for (int i = 0; i < m_p_height; i++)
+		{
+			for (int j = 0; j < m_p_width; j++)
+			{
+
+				if (map_block[num].mine == TRUE)
+						TransparentBlt(MemDC[0], _x, _y, m_size[12].cx + 10, m_size[12].cy + 10, MemDC[13], 0, 0, m_size[12].cx, m_size[12].cy, SRCCOPY);
+
+				_x += 35;
+				num++;
+			}
+
+			_x = 55;
+			_y += 35;
+		}
+
+		BitBlt(hdc, 0, 0, 1160, 680, MemDC[0], 0, 0, SRCCOPY);
 	}
 }
 
