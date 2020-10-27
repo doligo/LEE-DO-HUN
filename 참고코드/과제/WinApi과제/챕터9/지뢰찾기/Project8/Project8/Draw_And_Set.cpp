@@ -467,11 +467,11 @@ void Draw_And_Set::Block_Count(int _num)
 			map_block[_num].count_mine++;
 		if (map_block[_num + 9].mine == TRUE)
 			map_block[_num].count_mine++;
-		if (map_block[_num - 9].mine == TRUE)
+		if (map_block[_num - 9].mine == TRUE && _num - 9 >= 0)
 			map_block[_num].count_mine++;
 		if (map_block[_num + 10].mine == TRUE && m_p_width_end != map_block[_num].block_pos.right + 1)
 			map_block[_num].count_mine++;
-		if (map_block[_num - 8].mine == TRUE && m_p_width_end != map_block[_num].block_pos.right + 1)
+		if (map_block[_num - 8].mine == TRUE && m_p_width_end != map_block[_num].block_pos.right + 1 && _num - 8 >= 0)
 			map_block[_num].count_mine++;
 		if (map_block[_num - 10].mine == TRUE && 41 != map_block[_num].block_pos.right)
 			map_block[_num].count_mine++;
