@@ -8,6 +8,10 @@ HINSTANCE g_hInst;
 char g_szClassName[256] = "맵툴";
 #pragma comment(lib, "msimg32.lib") // 링커 2019 오류 뜨면 추가해주면 된다.
 
+#define WIDTH 24
+#define HEIGHT 24
+#define MAP_MAX 28
+
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
 	HWND hWnd;
@@ -40,23 +44,69 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	return (int)Message.wParam;
 }
 
+struct game_map
+{
+	char block;
+	RECT rt;
+};
+
 TCHAR buf[1024] = TEXT("abcde");
+game_map map[MAP_MAX][MAP_MAX];
+char select_block = 'N';
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
+	PAINTSTRUCT ps;
+	HBRUSH hBrush;
+	HBRUSH old_hBrush;
 
 	switch (iMessage)
 	{
 	case WM_CREATE:
-		CreateWindow("button", "Save", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 800, 400, 100, 30, hWnd, (HMENU)100, g_hInst, NULL);
-		CreateWindow("button", "Load", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 800, 450, 100, 30, hWnd, (HMENU)101, g_hInst, NULL);
+
+		for (int i = 0; i < MAP_MAX; i++) // 맵을 초기화
+		{
+			for (int j = 0; j < MAP_MAX; j++)
+			{
+				map[i][j].block = 'N';
+				map[i][j].rt = { j * WIDTH, i * HEIGHT, j * WIDTH + 24, i * HEIGHT + 24 };
+			}
+		}
+
+		CreateWindow("button", "NOTING", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP, 900, 0, 80, 30, hWnd, (HMENU)0, g_hInst, NULL);
+		CreateWindow("button", "NOMAL_BLOCK", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, 900, 40, 130, 30, hWnd, (HMENU)1, g_hInst, NULL);
+		CreateWindow("button", "WHITE_BLOCK", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, 900, 80, 130, 30, hWnd, (HMENU)2, g_hInst, NULL);
+		CreateWindow("button", "GRAY_BLOCK", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, 900, 120, 130, 30, hWnd, (HMENU)3, g_hInst, NULL);
+		CreateWindow("button", "BUSH_BLOCK", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, 900, 160, 130, 30, hWnd, (HMENU)4, g_hInst, NULL);
+		CreateWindow("button", "WATER_BLOCK", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON, 900, 200, 130, 30, hWnd, (HMENU)5, g_hInst, NULL);
+
+		CreateWindow("button", "Save", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 900, 300, 100, 30, hWnd, (HMENU)100, g_hInst, NULL);
+		CreateWindow("button", "Load", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 900, 350, 100, 30, hWnd, (HMENU)101, g_hInst, NULL);
 		return 0;
 	case WM_TIMER:
 		return 0;
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
+		case 0:
+			select_block = 'N';
+			break;
+		case 1:
+			select_block = 'B'; // 노말 블럭
+			break;
+		case 2:
+			select_block = 'W';
+			break;
+		case 3:
+			select_block = 'G';
+			break;
+		case 4:
+			select_block = 'b'; // 부쉬
+			break;
+		case 5:
+			select_block = 'w'; // 워터
+			break;
 		case 100: //SAVE
 		{
 			OPENFILENAME OFN;
@@ -84,9 +134,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			}
 
 			HANDLE hFile = CreateFile(OFN.lpstrFile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-			DWORD writeB;
 
-			WriteFile(hFile, buf, sizeof(buf), &writeB, NULL);
+			for (int i = 0; i < MAP_MAX; i++)
+			{
+				for (int j = 0; j < MAP_MAX; j++)
+				{
+					DWORD writeB;
+
+					WriteFile(hFile, buf, sizeof(buf), &writeB, NULL);
+				}
+			}
 
 			MessageBox(hWnd, "성공", "Save", MB_OK);
 
@@ -108,6 +165,105 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 		}
+		return 0;
+	case WM_LBUTTONDOWN:
+	{
+		POINT pt;
+		pt.x = LOWORD(lParam);
+		pt.y = HIWORD(lParam);
+
+		if (pt.x < 672 && pt.x > 0 && pt.y < 672 && pt.y > 0)
+		{
+			for (int i = 0; i < MAP_MAX; i++)
+			{
+				for (int j = 0; j < MAP_MAX; j++)
+				{
+					if (pt.x >= map[i][j].rt.left && pt.x < map[i][j].rt.right && pt.y >= map[i][j].rt.top && pt.y < map[i][j].rt.bottom)
+					{
+						map[i][j].block = select_block;
+						InvalidateRect(hWnd, NULL, false);
+						return 0;
+					}
+				}
+			}
+		}
+	}
+		return 0;
+	case WM_RBUTTONDOWN:
+	{
+		POINT pt;
+		pt.x = LOWORD(lParam);
+		pt.y = HIWORD(lParam);
+
+		if (pt.x < 672 && pt.x > 0 && pt.y < 672 && pt.y > 0)
+		{
+			for (int i = 0; i < MAP_MAX; i++)
+			{
+				for (int j = 0; j < MAP_MAX; j++)
+				{
+					if (pt.x >= map[i][j].rt.left && pt.x < map[i][j].rt.right && pt.y >= map[i][j].rt.top && pt.y < map[i][j].rt.bottom)
+					{
+						map[i][j].block = 'N';
+						InvalidateRect(hWnd, NULL, false);
+						return 0;
+					}
+				}
+			}
+
+		}
+	}
+		return 0;
+	case WM_PAINT:
+		hdc = BeginPaint(hWnd, &ps);
+		for (int i = 0; i < MAP_MAX; i++)
+		{
+			for (int j = 0; j < MAP_MAX; j++)
+			{
+				if (map[i][j].block == 'N')
+					Rectangle(hdc, j * WIDTH, i * HEIGHT, (j + 1) * WIDTH, (i + 1) * HEIGHT);
+				else if (map[i][j].block == 'B')
+				{
+					hBrush = CreateSolidBrush(RGB(150, 75, 0));
+					old_hBrush = (HBRUSH)SelectObject(hdc, hBrush);
+					Rectangle(hdc, j * WIDTH, i * HEIGHT, (j + 1) * WIDTH, (i + 1) * HEIGHT);
+					SelectObject(hdc, old_hBrush);
+					DeleteObject(hBrush);
+				}
+				else if (map[i][j].block == 'W')
+				{
+					hBrush = CreateSolidBrush(RGB(190, 190, 190));
+					old_hBrush = (HBRUSH)SelectObject(hdc, hBrush);
+					Rectangle(hdc, j * WIDTH, i * HEIGHT, (j + 1) * WIDTH, (i + 1) * HEIGHT);
+					SelectObject(hdc, old_hBrush);
+					DeleteObject(hBrush);
+				}
+				else if (map[i][j].block == 'G')
+				{
+					hBrush = CreateSolidBrush(RGB(110, 110, 110));
+					old_hBrush = (HBRUSH)SelectObject(hdc, hBrush);
+					Rectangle(hdc, j * WIDTH, i * HEIGHT, (j + 1) * WIDTH, (i + 1) * HEIGHT);
+					SelectObject(hdc, old_hBrush);
+					DeleteObject(hBrush);
+				}
+				else if (map[i][j].block == 'b')
+				{
+					hBrush = CreateSolidBrush(RGB(0, 255, 0));
+					old_hBrush = (HBRUSH)SelectObject(hdc, hBrush);
+					Rectangle(hdc, j * WIDTH, i * HEIGHT, (j + 1) * WIDTH, (i + 1) * HEIGHT);
+					SelectObject(hdc, old_hBrush);
+					DeleteObject(hBrush);
+				}
+				else if (map[i][j].block == 'w')
+				{
+					hBrush = CreateSolidBrush(RGB(0, 0, 255));
+					old_hBrush = (HBRUSH)SelectObject(hdc, hBrush);
+					Rectangle(hdc, j * WIDTH, i * HEIGHT, (j + 1) * WIDTH, (i + 1) * HEIGHT);
+					SelectObject(hdc, old_hBrush);
+					DeleteObject(hBrush);
+				}
+			}
+		}
+		EndPaint(hWnd, &ps);
 		return 0;
 	case WM_DESTROY:
 		PostQuitMessage(0);
