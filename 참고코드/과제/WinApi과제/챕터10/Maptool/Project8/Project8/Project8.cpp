@@ -50,7 +50,8 @@ struct game_map
 	RECT rt;
 };
 
-TCHAR buf[1024] = TEXT("abcde");
+TCHAR buf[2] = "";
+char load_message[30] = "불러왔습니다";
 game_map map[MAP_MAX][MAP_MAX];
 char select_block = 'N';
 
@@ -141,24 +142,40 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 				{
 					DWORD writeB;
 
+					sprintf_s(buf, "%c", map[i][j].block);
+
 					WriteFile(hFile, buf, sizeof(buf), &writeB, NULL);
 				}
 			}
 
 			MessageBox(hWnd, "성공", "Save", MB_OK);
 
-			CloseHandle(hFile);
+			CloseHandle(hFile); // 꼭닫아야함 아니면 메모리 누수
 			InvalidateRect(hWnd, NULL, false);
 		}
 		break;
 		case 101://load
 		{
-			HANDLE hFile = CreateFile("save.txt", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-			DWORD readB;
+			HANDLE hFile = CreateFile("stage.txt", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-			ReadFile(hFile, buf, sizeof(buf), &readB, NULL);
+			if (hFile == INVALID_HANDLE_VALUE)
+			{
+				MessageBox(hWnd, "stage.txt 파일이 없습니다.", "오류", MB_OK);
+			}
 
-			MessageBox(hWnd, buf, "Load", MB_OK);
+			else
+			{
+				for (int i = 0; i < MAP_MAX; i++)
+				{
+					for (int j = 0; j < MAP_MAX; j++)
+					{
+						DWORD readB;
+						ReadFile(hFile, &map[i][j].block, sizeof(buf), &readB, NULL);
+					}
+				}
+
+				MessageBox(hWnd, load_message, "Load", MB_OK);
+			}
 
 			CloseHandle(hFile);
 			InvalidateRect(hWnd, NULL, false);
