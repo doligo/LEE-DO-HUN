@@ -151,11 +151,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BitMap_And_Draw.cpp" />
     <ClCompile Include="GameSystem.cpp" />
+    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Missile.cpp" />
     <ClCompile Include="Project8.cpp" />
+    <ClCompile Include="Tank.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BitMap_And_Draw.h" />
     <ClInclude Include="GameSystem.h" />
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="Map.h" />
+    <ClInclude Include="Missile.h" />
+    <ClInclude Include="Tank.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
