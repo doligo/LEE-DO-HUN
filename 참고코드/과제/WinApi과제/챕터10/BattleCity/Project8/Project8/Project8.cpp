@@ -1,6 +1,8 @@
 ﻿#include <windows.h>
 #include <iostream>
 #include <vector>
+#include <time.h>
+#include "GameSystem.h"
 using namespace std;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -28,8 +30,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	RegisterClass(&WndClass);
 
 	hWnd = CreateWindow(g_szClassName, g_szClassName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-		CW_USEDEFAULT, CW_USEDEFAULT, NULL, (HMENU)NULL, hInstance, NULL);
+		1200, 700, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
+
+	GameSystem::GetInstane()->Init(hWnd);
 
 	while (GetMessage(&Message, NULL, 0, 0))
 	{
