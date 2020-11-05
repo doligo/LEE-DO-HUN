@@ -15,8 +15,7 @@ void GameSystem::Init(HWND hWnd)
 
 void GameSystem::Title_Screen()
 {
-	if (GetKeyState(VK_UP) & 0x8000)
-		return;
+	B_A_D->Draw(400, 300, 1, 1);
 }
 
 GameSystem::~GameSystem()

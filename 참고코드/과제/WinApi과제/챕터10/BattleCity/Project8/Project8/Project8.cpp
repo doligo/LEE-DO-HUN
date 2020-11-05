@@ -35,10 +35,21 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 
 	GameSystem::GetInstane()->Init(hWnd);
 
-	while (GetMessage(&Message, NULL, 0, 0))
+	while (1)
 	{
-		TranslateMessage(&Message);
-		DispatchMessage(&Message);
+		if (PeekMessage(&Message, NULL, 0, 0, PM_REMOVE))
+		{
+			if (Message.message == WM_QUIT)
+				break;
+
+			TranslateMessage(&Message);
+			DispatchMessage(&Message);
+		}
+		else
+		{
+			GameSystem::GetInstane()->Title_Screen();
+		}
+
 	}
 
 	return (int)Message.wParam;
@@ -46,7 +57,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
-	HDC hdc;
+	HDC hdc = NULL;
+	PAINTSTRUCT ps;
 
 	switch (iMessage)
 	{
@@ -55,6 +67,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		return 0;
 	case WM_PAINT:
+		hdc = BeginPaint(hWnd, &ps);
+
+		EndPaint(hWnd, &ps);
 		return 0;
 	case WM_TIMER:
 		return 0;
