@@ -24,7 +24,6 @@ void BitMap_And_Draw::Init_Bitmap(HWND hWnd)
 		m_size[i].cx = B_Info.bmWidth;
 		m_size[i].cy = B_Info.bmHeight;
 	}
-	//// 로컬파일명이 중복일 경우 읽어오지못하는것 발생, 그냥 바로 파일이름만 적는걸로 변경하기
 }
 
 void BitMap_And_Draw::Draw(int _x, int _y, int _m_size, int dc_num)

@@ -48,6 +48,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		else
 		{
 			GameSystem::GetInstane()->Title_Screen();
+			if (GameSystem::GetInstane()->game_status == GAME_EXIT)
+				break;
 		}
 
 	}

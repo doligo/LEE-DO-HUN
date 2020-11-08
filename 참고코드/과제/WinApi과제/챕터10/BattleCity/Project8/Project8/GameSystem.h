@@ -1,7 +1,14 @@
 #include "BitMap_And_Draw.h"
 using namespace std;
-
 #pragma once
+
+#define KEY_UP 10
+#define KEY_DOWN 20
+
+#define GAME_START 30
+#define GAME_OVER 40
+#define GAME_EXIT 50
+
 class GameSystem
 {
 private:
@@ -10,6 +17,9 @@ private:
 public:
 
 	GameSystem();
+
+	int game_keyboard;
+	int game_status;
 
 	static GameSystem *GetInstane()
 	{
@@ -20,6 +30,7 @@ public:
 
 	void Init(HWND hWnd);
 	void Title_Screen();
+	void Game_Screen();
 
 	~GameSystem();
 };
