@@ -30,7 +30,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	RegisterClass(&WndClass);
 
 	hWnd = CreateWindow(g_szClassName, g_szClassName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-		1200, 700, NULL, (HMENU)NULL, hInstance, NULL);
+		1200, 738, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 
 	GameSystem::GetInstane()->Init(hWnd);
@@ -47,8 +47,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		}
 		else
 		{
-			GameSystem::GetInstane()->Title_Screen();
-			if (GameSystem::GetInstane()->game_status == GAME_EXIT)
+			if (GameSystem::GetInstane()->game_status == NULL)
+				GameSystem::GetInstane()->Title_Screen();
+			else if (GameSystem::GetInstane()->game_status == GAME_START)
+				GameSystem::GetInstane()->Game_Screen();
+			else if (GameSystem::GetInstane()->game_status == GAME_EXIT)
 				break;
 		}
 

@@ -50,7 +50,6 @@ struct game_map
 	RECT rt;
 };
 
-TCHAR buf[2] = "";
 char load_message[30] = "불러왔습니다";
 game_map map[MAP_MAX][MAP_MAX];
 char select_block = 'N';
@@ -142,9 +141,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 				{
 					DWORD writeB;
 
-					sprintf_s(buf, "%c", map[i][j].block);
-
-					WriteFile(hFile, buf, sizeof(buf), &writeB, NULL);
+					WriteFile(hFile, &map[i][j].block, sizeof(char), &writeB, NULL);
 				}
 			}
 
@@ -170,7 +167,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 					for (int j = 0; j < MAP_MAX; j++)
 					{
 						DWORD readB;
-						ReadFile(hFile, &map[i][j].block, sizeof(buf), &readB, NULL);
+						ReadFile(hFile, &map[i][j].block, sizeof(char), &readB, NULL);
 					}
 				}
 

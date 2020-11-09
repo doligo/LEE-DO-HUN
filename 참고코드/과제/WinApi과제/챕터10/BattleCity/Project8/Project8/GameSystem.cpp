@@ -6,12 +6,15 @@ GameSystem::GameSystem()
 {
 	game_status = 0;
 	game_keyboard = KEY_UP;
+	game_stage = 1;
 }
 
 void GameSystem::Init(HWND hWnd)
 {
 	B_A_D = new BitMap_And_Draw();
 	B_A_D->Init_Bitmap(hWnd);
+	MP = new Map();
+	MP->Init_Map(game_stage - 1);
 }
 
 void GameSystem::Title_Screen()
@@ -46,7 +49,10 @@ void GameSystem::Title_Screen()
 	else if (GetKeyState(VK_RETURN) & 0x8000)
 	{
 		if (game_keyboard == KEY_UP)
+		{
+			B_A_D->Draw_Black_BackGround(); // 타이틀화면 지우기
 			game_status = GAME_START;
+		}
 		else if (game_keyboard == KEY_DOWN)
 			game_status = GAME_EXIT;
 	}
@@ -54,7 +60,28 @@ void GameSystem::Title_Screen()
 
 void GameSystem::Game_Screen()
 {
+	char value = NULL;
 
+	for (int i = 0; i < MAP_MAX; i++)
+	{
+		for (int j = 0; j < MAP_MAX; j++)
+		{
+			value = MP->Get_Map_Info(i, j);
+
+			if (value == 'N')
+				B_A_D->Draw(WIDTH * j, HEIGHT * i, BLANK, BLANK);
+			else if (value == 'B')
+				B_A_D->Draw(WIDTH * j, HEIGHT * i, N_BLOCK_00, N_BLOCK_00);
+			else if (value == 'G')
+				B_A_D->Draw(WIDTH * j, HEIGHT * i, GRAY_BLOCK, GRAY_BLOCK);
+			else if (value == 'b')
+				B_A_D->Draw(WIDTH * j, HEIGHT * i, BUSH_BLOCK, BUSH_BLOCK);
+			else if (value == 'w')
+				B_A_D->Draw(WIDTH * j, HEIGHT * i, WATER_BLOCK, WATER_BLOCK);
+			else if (value == 'W')
+				B_A_D->Draw(WIDTH * j, HEIGHT * i, WHITE_BLOCK_00, WHITE_BLOCK_00);
+		}
+	}
 }
 
 GameSystem::~GameSystem()

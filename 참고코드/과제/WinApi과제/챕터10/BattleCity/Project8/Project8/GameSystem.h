@@ -1,4 +1,5 @@
 #include "BitMap_And_Draw.h"
+#include "Map.h"
 using namespace std;
 #pragma once
 
@@ -14,12 +15,14 @@ class GameSystem
 private:
 	static GameSystem *game_system;
 	BitMap_And_Draw *B_A_D;
+	Map *MP;
 public:
 
 	GameSystem();
 
 	int game_keyboard;
 	int game_status;
+	int game_stage;
 
 	static GameSystem *GetInstane()
 	{
