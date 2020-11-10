@@ -15,6 +15,11 @@ void GameSystem::Init(HWND hWnd)
 	B_A_D->Init_Bitmap(hWnd);
 	MP = new Map();
 	MP->Init_Map(game_stage - 1);
+	for (int i = 0; i < 5; i++)
+	{
+		TK[i] = new Tank();
+		TK[i]->Init_Tank(i);
+	}
 }
 
 void GameSystem::Title_Screen()
@@ -61,6 +66,7 @@ void GameSystem::Title_Screen()
 void GameSystem::Game_Screen()
 {
 	char value = NULL;
+	int num = 0;
 
 	for (int i = 0; i < MAP_MAX; i++)
 	{
@@ -80,8 +86,36 @@ void GameSystem::Game_Screen()
 				B_A_D->Draw(WIDTH * j, HEIGHT * i, WATER_BLOCK, WATER_BLOCK);
 			else if (value == 'W')
 				B_A_D->Draw(WIDTH * j, HEIGHT * i, WHITE_BLOCK_00, WHITE_BLOCK_00);
+
+			m_block_rt[num] = { WIDTH * j, HEIGHT * i, (WIDTH * j) + 33, (HEIGHT * i) + 25 };
+			num++;
 		}
 	}
+}
+
+void GameSystem::Move()
+{
+	if (GetKeyState(VK_UP) & 0x8000)
+	{
+
+	}
+	else if (GetKeyState(VK_DOWN) & 0x8000)
+	{
+
+	}
+	else if (GetKeyState(VK_LEFT) & 0x8000)
+	{
+
+	}
+	else if (GetKeyState(VK_RIGHT) & 0x8000)
+	{
+
+	}
+}
+
+void GameSystem::Enemy_Move()
+{
+
 }
 
 GameSystem::~GameSystem()
