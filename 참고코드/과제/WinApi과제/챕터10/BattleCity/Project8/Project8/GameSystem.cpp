@@ -13,11 +13,13 @@ void GameSystem::Init(HWND hWnd)
 {
 	B_A_D = new BitMap_And_Draw();
 	B_A_D->Init_Bitmap(hWnd);
+
 	MP = new Map();
 	MP->Init_Map(game_stage - 1);
+
 	for (int i = 0; i < 5; i++)
 	{
-		TK[i] = new Tank();
+		TK[i] = new Tank(); // 탱크생성
 		TK[i]->Init_Tank(i);
 	}
 }
@@ -75,47 +77,56 @@ void GameSystem::Game_Screen()
 			value = MP->Get_Map_Info(i, j);
 
 			if (value == 'N')
-				B_A_D->Draw(WIDTH * j, HEIGHT * i, BLANK, BLANK);
+				B_A_D->Draw_Ready(WIDTH * j, HEIGHT * i, BLANK, BLANK);
 			else if (value == 'B')
-				B_A_D->Draw(WIDTH * j, HEIGHT * i, N_BLOCK_00, N_BLOCK_00);
+				B_A_D->Draw_Ready(WIDTH * j, HEIGHT * i, N_BLOCK_00, N_BLOCK_00);
 			else if (value == 'G')
-				B_A_D->Draw(WIDTH * j, HEIGHT * i, GRAY_BLOCK, GRAY_BLOCK);
+				B_A_D->Draw_Ready(WIDTH * j, HEIGHT * i, GRAY_BLOCK, GRAY_BLOCK);
 			else if (value == 'b')
-				B_A_D->Draw(WIDTH * j, HEIGHT * i, BUSH_BLOCK, BUSH_BLOCK);
+				B_A_D->Draw_Ready(WIDTH * j, HEIGHT * i, BUSH_BLOCK, BUSH_BLOCK);
 			else if (value == 'w')
-				B_A_D->Draw(WIDTH * j, HEIGHT * i, WATER_BLOCK, WATER_BLOCK);
+				B_A_D->Draw_Ready(WIDTH * j, HEIGHT * i, WATER_BLOCK, WATER_BLOCK);
 			else if (value == 'W')
-				B_A_D->Draw(WIDTH * j, HEIGHT * i, WHITE_BLOCK_00, WHITE_BLOCK_00);
+				B_A_D->Draw_Ready(WIDTH * j, HEIGHT * i, WHITE_BLOCK_00, WHITE_BLOCK_00);
 
 			m_block_rt[num] = { WIDTH * j, HEIGHT * i, (WIDTH * j) + 33, (HEIGHT * i) + 25 };
 			num++;
 		}
 	}
+	// 일반 draw함수는 렉때문에 TransparentBlt을 먼저 쓴후 BitBlt으로 출력하게 함 (draw_ready로 긁어서 draw_go로 뿌리기)
+	Show_Tank();
+	B_A_D->Draw_Go();
 }
 
-void GameSystem::Move()
+void GameSystem::Control_Tank()
 {
 	if (GetKeyState(VK_UP) & 0x8000)
 	{
-
+		TK[0]->Moveing(UP);
+		// 블럭과 부딫치는지 비교, 맵끝인지 비교 후 moving으로 가게하기
 	}
 	else if (GetKeyState(VK_DOWN) & 0x8000)
 	{
-
+		TK[0]->Moveing(DOWN);
 	}
 	else if (GetKeyState(VK_LEFT) & 0x8000)
 	{
-
+		TK[0]->Moveing(LEFT);
 	}
 	else if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
-
+		TK[0]->Moveing(RIGHT);
+	}
+	else if (GetKeyState(VK_SPACE) & 0x8000)
+	{
+		TK[0]->Shot();
+		// 총알나가게 하는 함수
 	}
 }
 
-void GameSystem::Enemy_Move()
+void GameSystem::Show_Tank()
 {
-
+	B_A_D->Draw_Ready(400, 600, PLAYER_UP_00, PLAYER_UP_00);
 }
 
 GameSystem::~GameSystem()

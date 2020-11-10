@@ -40,8 +40,8 @@ public:
 	void Init(HWND hWnd);
 	void Title_Screen();
 	void Game_Screen();
-	void Move();
-	void Enemy_Move();
+	void Control_Tank();
+	void Show_Tank();
 
 	~GameSystem();
 };

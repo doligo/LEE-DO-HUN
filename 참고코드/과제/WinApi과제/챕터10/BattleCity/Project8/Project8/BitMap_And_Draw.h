@@ -43,6 +43,8 @@ public:
 
 	void Init_Bitmap(HWND hWnd);
 	void Draw(int _x, int _y, int _m_size, int dc_num);
+	void Draw_Ready(int _x, int _y, int _m_size, int dc_num);
+	void Draw_Go();
 	void Draw_Black_BackGround();
 
 	~BitMap_And_Draw();
