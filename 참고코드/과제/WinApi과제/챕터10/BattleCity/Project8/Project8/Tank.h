@@ -16,12 +16,17 @@ private:
 	int direct;
 	int player;
 	int shield;
+	int motion;
 public:
 	Tank();
 
 	void Init_Tank(int player_or_enemy);
 	void Moveing(int dir);
 	void Shot();
+	int Get_Tank_X();
+	int Get_Tank_Y();
+	int Get_Tank_Direct();
+	int Get_Tank_Motion();
 
 	~Tank();
 };

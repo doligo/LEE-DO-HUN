@@ -21,7 +21,8 @@ private:
 	Map *MP;
 	Tank *TK[5];
 	RECT m_block_rt[BLOCK_MAX]; // rect는 시스템에서 관리하기가 편함
-	RECT m_tank_rt;
+	RECT m_tank_rt[5];
+	RECT pre_tank_rt;
 public:
 
 	GameSystem();
@@ -41,7 +42,8 @@ public:
 	void Title_Screen();
 	void Game_Screen();
 	void Control_Tank();
-	void Show_Tank();
+	int Show_Tank();
+	int Check_Block_Tank();
 
 	~GameSystem();
 };
