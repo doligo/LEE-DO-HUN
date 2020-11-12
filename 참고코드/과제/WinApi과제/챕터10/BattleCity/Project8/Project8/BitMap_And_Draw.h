@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <vector>
+#include <conio.h>
 using namespace std;
 #pragma once
 

@@ -22,7 +22,6 @@ private:
 	Tank *TK[5];
 	RECT m_block_rt[BLOCK_MAX]; // rect는 시스템에서 관리하기가 편함
 	RECT m_tank_rt[5];
-	RECT pre_tank_rt;
 public:
 
 	GameSystem();
@@ -30,6 +29,7 @@ public:
 	int game_keyboard;
 	int game_status;
 	int game_stage;
+	int player_life;
 
 	static GameSystem *GetInstane()
 	{
@@ -42,8 +42,11 @@ public:
 	void Title_Screen();
 	void Game_Screen();
 	void Control_Tank();
+	void Show_Map();
+	void Show_Bush();
 	int Show_Tank();
 	int Check_Block_Tank();
+	int Create_Tank();
 
 	~GameSystem();
 };
