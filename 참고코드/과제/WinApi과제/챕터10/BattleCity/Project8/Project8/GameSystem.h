@@ -31,6 +31,8 @@ public:
 	int game_stage;
 	int player_life;
 
+	int cur_time;
+
 	static GameSystem *GetInstane()
 	{
 		if (game_system == NULL)
@@ -47,6 +49,7 @@ public:
 	int Show_Tank();
 	int Check_Block_Tank();
 	int Create_Tank();
+	void Set_Enemy_Pos(int num);
 
 	~GameSystem();
 };

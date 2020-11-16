@@ -20,6 +20,8 @@ void Tank::Init_Tank(int player_or_enemy)
 		direct = UP;
 		player = TRUE;
 		status = DEAD;
+		player_start_x = 400;
+		player_start_y = 600;
 		// player
 	}
 	else if (player_or_enemy > 0)

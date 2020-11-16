@@ -35,6 +35,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 
 	GameSystem::GetInstane()->Init(hWnd);
 
+	srand((unsigned)time(NULL));
+
 	while (1)
 	{
 		if (PeekMessage(&Message, NULL, 0, 0, PM_REMOVE))

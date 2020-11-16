@@ -23,8 +23,12 @@ private:
 	int player;
 	int shield;
 	int motion;
+
 public:
 	Tank();
+
+	int player_start_x;
+	int player_start_y;
 
 	void Init_Tank(int player_or_enemy);
 	void Moveing(int dir);

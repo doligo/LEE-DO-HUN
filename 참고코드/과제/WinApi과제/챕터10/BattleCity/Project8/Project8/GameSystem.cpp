@@ -8,6 +8,10 @@ GameSystem::GameSystem()
 	game_keyboard = KEY_UP;
 	game_stage = 1;
 	player_life = 4;
+	cur_time = 0;
+
+	for (int i = 0; i < 5; i++)
+		m_tank_rt[i] = { 0,0,0,0 };
 }
 
 void GameSystem::Init(HWND hWnd)
@@ -68,11 +72,8 @@ void GameSystem::Title_Screen()
 
 void GameSystem::Game_Screen()
 {
-	Create_Tank();
-
-	//////////////////////////////////////////////////
-
 	Show_Map();
+	Create_Tank();
 	Show_Tank();
 	Show_Bush();
 	B_A_D->Draw_Go(); // 일반 draw함수는 렉때문에 TransparentBlt을 먼저 쓴후 BitBlt으로 출력하게 함 (draw_ready로 긁어서 draw_go로 뿌리기)
@@ -123,8 +124,16 @@ void GameSystem::Control_Tank()
 		// 총알나가게 하는 함수
 	}
 
-	m_tank_rt[0] = { 400 + TK[0]->Get_Tank_X(), 600 + TK[0]->Get_Tank_Y(), 400 + TK[0]->Get_Tank_X() + 28, 600 + TK[0]->Get_Tank_Y() + 20 };
+	m_tank_rt[0] = { TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), TK[0]->player_start_x + TK[0]->Get_Tank_X() + 28, TK[0]->player_start_y + TK[0]->Get_Tank_Y() + 20 };
 	//// tank rect는 블럭보다 right와 bottom이 5씩 작다
+
+	for (int i = 1; i < 5; i++)
+	{
+		if (TK[i]->Get_Status == ALIVE)
+		{
+
+		}
+	}
 }
 
 void GameSystem::Show_Map()
@@ -184,6 +193,21 @@ int GameSystem::Show_Tank()
 			B_A_D->Draw_Ready(400 + TK[0]->Get_Tank_X(), 600 + TK[0]->Get_Tank_Y(), PLAYER_RIGHT_00 + TK[0]->Get_Tank_Motion(), PLAYER_RIGHT_00 + TK[0]->Get_Tank_Motion());
 	}
 
+	for (int i = 1; i < 5; i++)
+	{
+		if (TK[i]->Get_Status() == ALIVE)
+		{
+			if (UP == TK[i]->Get_Tank_Direct())
+				B_A_D->Draw_Ready(m_tank_rt[i].left + TK[i]->Get_Tank_X(), m_tank_rt[i].top + TK[i]->Get_Tank_Y(), ENEMY_UP_00 + TK[i]->Get_Tank_Motion(), ENEMY_UP_00 + TK[i]->Get_Tank_Motion());
+			else if (DOWN == TK[i]->Get_Tank_Direct())
+				B_A_D->Draw_Ready(m_tank_rt[i].left + TK[i]->Get_Tank_X(), m_tank_rt[i].top + TK[i]->Get_Tank_Y(), ENEMY_DOWN_00 + TK[i]->Get_Tank_Motion(), ENEMY_DOWN_00 + TK[i]->Get_Tank_Motion());
+			else if (LEFT == TK[i]->Get_Tank_Direct())
+				B_A_D->Draw_Ready(m_tank_rt[i].left + TK[i]->Get_Tank_X(), m_tank_rt[i].top + TK[i]->Get_Tank_Y(), ENEMY_LEFT_00 + TK[i]->Get_Tank_Motion(), ENEMY_LEFT_00 + TK[i]->Get_Tank_Motion());
+			else if (RIGHT == TK[i]->Get_Tank_Direct())
+				B_A_D->Draw_Ready(m_tank_rt[i].left + TK[i]->Get_Tank_X(), m_tank_rt[i].top + TK[i]->Get_Tank_Y(), ENEMY_RIGHT_00 + TK[i]->Get_Tank_Motion(), ENEMY_RIGHT_00 + TK[i]->Get_Tank_Motion());
+		}
+	}
+
 	return 0;
 }
 
@@ -200,6 +224,8 @@ int GameSystem::Check_Block_Tank()
 			tmp = MP->Get_Map_Info(i, j);
 			if (IntersectRect(&temp, &m_tank_rt[0], &m_block_rt[num]) && tmp != 'N' && tmp != 'b')
 				return 1;
+			else if (0 >= m_tank_rt[0].left || 0 >= m_tank_rt[0].top || 922 <= m_tank_rt[0].right || 698 <= m_tank_rt[0].bottom)
+				return 1;
 			num++;
 		}
 	}
@@ -215,8 +241,54 @@ int GameSystem::Create_Tank()
 		player_life--;
 	}
 
-	//// ** clock() 함수로 적 생성하기 
+	if (clock() - cur_time >= 2500)
+	{
+		for (int i = 1; i < 5; i++)
+		{
+			if (TK[i]->Get_Status() == DEAD)
+			{
+				TK[i]->Set_Status(ALIVE);
+				Set_Enemy_Pos(i);
+				break;
+			}
+		}
+		cur_time = clock();
+	}
+
 	return 0;
+}
+
+void GameSystem::Set_Enemy_Pos(int num)
+{
+	char tmp;
+	int tmp_x = 0;
+	int tmp_y = 0;
+	int value = 0;
+	int trigger = FALSE;
+
+	while (1)
+	{
+		trigger = FALSE;
+		value = rand() % 28;
+		tmp = MP->Get_Map_Info(0, value);
+
+		if (tmp == 'N')
+		{
+			for (int i = 1; i < 5; i++)
+			{
+				if (m_tank_rt[i].left == m_block_rt[value].left && m_tank_rt[i].top == m_block_rt[value].top)
+					trigger = TRUE;
+			}
+
+			if (trigger == FALSE)
+			{
+				m_tank_rt[num] = { m_block_rt[value].left, m_block_rt[value].top, m_block_rt[value].left + 28, m_block_rt[value].top + 20 };
+				break;
+			}
+		}
+	}
+
+
 }
 
 GameSystem::~GameSystem()
