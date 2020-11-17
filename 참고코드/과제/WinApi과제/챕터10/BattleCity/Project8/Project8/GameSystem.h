@@ -32,6 +32,7 @@ public:
 	int player_life;
 
 	int cur_time;
+	int move_time;
 
 	static GameSystem *GetInstane()
 	{
@@ -47,7 +48,7 @@ public:
 	void Show_Map();
 	void Show_Bush();
 	int Show_Tank();
-	int Check_Block_Tank();
+	int Check_Block_Tank(int num);
 	int Create_Tank();
 	void Set_Enemy_Pos(int num);
 

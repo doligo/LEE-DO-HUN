@@ -16,6 +16,8 @@ void Tank::Init_Tank(int player_or_enemy)
 	{
 		m_ix = 0;
 		m_iy = 0;
+		m_pre_x = 0;
+		m_pre_y = 0;
 		motion = 0;
 		direct = UP;
 		player = TRUE;
@@ -28,7 +30,12 @@ void Tank::Init_Tank(int player_or_enemy)
 	{
 		m_ix = 0;
 		m_iy = 0;
+		m_pre_x = 0;
+		m_pre_y = 0;
 		motion = 0;
+		enemy_start_x = 0;
+		enemy_start_y = 0;
+		move_count = 0;
 		direct = DOWN;
 		player = FALSE;
 		status = DEAD;
@@ -38,7 +45,10 @@ void Tank::Init_Tank(int player_or_enemy)
 
 void Tank::Moveing(int dir)
 {
-	direct = dir;
+	if (move_count == 0 && player == FALSE)
+		direct = dir;
+	else if (player == TRUE)
+		direct = dir;
 
 	m_pre_x = m_ix;
 	m_pre_y = m_iy;
@@ -64,6 +74,12 @@ void Tank::Moveing(int dir)
 		motion = 1;
 	else if (motion == 1)
 		motion = 0;
+
+
+	if (player == FALSE)
+		move_count++;
+	if (move_count == 7)
+		move_count = 0;
 }
 
 void Tank::Shot()

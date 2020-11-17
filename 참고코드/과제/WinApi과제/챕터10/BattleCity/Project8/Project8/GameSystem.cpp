@@ -9,6 +9,7 @@ GameSystem::GameSystem()
 	game_stage = 1;
 	player_life = 4;
 	cur_time = 0;
+	move_time = 0;
 
 	for (int i = 0; i < 5; i++)
 		m_tank_rt[i] = { 0,0,0,0 };
@@ -84,10 +85,11 @@ void GameSystem::Game_Screen()
 void GameSystem::Control_Tank()
 {
 	int result = 0;
+	int key = 0;
 
 	if (GetKeyState(VK_UP) & 0x8000)
 	{
-		result = Check_Block_Tank();
+		result = Check_Block_Tank(0);
 		if (result == 0)
 			TK[0]->Moveing(UP);
 		else
@@ -96,7 +98,7 @@ void GameSystem::Control_Tank()
 	}
 	else if (GetKeyState(VK_DOWN) & 0x8000)
 	{
-		result = Check_Block_Tank();
+		result = Check_Block_Tank(0);
 		if (result == 0)
 			TK[0]->Moveing(DOWN);
 		else
@@ -104,7 +106,7 @@ void GameSystem::Control_Tank()
 	}
 	else if (GetKeyState(VK_LEFT) & 0x8000)
 	{
-		result = Check_Block_Tank();
+		result = Check_Block_Tank(0);
 		if (result == 0)
 			TK[0]->Moveing(LEFT);
 		else
@@ -112,7 +114,7 @@ void GameSystem::Control_Tank()
 	}
 	else if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
-		result = Check_Block_Tank();
+		result = Check_Block_Tank(0);
 		if (result == 0)
 			TK[0]->Moveing(RIGHT);
 		else
@@ -125,14 +127,24 @@ void GameSystem::Control_Tank()
 	}
 
 	m_tank_rt[0] = { TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), TK[0]->player_start_x + TK[0]->Get_Tank_X() + 28, TK[0]->player_start_y + TK[0]->Get_Tank_Y() + 20 };
-	//// tank rect는 블럭보다 right와 bottom이 5씩 작다
 
-	for (int i = 1; i < 5; i++)
+	if (clock() - move_time >= 10)
 	{
-		if (TK[i]->Get_Status == ALIVE)
+		for (int i = 1; i < 5; i++)
 		{
+			if (TK[i]->Get_Status() == ALIVE)
+			{
+				key = rand() % 4 + 11;
 
+				result = Check_Block_Tank(i);
+				if (result == 0)
+					TK[i]->Moveing(key);
+				else
+					TK[i]->RollBack_pos();
+			}
+			m_tank_rt[i] = { TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), TK[i]->enemy_start_x + TK[i]->Get_Tank_X() + 28, TK[i]->enemy_start_y + TK[i]->Get_Tank_Y() + 20 };
 		}
+		move_time = clock();
 	}
 }
 
@@ -184,13 +196,13 @@ int GameSystem::Show_Tank()
 	if (TK[0]->Get_Player_Check() == TRUE && TK[0]->Get_Status() == ALIVE)
 	{
 		if (UP == TK[0]->Get_Tank_Direct())
-			B_A_D->Draw_Ready(400 + TK[0]->Get_Tank_X(), 600 + TK[0]->Get_Tank_Y(), PLAYER_UP_00 + TK[0]->Get_Tank_Motion(), PLAYER_UP_00 + TK[0]->Get_Tank_Motion());
+			B_A_D->Draw_Ready(TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), PLAYER_UP_00 + TK[0]->Get_Tank_Motion(), PLAYER_UP_00 + TK[0]->Get_Tank_Motion());
 		else if (DOWN == TK[0]->Get_Tank_Direct())
-			B_A_D->Draw_Ready(400 + TK[0]->Get_Tank_X(), 600 + TK[0]->Get_Tank_Y(), PLAYER_DONW_00 + TK[0]->Get_Tank_Motion(), PLAYER_DONW_00 + TK[0]->Get_Tank_Motion());
+			B_A_D->Draw_Ready(TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), PLAYER_DONW_00 + TK[0]->Get_Tank_Motion(), PLAYER_DONW_00 + TK[0]->Get_Tank_Motion());
 		else if (LEFT == TK[0]->Get_Tank_Direct())
-			B_A_D->Draw_Ready(400 + TK[0]->Get_Tank_X(), 600 + TK[0]->Get_Tank_Y(), PLAYER_LEFT_00 + TK[0]->Get_Tank_Motion(), PLAYER_LEFT_00 + TK[0]->Get_Tank_Motion());
+			B_A_D->Draw_Ready(TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), PLAYER_LEFT_00 + TK[0]->Get_Tank_Motion(), PLAYER_LEFT_00 + TK[0]->Get_Tank_Motion());
 		else if (RIGHT == TK[0]->Get_Tank_Direct())
-			B_A_D->Draw_Ready(400 + TK[0]->Get_Tank_X(), 600 + TK[0]->Get_Tank_Y(), PLAYER_RIGHT_00 + TK[0]->Get_Tank_Motion(), PLAYER_RIGHT_00 + TK[0]->Get_Tank_Motion());
+			B_A_D->Draw_Ready(TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), PLAYER_RIGHT_00 + TK[0]->Get_Tank_Motion(), PLAYER_RIGHT_00 + TK[0]->Get_Tank_Motion());
 	}
 
 	for (int i = 1; i < 5; i++)
@@ -198,35 +210,53 @@ int GameSystem::Show_Tank()
 		if (TK[i]->Get_Status() == ALIVE)
 		{
 			if (UP == TK[i]->Get_Tank_Direct())
-				B_A_D->Draw_Ready(m_tank_rt[i].left + TK[i]->Get_Tank_X(), m_tank_rt[i].top + TK[i]->Get_Tank_Y(), ENEMY_UP_00 + TK[i]->Get_Tank_Motion(), ENEMY_UP_00 + TK[i]->Get_Tank_Motion());
+				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), ENEMY_UP_00 + TK[i]->Get_Tank_Motion(), ENEMY_UP_00 + TK[i]->Get_Tank_Motion());
 			else if (DOWN == TK[i]->Get_Tank_Direct())
-				B_A_D->Draw_Ready(m_tank_rt[i].left + TK[i]->Get_Tank_X(), m_tank_rt[i].top + TK[i]->Get_Tank_Y(), ENEMY_DOWN_00 + TK[i]->Get_Tank_Motion(), ENEMY_DOWN_00 + TK[i]->Get_Tank_Motion());
+				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), ENEMY_DOWN_00 + TK[i]->Get_Tank_Motion(), ENEMY_DOWN_00 + TK[i]->Get_Tank_Motion());
 			else if (LEFT == TK[i]->Get_Tank_Direct())
-				B_A_D->Draw_Ready(m_tank_rt[i].left + TK[i]->Get_Tank_X(), m_tank_rt[i].top + TK[i]->Get_Tank_Y(), ENEMY_LEFT_00 + TK[i]->Get_Tank_Motion(), ENEMY_LEFT_00 + TK[i]->Get_Tank_Motion());
+				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), ENEMY_LEFT_00 + TK[i]->Get_Tank_Motion(), ENEMY_LEFT_00 + TK[i]->Get_Tank_Motion());
 			else if (RIGHT == TK[i]->Get_Tank_Direct())
-				B_A_D->Draw_Ready(m_tank_rt[i].left + TK[i]->Get_Tank_X(), m_tank_rt[i].top + TK[i]->Get_Tank_Y(), ENEMY_RIGHT_00 + TK[i]->Get_Tank_Motion(), ENEMY_RIGHT_00 + TK[i]->Get_Tank_Motion());
+				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), ENEMY_RIGHT_00 + TK[i]->Get_Tank_Motion(), ENEMY_RIGHT_00 + TK[i]->Get_Tank_Motion());
 		}
 	}
 
 	return 0;
 }
 
-int GameSystem::Check_Block_Tank()
+int GameSystem::Check_Block_Tank(int num)
 {
 	RECT temp;
-	int num = 0;
+	int _num = 0;
 	char tmp;
 
-	for (int i = 0; i < MAP_MAX; i++)
+	if (num == 0)
 	{
-		for (int j = 0; j < MAP_MAX; j++)
+		for (int i = 0; i < MAP_MAX; i++)
 		{
-			tmp = MP->Get_Map_Info(i, j);
-			if (IntersectRect(&temp, &m_tank_rt[0], &m_block_rt[num]) && tmp != 'N' && tmp != 'b')
-				return 1;
-			else if (0 >= m_tank_rt[0].left || 0 >= m_tank_rt[0].top || 922 <= m_tank_rt[0].right || 698 <= m_tank_rt[0].bottom)
-				return 1;
-			num++;
+			for (int j = 0; j < MAP_MAX; j++)
+			{
+				tmp = MP->Get_Map_Info(i, j);
+				if (IntersectRect(&temp, &m_tank_rt[num], &m_block_rt[_num]) && tmp != 'N' && tmp != 'b')
+					return 1;
+				else if (0 >= m_tank_rt[num].left || 0 >= m_tank_rt[num].top || 921 <= m_tank_rt[num].right || 698 <= m_tank_rt[num].bottom)
+					return 1;
+				_num++;
+			}
+		}
+	}
+	else if (num > 0)
+	{
+		for (int i = 0; i < MAP_MAX; i++)
+		{
+			for (int j = 0; j < MAP_MAX; j++)
+			{
+				tmp = MP->Get_Map_Info(i, j);
+				if (IntersectRect(&temp, &m_tank_rt[num], &m_block_rt[_num]) && tmp != 'N' && tmp != 'b')
+					return 1;
+				else if (0 >= m_tank_rt[num].left || 0 >= m_tank_rt[num].top || 921 <= m_tank_rt[num].right || 698 <= m_tank_rt[num].bottom)
+					return 1;
+				_num++;
+			}
 		}
 	}
 
@@ -238,6 +268,8 @@ int GameSystem::Create_Tank()
 	if (TK[0]->Get_Status() == DEAD)
 	{
 		TK[0]->Set_Status(ALIVE);
+		m_tank_rt[0] = { TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), TK[0]->player_start_x + TK[0]->Get_Tank_X() + 28, TK[0]->player_start_y + TK[0]->Get_Tank_Y() + 20 };
+		//// tank rect는 블럭보다 right와 bottom이 5씩 작다
 		player_life--;
 	}
 
@@ -282,7 +314,9 @@ void GameSystem::Set_Enemy_Pos(int num)
 
 			if (trigger == FALSE)
 			{
-				m_tank_rt[num] = { m_block_rt[value].left, m_block_rt[value].top, m_block_rt[value].left + 28, m_block_rt[value].top + 20 };
+				m_tank_rt[num] = { m_block_rt[value].left, m_block_rt[value].top + 2, m_block_rt[value].left + 28, m_block_rt[value].top + 2 + 20};
+				TK[num]->enemy_start_x = m_tank_rt[num].left;
+				TK[num]->enemy_start_y = m_tank_rt[num].top;
 				break;
 			}
 		}

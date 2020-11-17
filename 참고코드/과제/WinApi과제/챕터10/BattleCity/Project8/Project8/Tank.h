@@ -29,6 +29,9 @@ public:
 
 	int player_start_x;
 	int player_start_y;
+	int enemy_start_x;
+	int enemy_start_y;
+	int move_count;
 
 	void Init_Tank(int player_or_enemy);
 	void Moveing(int dir);
