@@ -7,6 +7,8 @@ Missile::Missile()
 	m_direct = 0;
 	m_check_player = 0;
 	m_status = FALSE;
+	missile_start_x = 0;
+	missile_start_y = 0;
 }
 
 void Missile::Init_Missile(int num)
@@ -37,21 +39,24 @@ int Missile::Move_Missile(int dir)
 		m_status = TRUE;
 	}
 
-	if (m_direct == UP)
+	if (m_status == TRUE)
 	{
-		m_iy -= 2;
-	}
-	else if (m_direct == DOWN)
-	{
-		m_iy += 2;
-	}
-	else if (m_direct == LEFT)
-	{
-		m_ix -= 2;
-	}
-	else if (m_direct == RIGHT)
-	{
-		m_ix += 2;
+		if (m_direct == UP)
+		{
+			m_iy -= 3;
+		}
+		else if (m_direct == DOWN)
+		{
+			m_iy += 3;
+		}
+		else if (m_direct == LEFT)
+		{
+			m_ix -= 3;
+		}
+		else if (m_direct == RIGHT)
+		{
+			m_ix += 3;
+		}
 	}
 
 	return 0;
@@ -70,6 +75,11 @@ int Missile::Get_Missile_Y()
 int Missile::Get_Missile_Status()
 {
 	return m_status;
+}
+
+void Missile::Set_Missile_Status(int value)
+{
+	m_status = value;
 }
 
 int Missile::Get_Missile_Player()

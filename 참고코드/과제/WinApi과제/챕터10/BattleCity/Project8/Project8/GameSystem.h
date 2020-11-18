@@ -37,6 +37,9 @@ public:
 	int cur_time;
 	int move_time;
 
+	int player_missile;
+	int enemy_missile[4];
+
 	static GameSystem *GetInstane()
 	{
 		if (game_system == NULL)
@@ -55,6 +58,8 @@ public:
 	int Check_Block_Tank(int num);
 	int Create_Tank();
 	void Set_Enemy_Pos(int num);
+	void Set_Missile();
+	void Missile_End_Check();
 	
 
 	~GameSystem();

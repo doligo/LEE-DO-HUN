@@ -19,11 +19,15 @@ private:
 public:
 	Missile();
 
+	int missile_start_x;
+	int missile_start_y;
+
 	void Init_Missile(int num);
 	int Move_Missile(int dir);
 	int Get_Missile_X();
 	int Get_Missile_Y();
 	int Get_Missile_Status();
+	void Set_Missile_Status(int value);
 	int Get_Missile_Player();
 	int Get_Missile_Direct();
 
