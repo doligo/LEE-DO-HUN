@@ -35,7 +35,6 @@ public:
 
 	void Init_Tank(int player_or_enemy);
 	void Moveing(int dir);
-	void Shot();
 	int Get_Tank_X();
 	int Get_Tank_Y();
 	int Get_Tank_Direct();

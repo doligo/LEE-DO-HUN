@@ -3,16 +3,29 @@
 #include <string.h>
 #pragma once
 
+#define UP 11
+#define DOWN 12
+#define LEFT 13
+#define RIGHT 14
+
 class Missile
 {
 private:
 	int m_ix;
 	int m_iy;
 	int m_direct;
+	int m_check_player;
+	int m_status;
 public:
 	Missile();
 
-	void Init_Missile();
+	void Init_Missile(int num);
+	int Move_Missile(int dir);
+	int Get_Missile_X();
+	int Get_Missile_Y();
+	int Get_Missile_Status();
+	int Get_Missile_Player();
+	int Get_Missile_Direct();
 
 	~Missile();
 };

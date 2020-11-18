@@ -1,6 +1,7 @@
 #include "BitMap_And_Draw.h"
 #include "Map.h"
 #include "Tank.h"
+#include "Missile.h"
 using namespace std;
 #pragma once
 
@@ -22,6 +23,8 @@ private:
 	Tank *TK[5];
 	RECT m_block_rt[BLOCK_MAX]; // rect는 시스템에서 관리하기가 편함
 	RECT m_tank_rt[5];
+	Missile *ME[5];
+	RECT m_missile_rt[5];
 public:
 
 	GameSystem();
@@ -48,9 +51,11 @@ public:
 	void Show_Map();
 	void Show_Bush();
 	int Show_Tank();
+	void Show_Missile();
 	int Check_Block_Tank(int num);
 	int Create_Tank();
 	void Set_Enemy_Pos(int num);
+	
 
 	~GameSystem();
 };

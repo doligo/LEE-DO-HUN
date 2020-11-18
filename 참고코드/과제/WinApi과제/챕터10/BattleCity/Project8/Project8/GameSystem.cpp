@@ -12,7 +12,10 @@ GameSystem::GameSystem()
 	move_time = 0;
 
 	for (int i = 0; i < 5; i++)
+	{
 		m_tank_rt[i] = { 0,0,0,0 };
+		m_missile_rt[i] = { 0,0,0,0 };
+	}
 }
 
 void GameSystem::Init(HWND hWnd)
@@ -27,6 +30,8 @@ void GameSystem::Init(HWND hWnd)
 	{
 		TK[i] = new Tank(); // 탱크생성
 		TK[i]->Init_Tank(i);
+		ME[i] = new Missile(); // 미사일생성
+		ME[i]->Init_Missile(i);
 	}
 }
 
@@ -77,6 +82,7 @@ void GameSystem::Game_Screen()
 	Create_Tank();
 	Show_Tank();
 	Show_Bush();
+	Show_Missile();
 	B_A_D->Draw_Go(); // 일반 draw함수는 렉때문에 TransparentBlt을 먼저 쓴후 BitBlt으로 출력하게 함 (draw_ready로 긁어서 draw_go로 뿌리기)
 
 	Control_Tank();
@@ -122,11 +128,12 @@ void GameSystem::Control_Tank()
 	}
 	else if (GetKeyState(VK_SPACE) & 0x8000)
 	{
-		TK[0]->Shot();
-		// 총알나가게 하는 함수
+		ME[0]->Move_Missile(TK[0]->Get_Tank_Direct());
 	}
 
 	m_tank_rt[0] = { TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), TK[0]->player_start_x + TK[0]->Get_Tank_X() + 28, TK[0]->player_start_y + TK[0]->Get_Tank_Y() + 20 };
+	if (ME[0]->Get_Missile_Status() == FALSE) // 처음 쏠때 rect설정을 해준다
+		m_missile_rt[0] = { m_tank_rt[0].left + ME[0]->Get_Missile_X() + 12, m_tank_rt[0].top + ME[0]->Get_Missile_Y(), m_tank_rt[0].left + ME[0]->Get_Missile_X() + 12 + 10, m_tank_rt[0].top + ME[0]->Get_Missile_Y() + 7 };
 
 	if (clock() - move_time >= 10)
 	{
@@ -223,6 +230,15 @@ int GameSystem::Show_Tank()
 	return 0;
 }
 
+void GameSystem::Show_Missile()
+{
+	if (ME[0]->Get_Missile_Player() == TRUE && ME[0]->Get_Missile_Status() == TRUE)
+	{
+		if (UP == ME[0]->Get_Missile_Direct())
+			B_A_D->Draw_Ready(m_missile_rt[0].left + ME[0]->Get_Missile_X(), m_missile_rt[0].top + ME[0]->Get_Missile_Y(), MISSILE_UP, MISSILE_UP);
+	}
+}
+
 int GameSystem::Check_Block_Tank(int num)
 {
 	RECT temp;
@@ -253,7 +269,7 @@ int GameSystem::Check_Block_Tank(int num)
 				tmp = MP->Get_Map_Info(i, j);
 				if (IntersectRect(&temp, &m_tank_rt[num], &m_block_rt[_num]) && tmp != 'N' && tmp != 'b')
 					return 1;
-				else if (0 >= m_tank_rt[num].left || 0 >= m_tank_rt[num].top || 921 <= m_tank_rt[num].right || 698 <= m_tank_rt[num].bottom)
+				else if (0 >= m_tank_rt[num].left || 0 >= m_tank_rt[num].top || 920 <= m_tank_rt[num].right || 698 <= m_tank_rt[num].bottom)
 					return 1;
 				_num++;
 			}

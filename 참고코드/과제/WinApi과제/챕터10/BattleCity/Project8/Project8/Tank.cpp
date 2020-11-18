@@ -82,11 +82,6 @@ void Tank::Moveing(int dir)
 		move_count = 0;
 }
 
-void Tank::Shot()
-{
-
-}
-
 int Tank::Get_Tank_X()
 {
 	return m_ix;
