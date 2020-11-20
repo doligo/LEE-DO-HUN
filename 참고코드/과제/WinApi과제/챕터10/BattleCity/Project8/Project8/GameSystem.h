@@ -58,7 +58,8 @@ public:
 	int Check_Block_Tank(int num);
 	int Create_Tank();
 	void Set_Enemy_Pos(int num);
-	void Set_Missile();
+	void Set_Missile_Start();
+	void Set_Missile_Rt();
 	void Missile_End_Check();
 	
 

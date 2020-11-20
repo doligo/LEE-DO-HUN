@@ -43,19 +43,19 @@ int Missile::Move_Missile(int dir)
 	{
 		if (m_direct == UP)
 		{
-			m_iy -= 3;
+			m_iy -= 2;
 		}
 		else if (m_direct == DOWN)
 		{
-			m_iy += 3;
+			m_iy += 2;
 		}
 		else if (m_direct == LEFT)
 		{
-			m_ix -= 3;
+			m_ix -= 2;
 		}
 		else if (m_direct == RIGHT)
 		{
-			m_ix += 3;
+			m_ix += 2;
 		}
 	}
 

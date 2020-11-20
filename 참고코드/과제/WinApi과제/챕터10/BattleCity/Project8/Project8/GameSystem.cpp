@@ -124,7 +124,7 @@ void GameSystem::Control_Tank()
 			TK[0]->Moveing(LEFT);
 		else
 			TK[0]->RollBack_pos();
-	}
+	 }
 	else if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
 		result = Check_Block_Tank(0);
@@ -161,8 +161,9 @@ void GameSystem::Control_Tank()
 		move_time = clock();
 	}
 
-	Set_Missile(); // (GetKeyState(VK_SPACE) & 0x8000) 입력됬을 경우 미사일설정
-	Missile_End_Check(); // 맵밖으로 나간것 체크
+	Set_Missile_Start(); // (GetKeyState(VK_SPACE) & 0x8000) 입력됬을 경우 미사일설정
+	Set_Missile_Rt(); // 미사일 rt를 매번 업데이트
+	Missile_End_Check(); // 미사일 맵밖으로 나간것 체크
 }
 
 void GameSystem::Show_Map()
@@ -245,13 +246,13 @@ void GameSystem::Show_Missile()
 	if (ME[0]->Get_Missile_Player() == TRUE && ME[0]->Get_Missile_Status() == TRUE)
 	{
 		if (UP == ME[0]->Get_Missile_Direct())
-			B_A_D->Draw_Ready(m_missile_rt[0].left + ME[0]->Get_Missile_X(), m_missile_rt[0].top + ME[0]->Get_Missile_Y(), MISSILE_UP, MISSILE_UP);
+			B_A_D->Draw_Ready(ME[0]->missile_start_x + ME[0]->Get_Missile_X(), ME[0]->missile_start_y + ME[0]->Get_Missile_Y(), MISSILE_UP, MISSILE_UP);
 		else if (DOWN == ME[0]->Get_Missile_Direct())
-			B_A_D->Draw_Ready(m_missile_rt[0].left + ME[0]->Get_Missile_X(), m_missile_rt[0].top + ME[0]->Get_Missile_Y(), MISSILE_DOWN, MISSILE_DOWN);
+			B_A_D->Draw_Ready(ME[0]->missile_start_x + ME[0]->Get_Missile_X(), ME[0]->missile_start_y + ME[0]->Get_Missile_Y(), MISSILE_DOWN, MISSILE_DOWN);
 		else if (LEFT == ME[0]->Get_Missile_Direct())
-			B_A_D->Draw_Ready(m_missile_rt[0].left + ME[0]->Get_Missile_X(), m_missile_rt[0].top + ME[0]->Get_Missile_Y(), MISSILE_LEFT, MISSILE_LEFT);
+			B_A_D->Draw_Ready(ME[0]->missile_start_x + ME[0]->Get_Missile_X(), ME[0]->missile_start_y + ME[0]->Get_Missile_Y(), MISSILE_LEFT, MISSILE_LEFT);
 		else if (RIGHT == ME[0]->Get_Missile_Direct())
-			B_A_D->Draw_Ready(m_missile_rt[0].left + ME[0]->Get_Missile_X(), m_missile_rt[0].top + ME[0]->Get_Missile_Y(), MISSILE_RIGHT, MISSILE_RIGHT);
+			B_A_D->Draw_Ready(ME[0]->missile_start_x + ME[0]->Get_Missile_X(), ME[0]->missile_start_y + ME[0]->Get_Missile_Y(), MISSILE_RIGHT, MISSILE_RIGHT);
 	}
 }
 
@@ -355,23 +356,46 @@ void GameSystem::Set_Enemy_Pos(int num)
 	}
 }
 
-void GameSystem::Set_Missile()
+void GameSystem::Set_Missile_Start()
 {
 	if (ME[0]->Get_Missile_Status() == FALSE)
 	{
-		ME[0]->missile_start_x = m_tank_rt[0].left;
-		ME[0]->missile_start_y = m_tank_rt[0].top;
-
 		if (TK[0]->Get_Tank_Direct() == UP)
-			m_missile_rt[0] = { ME[0]->missile_start_x + ME[0]->Get_Missile_X() + 13, ME[0]->missile_start_y + ME[0]->Get_Missile_Y(), ME[0]->missile_start_x + ME[0]->Get_Missile_X() + 13 + 10, ME[0]->missile_start_y + ME[0]->Get_Missile_Y() + 7 };
+		{
+			ME[0]->missile_start_x = m_tank_rt[0].left + 13;
+			ME[0]->missile_start_y = m_tank_rt[0].top;
+		}
 		else if (TK[0]->Get_Tank_Direct() == DOWN)
-			m_missile_rt[0] = { ME[0]->missile_start_x + ME[0]->Get_Missile_X() + 15, ME[0]->missile_start_y + ME[0]->Get_Missile_Y() + 16, ME[0]->missile_start_x + ME[0]->Get_Missile_X() + 15 + 10, ME[0]->missile_start_y + ME[0]->Get_Missile_Y() + 16 + 7 };
+		{
+			ME[0]->missile_start_x = m_tank_rt[0].left + 15;
+			ME[0]->missile_start_y = m_tank_rt[0].top + 16;
+		}
 		else if (TK[0]->Get_Tank_Direct() == LEFT)
-			m_missile_rt[0] = { ME[0]->missile_start_x + ME[0]->Get_Missile_X() + 5, ME[0]->missile_start_y + ME[0]->Get_Missile_Y() + 12, ME[0]->missile_start_x + ME[0]->Get_Missile_X() + 5 + 10, ME[0]->missile_start_y + ME[0]->Get_Missile_Y() + 12 + 7 };
+		{
+			ME[0]->missile_start_x = m_tank_rt[0].left + 5;
+			ME[0]->missile_start_y = m_tank_rt[0].top + 12;
+		}
 		else if (TK[0]->Get_Tank_Direct() == RIGHT)
-			m_missile_rt[0] = { ME[0]->missile_start_x + ME[0]->Get_Missile_X() + 19, ME[0]->missile_start_y + ME[0]->Get_Missile_Y() + 9, ME[0]->missile_start_x + ME[0]->Get_Missile_X() + 19 + 10, ME[0]->missile_start_y + ME[0]->Get_Missile_Y() + 9 + 7 };
+		{
+			ME[0]->missile_start_x = m_tank_rt[0].left + 19;
+			ME[0]->missile_start_y = m_tank_rt[0].top + 9;
+		}
 	}
+}
 
+void GameSystem::Set_Missile_Rt()
+{
+	if (ME[0]->Get_Missile_Status() == TRUE)
+	{
+		if (TK[0]->Get_Tank_Direct() == UP)
+			m_missile_rt[0] = { ME[0]->missile_start_x + ME[0]->Get_Missile_X(), ME[0]->missile_start_y + ME[0]->Get_Missile_Y(), ME[0]->missile_start_x + ME[0]->Get_Missile_X() + 10, ME[0]->missile_start_y + ME[0]->Get_Missile_Y() + 7 };
+		else if (TK[0]->Get_Tank_Direct() == DOWN)
+			m_missile_rt[0] = { ME[0]->missile_start_x + ME[0]->Get_Missile_X(), ME[0]->missile_start_y + ME[0]->Get_Missile_Y(), ME[0]->missile_start_x + ME[0]->Get_Missile_X() + 10, ME[0]->missile_start_y + ME[0]->Get_Missile_Y() + 7 };
+		else if (TK[0]->Get_Tank_Direct() == LEFT)
+			m_missile_rt[0] = { ME[0]->missile_start_x + ME[0]->Get_Missile_X(), ME[0]->missile_start_y + ME[0]->Get_Missile_Y(), ME[0]->missile_start_x + ME[0]->Get_Missile_X() + 10, ME[0]->missile_start_y + ME[0]->Get_Missile_Y() + 7 };
+		else if (TK[0]->Get_Tank_Direct() == RIGHT)
+			m_missile_rt[0] = { ME[0]->missile_start_x + ME[0]->Get_Missile_X(), ME[0]->missile_start_y + ME[0]->Get_Missile_Y(), ME[0]->missile_start_x + ME[0]->Get_Missile_X() + 10, ME[0]->missile_start_y + ME[0]->Get_Missile_Y() + 7 };
+	}
 }
 
 void GameSystem::Missile_End_Check()
@@ -383,6 +407,8 @@ void GameSystem::Missile_End_Check()
 			player_missile = FALSE;
 			ME[0]->Set_Missile_Status(FALSE);
 			m_missile_rt[0] = { 0,0,0,0 };
+			ME[0]->missile_start_x = 0;
+			ME[0]->missile_start_y = 0;
 		}
 	}
 }
