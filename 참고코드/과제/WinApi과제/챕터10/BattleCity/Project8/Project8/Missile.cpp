@@ -11,24 +11,22 @@ Missile::Missile()
 	missile_start_y = 0;
 }
 
-void Missile::Init_Missile(int num)
+void Missile::Init_Missile()
 {
-	if (num == 0)
-	{
-		m_ix = 0;
-		m_iy = 0;
-		m_direct = 0;
-		m_check_player = TRUE;
-		m_status = FALSE;
-	}
-	else if (num > 0)
-	{
-		m_ix = 0;
-		m_iy = 0;
-		m_direct = 0;
-		m_check_player = FALSE;
-		m_status = FALSE;
-	}
+	m_ix = 0;
+	m_iy = 0;
+	m_direct = 0;
+	m_check_player = FALSE;
+	m_status = FALSE;
+}
+
+void Missile::Init_Player_Missile()
+{
+	m_ix = 0;
+	m_iy = 0;
+	m_direct = 0;
+	m_check_player = TRUE;
+	m_status = FALSE;
 }
 
 int Missile::Move_Missile(int dir)

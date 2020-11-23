@@ -22,7 +22,8 @@ public:
 	int missile_start_x;
 	int missile_start_y;
 
-	void Init_Missile(int num);
+	void Init_Missile();
+	void Init_Player_Missile();
 	int Move_Missile(int dir);
 	int Get_Missile_X();
 	int Get_Missile_Y();

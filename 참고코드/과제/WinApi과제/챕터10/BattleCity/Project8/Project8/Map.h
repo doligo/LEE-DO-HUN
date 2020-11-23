@@ -20,6 +20,7 @@ public:
 
 	void Init_Map(int select_stage);
 	char Get_Map_Info(int height, int width);
+	void Set_Map_Info(int height, int width, char value);
 
 	~Map();
 };

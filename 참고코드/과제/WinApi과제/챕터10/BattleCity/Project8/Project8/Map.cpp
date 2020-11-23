@@ -28,6 +28,11 @@ char Map::Get_Map_Info(int height, int width)
 	return maps[height][width];
 }
 
+void Map::Set_Map_Info(int height, int width, char value)
+{
+	maps[height][width] = value;
+}
+
 Map::~Map()
 {
 

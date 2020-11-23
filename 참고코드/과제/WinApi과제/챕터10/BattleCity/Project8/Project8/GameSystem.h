@@ -23,8 +23,11 @@ private:
 	Tank *TK[5];
 	RECT m_block_rt[BLOCK_MAX]; // rect는 시스템에서 관리하기가 편함
 	RECT m_tank_rt[5];
-	Missile *ME[5];
-	RECT m_missile_rt[5];
+
+	Missile *PLAYER_ME[3];
+	Missile *ME[4];
+	RECT m_player_missile_rt[3];
+	RECT m_missile_rt[4];
 public:
 
 	GameSystem();
@@ -36,8 +39,10 @@ public:
 
 	int cur_time;
 	int move_time;
+	int missile_time;
 
-	int missile_on[5];
+	int player_missile_on[3];
+	int missile_on[4];
 
 	static GameSystem *GetInstane()
 	{
@@ -60,6 +65,9 @@ public:
 	void Set_Missile_Start();
 	void Set_Missile_Rt();
 	void Missile_End_Check();
+	void Player_Missile_Dead(int num);
+	void Missile_Dead(int num);
+	int Block_Collision(int num);
 	
 
 	~GameSystem();
