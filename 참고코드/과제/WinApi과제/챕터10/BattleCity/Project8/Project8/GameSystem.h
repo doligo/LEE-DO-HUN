@@ -37,8 +37,7 @@ public:
 	int cur_time;
 	int move_time;
 
-	int player_missile;
-	int enemy_missile[4];
+	int missile_on[5];
 
 	static GameSystem *GetInstane()
 	{

@@ -10,11 +10,10 @@ GameSystem::GameSystem()
 	player_life = 4;
 	cur_time = 0;
 	move_time = 0;
-	player_missile = FALSE;
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 5; i++)
 	{
-		enemy_missile[i] = FALSE;
+		missile_on[i] = FALSE;
 	}
 
 	for (int i = 0; i < 5; i++)
@@ -99,7 +98,6 @@ void GameSystem::Control_Tank()
 	int result = 0;
 	int key = 0;
 
-
 	if (GetKeyState(VK_UP) & 0x8000)
 	{
 		result = Check_Block_Tank(0);
@@ -135,12 +133,14 @@ void GameSystem::Control_Tank()
 	}
 	else if (GetKeyState(VK_SPACE) & 0x8000)
 	{
-		player_missile = TRUE;
+		missile_on[0] = TRUE;
 	}
-	if (player_missile == TRUE)
+	if (missile_on[0] == TRUE)
 		ME[0]->Move_Missile(TK[0]->Get_Tank_Direct());
 
 	m_tank_rt[0] = { TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), TK[0]->player_start_x + TK[0]->Get_Tank_X() + 28, TK[0]->player_start_y + TK[0]->Get_Tank_Y() + 20 };
+
+	////////////////// 이밑은 enemy
 
 	if (clock() - move_time >= 10)
 	{
@@ -160,6 +160,14 @@ void GameSystem::Control_Tank()
 		}
 		move_time = clock();
 	}
+
+	for (int i = 1; i < 5; i++)
+	{
+		if (missile_on[i] == TRUE)
+			ME[i]->Move_Missile(TK[i]->Get_Tank_Direct());
+	}
+
+	///////////////// 이밑은 미사일관련함수
 
 	Set_Missile_Start(); // (GetKeyState(VK_SPACE) & 0x8000) 입력됬을 경우 미사일설정
 	Set_Missile_Rt(); // 미사일 rt를 매번 업데이트
@@ -253,6 +261,21 @@ void GameSystem::Show_Missile()
 			B_A_D->Draw_Ready(ME[0]->missile_start_x + ME[0]->Get_Missile_X(), ME[0]->missile_start_y + ME[0]->Get_Missile_Y(), MISSILE_LEFT, MISSILE_LEFT);
 		else if (RIGHT == ME[0]->Get_Missile_Direct())
 			B_A_D->Draw_Ready(ME[0]->missile_start_x + ME[0]->Get_Missile_X(), ME[0]->missile_start_y + ME[0]->Get_Missile_Y(), MISSILE_RIGHT, MISSILE_RIGHT);
+	}
+
+	for (int i = 1; i < 5; i++)
+	{
+		if (ME[i]->Get_Missile_Player() == TRUE && ME[i]->Get_Missile_Status() == TRUE)
+		{
+			if (UP == ME[i]->Get_Missile_Direct())
+				B_A_D->Draw_Ready(ME[i]->missile_start_x + ME[i]->Get_Missile_X(), ME[i]->missile_start_y + ME[i]->Get_Missile_Y(), MISSILE_UP, MISSILE_UP);
+			else if (DOWN == ME[i]->Get_Missile_Direct())
+				B_A_D->Draw_Ready(ME[i]->missile_start_x + ME[i]->Get_Missile_X(), ME[i]->missile_start_y + ME[i]->Get_Missile_Y(), MISSILE_DOWN, MISSILE_DOWN);
+			else if (LEFT == ME[i]->Get_Missile_Direct())
+				B_A_D->Draw_Ready(ME[i]->missile_start_x + ME[i]->Get_Missile_X(), ME[i]->missile_start_y + ME[i]->Get_Missile_Y(), MISSILE_LEFT, MISSILE_LEFT);
+			else if (RIGHT == ME[i]->Get_Missile_Direct())
+				B_A_D->Draw_Ready(ME[i]->missile_start_x + ME[i]->Get_Missile_X(), ME[i]->missile_start_y + ME[i]->Get_Missile_Y(), MISSILE_RIGHT, MISSILE_RIGHT);
+		}
 	}
 }
 
@@ -381,6 +404,39 @@ void GameSystem::Set_Missile_Start()
 			ME[0]->missile_start_y = m_tank_rt[0].top + 9;
 		}
 	}
+
+	for (int i = 1; i < 5; i++)
+	{
+		if (ME[i]->Get_Missile_Status() == FALSE)
+		{
+			if (TK[i]->Get_Tank_Direct() == UP)
+			{
+				ME[i]->missile_start_x = m_tank_rt[i].left + 13;
+				ME[i]->missile_start_y = m_tank_rt[i].top;
+			}
+			else if (TK[i]->Get_Tank_Direct() == DOWN)
+			{
+				ME[i]->missile_start_x = m_tank_rt[i].left + 15;
+				ME[i]->missile_start_y = m_tank_rt[i].top + 16;
+			}
+			else if (TK[i]->Get_Tank_Direct() == LEFT)
+			{
+				ME[i]->missile_start_x = m_tank_rt[i].left + 5;
+				ME[i]->missile_start_y = m_tank_rt[i].top + 12;
+			}
+			else if (TK[i]->Get_Tank_Direct() == RIGHT)
+			{
+				ME[i]->missile_start_x = m_tank_rt[i].left + 19;
+				ME[i]->missile_start_y = m_tank_rt[i].top + 9;
+			}
+		}
+
+		if (TK[i]->Get_Status() == ALIVE)
+		{
+			missile_on[i] = TRUE;
+			cur_time = clock();
+		}
+	}
 }
 
 void GameSystem::Set_Missile_Rt()
@@ -396,6 +452,21 @@ void GameSystem::Set_Missile_Rt()
 		else if (TK[0]->Get_Tank_Direct() == RIGHT)
 			m_missile_rt[0] = { ME[0]->missile_start_x + ME[0]->Get_Missile_X(), ME[0]->missile_start_y + ME[0]->Get_Missile_Y(), ME[0]->missile_start_x + ME[0]->Get_Missile_X() + 10, ME[0]->missile_start_y + ME[0]->Get_Missile_Y() + 7 };
 	}
+
+	for (int i = 1; i < 5; i++)
+	{
+		if (ME[i]->Get_Missile_Status() == TRUE)
+		{
+			if (TK[i]->Get_Tank_Direct() == UP)
+				m_missile_rt[i] = { ME[i]->missile_start_x + ME[i]->Get_Missile_X(), ME[i]->missile_start_y + ME[i]->Get_Missile_Y(), ME[i]->missile_start_x + ME[i]->Get_Missile_X() + 10, ME[i]->missile_start_y + ME[i]->Get_Missile_Y() + 7 };
+			else if (TK[i]->Get_Tank_Direct() == DOWN)
+				m_missile_rt[i] = { ME[i]->missile_start_x + ME[i]->Get_Missile_X(), ME[i]->missile_start_y + ME[i]->Get_Missile_Y(), ME[i]->missile_start_x + ME[i]->Get_Missile_X() + 10, ME[i]->missile_start_y + ME[i]->Get_Missile_Y() + 7 };
+			else if (TK[i]->Get_Tank_Direct() == LEFT)
+				m_missile_rt[i] = { ME[i]->missile_start_x + ME[i]->Get_Missile_X(), ME[i]->missile_start_y + ME[i]->Get_Missile_Y(), ME[i]->missile_start_x + ME[i]->Get_Missile_X() + 10, ME[i]->missile_start_y + ME[i]->Get_Missile_Y() + 7 };
+			else if (TK[i]->Get_Tank_Direct() == RIGHT)
+				m_missile_rt[i] = { ME[i]->missile_start_x + ME[i]->Get_Missile_X(), ME[i]->missile_start_y + ME[i]->Get_Missile_Y(), ME[i]->missile_start_x + ME[i]->Get_Missile_X() + 10, ME[i]->missile_start_y + ME[i]->Get_Missile_Y() + 7 };
+		}
+	}
 }
 
 void GameSystem::Missile_End_Check()
@@ -404,11 +475,30 @@ void GameSystem::Missile_End_Check()
 	{
 		if (0 >= m_missile_rt[0].left || 0 >= m_missile_rt[0].top || 920 <= m_missile_rt[0].right || 698 <= m_missile_rt[0].bottom)
 		{
-			player_missile = FALSE;
+			missile_on[0] = FALSE;
 			ME[0]->Set_Missile_Status(FALSE);
 			m_missile_rt[0] = { 0,0,0,0 };
 			ME[0]->missile_start_x = 0;
 			ME[0]->missile_start_y = 0;
+			ME[0]->Set_Missile_X(0);
+			ME[0]->Set_Missile_Y(0); // all 초기화
+		}
+	}
+
+	for (int i = 1; i < 5; i++)
+	{
+		if (ME[i]->Get_Missile_Status() == TRUE)
+		{
+			if (0 >= m_missile_rt[i].left || 0 >= m_missile_rt[i].top || 920 <= m_missile_rt[i].right || 698 <= m_missile_rt[i].bottom)
+			{
+				missile_on[i] = FALSE;
+				ME[i]->Set_Missile_Status(FALSE);
+				m_missile_rt[i] = { 0,0,0,0 };
+				ME[i]->missile_start_x = 0;
+				ME[i]->missile_start_y = 0;
+				ME[i]->Set_Missile_X(0);
+				ME[i]->Set_Missile_Y(0); // all 초기화
+			}
 		}
 	}
 }

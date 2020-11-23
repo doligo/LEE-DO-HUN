@@ -43,19 +43,19 @@ int Missile::Move_Missile(int dir)
 	{
 		if (m_direct == UP)
 		{
-			m_iy -= 2;
+			m_iy -= 3;
 		}
 		else if (m_direct == DOWN)
 		{
-			m_iy += 2;
+			m_iy += 3;
 		}
 		else if (m_direct == LEFT)
 		{
-			m_ix -= 2;
+			m_ix -= 3;
 		}
 		else if (m_direct == RIGHT)
 		{
-			m_ix += 2;
+			m_ix += 3;
 		}
 	}
 
@@ -70,6 +70,16 @@ int Missile::Get_Missile_X()
 int Missile::Get_Missile_Y()
 {
 	return m_iy;
+}
+
+void Missile::Set_Missile_X(int value)
+{
+	m_ix = value;
+}
+
+void Missile::Set_Missile_Y(int value)
+{
+	m_iy = value;
 }
 
 int Missile::Get_Missile_Status()

@@ -26,6 +26,8 @@ public:
 	int Move_Missile(int dir);
 	int Get_Missile_X();
 	int Get_Missile_Y();
+	void Set_Missile_X(int value);
+	void Set_Missile_Y(int value);
 	int Get_Missile_Status();
 	void Set_Missile_Status(int value);
 	int Get_Missile_Player();
