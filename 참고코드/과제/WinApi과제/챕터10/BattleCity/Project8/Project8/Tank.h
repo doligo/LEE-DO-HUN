@@ -43,6 +43,8 @@ public:
 	int Get_Status();
 	void Set_Status(int value);
 	void RollBack_pos();
+	void Set_Tank_X(int num);
+	void Set_Tank_Y(int num);
 
 	~Tank();
 };

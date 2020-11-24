@@ -123,6 +123,16 @@ void Tank::RollBack_pos()
 	m_iy = m_pre_y;
 }
 
+void Tank::Set_Tank_X(int num)
+{
+	m_ix = num;
+}
+
+void Tank::Set_Tank_Y(int num)
+{
+	m_iy = num;
+}
+
 Tank::~Tank()
 {
 

@@ -112,6 +112,7 @@ void GameSystem::Control_Tank()
 {
 	int result = 0;
 	int key = 0;
+	int trigger = 0;
 
 	if (GetKeyState(VK_UP) & 0x8000)
 	{
@@ -201,7 +202,13 @@ void GameSystem::Control_Tank()
 	Missile_End_Check(); // 미사일 맵밖으로 나간것 체크
 
 	for (int i = 0; i < 4; i++)
-		Block_Collision(i);
+	{
+		trigger = Block_Collision(i);
+		if (trigger == TRUE)
+			break;
+	}
+
+	Tank_Collision();
 }
 
 void GameSystem::Show_Map()
@@ -563,29 +570,58 @@ int GameSystem::Block_Collision(int num)
 			{
 				MP->Set_Map_Info(i, j, 'N');
 				Missile_Dead(num);
-				break;
+				return 1;
 			}
 			else if (IntersectRect(&temp, &m_missile_rt[num], &m_block_rt[_nums]) && tmp == 'W') // 화이트블럭은 무적
 			{
 				Missile_Dead(num);
-				break;
+				return 1;
 			}
 			else if (IntersectRect(&temp, &m_player_missile_rt[num], &m_block_rt[_nums]) && tmp != 'N' && tmp != 'b' && tmp != 'w' && tmp != 'W')
 			{
 				MP->Set_Map_Info(i, j, 'N');
 				Player_Missile_Dead(num);
-				break;
+				return 1;
 			}
 			else if (IntersectRect(&temp, &m_player_missile_rt[num], &m_block_rt[_nums]) && tmp == 'W') // 화이트블럭은 무적
 			{
 				Player_Missile_Dead(num);
-				break;
+				return 1;
 			}
 			_nums++;
 		}
 	}
-	//// **블럭 이상하게 사라지는것 수정하기 return 으로 상위함수도 종료시켜보기
 	return 0;
+}
+
+int GameSystem::Tank_Collision()
+{
+	RECT temp;
+	int _nums = 0;
+
+	for (int i = 0; i < 3; i++) // 플레이어 탄환 갯수
+	{
+		for (int j = 1; j < 5; j++) // 적 탱크 갯수
+		{
+			if (IntersectRect(&temp, &m_player_missile_rt[i], &m_tank_rt[j]))
+			{
+				Player_Missile_Dead(i);
+				Tank_Dead(j);
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+void GameSystem::Tank_Dead(int num)
+{
+	TK[num]->Set_Status(DEAD);
+	m_tank_rt[num] = { 0,0,0,0 };
+	TK[num]->enemy_start_x = 0;
+	TK[num]->enemy_start_y = 0;
+	TK[num]->Set_Tank_X(0);
+	TK[num]->Set_Tank_Y(0);
 }
 
 GameSystem::~GameSystem()

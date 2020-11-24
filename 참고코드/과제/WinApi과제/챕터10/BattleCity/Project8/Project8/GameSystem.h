@@ -68,6 +68,8 @@ public:
 	void Player_Missile_Dead(int num);
 	void Missile_Dead(int num);
 	int Block_Collision(int num);
+	int Tank_Collision();
+	void Tank_Dead(int num);
 	
 
 	~GameSystem();
