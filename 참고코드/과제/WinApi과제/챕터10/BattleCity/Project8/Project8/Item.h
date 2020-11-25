@@ -8,6 +8,9 @@ class Item
 private:
 public:
 	Item();
+
+	void Init_Item();
+
 	~Item();
 };
 

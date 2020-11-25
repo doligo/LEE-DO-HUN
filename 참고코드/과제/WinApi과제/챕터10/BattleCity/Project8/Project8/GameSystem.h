@@ -28,6 +28,8 @@ private:
 	Missile *ME[4];
 	RECT m_player_missile_rt[3];
 	RECT m_missile_rt[4];
+
+	RECT m_explosion_rt[5];
 public:
 
 	GameSystem();
@@ -40,9 +42,13 @@ public:
 	int cur_time;
 	int move_time;
 	int missile_time;
+	int player_explosion_time;
+	int explosion_time[4];
 
 	int player_missile_on[3];
 	int missile_on[4];
+
+	int explosion_motion;
 
 	static GameSystem *GetInstane()
 	{
@@ -68,8 +74,10 @@ public:
 	void Player_Missile_Dead(int num);
 	void Missile_Dead(int num);
 	int Block_Collision(int num);
-	int Tank_Collision();
+	void Tank_Collision();
 	void Tank_Dead(int num);
+	void Missile_Collision();
+	void Show_Tank_Collision();
 	
 
 	~GameSystem();

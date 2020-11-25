@@ -11,6 +11,8 @@ GameSystem::GameSystem()
 	cur_time = 0;
 	move_time = 0;
 	missile_time = 0;
+	explosion_motion = 0;
+	player_explosion_time = 0;
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -22,10 +24,14 @@ GameSystem::GameSystem()
 	{
 		missile_on[i] = FALSE;
 		m_missile_rt[i] = { 0,0,0,0 };
+		explosion_time[i] = 0;
 	}
 
 	for (int i = 0; i < 5; i++)
 		m_tank_rt[i] = { 0,0,0,0 };
+
+	for (int j = 0; j < 5; j++)
+		m_explosion_rt[j] = { 0,0,0,0 };
 }
 
 void GameSystem::Init(HWND hWnd)
@@ -151,7 +157,7 @@ void GameSystem::Control_Tank()
 	{
 		for (int i = 0; i < 3; i++)
 		{
-			if (player_missile_on[i] == FALSE && clock() - missile_time >= 700)
+			if (player_missile_on[i] == FALSE && clock() - missile_time >= 600)
 			{
 				player_missile_on[i] = TRUE;
 				missile_time = clock();
@@ -209,6 +215,7 @@ void GameSystem::Control_Tank()
 	}
 
 	Tank_Collision();
+	Missile_Collision();
 }
 
 void GameSystem::Show_Map()
@@ -282,6 +289,8 @@ int GameSystem::Show_Tank()
 				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), ENEMY_RIGHT_00 + TK[i]->Get_Tank_Motion(), ENEMY_RIGHT_00 + TK[i]->Get_Tank_Motion());
 		}
 	}
+
+	Show_Tank_Collision();
 
 	return 0;
 }
@@ -594,10 +603,9 @@ int GameSystem::Block_Collision(int num)
 	return 0;
 }
 
-int GameSystem::Tank_Collision()
+void GameSystem::Tank_Collision()
 {
 	RECT temp;
-	int _nums = 0;
 
 	for (int i = 0; i < 3; i++) // ÇÃ·¹ÀÌ¾î ÅºÈ¯ °¹¼ö
 	{
@@ -605,13 +613,24 @@ int GameSystem::Tank_Collision()
 		{
 			if (IntersectRect(&temp, &m_player_missile_rt[i], &m_tank_rt[j]))
 			{
+				m_explosion_rt[j] = m_tank_rt[j]; // Æø¹ßÇÒ rt ÀúÀå
 				Player_Missile_Dead(i);
 				Tank_Dead(j);
-				return 1;
+				return;
 			}
 		}
 	}
-	return 0;
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (IntersectRect(&temp, &m_missile_rt[i], &m_tank_rt[0]))
+		{
+			m_explosion_rt[0] = m_tank_rt[0];
+			Missile_Dead(i);
+			Tank_Dead(0);
+			return;
+		}
+	}
 }
 
 void GameSystem::Tank_Dead(int num)
@@ -622,6 +641,70 @@ void GameSystem::Tank_Dead(int num)
 	TK[num]->enemy_start_y = 0;
 	TK[num]->Set_Tank_X(0);
 	TK[num]->Set_Tank_Y(0);
+}
+
+void GameSystem::Missile_Collision()
+{
+	RECT temp;
+
+	for (int i = 0; i < 3; i++) // ÇÃ·¹ÀÌ¾î ÅºÈ¯
+	{
+		for (int j = 0; j < 4; j++) // Àû ÅºÈ¯
+		{
+			if (IntersectRect(&temp, &m_player_missile_rt[i], &m_missile_rt[j]))
+			{
+				Player_Missile_Dead(i);
+				Missile_Dead(j);
+				return;
+			}
+		}
+	}
+}
+
+void GameSystem::Show_Tank_Collision()
+{
+	if (m_explosion_rt[0].left != 0)
+	{
+		if (explosion_motion < 3)
+			B_A_D->Draw_Ready(m_explosion_rt[0].left, m_explosion_rt[0].top, EXPLOSION_00 + explosion_motion, EXPLOSION_00 + explosion_motion);
+		else
+			B_A_D->Draw_Ready(m_explosion_rt[0].left - 20, m_explosion_rt[0].top - 9, EXPLOSION_00 + explosion_motion, EXPLOSION_00 + explosion_motion);
+
+		if (clock() - player_explosion_time >= 90)
+		{
+			explosion_motion++;
+			player_explosion_time = clock();
+		}
+
+		if (explosion_motion == 5)
+		{
+			m_explosion_rt[0] = { 0,0,0,0 };
+			explosion_motion = 0;
+		}
+	}
+
+	for (int i = 1; i < 5; i++)
+	{
+		if (m_explosion_rt[i].left != 0)
+		{
+			if (explosion_motion < 3)
+				B_A_D->Draw_Ready(m_explosion_rt[i].left, m_explosion_rt[i].top, EXPLOSION_00 + explosion_motion, EXPLOSION_00 + explosion_motion);
+			else
+				B_A_D->Draw_Ready(m_explosion_rt[i].left - 20, m_explosion_rt[i].top - 9, EXPLOSION_00 + explosion_motion, EXPLOSION_00 + explosion_motion);
+
+			if (clock() - explosion_time[i - 1] >= 90)
+			{
+				explosion_motion++;
+				explosion_time[i - 1] = clock();
+			}
+
+			if (explosion_motion == 5)
+			{
+				m_explosion_rt[i] = { 0,0,0,0 };
+				explosion_motion = 0;
+			}
+		}
+	}
 }
 
 GameSystem::~GameSystem()
