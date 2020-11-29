@@ -10,6 +10,7 @@ public:
 	Item();
 
 	void Init_Item();
+	void Shield_Item();
 
 	~Item();
 };
