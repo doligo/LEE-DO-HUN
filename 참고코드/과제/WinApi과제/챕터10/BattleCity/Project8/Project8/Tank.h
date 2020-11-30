@@ -45,6 +45,8 @@ public:
 	void RollBack_pos();
 	void Set_Tank_X(int num);
 	void Set_Tank_Y(int num);
+	bool Get_Tank_Shield();
+	void Set_Tank_Shield(int value);
 
 	~Tank();
 };

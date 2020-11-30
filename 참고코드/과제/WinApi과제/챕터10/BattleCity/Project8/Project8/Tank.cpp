@@ -8,6 +8,7 @@ Tank::Tank()
 	direct = NULL;
 	player = NULL;
 	status = DEAD;
+	shield = FALSE;
 }
 
 void Tank::Init_Tank(int player_or_enemy)
@@ -131,6 +132,16 @@ void Tank::Set_Tank_X(int num)
 void Tank::Set_Tank_Y(int num)
 {
 	m_iy = num;
+}
+
+bool Tank::Get_Tank_Shield()
+{
+	return shield;
+}
+
+void Tank::Set_Tank_Shield(int value)
+{
+	shield = value;
 }
 
 Tank::~Tank()

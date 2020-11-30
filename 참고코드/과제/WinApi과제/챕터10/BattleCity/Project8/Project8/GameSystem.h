@@ -44,6 +44,7 @@ public:
 	int missile_time;
 	int player_explosion_time;
 	int explosion_time[4];
+	int shield_time[5];
 
 	int player_missile_on[3];
 	int missile_on[4];
@@ -78,6 +79,8 @@ public:
 	void Tank_Dead(int num);
 	void Missile_Collision();
 	void Show_Tank_Collision();
+	void On_Shield(int num);
+	void Off_Shield(int num);
 	
 
 	~GameSystem();

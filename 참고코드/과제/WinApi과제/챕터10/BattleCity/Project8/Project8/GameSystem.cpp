@@ -28,7 +28,10 @@ GameSystem::GameSystem()
 	}
 
 	for (int i = 0; i < 5; i++)
+	{
 		m_tank_rt[i] = { 0,0,0,0 };
+		shield_time[i] = 0;
+	}
 
 	for (int j = 0; j < 5; j++)
 		m_explosion_rt[j] = { 0,0,0,0 };
@@ -705,6 +708,18 @@ void GameSystem::Show_Tank_Collision()
 			}
 		}
 	}
+}
+
+void GameSystem::On_Shield(int num)
+{
+	if (TK[num]->Get_Tank_Shield() == FALSE)
+		TK[num]->Set_Tank_Shield(TRUE);
+}
+
+void GameSystem::Off_Shield(int num)
+{
+	if (TK[num]->Get_Tank_Shield() == TRUE)
+		TK[num]->Set_Tank_Shield(FALSE);
 }
 
 GameSystem::~GameSystem()
