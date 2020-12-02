@@ -22,7 +22,9 @@ private:
 	int direct;
 	int player;
 	int shield;
+	int shield_motion;
 	int motion;
+	int speed;
 
 public:
 	Tank();
@@ -47,6 +49,8 @@ public:
 	void Set_Tank_Y(int num);
 	bool Get_Tank_Shield();
 	void Set_Tank_Shield(int value);
+	int Get_Tank_Shield_Motion();
+	void Set_Tank_Shield_Motion(int num);
 
 	~Tank();
 };

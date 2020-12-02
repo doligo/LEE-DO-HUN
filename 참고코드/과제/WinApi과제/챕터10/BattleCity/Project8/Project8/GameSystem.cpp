@@ -62,6 +62,9 @@ void GameSystem::Init(HWND hWnd)
 		PLAYER_ME[i] = new Missile(); // 플레이어 미사일
 		PLAYER_ME[i]->Init_Player_Missile();
 	}
+
+	IT = new Item();
+	IT->Init_Item();
 }
 
 void GameSystem::Title_Screen()
@@ -110,11 +113,21 @@ void GameSystem::Game_Screen()
 	Show_Map();
 	Create_Tank();
 	Show_Tank();
+	Show_Shield();
 	Show_Bush();
 	Show_Missile();
 	B_A_D->Draw_Go(); // 일반 draw함수는 렉때문에 TransparentBlt을 먼저 쓴후 BitBlt으로 출력하게 함 (draw_ready로 긁어서 draw_go로 뿌리기)
 
 	Control_Tank();
+
+	for (int i = 0; i < 5; i++)
+	{ 
+		if (TK[i]->Get_Tank_Shield() == TRUE && clock() - shield_time[i] >= 2550)
+		{
+			Off_Shield(i);
+			shield_time[i] = clock();
+		}
+	}
 }
 
 void GameSystem::Control_Tank()
@@ -298,6 +311,40 @@ int GameSystem::Show_Tank()
 	return 0;
 }
 
+void GameSystem::Show_Shield()
+{
+	if (TK[0]->Get_Tank_Shield() == TRUE)
+	{
+		if (TK[0]->Get_Tank_Shield_Motion() == 0)
+		{
+			B_A_D->Draw_Ready(TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), SHIELD_00 + TK[0]->Get_Tank_Shield_Motion(), SHIELD_00 + TK[0]->Get_Tank_Shield_Motion());
+			TK[0]->Set_Tank_Shield_Motion(1);
+		}
+		else if (TK[0]->Get_Tank_Shield_Motion() == 1)
+		{
+			B_A_D->Draw_Ready(TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), SHIELD_00 + TK[0]->Get_Tank_Shield_Motion(), SHIELD_00 + TK[0]->Get_Tank_Shield_Motion());
+			TK[0]->Set_Tank_Shield_Motion(0);
+		}
+	}
+
+	for (int i = 1; i < 5; i++)
+	{
+		if (TK[i]->Get_Tank_Shield() == TRUE)
+		{
+			if (TK[i]->Get_Tank_Shield_Motion() == 0)
+			{
+				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), SHIELD_00 + TK[i]->Get_Tank_Shield_Motion(), SHIELD_00 + TK[i]->Get_Tank_Shield_Motion());
+				TK[i]->Set_Tank_Shield_Motion(1);
+			}
+			else if (TK[i]->Get_Tank_Shield_Motion() == 1)
+			{
+				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), SHIELD_00 + TK[i]->Get_Tank_Shield_Motion(), SHIELD_00 + TK[i]->Get_Tank_Shield_Motion());
+				TK[i]->Set_Tank_Shield_Motion(0);
+			}
+		}
+	}
+}
+
 void GameSystem::Show_Missile()
 {
 	for (int i = 0; i < 3; i++)
@@ -379,6 +426,8 @@ int GameSystem::Create_Tank()
 		m_tank_rt[0] = { TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), TK[0]->player_start_x + TK[0]->Get_Tank_X() + 28, TK[0]->player_start_y + TK[0]->Get_Tank_Y() + 20 };
 		//// tank rect는 블럭보다 right와 bottom이 5씩 작다
 		player_life--;
+		On_Shield(0);
+		shield_time[0] = clock();
 	}
 
 	if (clock() - cur_time >= 2500)
@@ -389,6 +438,8 @@ int GameSystem::Create_Tank()
 			{
 				TK[i]->Set_Status(ALIVE);
 				Set_Enemy_Pos(i);
+				On_Shield(i);
+				shield_time[i] = clock();
 				break;
 			}
 		}
@@ -614,7 +665,7 @@ void GameSystem::Tank_Collision()
 	{
 		for (int j = 1; j < 5; j++) // 적 탱크 갯수
 		{
-			if (IntersectRect(&temp, &m_player_missile_rt[i], &m_tank_rt[j]))
+			if (IntersectRect(&temp, &m_player_missile_rt[i], &m_tank_rt[j]) && TK[j]->Get_Tank_Shield() == FALSE)
 			{
 				m_explosion_rt[j] = m_tank_rt[j]; // 폭발할 rt 저장
 				Player_Missile_Dead(i);
@@ -626,7 +677,7 @@ void GameSystem::Tank_Collision()
 
 	for (int i = 0; i < 4; i++)
 	{
-		if (IntersectRect(&temp, &m_missile_rt[i], &m_tank_rt[0]))
+		if (IntersectRect(&temp, &m_missile_rt[i], &m_tank_rt[0]) && TK[0]->Get_Tank_Shield() == FALSE)
 		{
 			m_explosion_rt[0] = m_tank_rt[0];
 			Missile_Dead(i);
@@ -644,6 +695,7 @@ void GameSystem::Tank_Dead(int num)
 	TK[num]->enemy_start_y = 0;
 	TK[num]->Set_Tank_X(0);
 	TK[num]->Set_Tank_Y(0);
+	shield_time[num] = clock();
 }
 
 void GameSystem::Missile_Collision()
@@ -720,6 +772,11 @@ void GameSystem::Off_Shield(int num)
 {
 	if (TK[num]->Get_Tank_Shield() == TRUE)
 		TK[num]->Set_Tank_Shield(FALSE);
+}
+
+void GameSystem::Set_Item()
+{
+
 }
 
 GameSystem::~GameSystem()

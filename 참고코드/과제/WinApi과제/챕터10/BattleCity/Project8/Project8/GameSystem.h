@@ -2,6 +2,7 @@
 #include "Map.h"
 #include "Tank.h"
 #include "Missile.h"
+#include "Item.h"
 using namespace std;
 #pragma once
 
@@ -30,6 +31,8 @@ private:
 	RECT m_missile_rt[4];
 
 	RECT m_explosion_rt[5];
+
+	Item *IT;
 public:
 
 	GameSystem();
@@ -65,6 +68,7 @@ public:
 	void Show_Map();
 	void Show_Bush();
 	int Show_Tank();
+	void Show_Shield();
 	void Show_Missile();
 	int Check_Block_Tank(int num);
 	int Create_Tank();
@@ -81,6 +85,7 @@ public:
 	void Show_Tank_Collision();
 	void On_Shield(int num);
 	void Off_Shield(int num);
+	void Set_Item();
 	
 
 	~GameSystem();

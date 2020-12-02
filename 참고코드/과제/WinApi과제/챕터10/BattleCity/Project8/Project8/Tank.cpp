@@ -9,6 +9,8 @@ Tank::Tank()
 	player = NULL;
 	status = DEAD;
 	shield = FALSE;
+	shield_motion = 0;
+	speed = FALSE;
 }
 
 void Tank::Init_Tank(int player_or_enemy)
@@ -142,6 +144,16 @@ bool Tank::Get_Tank_Shield()
 void Tank::Set_Tank_Shield(int value)
 {
 	shield = value;
+}
+
+int Tank::Get_Tank_Shield_Motion()
+{
+	return shield_motion;
+}
+
+void Tank::Set_Tank_Shield_Motion(int num)
+{
+	shield_motion = num;
 }
 
 Tank::~Tank()
