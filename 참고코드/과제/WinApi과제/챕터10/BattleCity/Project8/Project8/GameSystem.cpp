@@ -13,6 +13,7 @@ GameSystem::GameSystem()
 	missile_time = 0;
 	explosion_motion = 0;
 	player_explosion_time = 0;
+	item_spawn_time = 0;
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -35,6 +36,9 @@ GameSystem::GameSystem()
 
 	for (int j = 0; j < 5; j++)
 		m_explosion_rt[j] = { 0,0,0,0 };
+
+	for (int j = 0; j < 2; j++)
+		m_item_rt[j] = { 0,0,0,0 };
 }
 
 void GameSystem::Init(HWND hWnd)
@@ -111,6 +115,8 @@ void GameSystem::Title_Screen()
 void GameSystem::Game_Screen()
 {
 	Show_Map();
+	Set_Item();
+	Show_Item();
 	Create_Tank();
 	Show_Tank();
 	Show_Shield();
@@ -232,6 +238,7 @@ void GameSystem::Control_Tank()
 
 	Tank_Collision();
 	Missile_Collision();
+	Item_Collision();
 }
 
 void GameSystem::Show_Map()
@@ -776,7 +783,75 @@ void GameSystem::Off_Shield(int num)
 
 void GameSystem::Set_Item()
 {
+	int spawn_chance = 0;
+	int item_number = 0;
+	int tmp_y = 0;
+	int tmp_x = 0;
+	char tmp;
 
+	if (clock() - item_spawn_time >= 1000)
+	{
+		spawn_chance = rand() % 5;
+
+		if (spawn_chance == 3)
+		{
+			item_number = rand() % 2;
+			if (IT->item_info[item_number].on_off == FALSE)
+			{
+				tmp_y = rand() % MAP_MAX;
+				tmp_x = rand() % MAP_MAX;
+				tmp = MP->Get_Map_Info(tmp_y, tmp_x);
+
+				if (tmp == 'N' && (MAP_MAX * (tmp_y + 1)) - (MAP_MAX - tmp_x) <= BLOCK_MAX - 1)
+				{
+					IT->item_info[item_number].on_off = TRUE;
+					m_item_rt[item_number] = m_block_rt[(MAP_MAX * (tmp_y + 1)) - (MAP_MAX - tmp_x)];
+				}
+			}
+		}
+		item_spawn_time = clock();
+	}
+
+}
+
+void GameSystem::Show_Item()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		if (IT->item_info[i].on_off == TRUE)
+		{
+			if (i == 0)
+				B_A_D->Draw_Ready(m_item_rt[i].left, m_item_rt[i].top, ITEM_SHIELD, ITEM_SHIELD);
+			else
+				B_A_D->Draw_Ready(m_item_rt[i].left, m_item_rt[i].top, ITEM_SPEED, ITEM_SPEED);
+		}
+	}
+}
+
+void GameSystem::Item_Collision()
+{
+	RECT temp;
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (IntersectRect(&temp, &m_item_rt[i], &m_tank_rt[0]) && IT->item_info[i].on_off == TRUE)
+		{
+			if (i == 0) // 쉴드
+			{
+				IT->item_info[0].on_off = FALSE;
+				m_item_rt[0] = { -1,-1,-1,-1 };
+				On_Shield(0);
+				shield_time[0] = clock();
+			}
+			else if (i == 1) // 스피드업
+			{
+				IT->item_info[1].on_off = FALSE;
+				m_item_rt[1] = { -1,-1,-1,-1 };
+				TK[0]->Set_Tank_Speed(0.2);
+			}
+		}
+	}
+	// ** 가끔 적이 맨오른쪽에 낀상태로 스폰되는것 수정하기
 }
 
 GameSystem::~GameSystem()

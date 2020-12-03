@@ -10,7 +10,7 @@ Tank::Tank()
 	status = DEAD;
 	shield = FALSE;
 	shield_motion = 0;
-	speed = FALSE;
+	speed = 1;
 }
 
 void Tank::Init_Tank(int player_or_enemy)
@@ -58,19 +58,19 @@ void Tank::Moveing(int dir)
 
 	if (direct == UP)
 	{
-		m_iy -= 2;
+		m_iy -= 2 * speed;
 	}
 	else if (direct == DOWN)
 	{
-		m_iy += 2;
+		m_iy += 2 * speed;
 	}
 	else if (direct == LEFT)
 	{
-		m_ix -= 2;
+		m_ix -= 2 * speed;
 	}
 	else if (direct == RIGHT)
 	{
-		m_ix += 2;
+		m_ix += 2 * speed;
 	}
 
 	if (motion == 0)
@@ -87,12 +87,12 @@ void Tank::Moveing(int dir)
 
 int Tank::Get_Tank_X()
 {
-	return m_ix;
+	return (int)m_ix;
 }
 
 int Tank::Get_Tank_Y()
 {
-	return m_iy;
+	return (int)m_iy;
 }
 
 int Tank::Get_Tank_Direct()
@@ -154,6 +154,11 @@ int Tank::Get_Tank_Shield_Motion()
 void Tank::Set_Tank_Shield_Motion(int num)
 {
 	shield_motion = num;
+}
+
+void Tank::Set_Tank_Speed(double num)
+{
+	speed += num;
 }
 
 Tank::~Tank()

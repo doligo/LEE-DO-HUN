@@ -15,16 +15,16 @@ class Tank
 {
 private:
 	bool status;
-	int m_ix;
-	int m_iy;
-	int m_pre_x;
-	int m_pre_y;
+	double m_ix;
+	double m_iy;
+	double m_pre_x;
+	double m_pre_y;
 	int direct;
 	int player;
 	int shield;
 	int shield_motion;
 	int motion;
-	int speed;
+	double speed;
 
 public:
 	Tank();
@@ -51,6 +51,7 @@ public:
 	void Set_Tank_Shield(int value);
 	int Get_Tank_Shield_Motion();
 	void Set_Tank_Shield_Motion(int num);
+	void Set_Tank_Speed(double num);
 
 	~Tank();
 };

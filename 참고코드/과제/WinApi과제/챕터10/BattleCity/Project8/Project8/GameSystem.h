@@ -33,6 +33,7 @@ private:
 	RECT m_explosion_rt[5];
 
 	Item *IT;
+	RECT m_item_rt[2];
 public:
 
 	GameSystem();
@@ -43,6 +44,7 @@ public:
 	int player_life;
 
 	int cur_time;
+	int item_spawn_time;
 	int move_time;
 	int missile_time;
 	int player_explosion_time;
@@ -86,7 +88,8 @@ public:
 	void On_Shield(int num);
 	void Off_Shield(int num);
 	void Set_Item();
-	
+	void Show_Item();
+	void Item_Collision();
 
 	~GameSystem();
 };

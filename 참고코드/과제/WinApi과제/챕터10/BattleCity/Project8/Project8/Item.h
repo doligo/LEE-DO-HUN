@@ -9,8 +9,6 @@ using namespace std;
 
 struct _Item
 {
-	int item_x;
-	int item_y;
 	int item_type;
 	bool on_off;
 };
