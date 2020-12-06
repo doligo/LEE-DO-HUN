@@ -34,6 +34,8 @@ private:
 
 	Item *IT;
 	RECT m_item_rt[2];
+
+	RECT flage_rt;
 public:
 
 	GameSystem();
@@ -41,7 +43,10 @@ public:
 	int game_keyboard;
 	int game_status;
 	int game_stage;
+	int game_over_trigger;
 	int player_life;
+	int enemy_count;
+	int flage_exist; // ±ê¹ß À¯¹«
 
 	int cur_time;
 	int item_spawn_time;
@@ -50,6 +55,8 @@ public:
 	int player_explosion_time;
 	int explosion_time[4];
 	int shield_time[5];
+	int stage_screen_time;
+	int game_over_tiktok;
 
 	int player_missile_on[3];
 	int missile_on[4];
@@ -66,6 +73,7 @@ public:
 	void Init(HWND hWnd);
 	void Title_Screen();
 	void Game_Screen();
+	void Stage_Screen();
 	void Control_Tank();
 	void Show_Map();
 	void Show_Bush();
@@ -90,6 +98,11 @@ public:
 	void Set_Item();
 	void Show_Item();
 	void Item_Collision();
+	void Show_Ui();
+	void flage_Collision();
+	void Game_Over_Check();
+	void Show_Game_Over();
+	void ReSet();
 
 	~GameSystem();
 };

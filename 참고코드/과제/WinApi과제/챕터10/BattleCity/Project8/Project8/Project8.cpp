@@ -51,6 +51,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		{
 			if (GameSystem::GetInstane()->game_status == NULL)
 				GameSystem::GetInstane()->Title_Screen();
+			else if (GameSystem::GetInstane()->game_status == GAME_OVER)
+				GameSystem::GetInstane()->Stage_Screen();
 			else if (GameSystem::GetInstane()->game_status == GAME_START)
 				GameSystem::GetInstane()->Game_Screen();
 			else if (GameSystem::GetInstane()->game_status == GAME_EXIT)

@@ -4,16 +4,22 @@ GameSystem* GameSystem::game_system = NULL;
 
 GameSystem::GameSystem()
 {
-	game_status = 0;
+	game_status = FALSE;
 	game_keyboard = KEY_UP;
+	game_over_trigger = FALSE;
 	game_stage = 1;
+	flage_exist = TRUE;
 	player_life = 4;
+	enemy_count = 20;
 	cur_time = 0;
 	move_time = 0;
 	missile_time = 0;
 	explosion_motion = 0;
 	player_explosion_time = 0;
 	item_spawn_time = 0;
+	stage_screen_time = 0;
+	flage_rt = { 0,0,0,0 };
+	game_over_tiktok = 0;
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -69,6 +75,8 @@ void GameSystem::Init(HWND hWnd)
 
 	IT = new Item();
 	IT->Init_Item();
+
+	flage_rt = { 400, 100, 435, 125 }; // 본거지 깃발 rect설정
 }
 
 void GameSystem::Title_Screen()
@@ -114,25 +122,50 @@ void GameSystem::Title_Screen()
 
 void GameSystem::Game_Screen()
 {
-	Show_Map();
-	Set_Item();
-	Show_Item();
-	Create_Tank();
-	Show_Tank();
-	Show_Shield();
-	Show_Bush();
-	Show_Missile();
-	B_A_D->Draw_Go(); // 일반 draw함수는 렉때문에 TransparentBlt을 먼저 쓴후 BitBlt으로 출력하게 함 (draw_ready로 긁어서 draw_go로 뿌리기)
+	if (game_over_trigger == FALSE)
+	{
+		Show_Ui();
+		Show_Map();
+		Set_Item();
+		Show_Item();
+		Create_Tank();
+		Show_Tank();
+		Show_Shield();
+		Show_Bush();
+		Show_Missile();
+		B_A_D->Draw_Go(); // 일반 draw함수는 렉때문에 TransparentBlt을 먼저 쓴후 BitBlt으로 출력하게 함 (draw_ready로 긁어서 draw_go로 뿌리기)
 
-	Control_Tank();
+		Control_Tank();
 
-	for (int i = 0; i < 5; i++)
-	{ 
-		if (TK[i]->Get_Tank_Shield() == TRUE && clock() - shield_time[i] >= 2550)
+		for (int i = 0; i < 5; i++)
 		{
-			Off_Shield(i);
-			shield_time[i] = clock();
+			if (TK[i]->Get_Tank_Shield() == TRUE && clock() - shield_time[i] >= 2550)
+			{
+				Off_Shield(i);
+				shield_time[i] = clock();
+			}
 		}
+
+		Game_Over_Check();
+	}
+	else if (game_over_trigger == TRUE)
+	{
+		Show_Game_Over();
+		game_status = NULL;
+		Sleep(2000);
+	}
+}
+
+void GameSystem::Stage_Screen()
+{
+	if (clock() - stage_screen_time >= 3000)
+	{
+		game_status = GAME_START;
+	}
+	else
+	{
+		B_A_D->Draw_Ready(520, 250, STAGE_01 + game_stage - 1, STAGE_01 + game_stage - 1);
+		B_A_D->Draw_Go();
 	}
 }
 
@@ -239,6 +272,7 @@ void GameSystem::Control_Tank()
 	Tank_Collision();
 	Missile_Collision();
 	Item_Collision();
+	flage_Collision();
 }
 
 void GameSystem::Show_Map()
@@ -267,6 +301,11 @@ void GameSystem::Show_Map()
 			num++;
 		}
 	}
+
+	if (flage_exist == TRUE)
+		B_A_D->Draw_Ready(flage_rt.left, flage_rt.top, BASEMENT_ALIVE, BASEMENT_ALIVE); // 본거지 깃발
+	else if (flage_exist == FALSE)
+		B_A_D->Draw_Ready(flage_rt.left, flage_rt.top, BASEMENT_DEAD, BASEMENT_DEAD);
 }
 
 void GameSystem::Show_Bush()
@@ -447,6 +486,7 @@ int GameSystem::Create_Tank()
 				Set_Enemy_Pos(i);
 				On_Shield(i);
 				shield_time[i] = clock();
+				enemy_count--;
 				break;
 			}
 		}
@@ -467,7 +507,7 @@ void GameSystem::Set_Enemy_Pos(int num)
 	while (1)
 	{
 		trigger = FALSE;
-		value = rand() % 28;
+		value = rand() % 27;
 		tmp = MP->Get_Map_Info(0, value);
 
 		if (tmp == 'N')
@@ -851,7 +891,78 @@ void GameSystem::Item_Collision()
 			}
 		}
 	}
-	// ** 가끔 적이 맨오른쪽에 낀상태로 스폰되는것 수정하기
+}
+
+void GameSystem::Show_Ui()
+{
+	int num1 = 0;
+	int num2 = 0;
+
+	B_A_D->Draw_Detail_Ready(910, 0, UI, UI, 3, 17); // 회색화면
+
+	for (int i = 0; i < enemy_count; i++)
+	{
+		if (i == 9)
+		{
+			B_A_D->Draw_Ready(970 + num1, 40 + num2, ENEMY_LIFE, ENEMY_LIFE);
+			num1 += 20;
+			num2 = 0;
+		}
+		else
+		{
+			B_A_D->Draw_Ready(970 + num1, 40 + num2, ENEMY_LIFE, ENEMY_LIFE);
+			num2 += 20;
+		}
+	}
+	num1 = 0;
+	num2 = 0;
+	for (int i = 0; i < player_life; i++)
+	{
+		B_A_D->Draw_Ready(975 + num1, 290 + num2, PLAYER_LIFE, PLAYER_LIFE); // 플레이어 체력
+		num1 += 20;
+	}
+	num1 = 0;
+	num2 = 0;
+	if (flage_exist == TRUE)
+	B_A_D->Draw_Ready(975 + num1, 350 + num2, STAGE_ICON, STAGE_ICON); // 깃발ui
+}
+
+void GameSystem::flage_Collision()
+{
+	RECT temp;
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (IntersectRect(&temp, &m_missile_rt[i], &flage_rt) && flage_exist == TRUE)
+		{
+			flage_exist = FALSE;
+			Missile_Dead(i);
+			game_over_tiktok = clock(); // 깃발 부숴진것을 몇초간만 보여주기 위해 세팅
+		}
+	}
+}
+
+void GameSystem::Game_Over_Check()
+{
+	if (flage_exist == FALSE) // 본거지 깃발이 부숴졌을때
+	{
+		if (clock() - game_over_tiktok >= 3000)
+		{
+			game_over_trigger = TRUE;
+		}
+	}
+}
+
+void GameSystem::Show_Game_Over()
+{
+	B_A_D->Draw_Black_BackGround();
+	B_A_D->Draw_Ready(520, 250, GAME_OVERS, GAME_OVERS);
+	B_A_D->Draw_Go();
+}
+
+void GameSystem::ReSet()
+{
+
 }
 
 GameSystem::~GameSystem()
