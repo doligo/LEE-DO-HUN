@@ -76,7 +76,7 @@ void GameSystem::Init(HWND hWnd)
 	IT = new Item();
 	IT->Init_Item();
 
-	flage_rt = { 400, 100, 435, 125 }; // 본거지 깃발 rect설정
+	flage_rt = { 463, 675, 498, 700 }; // 본거지 깃발 rect설정
 }
 
 void GameSystem::Title_Screen()
@@ -152,6 +152,7 @@ void GameSystem::Game_Screen()
 	{
 		Show_Game_Over();
 		game_status = NULL;
+		ReSet();
 		Sleep(2000);
 	}
 }
@@ -273,6 +274,7 @@ void GameSystem::Control_Tank()
 	Missile_Collision();
 	Item_Collision();
 	flage_Collision();
+
 }
 
 void GameSystem::Show_Map()
@@ -359,7 +361,7 @@ int GameSystem::Show_Tank()
 
 void GameSystem::Show_Shield()
 {
-	if (TK[0]->Get_Tank_Shield() == TRUE)
+	if (TK[0]->Get_Tank_Shield() == TRUE && TK[0]->Get_Status() == ALIVE)
 	{
 		if (TK[0]->Get_Tank_Shield_Motion() == 0)
 		{
@@ -395,7 +397,7 @@ void GameSystem::Show_Missile()
 {
 	for (int i = 0; i < 3; i++)
 	{
-		if (PLAYER_ME[i]->Get_Missile_Player() == TRUE && PLAYER_ME[i]->Get_Missile_Status() == TRUE)
+		if (PLAYER_ME[i]->Get_Missile_Player() == TRUE && PLAYER_ME[i]->Get_Missile_Status() == TRUE && TK[0]->Get_Status() == ALIVE)
 		{
 			if (UP == PLAYER_ME[i]->Get_Missile_Direct())
 				B_A_D->Draw_Ready(PLAYER_ME[i]->missile_start_x + PLAYER_ME[i]->Get_Missile_X(), PLAYER_ME[i]->missile_start_y + PLAYER_ME[i]->Get_Missile_Y(), MISSILE_UP, MISSILE_UP);
@@ -466,7 +468,8 @@ int GameSystem::Check_Block_Tank(int num)
 
 int GameSystem::Create_Tank()
 {
-	if (TK[0]->Get_Status() == DEAD)
+
+	if (TK[0]->Get_Status() == DEAD && player_life != 0)
 	{
 		TK[0]->Set_Status(ALIVE);
 		m_tank_rt[0] = { TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), TK[0]->player_start_x + TK[0]->Get_Tank_X() + 28, TK[0]->player_start_y + TK[0]->Get_Tank_Y() + 20 };
@@ -474,6 +477,9 @@ int GameSystem::Create_Tank()
 		player_life--;
 		On_Shield(0);
 		shield_time[0] = clock();
+
+		if (player_life == 0)
+			game_over_tiktok = clock();
 	}
 
 	if (clock() - cur_time >= 2500)
@@ -944,7 +950,7 @@ void GameSystem::flage_Collision()
 
 void GameSystem::Game_Over_Check()
 {
-	if (flage_exist == FALSE) // 본거지 깃발이 부숴졌을때
+	if (flage_exist == FALSE || player_life == 0 && TK[0]->Get_Status() == DEAD)
 	{
 		if (clock() - game_over_tiktok >= 3000)
 		{
@@ -962,7 +968,75 @@ void GameSystem::Show_Game_Over()
 
 void GameSystem::ReSet()
 {
+	game_status = FALSE;
+	game_keyboard = KEY_UP;
+	game_over_trigger = FALSE;
+	game_stage = 1;
+	flage_exist = TRUE;
+	player_life = 4;
+	enemy_count = 20;
+	cur_time = 0;
+	move_time = 0;
+	missile_time = 0;
+	explosion_motion = 0;
+	player_explosion_time = 0;
+	item_spawn_time = 0;
+	stage_screen_time = 0;
+	flage_rt = { 0,0,0,0 };
+	game_over_tiktok = 0;
 
+	for (int i = 0; i < 3; i++)
+	{
+		player_missile_on[i] = FALSE;
+		m_player_missile_rt[i] = { 0,0,0,0 };
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		missile_on[i] = FALSE;
+		m_missile_rt[i] = { 0,0,0,0 };
+		explosion_time[i] = 0;
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		m_tank_rt[i] = { 0,0,0,0 };
+		shield_time[i] = 0;
+	}
+
+	for (int j = 0; j < 5; j++)
+		m_explosion_rt[j] = { 0,0,0,0 };
+
+	for (int j = 0; j < 2; j++)
+		m_item_rt[j] = { 0,0,0,0 };
+
+	///////////////////////////////
+
+	MP = new Map();
+	MP->Init_Map(game_stage - 1);
+
+	for (int i = 0; i < 5; i++)
+	{
+		TK[i] = new Tank(); // 탱크생성
+		TK[i]->Init_Tank(i);
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		ME[i] = new Missile(); // 미사일생성
+		ME[i]->Init_Missile();
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		PLAYER_ME[i] = new Missile(); // 플레이어 미사일
+		PLAYER_ME[i]->Init_Player_Missile();
+	}
+
+	IT = new Item();
+	IT->Init_Item();
+
+	flage_rt = { 463, 675, 498, 700 }; // 본거지 깃발 rect설정
 }
 
 GameSystem::~GameSystem()
