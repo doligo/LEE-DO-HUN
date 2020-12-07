@@ -45,8 +45,10 @@ public:
 	int game_stage;
 	int game_over_trigger;
 	int player_life;
+	int cur_player_life;
 	int enemy_count;
 	int flage_exist; // ±ê¹ß À¯¹«
+	bool next_stage_trigger;
 
 	int cur_time;
 	int item_spawn_time;
@@ -103,6 +105,7 @@ public:
 	void Game_Over_Check();
 	void Show_Game_Over();
 	void ReSet();
+	void Check_Next_Stage();
 
 	~GameSystem();
 };

@@ -13,7 +13,7 @@ using namespace std;
 class Map
 {
 private:
-	LPCSTR stage[2] = { "stage1.txt", "stage2.txt" }; // stage2는 임시용
+	LPCSTR stage[3] = { "stage1.txt", "stage2.txt", "stage3.txt" };
 	char maps[MAP_MAX][MAP_MAX];
 public:
 	Map();

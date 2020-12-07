@@ -161,6 +161,11 @@ void Tank::Set_Tank_Speed(double num)
 	speed += num;
 }
 
+void Tank::ReSet_Speed(int num)
+{
+	speed = num;
+}
+
 Tank::~Tank()
 {
 

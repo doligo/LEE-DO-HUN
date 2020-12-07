@@ -10,7 +10,8 @@ GameSystem::GameSystem()
 	game_stage = 1;
 	flage_exist = TRUE;
 	player_life = 4;
-	enemy_count = 20;
+	cur_player_life = 4;
+	enemy_count = 2;
 	cur_time = 0;
 	move_time = 0;
 	missile_time = 0;
@@ -20,6 +21,7 @@ GameSystem::GameSystem()
 	stage_screen_time = 0;
 	flage_rt = { 0,0,0,0 };
 	game_over_tiktok = 0;
+	next_stage_trigger = FALSE;
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -113,7 +115,7 @@ void GameSystem::Title_Screen()
 		if (game_keyboard == KEY_UP)
 		{
 			B_A_D->Draw_Black_BackGround(); // 타이틀화면 지우기
-			game_status = GAME_START;
+			game_status = GAME_OVER;
 		}
 		else if (game_keyboard == KEY_DOWN)
 			game_status = GAME_EXIT;
@@ -122,8 +124,10 @@ void GameSystem::Title_Screen()
 
 void GameSystem::Game_Screen()
 {
-	if (game_over_trigger == FALSE)
+	if (game_over_trigger == FALSE && next_stage_trigger == FALSE)
 	{
+		Control_Tank();
+
 		Show_Ui();
 		Show_Map();
 		Set_Item();
@@ -135,8 +139,6 @@ void GameSystem::Game_Screen()
 		Show_Missile();
 		B_A_D->Draw_Go(); // 일반 draw함수는 렉때문에 TransparentBlt을 먼저 쓴후 BitBlt으로 출력하게 함 (draw_ready로 긁어서 draw_go로 뿌리기)
 
-		Control_Tank();
-
 		for (int i = 0; i < 5; i++)
 		{
 			if (TK[i]->Get_Tank_Shield() == TRUE && clock() - shield_time[i] >= 2550)
@@ -146,14 +148,26 @@ void GameSystem::Game_Screen()
 			}
 		}
 
+		if (enemy_count == 0 && game_stage < 4)
+			Check_Next_Stage();
+
 		Game_Over_Check();
 	}
-	else if (game_over_trigger == TRUE)
+	else if (game_over_trigger == TRUE && next_stage_trigger == FALSE)
 	{
 		Show_Game_Over();
 		game_status = NULL;
+		game_stage = 1;
+		player_life = 4;
+		cur_player_life = 4;
 		ReSet();
 		Sleep(2000);
+	}
+
+	if (game_over_trigger == FALSE && next_stage_trigger == TRUE)
+	{
+		stage_screen_time = clock();
+		B_A_D->Draw_Black_BackGround();
 	}
 }
 
@@ -161,7 +175,10 @@ void GameSystem::Stage_Screen()
 {
 	if (clock() - stage_screen_time >= 3000)
 	{
+		ReSet();
 		game_status = GAME_START;
+		next_stage_trigger = FALSE;
+		player_life = cur_player_life;
 	}
 	else
 	{
@@ -274,7 +291,6 @@ void GameSystem::Control_Tank()
 	Missile_Collision();
 	Item_Collision();
 	flage_Collision();
-
 }
 
 void GameSystem::Show_Map()
@@ -469,24 +485,30 @@ int GameSystem::Check_Block_Tank(int num)
 int GameSystem::Create_Tank()
 {
 
-	if (TK[0]->Get_Status() == DEAD && player_life != 0)
+	if (TK[0]->Get_Status() == DEAD && player_life != -1)
 	{
-		TK[0]->Set_Status(ALIVE);
-		m_tank_rt[0] = { TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), TK[0]->player_start_x + TK[0]->Get_Tank_X() + 28, TK[0]->player_start_y + TK[0]->Get_Tank_Y() + 20 };
-		//// tank rect는 블럭보다 right와 bottom이 5씩 작다
-		player_life--;
-		On_Shield(0);
-		shield_time[0] = clock();
+		cur_player_life = player_life;
 
 		if (player_life == 0)
-			game_over_tiktok = clock();
+			player_life--;
+		else
+		{
+			TK[0]->Set_Status(ALIVE);
+			m_tank_rt[0] = { TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), TK[0]->player_start_x + TK[0]->Get_Tank_X() + 28, TK[0]->player_start_y + TK[0]->Get_Tank_Y() + 20 };
+			//// tank rect는 블럭보다 right와 bottom이 5씩 작다
+			player_life--;
+			On_Shield(0);
+			TK[0]->ReSet_Speed(1);
+			shield_time[0] = clock();
+		}
+
 	}
 
 	if (clock() - cur_time >= 2500)
 	{
 		for (int i = 1; i < 5; i++)
 		{
-			if (TK[i]->Get_Status() == DEAD)
+			if (TK[i]->Get_Status() == DEAD && enemy_count != 0)
 			{
 				TK[i]->Set_Status(ALIVE);
 				Set_Enemy_Pos(i);
@@ -735,6 +757,7 @@ void GameSystem::Tank_Collision()
 			m_explosion_rt[0] = m_tank_rt[0];
 			Missile_Dead(i);
 			Tank_Dead(0);
+			game_over_tiktok = clock();
 			return;
 		}
 	}
@@ -950,7 +973,7 @@ void GameSystem::flage_Collision()
 
 void GameSystem::Game_Over_Check()
 {
-	if (flage_exist == FALSE || player_life == 0 && TK[0]->Get_Status() == DEAD)
+	if (flage_exist == FALSE || player_life == -1 && TK[0]->Get_Status() == DEAD)
 	{
 		if (clock() - game_over_tiktok >= 3000)
 		{
@@ -971,10 +994,8 @@ void GameSystem::ReSet()
 	game_status = FALSE;
 	game_keyboard = KEY_UP;
 	game_over_trigger = FALSE;
-	game_stage = 1;
 	flage_exist = TRUE;
-	player_life = 4;
-	enemy_count = 20;
+	enemy_count = 2;
 	cur_time = 0;
 	move_time = 0;
 	missile_time = 0;
@@ -984,6 +1005,7 @@ void GameSystem::ReSet()
 	stage_screen_time = 0;
 	flage_rt = { 0,0,0,0 };
 	game_over_tiktok = 0;
+	next_stage_trigger = FALSE;
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -1037,6 +1059,28 @@ void GameSystem::ReSet()
 	IT->Init_Item();
 
 	flage_rt = { 463, 675, 498, 700 }; // 본거지 깃발 rect설정
+}
+
+void GameSystem::Check_Next_Stage()
+{
+	for (int i = 1; i < 5; i++)
+	{
+		if (TK[i]->Get_Status() == ALIVE)
+		{
+			next_stage_trigger = FALSE;
+			break;
+		}
+		else
+		{
+			next_stage_trigger = TRUE;
+		}
+	}
+
+	if (next_stage_trigger == TRUE)
+	{
+		game_status = GAME_OVER;
+		game_stage++;
+	}
 }
 
 GameSystem::~GameSystem()
