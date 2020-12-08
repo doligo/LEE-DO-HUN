@@ -73,10 +73,32 @@ void Tank::Moveing(int dir)
 		m_ix += 2 * speed;
 	}
 
-	if (motion == 0)
-		motion = 1;
-	else if (motion == 1)
-		motion = 0;
+	if (player == TRUE)
+	{
+		if (motion == 0)
+			motion = 1;
+		else if (motion == 1)
+			motion = 0;
+	}
+	else if (player == FALSE)
+	{
+		if (speed == 1)
+		{
+			if (motion == 0)
+				motion = 1;
+			else if (motion == 1)
+				motion = 0;
+		}
+		else if (speed == 2)
+		{
+			if (motion == 0)
+				motion = 1;
+			else if (motion == 1)
+				motion = 2;
+			else if (motion == 2)
+				motion = 0;
+		}
+	}
 
 
 	if (player == FALSE)
@@ -164,6 +186,11 @@ void Tank::Set_Tank_Speed(double num)
 void Tank::ReSet_Speed(int num)
 {
 	speed = num;
+}
+
+double Tank::Get_Tank_Speed()
+{
+	return speed;
 }
 
 Tank::~Tank()

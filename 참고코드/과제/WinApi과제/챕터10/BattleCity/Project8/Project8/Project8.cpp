@@ -53,13 +53,17 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 				GameSystem::GetInstane()->Title_Screen();
 			else if (GameSystem::GetInstane()->game_status == GAME_OVER)
 				GameSystem::GetInstane()->Stage_Screen();
-			else if (GameSystem::GetInstane()->game_status == GAME_START)
+			else if (GameSystem::GetInstane()->game_status == GAME_START && GameSystem::GetInstane()->clear_trigger == false)
 				GameSystem::GetInstane()->Game_Screen();
+			else if (GameSystem::GetInstane()->game_status == GAME_START && GameSystem::GetInstane()->clear_trigger == true)
+				GameSystem::GetInstane()->Clear_Screen();
 			else if (GameSystem::GetInstane()->game_status == GAME_EXIT)
 				break;
 		}
 
 	}
+
+	delete GameSystem::GetInstane();
 
 	return (int)Message.wParam;
 }

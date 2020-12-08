@@ -49,6 +49,7 @@ public:
 	int enemy_count;
 	int flage_exist; // ±ê¹ß À¯¹«
 	bool next_stage_trigger;
+	bool clear_trigger;
 
 	int cur_time;
 	int item_spawn_time;
@@ -59,6 +60,7 @@ public:
 	int shield_time[5];
 	int stage_screen_time;
 	int game_over_tiktok;
+	int clear_screen_time;
 
 	int player_missile_on[3];
 	int missile_on[4];
@@ -76,6 +78,7 @@ public:
 	void Title_Screen();
 	void Game_Screen();
 	void Stage_Screen();
+	void Clear_Screen();
 	void Control_Tank();
 	void Show_Map();
 	void Show_Bush();
@@ -106,6 +109,8 @@ public:
 	void Show_Game_Over();
 	void ReSet();
 	void Check_Next_Stage();
+	void Clear_Check();
+	void Set_Upgrade_Tank();
 
 	~GameSystem();
 };

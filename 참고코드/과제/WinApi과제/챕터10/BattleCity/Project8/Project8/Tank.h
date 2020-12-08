@@ -53,6 +53,7 @@ public:
 	void Set_Tank_Shield_Motion(int num);
 	void Set_Tank_Speed(double num);
 	void ReSet_Speed(int num);
+	double Get_Tank_Speed();
 
 	~Tank();
 };

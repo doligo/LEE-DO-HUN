@@ -11,7 +11,7 @@ GameSystem::GameSystem()
 	flage_exist = TRUE;
 	player_life = 4;
 	cur_player_life = 4;
-	enemy_count = 2;
+	enemy_count = 20;
 	cur_time = 0;
 	move_time = 0;
 	missile_time = 0;
@@ -21,7 +21,9 @@ GameSystem::GameSystem()
 	stage_screen_time = 0;
 	flage_rt = { 0,0,0,0 };
 	game_over_tiktok = 0;
+	clear_screen_time = 0;
 	next_stage_trigger = FALSE;
+	clear_trigger = false;
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -133,6 +135,7 @@ void GameSystem::Game_Screen()
 		Set_Item();
 		Show_Item();
 		Create_Tank();
+		Set_Upgrade_Tank();
 		Show_Tank();
 		Show_Shield();
 		Show_Bush();
@@ -151,22 +154,28 @@ void GameSystem::Game_Screen()
 		if (enemy_count == 0 && game_stage < 4)
 			Check_Next_Stage();
 
+		Clear_Check();
 		Game_Over_Check();
 	}
 	else if (game_over_trigger == TRUE && next_stage_trigger == FALSE)
 	{
 		Show_Game_Over();
+		ReSet();
 		game_status = NULL;
 		game_stage = 1;
 		player_life = 4;
 		cur_player_life = 4;
-		ReSet();
 		Sleep(2000);
 	}
 
-	if (game_over_trigger == FALSE && next_stage_trigger == TRUE)
+	if (game_over_trigger == FALSE && next_stage_trigger == TRUE && clear_trigger == false)
 	{
 		stage_screen_time = clock();
+		B_A_D->Draw_Black_BackGround();
+	}
+	if (game_over_trigger == FALSE && clear_trigger == true)
+	{
+		clear_screen_time = clock();
 		B_A_D->Draw_Black_BackGround();
 	}
 }
@@ -183,6 +192,23 @@ void GameSystem::Stage_Screen()
 	else
 	{
 		B_A_D->Draw_Ready(520, 250, STAGE_01 + game_stage - 1, STAGE_01 + game_stage - 1);
+		B_A_D->Draw_Go();
+	}
+}
+
+void GameSystem::Clear_Screen()
+{
+	if (clock() - clear_screen_time >= 3000)
+	{
+		game_stage = 1;
+		ReSet();
+		game_status = NULL;
+		player_life = 4;
+		cur_player_life = 4;
+	}
+	else
+	{
+		B_A_D->Draw_Ready(520, 250, UI_CLEAR, UI_CLEAR);
 		B_A_D->Draw_Go();
 	}
 }
@@ -359,13 +385,24 @@ int GameSystem::Show_Tank()
 	{
 		if (TK[i]->Get_Status() == ALIVE)
 		{
-			if (UP == TK[i]->Get_Tank_Direct())
+			if (UP == TK[i]->Get_Tank_Direct() && TK[i]->Get_Tank_Speed() == 1)
 				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), ENEMY_UP_00 + TK[i]->Get_Tank_Motion(), ENEMY_UP_00 + TK[i]->Get_Tank_Motion());
-			else if (DOWN == TK[i]->Get_Tank_Direct())
+			else if (DOWN == TK[i]->Get_Tank_Direct() && TK[i]->Get_Tank_Speed() == 1)
 				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), ENEMY_DOWN_00 + TK[i]->Get_Tank_Motion(), ENEMY_DOWN_00 + TK[i]->Get_Tank_Motion());
-			else if (LEFT == TK[i]->Get_Tank_Direct())
+			else if (LEFT == TK[i]->Get_Tank_Direct() && TK[i]->Get_Tank_Speed() == 1)
 				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), ENEMY_LEFT_00 + TK[i]->Get_Tank_Motion(), ENEMY_LEFT_00 + TK[i]->Get_Tank_Motion());
-			else if (RIGHT == TK[i]->Get_Tank_Direct())
+			else if (RIGHT == TK[i]->Get_Tank_Direct() && TK[i]->Get_Tank_Speed() == 1)
+				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), ENEMY_RIGHT_00 + TK[i]->Get_Tank_Motion(), ENEMY_RIGHT_00 + TK[i]->Get_Tank_Motion());
+
+			///////////////////////////////////////// ¹ØÀº °­È­Çü ÅÊÅ© ¿òÁ÷ÀÓ
+
+			else if (UP == TK[i]->Get_Tank_Direct() && TK[i]->Get_Tank_Speed() == 2)
+				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), ENEMY_UP_00 + TK[i]->Get_Tank_Motion(), ENEMY_UP_00 + TK[i]->Get_Tank_Motion());
+			else if (DOWN == TK[i]->Get_Tank_Direct() && TK[i]->Get_Tank_Speed() == 2)
+				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), ENEMY_DOWN_00 + TK[i]->Get_Tank_Motion(), ENEMY_DOWN_00 + TK[i]->Get_Tank_Motion());
+			else if (LEFT == TK[i]->Get_Tank_Direct() && TK[i]->Get_Tank_Speed() == 2)
+				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), ENEMY_LEFT_00 + TK[i]->Get_Tank_Motion(), ENEMY_LEFT_00 + TK[i]->Get_Tank_Motion());
+			else if (RIGHT == TK[i]->Get_Tank_Direct() && TK[i]->Get_Tank_Speed() == 2)
 				B_A_D->Draw_Ready(TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), ENEMY_RIGHT_00 + TK[i]->Get_Tank_Motion(), ENEMY_RIGHT_00 + TK[i]->Get_Tank_Motion());
 		}
 	}
@@ -995,7 +1032,7 @@ void GameSystem::ReSet()
 	game_keyboard = KEY_UP;
 	game_over_trigger = FALSE;
 	flage_exist = TRUE;
-	enemy_count = 2;
+	enemy_count = 20;
 	cur_time = 0;
 	move_time = 0;
 	missile_time = 0;
@@ -1005,7 +1042,9 @@ void GameSystem::ReSet()
 	stage_screen_time = 0;
 	flage_rt = { 0,0,0,0 };
 	game_over_tiktok = 0;
+	clear_screen_time = 0;
 	next_stage_trigger = FALSE;
+	clear_trigger = false;
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -1078,8 +1117,30 @@ void GameSystem::Check_Next_Stage()
 
 	if (next_stage_trigger == TRUE)
 	{
-		game_status = GAME_OVER;
 		game_stage++;
+		if (game_stage != 4)
+			game_status = GAME_OVER;
+	}
+}
+
+void GameSystem::Clear_Check()
+{
+	if (game_stage == 4)
+		clear_trigger = true;
+}
+
+void GameSystem::Set_Upgrade_Tank()
+{
+	if (game_stage == 2)
+	{
+		if (TK[3]->Get_Status() == ALIVE)
+			TK[3]->ReSet_Speed(2);
+	}
+	else if (game_stage == 3)
+	{
+		for (int i = 3; i < 5; i++)
+			if (TK[i]->Get_Status() == ALIVE)
+				TK[i]->ReSet_Speed(2);
 	}
 }
 
