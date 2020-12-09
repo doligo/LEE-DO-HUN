@@ -49,9 +49,6 @@ GameSystem::GameSystem()
 
 	for (int j = 0; j < 2; j++)
 		m_item_rt[j] = { 0,0,0,0 };
-
-
-	Set_Difficulty_Tank(); // test
 }
 
 void GameSystem::Init(HWND hWnd)
@@ -219,8 +216,8 @@ void GameSystem::Clear_Screen()
 void GameSystem::Control_Tank()
 {
 	int result = 0;
-	int key = 0;
 	int trigger = 0;
+	int tmp_direct = 0;
 
 	if (GetKeyState(VK_UP) & 0x8000)
 	{
@@ -284,15 +281,68 @@ void GameSystem::Control_Tank()
 		{
 			if (TK[i]->Get_Status() == ALIVE)
 			{
-				key = rand() % 4 + 11;
+				if (TK[i]->Get_Move_Start_Check() == FALSE)
+				{
+					while (TK[i]->Get_Move_Start_Check() == FALSE)
+					{
+						tmp_direct = rand() % 3 + 12;
+						if (tmp_direct != TK[i]->Get_Pre_Direct())
+						{
+							TK[i]->Set_Tank_Direct(tmp_direct); // 하우좌 로 움직인다
+							TK[i]->Set_Move_Start_Check(TRUE);
+						}
+					}
+				}
 
-				result = Check_Block_Tank(i);
-				if (result == 0)
-					TK[i]->Moveing(key);
-				else
-					TK[i]->RollBack_pos();
+				//// ***더 똑똑한탱크 패턴은 game_stage 2부터 바꾸는것 추가하기 ( 나한테 다가오는 )
+
+				result = Check_Block_Tank(i); // 맵끝에 닿거나 블럭에 닿으면 1을 리턴한다
+
+				if (result == 0 && TK[i]->Get_Turn_Switch() == FALSE)
+				{
+					TK[i]->Set_Pre_Direct(TK[i]->Get_Tank_Direct());
+					st[i - 1].push(m_tank_rt[i]); // 현재좌표를 스택에 넣는다
+					TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+					m_tank_rt[i] = { TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), TK[i]->enemy_start_x + TK[i]->Get_Tank_X() + 28, TK[i]->enemy_start_y + TK[i]->Get_Tank_Y() + 20 };
+				}
+				else if (result == 1)
+					TK[i]->Set_Turn_Switch(TRUE);
+
+				if (TK[i]->Get_Turn_Switch() == TRUE)
+				{
+					if (st[i - 1].empty() == TRUE)
+					{
+						TK[i]->Set_Turn_Switch(FALSE);
+						TK[i]->Set_Move_Start_Check(FALSE);
+						break;
+					}
+
+					st[i - 1].pop();
+
+					if (TK[i]->Get_Pre_Direct() == LEFT)
+					{
+						TK[i]->Set_Tank_Direct(RIGHT);
+						TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+					}
+					else if (TK[i]->Get_Pre_Direct() == RIGHT)
+					{
+						TK[i]->Set_Tank_Direct(LEFT);
+						TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+					}
+					else if (TK[i]->Get_Pre_Direct() == UP)
+					{
+						TK[i]->Set_Tank_Direct(DOWN);
+						TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+					}
+					else if (TK[i]->Get_Pre_Direct() == DOWN)
+					{
+						TK[i]->Set_Tank_Direct(UP);
+						TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+					}
+					m_tank_rt[i] = { TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), TK[i]->enemy_start_x + TK[i]->Get_Tank_X() + 28, TK[i]->enemy_start_y + TK[i]->Get_Tank_Y() + 20 };
+				}
+
 			}
-			m_tank_rt[i] = { TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), TK[i]->enemy_start_x + TK[i]->Get_Tank_X() + 28, TK[i]->enemy_start_y + TK[i]->Get_Tank_Y() + 20 };
 		}
 		move_time = clock();
 	}
@@ -812,6 +862,16 @@ void GameSystem::Tank_Dead(int num)
 	TK[num]->Set_Tank_X(0);
 	TK[num]->Set_Tank_Y(0);
 	shield_time[num] = clock();
+	TK[num]->Set_Move_Start_Check(FALSE);
+	TK[num]->Set_Turn_Switch(FALSE);
+
+	if (TK[num]->Get_Player_Check() == FALSE)
+	{
+		while (st[num - 1].empty() == FALSE)
+		{
+			st[num - 1].pop();
+		}
+	}
 }
 
 void GameSystem::Missile_Collision()
@@ -1147,11 +1207,6 @@ void GameSystem::Set_Upgrade_Tank()
 	}
 }
 
-void GameSystem::Set_Difficulty_Tank()
-{
-
-}
-
 GameSystem::~GameSystem()
 {
 	//// 동적할당 해제를 해줘야 각 클래스의 소멸자에서 삭제된다
@@ -1168,4 +1223,5 @@ GameSystem::~GameSystem()
 		delete PLAYER_ME[i];
 
 	delete IT;
+
 }

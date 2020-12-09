@@ -11,7 +11,9 @@ Tank::Tank()
 	shield = FALSE;
 	shield_motion = 0;
 	speed = 1;
-	tank_level = 1;
+	move_start_check = FALSE;
+	save_pre_direct = FALSE;
+	turn_switch = FALSE;
 }
 
 void Tank::Init_Tank(int player_or_enemy)
@@ -192,6 +194,41 @@ void Tank::ReSet_Speed(int num)
 double Tank::Get_Tank_Speed()
 {
 	return speed;
+}
+
+int Tank::Get_Move_Start_Check()
+{
+	return move_start_check;
+}
+
+void Tank::Set_Move_Start_Check(int num)
+{
+	move_start_check = num;
+}
+
+void Tank::Set_Tank_Direct(int value)
+{
+	direct = value;
+}
+
+int Tank::Get_Pre_Direct()
+{
+	return save_pre_direct;
+}
+
+void Tank::Set_Pre_Direct(int num)
+{
+	save_pre_direct = num;
+}
+
+int Tank::Get_Turn_Switch()
+{
+	return turn_switch;
+}
+
+void Tank::Set_Turn_Switch(int num)
+{
+	turn_switch = num;
 }
 
 Tank::~Tank()

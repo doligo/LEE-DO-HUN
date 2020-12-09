@@ -25,7 +25,9 @@ private:
 	int shield_motion;
 	int motion;
 	double speed;
-	int tank_level;
+	bool move_start_check;
+	int save_pre_direct;
+	int turn_switch;
 
 public:
 	Tank();
@@ -55,6 +57,13 @@ public:
 	void Set_Tank_Speed(double num);
 	void ReSet_Speed(int num);
 	double Get_Tank_Speed();
+	int Get_Move_Start_Check();
+	void Set_Move_Start_Check(int num);
+	void Set_Tank_Direct(int value);
+	int Get_Pre_Direct();
+	void Set_Pre_Direct(int num);
+	int Get_Turn_Switch();
+	void Set_Turn_Switch(int num);
 
 	~Tank();
 };
