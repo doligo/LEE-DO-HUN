@@ -11,6 +11,7 @@ Tank::Tank()
 	shield = FALSE;
 	shield_motion = 0;
 	speed = 1;
+	tank_level = 1;
 }
 
 void Tank::Init_Tank(int player_or_enemy)

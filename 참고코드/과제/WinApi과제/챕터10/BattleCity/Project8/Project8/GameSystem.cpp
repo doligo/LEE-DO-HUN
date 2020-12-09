@@ -49,6 +49,9 @@ GameSystem::GameSystem()
 
 	for (int j = 0; j < 2; j++)
 		m_item_rt[j] = { 0,0,0,0 };
+
+
+	Set_Difficulty_Tank(); // test
 }
 
 void GameSystem::Init(HWND hWnd)
@@ -1144,7 +1147,25 @@ void GameSystem::Set_Upgrade_Tank()
 	}
 }
 
-GameSystem::~GameSystem()
+void GameSystem::Set_Difficulty_Tank()
 {
 
+}
+
+GameSystem::~GameSystem()
+{
+	//// 동적할당 해제를 해줘야 각 클래스의 소멸자에서 삭제된다
+	delete B_A_D;
+	delete MP;
+
+	for (int i = 0; i < 5; i++)
+		delete TK[i];
+
+	for (int i = 0; i < 4; i++)
+		delete ME[i];
+
+	for (int i = 0; i < 3; i++)
+		delete PLAYER_ME[i];
+
+	delete IT;
 }

@@ -25,6 +25,7 @@ private:
 	int shield_motion;
 	int motion;
 	double speed;
+	int tank_level;
 
 public:
 	Tank();

@@ -2,8 +2,8 @@
 #include <iostream>
 #include <string.h>
 #include <time.h>
-#include <vector>
 #include <conio.h>
+#include <stack>
 using namespace std;
 #pragma once
 

@@ -36,6 +36,8 @@ private:
 	RECT m_item_rt[2];
 
 	RECT flage_rt;
+
+	stack<RECT> st; // 적탱크 길찾기용도 LIFO
 public:
 
 	GameSystem();
@@ -111,6 +113,7 @@ public:
 	void Check_Next_Stage();
 	void Clear_Check();
 	void Set_Upgrade_Tank();
+	void Set_Difficulty_Tank();
 
 	~GameSystem();
 };
