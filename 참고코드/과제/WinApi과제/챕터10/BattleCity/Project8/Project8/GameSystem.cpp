@@ -281,7 +281,7 @@ void GameSystem::Control_Tank()
 		{
 			if (TK[i]->Get_Status() == ALIVE)
 			{
-				if (TK[i]->Get_Move_Start_Check() == FALSE)
+				if (TK[i]->Get_Move_Start_Check() == FALSE && TK[i]->level_up_mode == FALSE)
 				{
 					while (TK[i]->Get_Move_Start_Check() == FALSE)
 					{
@@ -294,9 +294,10 @@ void GameSystem::Control_Tank()
 					}
 				}
 
-				//// ***더 똑똑한탱크 패턴은 game_stage 2부터 바꾸는것 추가하기 ( 나한테 다가오는 )
-
-				result = Check_Block_Tank(i); // 맵끝에 닿거나 블럭에 닿으면 1을 리턴한다
+				if (TK[i]->level_up_mode == FALSE)
+					result = Check_Block_Tank(i); // 맵끝에 닿거나 블럭에 닿으면 1을 리턴한다
+				else
+					result = 22;
 
 				if (result == 0 && TK[i]->Get_Turn_Switch() == FALSE)
 				{
@@ -314,6 +315,8 @@ void GameSystem::Control_Tank()
 					{
 						TK[i]->Set_Turn_Switch(FALSE);
 						TK[i]->Set_Move_Start_Check(FALSE);
+						if (game_stage > 1)
+							TK[i]->level_up_mode = TRUE;
 						break;
 					}
 
@@ -342,6 +345,75 @@ void GameSystem::Control_Tank()
 					m_tank_rt[i] = { TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), TK[i]->enemy_start_x + TK[i]->Get_Tank_X() + 28, TK[i]->enemy_start_y + TK[i]->Get_Tank_Y() + 20 };
 				}
 
+				if (result == 22 && TK[i]->up_count == 0 && TK[i]->down_count == 0 && TK[i]->left_count == 0 && TK[i]->right_count == 0)
+				{
+					if (m_tank_rt[0].top > m_tank_rt[i].top)
+					{
+						if (m_tank_rt[0].left > m_tank_rt[i].left)
+						{
+							TK[i]->down_count = 23;
+							TK[i]->right_count = 23;
+						}
+						else if (m_tank_rt[0].left < m_tank_rt[i].left)
+						{
+							TK[i]->down_count = 23;
+							TK[i]->left_count = 23;
+						}
+					}
+					else if (m_tank_rt[0].top < m_tank_rt[i].top)
+					{
+						if (m_tank_rt[0].left > m_tank_rt[i].left)
+						{
+							TK[i]->up_count = 23;
+							TK[i]->right_count = 23;
+						}
+						else if (m_tank_rt[0].left < m_tank_rt[i].left)
+						{
+							TK[i]->up_count = 23;
+							TK[i]->left_count = 23;
+						}
+					}
+				}
+
+				if (TK[i]->up_count > 0 || TK[i]->down_count > 0 || TK[i]->left_count > 0 || TK[i]->right_count > 0)
+				{
+					result = Check_Block_Tank(i);
+
+					if (result == 1)
+						TK[i]->RollBack_pos();
+
+					else
+					{
+						if (TK[i]->up_count > 0)
+						{
+							TK[i]->Set_Tank_Direct(UP);
+							TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+							TK[i]->up_count--;
+						}
+						else if (TK[i]->down_count > 0)
+						{
+							TK[i]->Set_Tank_Direct(DOWN);
+							TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+							TK[i]->down_count--;
+						}
+						else if (TK[i]->left_count > 0)
+						{
+							TK[i]->Set_Tank_Direct(LEFT);
+							TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+							TK[i]->left_count--;
+						}
+						else if (TK[i]->right_count > 0)
+						{
+							TK[i]->Set_Tank_Direct(RIGHT);
+							TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+							TK[i]->right_count--;
+						}
+					}
+
+					m_tank_rt[i] = { TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), TK[i]->enemy_start_x + TK[i]->Get_Tank_X() + 28, TK[i]->enemy_start_y + TK[i]->Get_Tank_Y() + 20 };
+					if (TK[i]->up_count == 0 && TK[i]->down_count == 0 && TK[i]->left_count == 0 && TK[i]->right_count == 0)
+						TK[i]->level_up_mode = FALSE;
+				}
 			}
 		}
 		move_time = clock();
@@ -1161,6 +1233,14 @@ void GameSystem::ReSet()
 	IT->Init_Item();
 
 	flage_rt = { 463, 675, 498, 700 }; // 본거지 깃발 rect설정
+
+	for (int i = 1; i < 5; i++)
+	{
+		while (st[i - 1].empty() == FALSE)
+		{
+			st[i - 1].pop();
+		}
+	}
 }
 
 void GameSystem::Check_Next_Stage()

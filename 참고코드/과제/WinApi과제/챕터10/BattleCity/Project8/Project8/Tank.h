@@ -38,6 +38,12 @@ public:
 	int enemy_start_y;
 	int move_count;
 
+	int level_up_mode;
+	int left_count;
+	int right_count;
+	int up_count;
+	int down_count;
+
 	void Init_Tank(int player_or_enemy);
 	void Moveing(int dir);
 	int Get_Tank_X();

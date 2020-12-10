@@ -14,6 +14,11 @@ Tank::Tank()
 	move_start_check = FALSE;
 	save_pre_direct = FALSE;
 	turn_switch = FALSE;
+	level_up_mode = FALSE;
+	left_count = 0;
+	right_count = 0;
+	up_count = 0;
+	down_count = 0;
 }
 
 void Tank::Init_Tank(int player_or_enemy)
