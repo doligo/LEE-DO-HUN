@@ -113,6 +113,7 @@ public:
 	void Check_Next_Stage();
 	void Clear_Check();
 	void Set_Upgrade_Tank();
+	void Control_Update(int num);
 
 	~GameSystem();
 };

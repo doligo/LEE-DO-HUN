@@ -1287,6 +1287,18 @@ void GameSystem::Set_Upgrade_Tank()
 	}
 }
 
+void GameSystem::Control_Update(int num)
+{
+	if (TK[num]->Get_Player_Check == TRUE)
+	{
+		// player_move 함수
+	}
+	else if (TK[num]->Get_Player_Check == FALSE)
+	{
+		// ai 함수
+	}
+}
+
 GameSystem::~GameSystem()
 {
 	//// 동적할당 해제를 해줘야 각 클래스의 소멸자에서 삭제된다
