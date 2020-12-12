@@ -49,6 +49,7 @@ GameSystem::GameSystem()
 
 	for (int j = 0; j < 2; j++)
 		m_item_rt[j] = { 0,0,0,0 };
+
 }
 
 void GameSystem::Init(HWND hWnd)
@@ -81,6 +82,12 @@ void GameSystem::Init(HWND hWnd)
 	IT->Init_Item();
 
 	flage_rt = { 463, 675, 498, 700 }; // 본거지 깃발 rect설정
+
+	for (int i = 0; i < 5; i++)
+	{
+		if (TK[i]->Get_Player_Check() == FALSE)
+			TK[i]->gogo_front = rand() % 70;
+	}
 }
 
 void GameSystem::Title_Screen()
@@ -219,211 +226,7 @@ void GameSystem::Control_Tank()
 	int trigger = 0;
 	int tmp_direct = 0;
 
-	if (GetKeyState(VK_UP) & 0x8000)
-	{
-		result = Check_Block_Tank(0);
-		if (result == 0)
-			TK[0]->Moveing(UP);
-		else
-			TK[0]->RollBack_pos();
-		// 블럭과 부딫치는지 비교, 맵끝인지 비교 후 moving으로 가게하기
-	}
-	else if (GetKeyState(VK_DOWN) & 0x8000)
-	{
-		result = Check_Block_Tank(0);
-		if (result == 0)
-			TK[0]->Moveing(DOWN);
-		else
-			TK[0]->RollBack_pos();
-	}
-	else if (GetKeyState(VK_LEFT) & 0x8000)
-	{
-		result = Check_Block_Tank(0);
-		if (result == 0)
-			TK[0]->Moveing(LEFT);
-		else
-			TK[0]->RollBack_pos();
-	 }
-	else if (GetKeyState(VK_RIGHT) & 0x8000)
-	{
-		result = Check_Block_Tank(0);
-		if (result == 0)
-			TK[0]->Moveing(RIGHT);
-		else
-			TK[0]->RollBack_pos();
-	}
-	else if (GetKeyState(VK_SPACE) & 0x8000)
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			if (player_missile_on[i] == FALSE && clock() - missile_time >= 600)
-			{
-				player_missile_on[i] = TRUE;
-				missile_time = clock();
-				break;
-			}
-		}
-	}
-
-	for (int i = 0; i < 3; i++)
-	{
-		if (player_missile_on[i] == TRUE)
-			PLAYER_ME[i]->Move_Missile(TK[0]->Get_Tank_Direct());
-	}
-
-	m_tank_rt[0] = { TK[0]->player_start_x + TK[0]->Get_Tank_X(), TK[0]->player_start_y + TK[0]->Get_Tank_Y(), TK[0]->player_start_x + TK[0]->Get_Tank_X() + 28, TK[0]->player_start_y + TK[0]->Get_Tank_Y() + 20 };
-
-	////////////////// 이밑은 enemy
-
-	if (clock() - move_time >= 10)
-	{
-		for (int i = 1; i < 5; i++)
-		{
-			if (TK[i]->Get_Status() == ALIVE)
-			{
-				if (TK[i]->Get_Move_Start_Check() == FALSE && TK[i]->level_up_mode == FALSE)
-				{
-					while (TK[i]->Get_Move_Start_Check() == FALSE)
-					{
-						tmp_direct = rand() % 3 + 12;
-						if (tmp_direct != TK[i]->Get_Pre_Direct())
-						{
-							TK[i]->Set_Tank_Direct(tmp_direct); // 하우좌 로 움직인다
-							TK[i]->Set_Move_Start_Check(TRUE);
-						}
-					}
-				}
-
-				if (TK[i]->level_up_mode == FALSE)
-					result = Check_Block_Tank(i); // 맵끝에 닿거나 블럭에 닿으면 1을 리턴한다
-				else
-					result = 22;
-
-				if (result == 0 && TK[i]->Get_Turn_Switch() == FALSE)
-				{
-					TK[i]->Set_Pre_Direct(TK[i]->Get_Tank_Direct());
-					st[i - 1].push(m_tank_rt[i]); // 현재좌표를 스택에 넣는다
-					TK[i]->Moveing(TK[i]->Get_Tank_Direct());
-					m_tank_rt[i] = { TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), TK[i]->enemy_start_x + TK[i]->Get_Tank_X() + 28, TK[i]->enemy_start_y + TK[i]->Get_Tank_Y() + 20 };
-				}
-				else if (result == 1)
-					TK[i]->Set_Turn_Switch(TRUE);
-
-				if (TK[i]->Get_Turn_Switch() == TRUE)
-				{
-					if (st[i - 1].empty() == TRUE)
-					{
-						TK[i]->Set_Turn_Switch(FALSE);
-						TK[i]->Set_Move_Start_Check(FALSE);
-						if (game_stage > 1)
-							TK[i]->level_up_mode = TRUE;
-						break;
-					}
-
-					st[i - 1].pop();
-
-					if (TK[i]->Get_Pre_Direct() == LEFT)
-					{
-						TK[i]->Set_Tank_Direct(RIGHT);
-						TK[i]->Moveing(TK[i]->Get_Tank_Direct());
-					}
-					else if (TK[i]->Get_Pre_Direct() == RIGHT)
-					{
-						TK[i]->Set_Tank_Direct(LEFT);
-						TK[i]->Moveing(TK[i]->Get_Tank_Direct());
-					}
-					else if (TK[i]->Get_Pre_Direct() == UP)
-					{
-						TK[i]->Set_Tank_Direct(DOWN);
-						TK[i]->Moveing(TK[i]->Get_Tank_Direct());
-					}
-					else if (TK[i]->Get_Pre_Direct() == DOWN)
-					{
-						TK[i]->Set_Tank_Direct(UP);
-						TK[i]->Moveing(TK[i]->Get_Tank_Direct());
-					}
-					m_tank_rt[i] = { TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), TK[i]->enemy_start_x + TK[i]->Get_Tank_X() + 28, TK[i]->enemy_start_y + TK[i]->Get_Tank_Y() + 20 };
-				}
-
-				if (result == 22 && TK[i]->up_count == 0 && TK[i]->down_count == 0 && TK[i]->left_count == 0 && TK[i]->right_count == 0)
-				{
-					if (m_tank_rt[0].top > m_tank_rt[i].top)
-					{
-						if (m_tank_rt[0].left > m_tank_rt[i].left)
-						{
-							TK[i]->down_count = 23;
-							TK[i]->right_count = 23;
-						}
-						else if (m_tank_rt[0].left < m_tank_rt[i].left)
-						{
-							TK[i]->down_count = 23;
-							TK[i]->left_count = 23;
-						}
-					}
-					else if (m_tank_rt[0].top < m_tank_rt[i].top)
-					{
-						if (m_tank_rt[0].left > m_tank_rt[i].left)
-						{
-							TK[i]->up_count = 23;
-							TK[i]->right_count = 23;
-						}
-						else if (m_tank_rt[0].left < m_tank_rt[i].left)
-						{
-							TK[i]->up_count = 23;
-							TK[i]->left_count = 23;
-						}
-					}
-				}
-
-				if (TK[i]->up_count > 0 || TK[i]->down_count > 0 || TK[i]->left_count > 0 || TK[i]->right_count > 0)
-				{
-					result = Check_Block_Tank(i);
-
-					if (result == 1)
-						TK[i]->RollBack_pos();
-
-					else
-					{
-						if (TK[i]->up_count > 0)
-						{
-							TK[i]->Set_Tank_Direct(UP);
-							TK[i]->Moveing(TK[i]->Get_Tank_Direct());
-							TK[i]->up_count--;
-						}
-						else if (TK[i]->down_count > 0)
-						{
-							TK[i]->Set_Tank_Direct(DOWN);
-							TK[i]->Moveing(TK[i]->Get_Tank_Direct());
-							TK[i]->down_count--;
-						}
-						else if (TK[i]->left_count > 0)
-						{
-							TK[i]->Set_Tank_Direct(LEFT);
-							TK[i]->Moveing(TK[i]->Get_Tank_Direct());
-							TK[i]->left_count--;
-						}
-						else if (TK[i]->right_count > 0)
-						{
-							TK[i]->Set_Tank_Direct(RIGHT);
-							TK[i]->Moveing(TK[i]->Get_Tank_Direct());
-							TK[i]->right_count--;
-						}
-					}
-
-					m_tank_rt[i] = { TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), TK[i]->enemy_start_x + TK[i]->Get_Tank_X() + 28, TK[i]->enemy_start_y + TK[i]->Get_Tank_Y() + 20 };
-					if (TK[i]->up_count == 0 && TK[i]->down_count == 0 && TK[i]->left_count == 0 && TK[i]->right_count == 0)
-						TK[i]->level_up_mode = FALSE;
-				}
-			}
-		}
-		move_time = clock();
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		if (missile_on[i] == TRUE)
-			ME[i]->Move_Missile(TK[i + 1]->Get_Tank_Direct());
-	}
+	Control_Update();
 
 	///////////////// 이밑은 미사일관련함수
 
@@ -944,6 +747,9 @@ void GameSystem::Tank_Dead(int num)
 			st[num - 1].pop();
 		}
 	}
+
+	if (TK[num]->Get_Player_Check() == FALSE)
+		TK[num]->gogo_front = rand() % 70;
 }
 
 void GameSystem::Missile_Collision()
@@ -1241,6 +1047,12 @@ void GameSystem::ReSet()
 			st[i - 1].pop();
 		}
 	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		if (TK[i]->Get_Player_Check() == FALSE)
+			TK[i]->gogo_front = rand() % 70;
+	}
 }
 
 void GameSystem::Check_Next_Stage()
@@ -1287,15 +1099,240 @@ void GameSystem::Set_Upgrade_Tank()
 	}
 }
 
-void GameSystem::Control_Update(int num)
+void GameSystem::Control_Update()
 {
-	if (TK[num]->Get_Player_Check == TRUE)
+	for (int i = 0; i < 5; i++)
+		if (TK[i]->Get_Player_Check() == TRUE)
+			Player_Update(i);
+	Enemy_Update();
+}
+
+void GameSystem::Player_Update(int num)
+{
+	int result = 0;
+	int trigger = 0;
+	int tmp_direct = 0;
+
+	if (GetKeyState(VK_UP) & 0x8000)
 	{
-		// player_move 함수
+		result = Check_Block_Tank(num);
+		if (result == 0)
+			TK[num]->Moveing(UP);
+		else
+			TK[num]->RollBack_pos();
+		// 블럭과 부딫치는지 비교, 맵끝인지 비교 후 moving으로 가게하기
 	}
-	else if (TK[num]->Get_Player_Check == FALSE)
+	else if (GetKeyState(VK_DOWN) & 0x8000)
 	{
-		// ai 함수
+		result = Check_Block_Tank(num);
+		if (result == 0)
+			TK[num]->Moveing(DOWN);
+		else
+			TK[num]->RollBack_pos();
+	}
+	else if (GetKeyState(VK_LEFT) & 0x8000)
+	{
+		result = Check_Block_Tank(num);
+		if (result == 0)
+			TK[num]->Moveing(LEFT);
+		else
+			TK[num]->RollBack_pos();
+	}
+	else if (GetKeyState(VK_RIGHT) & 0x8000)
+	{
+		result = Check_Block_Tank(num);
+		if (result == 0)
+			TK[num]->Moveing(RIGHT);
+		else
+			TK[num]->RollBack_pos();
+	}
+	else if (GetKeyState(VK_SPACE) & 0x8000)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			if (player_missile_on[i] == FALSE && clock() - missile_time >= 600)
+			{
+				player_missile_on[i] = TRUE;
+				missile_time = clock();
+				break;
+			}
+		}
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (player_missile_on[i] == TRUE)
+			PLAYER_ME[i]->Move_Missile(TK[num]->Get_Tank_Direct());
+	}
+
+	m_tank_rt[num] = { TK[num]->player_start_x + TK[num]->Get_Tank_X(), TK[num]->player_start_y + TK[num]->Get_Tank_Y(), TK[num]->player_start_x + TK[num]->Get_Tank_X() + 28, TK[num]->player_start_y + TK[num]->Get_Tank_Y() + 20 };
+}
+
+void GameSystem::Enemy_Update()
+{
+	int result = 0;
+	int trigger = 0;
+	int tmp_direct = 0;
+
+	if (clock() - move_time >= 10)
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			result = Check_Block_Tank(i);
+
+			if (TK[i]->Get_Status() == ALIVE && TK[i]->Get_Player_Check() == FALSE && TK[i]->gogo_front != 0)
+			{
+				TK[i]->gogo_front--;
+				TK[i]->Set_Tank_Direct(DOWN);
+				TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+				m_tank_rt[i] = { TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), TK[i]->enemy_start_x + TK[i]->Get_Tank_X() + 28, TK[i]->enemy_start_y + TK[i]->Get_Tank_Y() + 20 };
+			}
+			else if (TK[i]->Get_Status() == ALIVE && TK[i]->Get_Player_Check() == FALSE && TK[i]->gogo_front == 0)
+			{
+				if (TK[i]->Get_Move_Start_Check() == FALSE && TK[i]->level_up_mode == FALSE)
+				{
+					while (TK[i]->Get_Move_Start_Check() == FALSE)
+					{
+						tmp_direct = rand() % 3 + 12;
+
+						if (tmp_direct != TK[i]->Get_Pre_Direct())
+						{
+							TK[i]->Set_Tank_Direct(tmp_direct); // 하우좌 로 움직인다
+							TK[i]->Set_Move_Start_Check(TRUE);
+						}
+					}
+				}
+
+				if (TK[i]->level_up_mode == FALSE)
+					result = Check_Block_Tank(i); // 맵끝에 닿거나 블럭에 닿으면 1을 리턴한다
+				else
+					result = 22;
+
+				if (result == 0 && TK[i]->Get_Turn_Switch() == FALSE)
+				{
+					TK[i]->Set_Pre_Direct(TK[i]->Get_Tank_Direct());
+					st[i - 1].push(m_tank_rt[i]); // 현재좌표를 스택에 넣는다
+					TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+					m_tank_rt[i] = { TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), TK[i]->enemy_start_x + TK[i]->Get_Tank_X() + 28, TK[i]->enemy_start_y + TK[i]->Get_Tank_Y() + 20 };
+				}
+				else if (result == 1)
+					TK[i]->Set_Turn_Switch(TRUE);
+
+				if (TK[i]->Get_Turn_Switch() == TRUE)
+				{
+					if (st[i - 1].empty() == TRUE)
+					{
+						TK[i]->Set_Turn_Switch(FALSE);
+						TK[i]->Set_Move_Start_Check(FALSE);
+						if (game_stage > 1)
+							TK[i]->level_up_mode = TRUE;
+						break;
+					}
+
+					st[i - 1].pop();
+
+					if (TK[i]->Get_Pre_Direct() == LEFT)
+					{
+						TK[i]->Set_Tank_Direct(RIGHT);
+						TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+					}
+					else if (TK[i]->Get_Pre_Direct() == RIGHT)
+					{
+						TK[i]->Set_Tank_Direct(LEFT);
+						TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+					}
+					else if (TK[i]->Get_Pre_Direct() == UP)
+					{
+						TK[i]->Set_Tank_Direct(DOWN);
+						TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+					}
+					else if (TK[i]->Get_Pre_Direct() == DOWN)
+					{
+						TK[i]->Set_Tank_Direct(UP);
+						TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+					}
+					m_tank_rt[i] = { TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), TK[i]->enemy_start_x + TK[i]->Get_Tank_X() + 28, TK[i]->enemy_start_y + TK[i]->Get_Tank_Y() + 20 };
+				}
+
+				if (result == 22 && TK[i]->up_count == 0 && TK[i]->down_count == 0 && TK[i]->left_count == 0 && TK[i]->right_count == 0)
+				{
+					if (m_tank_rt[0].top > m_tank_rt[i].top)
+					{
+						if (m_tank_rt[0].left > m_tank_rt[i].left)
+						{
+							TK[i]->down_count = 23;
+							TK[i]->right_count = 23;
+						}
+						else if (m_tank_rt[0].left < m_tank_rt[i].left)
+						{
+							TK[i]->down_count = 23;
+							TK[i]->left_count = 23;
+						}
+					}
+					else if (m_tank_rt[0].top < m_tank_rt[i].top)
+					{
+						if (m_tank_rt[0].left > m_tank_rt[i].left)
+						{
+							TK[i]->up_count = 23;
+							TK[i]->right_count = 23;
+						}
+						else if (m_tank_rt[0].left < m_tank_rt[i].left)
+						{
+							TK[i]->up_count = 23;
+							TK[i]->left_count = 23;
+						}
+					}
+				}
+
+				if (TK[i]->up_count > 0 || TK[i]->down_count > 0 || TK[i]->left_count > 0 || TK[i]->right_count > 0)
+				{
+					result = Check_Block_Tank(i);
+
+					if (result == 1)
+						TK[i]->RollBack_pos();
+
+					else
+					{
+						if (TK[i]->up_count > 0)
+						{
+							TK[i]->Set_Tank_Direct(UP);
+							TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+							TK[i]->up_count--;
+						}
+						else if (TK[i]->down_count > 0)
+						{
+							TK[i]->Set_Tank_Direct(DOWN);
+							TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+							TK[i]->down_count--;
+						}
+						else if (TK[i]->left_count > 0)
+						{
+							TK[i]->Set_Tank_Direct(LEFT);
+							TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+							TK[i]->left_count--;
+						}
+						else if (TK[i]->right_count > 0)
+						{
+							TK[i]->Set_Tank_Direct(RIGHT);
+							TK[i]->Moveing(TK[i]->Get_Tank_Direct());
+							TK[i]->right_count--;
+						}
+					}
+
+					m_tank_rt[i] = { TK[i]->enemy_start_x + TK[i]->Get_Tank_X(), TK[i]->enemy_start_y + TK[i]->Get_Tank_Y(), TK[i]->enemy_start_x + TK[i]->Get_Tank_X() + 28, TK[i]->enemy_start_y + TK[i]->Get_Tank_Y() + 20 };
+					if (TK[i]->up_count == 0 && TK[i]->down_count == 0 && TK[i]->left_count == 0 && TK[i]->right_count == 0)
+						TK[i]->level_up_mode = FALSE;
+				}
+			}
+
+		move_time = clock();
+		}
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (missile_on[i] == TRUE)
+			ME[i]->Move_Missile(TK[i + 1]->Get_Tank_Direct());
 	}
 }
 

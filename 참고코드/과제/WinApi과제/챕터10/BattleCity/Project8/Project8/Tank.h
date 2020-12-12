@@ -43,6 +43,7 @@ public:
 	int right_count;
 	int up_count;
 	int down_count;
+	int gogo_front;
 
 	void Init_Tank(int player_or_enemy);
 	void Moveing(int dir);

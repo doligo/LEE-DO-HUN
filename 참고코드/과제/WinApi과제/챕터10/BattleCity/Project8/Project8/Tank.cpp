@@ -19,6 +19,7 @@ Tank::Tank()
 	right_count = 0;
 	up_count = 0;
 	down_count = 0;
+	gogo_front = 0;
 }
 
 void Tank::Init_Tank(int player_or_enemy)
