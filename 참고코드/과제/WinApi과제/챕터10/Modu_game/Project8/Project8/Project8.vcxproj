@@ -157,7 +157,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game_Scene.cpp" />
     <ClCompile Include="Project8.cpp" />
+    <ClCompile Include="Title_Scene.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game_Scene.h" />
+    <ClInclude Include="Title_Scene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
