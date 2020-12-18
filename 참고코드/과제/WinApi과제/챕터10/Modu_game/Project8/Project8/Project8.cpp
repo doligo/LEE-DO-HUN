@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Title_Scene.h"
+#include "Select_Scene.h"
 #include "Game_Scene.h"
 #include "Game2_Scene.h"
 
@@ -20,13 +21,13 @@ HINSTANCE g_hInst;
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
-	JEngine::EngineMain modu("모두의 게임", 1024, 768);
-	JEngine::SceneManager::GetInstance()->RegistScene(new Title_Scene);
-	JEngine::SceneManager::GetInstance()->RegistScene(new Game_Scene);
-	JEngine::SceneManager::GetInstance()->RegistScene(new Game2_Scene);
+	JEngine::EngineMain modu("모두의 게임", 414, 642);
+	JEngine::SceneManager::GetInstance()->RegistScene(new Title_Scene); //0
+	JEngine::SceneManager::GetInstance()->RegistScene(new Select_Scene); //1
+	JEngine::SceneManager::GetInstance()->RegistScene(new Game_Scene); //2
+	JEngine::SceneManager::GetInstance()->RegistScene(new Game2_Scene); //3
 
-	// 엔진 돌아가는 원리 이해하기
-	// 타이틀씬, 게임씬 게임2씬으로 추가하기
+	// 돛 어디에 쓰이는지 알아보기
 
 	return (int)modu.StartEngine(hInstance);
 }

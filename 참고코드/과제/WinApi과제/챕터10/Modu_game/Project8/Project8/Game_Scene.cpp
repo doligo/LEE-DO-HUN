@@ -1,4 +1,5 @@
 #include "Game_Scene.h"
+#include "InputManager.h"
 
 Game_Scene::Game_Scene()
 {
@@ -7,6 +8,15 @@ Game_Scene::Game_Scene()
 
 void Game_Scene::Init(HWND hWnd)
 {
+	JEngine::InputManager::GetInstance()->Clear();
+	JEngine::InputManager::GetInstance()->RegistKeyCode(VK_SPACE);
+	JEngine::InputManager::GetInstance()->RegistKeyCode(VK_ESCAPE);
+	JEngine::InputManager::GetInstance()->RegistKeyCode(VK_LEFT);
+	JEngine::InputManager::GetInstance()->RegistKeyCode(VK_RIGHT);
+	JEngine::InputManager::GetInstance()->RegistKeyCode(VK_UP);
+	JEngine::InputManager::GetInstance()->RegistKeyCode(VK_DOWN);
+	JEngine::InputManager::GetInstance()->RegistKeyCode(VK_LBUTTON);
+
 
 }
 

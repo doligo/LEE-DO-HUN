@@ -160,11 +160,13 @@
     <ClCompile Include="Game2_Scene.cpp" />
     <ClCompile Include="Game_Scene.cpp" />
     <ClCompile Include="Project8.cpp" />
+    <ClCompile Include="Select_Scene.cpp" />
     <ClCompile Include="Title_Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game2_Scene.h" />
     <ClInclude Include="Game_Scene.h" />
+    <ClInclude Include="Select_Scene.h" />
     <ClInclude Include="Title_Scene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

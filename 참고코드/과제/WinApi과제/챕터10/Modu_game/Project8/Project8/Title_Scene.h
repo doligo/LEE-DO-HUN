@@ -5,7 +5,6 @@
 class Title_Scene : public JEngine::Scene
 {
 private:
-	JEngine::BitMap *m_pBack;
 	JEngine::BitMap *m_pTitle;
 	
 	float m_p_title_x;
@@ -21,7 +20,8 @@ public:
 	virtual void Update(float fETime);
 	virtual void Draw(HDC hdc);
 	virtual void Release();
-	bool OnClick();
+
+	bool OnClick_Select();
 
 	virtual ~Title_Scene(); // 소멸자에 virtual 안써주면 메모리가 샌다
 };
