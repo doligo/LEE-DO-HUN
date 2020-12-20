@@ -10,6 +10,8 @@
 #include "JEngine.h"
 #include "EngineMain.h"
 #include "SceneManager.h"
+#include <Windows.h>
+#include <time.h>
 using namespace std;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -21,6 +23,8 @@ HINSTANCE g_hInst;
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
+	srand(time(NULL));
+
 	JEngine::EngineMain modu("모두의 게임", 414, 642);
 	JEngine::SceneManager::GetInstance()->RegistScene(new Title_Scene); //0
 	JEngine::SceneManager::GetInstance()->RegistScene(new Select_Scene); //1

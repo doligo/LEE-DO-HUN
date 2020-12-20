@@ -49,11 +49,13 @@ void Select_Scene::Release()
 
 bool Select_Scene::OnClick_Game()
 {
+	JEngine::SceneManager::GetInstance()->LoadScene(2);
 	return true;
 }
 
 bool Select_Scene::OnClick_Game2()
 {
+	JEngine::SceneManager::GetInstance()->LoadScene(3);
 	return true;
 }
 

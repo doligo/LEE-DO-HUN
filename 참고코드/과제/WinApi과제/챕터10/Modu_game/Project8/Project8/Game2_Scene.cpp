@@ -1,4 +1,8 @@
 #include "Game2_Scene.h"
+#include "InputManager.h"
+#include "ResoucesManager.h"
+#include "UIManager.h"
+#include "SceneManager.h"
 
 Game2_Scene::Game2_Scene()
 {
@@ -12,6 +16,9 @@ void Game2_Scene::Init(HWND hWnd)
 
 bool Game2_Scene::Input(float fETime)
 {
+	if (JEngine::InputManager::GetInstance()->isKeyUp(VK_ESCAPE))
+		JEngine::SceneManager::GetInstance()->LoadScene(1);
+
 	return false;
 }
 
