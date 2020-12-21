@@ -15,6 +15,11 @@ enum Paper_Color
 #define LEFT 22
 #define RIGHT 23
 
+#define UP_END 148
+#define DOWN_END 443
+#define LEFT_END 16
+#define RIGHT_END 290
+
 class Game_Scene : public JEngine::Scene
 {
 private:
@@ -24,6 +29,7 @@ private:
 
 	int game_score;
 	int paper_score;
+	bool moving_check;
 	
 	int game_time;
 	int paper_x;
