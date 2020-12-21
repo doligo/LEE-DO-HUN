@@ -12,6 +12,7 @@
 #include "SceneManager.h"
 #include <Windows.h>
 #include <time.h>
+#include <stdio.h>
 using namespace std;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);

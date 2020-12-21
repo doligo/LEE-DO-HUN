@@ -29,6 +29,9 @@ void Game_Scene::Init(HWND hWnd)
 	m_pPaper[GREEN] = JEngine::ResoucesManager::GetInstance()->GetBitmap("ColoredPaperGreen.bmp");
 	m_pPaper[BLUE] = JEngine::ResoucesManager::GetInstance()->GetBitmap("ColoredPaperBlue.bmp");
 	m_pPaper[YELLOW] = JEngine::ResoucesManager::GetInstance()->GetBitmap("ColoredPaperYellow.bmp");
+	m_pShow_Score = new JEngine::Label();
+	m_pShow_Paper_Score = new JEngine::Label();
+	m_pShow_Time = JEngine::ResoucesManager::GetInstance()->GetBitmap("ColoredPaperTimeBar.bmp");
 
 	paper_x = 155;
 	paper_y = 300;
@@ -69,26 +72,58 @@ void Game_Scene::Update(float fETime)
 {
 	time = fETime;
 
+	Move();
+	Point();
+}
+
+void Game_Scene::Draw(HDC hdc)
+{
+
+	m_pBack->Draw(0, 0); // 배경
+
+	m_pPaper[visible_paper[1]]->Draw(155, 300);
+	m_pPaper[visible_paper[0]]->Draw(paper_x, paper_y);
+
+	m_pShow_Score->Draw();
+	m_pShow_Paper_Score->Draw();
+}
+
+void Game_Scene::Release()
+{
+
+}
+
+void Game_Scene::Move()
+{
 	if (paper_dir == UP && paper_y > UP_END)
 	{
-		paper_y--;
+		paper_y -= 11;
 	}
 	else if (paper_dir == DOWN && paper_y < DOWN_END)
 	{
-		paper_y++;
+		paper_y += 11;
 	}
 	else if (paper_dir == LEFT && paper_x > LEFT_END)
 	{
-		paper_x--;
+		paper_x -= 11;
 	}
 	else if (paper_dir == RIGHT && paper_x < RIGHT_END)
 	{
-		paper_x++;
+		paper_x += 11;
 	}
 	else if (moving_check == true)
 	{
-		if (paper_y > UP_END || paper_y < DOWN_END || paper_x > LEFT_END || paper_x < RIGHT_END)
+		if (paper_y >= UP_END || paper_y <= DOWN_END || paper_x >= LEFT_END || paper_x <= RIGHT_END)
 		{
+			if (paper_dir == UP && visible_paper[0] == GREEN)
+				game_score += paper_score;
+			else if (paper_dir == DOWN && visible_paper[0] == YELLOW)
+				game_score += paper_score;
+			else if (paper_dir == LEFT && visible_paper[0] == BLUE)
+				game_score += paper_score;
+			else if (paper_dir == RIGHT && visible_paper[0] == RED)
+				game_score += paper_score;
+
 			moving_check = false;
 			paper_dir = NULL;
 			visible_paper[0] = visible_paper[1];
@@ -99,17 +134,16 @@ void Game_Scene::Update(float fETime)
 	}
 }
 
-void Game_Scene::Draw(HDC hdc)
+void Game_Scene::Point()
 {
-	m_pBack->Draw(0, 0); // 배경
-	m_pPaper[visible_paper[1]]->Draw(155, 300);
-	m_pPaper[visible_paper[0]]->Draw(paper_x, paper_y);
+	char buf[256] = {};
+	char buf2[256] = {};
 
-}
+	sprintf_s(buf, "%d", game_score);
+	m_pShow_Score->Init(buf, 200, 25, DT_CENTER);
 
-void Game_Scene::Release()
-{
-
+	sprintf_s(buf2, "%d", paper_score);
+	m_pShow_Paper_Score->Init(buf2, paper_x + 40, paper_y + 45, DT_CENTER);
 }
 
 Game_Scene::~Game_Scene()

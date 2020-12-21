@@ -1,6 +1,7 @@
 #pragma once
 #include "GlobalDefine.h"
 #include "JEngine.h"
+#include "Label.h"
 
 enum Paper_Color
 {
@@ -25,8 +26,11 @@ class Game_Scene : public JEngine::Scene
 private:
 	JEngine::BitMap *m_pBack;
 	JEngine::BitMap *m_pPaper[4];
-	float time;
+	JEngine::BitMap *m_pShow_Time; //남은시간
+	JEngine::Label* m_pShow_Score;
+	JEngine::Label* m_pShow_Paper_Score;
 
+	float time;
 	int game_score;
 	int paper_score;
 	bool moving_check;
@@ -36,6 +40,8 @@ private:
 	int paper_y;
 	int paper_dir;
 	int visible_paper[2];
+
+	int fever_lv;
 public:
 	Game_Scene();
 
@@ -45,6 +51,8 @@ public:
 	virtual void Draw(HDC hdc);
 	virtual void Release();
 	//bool ClickEvent();
+	void Move();
+	void Point();
 
 	virtual ~Game_Scene();
 };
