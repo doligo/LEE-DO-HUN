@@ -3,14 +3,18 @@
 #include "ResoucesManager.h"
 #include "UIManager.h"
 #include "SceneManager.h"
+#include "BitMap.h"
 
 Game_Scene::Game_Scene()
 {
 	time = 0;
+	game_time = 0;
 	game_score = 0;
 	paper_score = 100;
 	paper_dir = NULL;
 	moving_check = false;
+	fever_lv = 0;
+	fever_gauge = 0;
 }
 
 void Game_Scene::Init(HWND hWnd)
@@ -32,12 +36,17 @@ void Game_Scene::Init(HWND hWnd)
 	m_pShow_Score = new JEngine::Label();
 	m_pShow_Paper_Score = new JEngine::Label();
 	m_pShow_Time = JEngine::ResoucesManager::GetInstance()->GetBitmap("ColoredPaperTimeBar.bmp");
+	m_pShow_Fever[0] = JEngine::ResoucesManager::GetInstance()->GetBitmap("Fever1.bmp");
+	m_pShow_Fever[1] = JEngine::ResoucesManager::GetInstance()->GetBitmap("Fever2.bmp");
+	m_pShow_Fever[2] = JEngine::ResoucesManager::GetInstance()->GetBitmap("Fever3.bmp");
 
 	paper_x = 155;
 	paper_y = 300;
 
 	for (int i = 0; i < 2; i++)
 		visible_paper[i] = rand() % 4;
+
+	game_time = 35000 + GetTickCount();
 }
 
 bool Game_Scene::Input(float fETime)
@@ -70,15 +79,16 @@ bool Game_Scene::Input(float fETime)
 
 void Game_Scene::Update(float fETime)
 {
-	time = fETime;
+	time = fETime; // fps에 쓰인다?
 
+	Time();
 	Move();
 	Point();
+	Fever();
 }
 
 void Game_Scene::Draw(HDC hdc)
 {
-
 	m_pBack->Draw(0, 0); // 배경
 
 	m_pPaper[visible_paper[1]]->Draw(155, 300);
@@ -86,6 +96,13 @@ void Game_Scene::Draw(HDC hdc)
 
 	m_pShow_Score->Draw();
 	m_pShow_Paper_Score->Draw();
+	m_pShow_Time->Draw2(24, 618, (game_time - GetTickCount()) / 35000, 1.0);
+
+	if (fever_lv == 1)
+		m_pShow_Fever[0]->Draw2(22, 53, 1, 1);
+	else if (fever_lv == 2)
+		m_pShow_Fever[1]->Draw2(22, 53, 1, 1);
+	m_pShow_Fever[fever_lv]->Draw2(22, 53, fever_gauge / 200, 1);
 }
 
 void Game_Scene::Release()
@@ -116,13 +133,29 @@ void Game_Scene::Move()
 		if (paper_y >= UP_END || paper_y <= DOWN_END || paper_x >= LEFT_END || paper_x <= RIGHT_END)
 		{
 			if (paper_dir == UP && visible_paper[0] == GREEN)
+			{
 				game_score += paper_score;
+				if (fever_lv < 3)
+					fever_gauge += 20;
+			}
 			else if (paper_dir == DOWN && visible_paper[0] == YELLOW)
+			{
 				game_score += paper_score;
+				if (fever_lv < 3)
+					fever_gauge += 20;
+			}
 			else if (paper_dir == LEFT && visible_paper[0] == BLUE)
+			{
 				game_score += paper_score;
+				if (fever_lv < 3)
+					fever_gauge += 20;
+			}
 			else if (paper_dir == RIGHT && visible_paper[0] == RED)
+			{
 				game_score += paper_score;
+				if (fever_lv < 3)
+					fever_gauge += 20;
+			}
 
 			moving_check = false;
 			paper_dir = NULL;
@@ -144,6 +177,26 @@ void Game_Scene::Point()
 
 	sprintf_s(buf2, "%d", paper_score);
 	m_pShow_Paper_Score->Init(buf2, paper_x + 40, paper_y + 45, DT_CENTER);
+}
+
+void Game_Scene::Time()
+{
+	if (game_time <= GetTickCount())
+		JEngine::SceneManager::GetInstance()->LoadScene(1);
+}
+
+void Game_Scene::Fever()
+{
+	if (fever_gauge >= 200)
+	{
+		if (fever_lv < 2)
+		{
+			fever_lv++;
+			fever_gauge = 0;
+		}
+		else
+			fever_gauge = 200;
+	}
 }
 
 Game_Scene::~Game_Scene()

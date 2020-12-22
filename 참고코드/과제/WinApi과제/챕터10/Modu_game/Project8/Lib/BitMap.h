@@ -44,6 +44,7 @@ namespace JEngine
 		void			AdjustAnchorPoint(int& x, int& y);
 		void			DrawBitblt(int x, int y);
 		void			Draw(int x, int y);
+		void			Draw2(int x, int y, float size_x, float size_y);
 		void			Draw(JEngine::POINT pt);
 		void			DrawBack(HDC hdc);
 		void			SetAnchor(ANCHOR type);

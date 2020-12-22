@@ -65,6 +65,11 @@ namespace JEngine
 		TransparentBlt(ResoucesManager::GetInstance()->GetBackDC(), x, y, m_size.cx, m_size.cy, m_hMemDC, 0, 0, m_size.cx, m_size.cy, RGB(255, 0, 255));
 	}
 
+	void BitMap::Draw2(int x, int y, float size_x, float size_y)
+	{
+		StretchBlt(ResoucesManager::GetInstance()->GetBackDC(), x, y, m_size.cx * size_x, m_size.cy * size_y, m_hMemDC, 0, 0, m_size.cx, m_size.cy, SRCCOPY);
+	}
+
 	void BitMap::DrawBack(HDC hdc)
 	{
 		BitBlt(hdc, 0, 0, m_size.cx, m_size.cy, m_hMemDC, 0, 0, SRCCOPY);

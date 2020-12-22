@@ -27,21 +27,23 @@ private:
 	JEngine::BitMap *m_pBack;
 	JEngine::BitMap *m_pPaper[4];
 	JEngine::BitMap *m_pShow_Time; //남은시간
+	JEngine::BitMap *m_pShow_Fever[3];
 	JEngine::Label* m_pShow_Score;
 	JEngine::Label* m_pShow_Paper_Score;
 
 	float time;
+	float game_time;
 	int game_score;
 	int paper_score;
 	bool moving_check;
 	
-	int game_time;
 	int paper_x;
 	int paper_y;
 	int paper_dir;
 	int visible_paper[2];
 
 	int fever_lv;
+	float fever_gauge;
 public:
 	Game_Scene();
 
@@ -53,6 +55,8 @@ public:
 	//bool ClickEvent();
 	void Move();
 	void Point();
+	void Time();
+	void Fever();
 
 	virtual ~Game_Scene();
 };

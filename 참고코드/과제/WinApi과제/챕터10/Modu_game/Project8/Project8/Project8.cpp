@@ -24,7 +24,7 @@ HINSTANCE g_hInst;
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 
 	JEngine::EngineMain modu("모두의 게임", 414, 642);
 	JEngine::SceneManager::GetInstance()->RegistScene(new Title_Scene); //0
