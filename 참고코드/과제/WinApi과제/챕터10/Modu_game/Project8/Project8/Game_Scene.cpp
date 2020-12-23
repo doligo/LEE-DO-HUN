@@ -15,6 +15,7 @@ Game_Scene::Game_Scene()
 	moving_check = false;
 	fever_lv = 0;
 	fever_gauge = 0;
+	combo_count = 0;
 }
 
 void Game_Scene::Init(HWND hWnd)
@@ -130,31 +131,40 @@ void Game_Scene::Move()
 	}
 	else if (moving_check == true)
 	{
-		if (paper_y >= UP_END || paper_y <= DOWN_END || paper_x >= LEFT_END || paper_x <= RIGHT_END)
+		if (paper_y >= UP_END || paper_y <= DOWN_END || paper_x >= LEFT_END || paper_x <= RIGHT_END) // 종이를 맞췄을때
 		{
 			if (paper_dir == UP && visible_paper[0] == GREEN)
 			{
 				game_score += paper_score;
 				if (fever_lv < 3)
 					fever_gauge += 20;
+				combo_count++;
 			}
 			else if (paper_dir == DOWN && visible_paper[0] == YELLOW)
 			{
 				game_score += paper_score;
 				if (fever_lv < 3)
 					fever_gauge += 20;
+				combo_count++;
 			}
 			else if (paper_dir == LEFT && visible_paper[0] == BLUE)
 			{
 				game_score += paper_score;
 				if (fever_lv < 3)
 					fever_gauge += 20;
+				combo_count++;
 			}
 			else if (paper_dir == RIGHT && visible_paper[0] == RED)
 			{
 				game_score += paper_score;
 				if (fever_lv < 3)
 					fever_gauge += 20;
+				combo_count++;
+			}
+			else // 틀렸을때
+			{
+				combo_count = 0;
+				paper_score = 100;
 			}
 
 			moving_check = false;
@@ -163,6 +173,7 @@ void Game_Scene::Move()
 			visible_paper[1] = rand() % 4;
 			paper_x = 155;
 			paper_y = 300;
+
 		}
 	}
 }
@@ -187,16 +198,37 @@ void Game_Scene::Time()
 
 void Game_Scene::Fever()
 {
+	if (fever_gauge > 0)
+		fever_gauge -= 0.02;
+
+	if (fever_lv > 0 && fever_gauge <= 0)
+	{
+		fever_lv--;
+		fever_gauge = 199;
+	}
+
 	if (fever_gauge >= 200)
 	{
 		if (fever_lv < 2)
 		{
 			fever_lv++;
-			fever_gauge = 0;
+			fever_gauge = 10;
 		}
 		else
 			fever_gauge = 200;
 	}
+
+	if (fever_lv == 1)
+		paper_score += 100;
+	else if (fever_lv == 2)
+		paper_score += 200;
+
+	//// 5콤보당 현재 페이퍼포인트 2배
+	/*
+	피버 1단계 - 기본페이퍼포인트 + 100 계속증가
+	피버 2단계 - 기본페이퍼포인트 + 200 계속증가
+	피버 3단계 - 기본페이퍼포인트 + 300 계속증가
+	*/
 }
 
 Game_Scene::~Game_Scene()

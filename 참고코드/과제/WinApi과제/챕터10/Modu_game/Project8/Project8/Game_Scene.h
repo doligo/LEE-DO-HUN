@@ -44,6 +44,7 @@ private:
 
 	int fever_lv;
 	float fever_gauge;
+	int combo_count;
 public:
 	Game_Scene();
 

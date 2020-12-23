@@ -32,7 +32,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	JEngine::SceneManager::GetInstance()->RegistScene(new Game_Scene); //2
 	JEngine::SceneManager::GetInstance()->RegistScene(new Game2_Scene); //3
 
-	// 돛 어디에 쓰이는지 알아보기
+	// 앵커함수는 글자정렬과 같은의미로 쓸수있다
 
 	return (int)modu.StartEngine(hInstance);
 }
