@@ -16,6 +16,8 @@ Game_Scene::Game_Scene()
 	fever_lv = 0;
 	fever_gauge = 0;
 	combo_count = 0;
+	full_fever_time = 0;
+	fever_light = 0;
 }
 
 void Game_Scene::Init(HWND hWnd)
@@ -47,7 +49,7 @@ void Game_Scene::Init(HWND hWnd)
 	for (int i = 0; i < 2; i++)
 		visible_paper[i] = rand() % 4;
 
-	game_time = 35000 + GetTickCount();
+	game_time = 50000 + GetTickCount();
 }
 
 bool Game_Scene::Input(float fETime)
@@ -97,13 +99,28 @@ void Game_Scene::Draw(HDC hdc)
 
 	m_pShow_Score->Draw();
 	m_pShow_Paper_Score->Draw();
-	m_pShow_Time->Draw2(24, 618, (game_time - GetTickCount()) / 35000, 1.0);
+	m_pShow_Time->Draw2(24, 618, (game_time - GetTickCount()) / 50000, 1.0);
 
-	if (fever_lv == 1)
+	if (fever_lv == 1 && full_fever_time == 0)
 		m_pShow_Fever[0]->Draw2(22, 53, 1, 1);
-	else if (fever_lv == 2)
+	else if (fever_lv == 2 && full_fever_time == 0)
 		m_pShow_Fever[1]->Draw2(22, 53, 1, 1);
-	m_pShow_Fever[fever_lv]->Draw2(22, 53, fever_gauge / 200, 1);
+	else if (fever_lv == 2 && full_fever_time != 0)
+	{
+		if (fever_light >= 0 && fever_light <= 9)
+			m_pShow_Fever[0]->Draw2(22, 53, 1, 1);
+		else if (fever_light >= 10 && fever_light <= 19)
+			m_pShow_Fever[1]->Draw2(22, 53, 1, 1);
+		else if (fever_light >= 20 && fever_light <= 29)
+			m_pShow_Fever[2]->Draw2(22, 53, 1, 1);
+		else
+			fever_light = 0;
+
+		fever_light++;
+	}
+
+	if (full_fever_time == 0)
+		m_pShow_Fever[fever_lv]->Draw2(22, 53, fever_gauge / 200, 1);
 }
 
 void Game_Scene::Release()
@@ -133,39 +150,56 @@ void Game_Scene::Move()
 	{
 		if (paper_y >= UP_END || paper_y <= DOWN_END || paper_x >= LEFT_END || paper_x <= RIGHT_END) // 종이를 맞췄을때
 		{
+			if (fever_lv == 1)
+				paper_score += 100;
+			else if (fever_lv == 2 && fever_gauge < 200 && full_fever_time == 0)
+				paper_score += 200;
+			else if (full_fever_time != 0)
+				paper_score += 300;
+
 			if (paper_dir == UP && visible_paper[0] == GREEN)
 			{
 				game_score += paper_score;
-				if (fever_lv < 3)
+				if (fever_lv < 3 && fever_gauge <= 200)
 					fever_gauge += 20;
 				combo_count++;
 			}
 			else if (paper_dir == DOWN && visible_paper[0] == YELLOW)
 			{
 				game_score += paper_score;
-				if (fever_lv < 3)
+				if (fever_lv < 3 && fever_gauge <= 200)
 					fever_gauge += 20;
 				combo_count++;
 			}
 			else if (paper_dir == LEFT && visible_paper[0] == BLUE)
 			{
 				game_score += paper_score;
-				if (fever_lv < 3)
+				if (fever_lv < 3 && fever_gauge <= 200)
 					fever_gauge += 20;
 				combo_count++;
 			}
 			else if (paper_dir == RIGHT && visible_paper[0] == RED)
 			{
 				game_score += paper_score;
-				if (fever_lv < 3)
+				if (fever_lv < 3 && fever_gauge <= 200)
 					fever_gauge += 20;
 				combo_count++;
 			}
 			else // 틀렸을때
 			{
 				combo_count = 0;
-				paper_score = 100;
+				fever_gauge -= 40;
+
+				if (fever_lv == 1)
+					paper_score = 200;
+				else if (fever_lv == 2 && fever_gauge < 200 && full_fever_time == 0)
+					paper_score = 300;
+				else if (full_fever_time != 0)
+					paper_score = 400;
+				else
+					paper_score = 100;
 			}
+
 
 			moving_check = false;
 			paper_dir = NULL;
@@ -198,36 +232,55 @@ void Game_Scene::Time()
 
 void Game_Scene::Fever()
 {
-	if (fever_gauge > 0)
+	if (fever_gauge > 0 && fever_lv < 3)
 		fever_gauge -= 0.02;
 
-	if (fever_lv > 0 && fever_gauge <= 0)
+	if (fever_gauge <= 0 && fever_lv > 0)
 	{
 		fever_lv--;
 		fever_gauge = 199;
 	}
+	else if (fever_gauge <= 0 && fever_lv == 0)
+		fever_gauge = 0;
 
 	if (fever_gauge >= 200)
 	{
 		if (fever_lv < 2)
 		{
-			fever_lv++;
 			fever_gauge = 10;
+			fever_lv++;
 		}
-		else
+		else if (fever_lv == 2)
+		{
 			fever_gauge = 200;
+		}
 	}
 
-	if (fever_lv == 1)
-		paper_score += 100;
-	else if (fever_lv == 2)
-		paper_score += 200;
+	if (fever_lv == 2 && fever_gauge == 200)
+	{
+		if (full_fever_time == 0)
+			full_fever_time = 5500 + GetTickCount();
+		else if (full_fever_time <= GetTickCount())
+		{
+			full_fever_time = 0;
+			fever_lv = 0;
+			fever_gauge = 0;
+			paper_score = 100;
+		}
+	}
 
-	//// 5콤보당 현재 페이퍼포인트 2배
+	if (combo_count == 5)
+	{
+		fever_gauge += 40;
+		combo_count = 0;
+	}
+
 	/*
-	피버 1단계 - 기본페이퍼포인트 + 100 계속증가
-	피버 2단계 - 기본페이퍼포인트 + 200 계속증가
-	피버 3단계 - 기본페이퍼포인트 + 300 계속증가
+	피버 1단계 - 기본페이퍼포인트 + 100 계속증가 - 시작포인트 200
+	피버 2단계 - 기본페이퍼포인트 + 200 계속증가 - 시작포인트 300
+	피버 3단계 - 기본페이퍼포인트 + 300 계속증가 - 시작포인트 400
+
+	콤보 5번마다 피버게이지 2배 충전
 	*/
 }
 

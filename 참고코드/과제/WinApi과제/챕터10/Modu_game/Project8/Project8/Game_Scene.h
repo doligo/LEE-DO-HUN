@@ -33,6 +33,7 @@ private:
 
 	float time;
 	float game_time;
+	float full_fever_time;
 	int game_score;
 	int paper_score;
 	bool moving_check;
@@ -44,6 +45,7 @@ private:
 
 	int fever_lv;
 	float fever_gauge;
+	int fever_light;
 	int combo_count;
 public:
 	Game_Scene();
