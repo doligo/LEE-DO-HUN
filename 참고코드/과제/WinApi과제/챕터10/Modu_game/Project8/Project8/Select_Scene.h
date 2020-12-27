@@ -6,6 +6,7 @@ class Select_Scene : public JEngine::Scene
 {
 private:
 	JEngine::BitMap *m_pBack;
+
 	float time;
 public:
 	Select_Scene();

@@ -6,7 +6,7 @@
 
 Select_Scene::Select_Scene()
 {
-	time = 0;
+
 }
 
 void Select_Scene::Init(HWND hWnd)
@@ -22,6 +22,8 @@ void Select_Scene::Init(HWND hWnd)
 
 	JEngine::UIManager::GetInstance()->AddButton(320, 166, "OnSelect.bmp", std::bind(&Select_Scene::OnClick_Game, this));
 	JEngine::UIManager::GetInstance()->AddButton(320, 249, "OnSelect.bmp", std::bind(&Select_Scene::OnClick_Game2, this));
+
+	time = 0;
 }
 
 bool Select_Scene::Input(float fETime)

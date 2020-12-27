@@ -7,17 +7,6 @@
 
 Game_Scene::Game_Scene()
 {
-	time = 0;
-	game_time = 0;
-	game_score = 0;
-	paper_score = 100;
-	paper_dir = NULL;
-	moving_check = false;
-	fever_lv = 0;
-	fever_gauge = 0;
-	combo_count = 0;
-	full_fever_time = 0;
-	fever_light = 0;
 }
 
 void Game_Scene::Init(HWND hWnd)
@@ -42,6 +31,21 @@ void Game_Scene::Init(HWND hWnd)
 	m_pShow_Fever[0] = JEngine::ResoucesManager::GetInstance()->GetBitmap("Fever1.bmp");
 	m_pShow_Fever[1] = JEngine::ResoucesManager::GetInstance()->GetBitmap("Fever2.bmp");
 	m_pShow_Fever[2] = JEngine::ResoucesManager::GetInstance()->GetBitmap("Fever3.bmp");
+	m_pLoadingBack = JEngine::ResoucesManager::GetInstance()->GetBitmap("LoadingBack.bmp");
+	m_pLoading = JEngine::ResoucesManager::GetInstance()->GetBitmap("Loading.bmp");
+	m_pLoadingWord = JEngine::ResoucesManager::GetInstance()->GetBitmap("Loading_Word.bmp");
+	m_pTimeOut = JEngine::ResoucesManager::GetInstance()->GetBitmap("TimeOver.bmp");
+
+	time = 0;
+	game_score = 0;
+	paper_score = 100;
+	paper_dir = NULL;
+	moving_check = false;
+	fever_lv = 0;
+	fever_gauge = 0;
+	combo_count = 0;
+	full_fever_time = 0;
+	fever_light = 0;
 
 	paper_x = 155;
 	paper_y = 300;
@@ -50,6 +54,9 @@ void Game_Scene::Init(HWND hWnd)
 		visible_paper[i] = rand() % 4;
 
 	game_time = 50000 + GetTickCount();
+	loading_time = 2300 + GetTickCount();
+	timeover_time = 0;
+
 }
 
 bool Game_Scene::Input(float fETime)
@@ -85,47 +92,62 @@ void Game_Scene::Update(float fETime)
 	time = fETime; // fps에 쓰인다?
 
 	Time();
-	Move();
+	if (timeover_time == 0)
+		Move();
 	Point();
 	Fever();
 }
 
 void Game_Scene::Draw(HDC hdc)
 {
-	m_pBack->Draw(0, 0); // 배경
-
-	m_pPaper[visible_paper[1]]->Draw(155, 300);
-	m_pPaper[visible_paper[0]]->Draw(paper_x, paper_y);
-
-	m_pShow_Score->Draw();
-	m_pShow_Paper_Score->Draw();
-	m_pShow_Time->Draw2(24, 618, (game_time - GetTickCount()) / 50000, 1.0);
-
-	if (fever_lv == 1 && full_fever_time == 0)
-		m_pShow_Fever[0]->Draw2(22, 53, 1, 1);
-	else if (fever_lv == 2 && full_fever_time == 0)
-		m_pShow_Fever[1]->Draw2(22, 53, 1, 1);
-	else if (fever_lv == 2 && full_fever_time != 0)
+	if (loading_time >= GetTickCount())
 	{
-		if (fever_light >= 0 && fever_light <= 9)
-			m_pShow_Fever[0]->Draw2(22, 53, 1, 1);
-		else if (fever_light >= 10 && fever_light <= 19)
-			m_pShow_Fever[1]->Draw2(22, 53, 1, 1);
-		else if (fever_light >= 20 && fever_light <= 29)
-			m_pShow_Fever[2]->Draw2(22, 53, 1, 1);
-		else
-			fever_light = 0;
+		m_pLoadingBack->Draw(0, 0); // 로딩
+		m_pLoading->Draw(115, 190);
+		m_pLoadingWord->Draw(150, 370);
+	}
+	else
+	{
+		m_pBack->Draw(0, 0); // 배경
 
-		fever_light++;
+		m_pPaper[visible_paper[1]]->Draw(155, 300);
+		m_pPaper[visible_paper[0]]->Draw(paper_x, paper_y);
+
+		m_pShow_Score->Draw();
+		m_pShow_Paper_Score->Draw();
+		if (timeover_time == 0)
+			m_pShow_Time->Draw2(24, 618, (game_time - GetTickCount()) / 50000, 1.0);
+
+		if (fever_lv == 1 && full_fever_time == 0)
+			m_pShow_Fever[0]->Draw2(22, 53, 1, 1);
+		else if (fever_lv == 2 && full_fever_time == 0)
+			m_pShow_Fever[1]->Draw2(22, 53, 1, 1);
+		else if (fever_lv == 2 && full_fever_time != 0)
+		{
+			if (fever_light >= 0 && fever_light <= 9)
+				m_pShow_Fever[0]->Draw2(22, 53, 1, 1);
+			else if (fever_light >= 10 && fever_light <= 19)
+				m_pShow_Fever[1]->Draw2(22, 53, 1, 1);
+			else if (fever_light >= 20 && fever_light <= 29)
+				m_pShow_Fever[2]->Draw2(22, 53, 1, 1);
+			else
+				fever_light = 0;
+
+			fever_light++;
+		}
+
+		if (full_fever_time == 0)
+			m_pShow_Fever[fever_lv]->Draw2(22, 53, fever_gauge / 200, 1);
+
+		if (timeover_time != 0)
+			m_pTimeOut->Draw(115, 280);
 	}
 
-	if (full_fever_time == 0)
-		m_pShow_Fever[fever_lv]->Draw2(22, 53, fever_gauge / 200, 1);
 }
 
 void Game_Scene::Release()
 {
-
+	JEngine::UIManager::GetInstance()->RelaaseUI();
 }
 
 void Game_Scene::Move()
@@ -226,7 +248,9 @@ void Game_Scene::Point()
 
 void Game_Scene::Time()
 {
-	if (game_time <= GetTickCount())
+	if (game_time <= GetTickCount() && timeover_time == 0)
+		timeover_time = 3000 + GetTickCount();
+	else if (game_time <= GetTickCount() && timeover_time <= GetTickCount())
 		JEngine::SceneManager::GetInstance()->LoadScene(1);
 }
 
@@ -287,3 +311,4 @@ void Game_Scene::Fever()
 Game_Scene::~Game_Scene()
 {
 }
+
