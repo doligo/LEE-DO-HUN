@@ -68,7 +68,7 @@ namespace JEngine
 
 	bool RECT::isPtin(POINT ptOther)
 	{
-		if (left < ptOther.x && right > ptOther.x &&  top < ptOther.y && bottom > ptOther.y)
+		if (left < ptOther.x && right > ptOther.x && top < ptOther.y && bottom > ptOther.y)
 			return true;
 		else
 			return false;
