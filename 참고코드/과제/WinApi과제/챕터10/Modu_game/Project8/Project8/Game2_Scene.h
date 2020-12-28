@@ -13,10 +13,7 @@ private:
 
 	JEngine::RECT m_pFlight_Rt;
 	JEngine::POINT m_pFlight_Pt;
-	JEngine::POINT pre_pt;
 	JEngine::RECT m_pMovable_Rt; // 움직일수있는 범위
-
-	bool Draw_Check;
 public:
 	Game2_Scene();
 

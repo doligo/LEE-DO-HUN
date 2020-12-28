@@ -10,6 +10,9 @@ Game2_Scene::Game2_Scene()
 
 void Game2_Scene::Init(HWND hWnd)
 {
+	RECT tmp_clip;
+	POINT pt1;
+
 	JEngine::InputManager::GetInstance()->Clear();
 	JEngine::InputManager::GetInstance()->RegistKeyCode(VK_SPACE);
 	JEngine::InputManager::GetInstance()->RegistKeyCode(VK_ESCAPE);
@@ -28,12 +31,22 @@ void Game2_Scene::Init(HWND hWnd)
 
 	ShowCursor(false); // 커서 오프
 
-	m_pMovable_Rt.Set(0, 80, 345, 550); // left, top, right, bottom
+	m_pMovable_Rt.Set(0, 80, 360, 570); // left, top, right, bottom - 사용할때 다시수정 or 안쓰면 삭제하기
+	GetClientRect(hWnd, &tmp_clip);
+	
+	pt1.x = tmp_clip.left;
+	pt1.y = tmp_clip.top;
 
-	//ClipCursor(&tmp); 마우스가두기용
+	ClientToScreen(hWnd, &pt1);
+
+	tmp_clip.left = pt1.x;
+	tmp_clip.top = pt1.y + 90;
+	tmp_clip.right = pt1.x + 348;
+	tmp_clip.bottom = pt1.y + 544;
+
+	ClipCursor(&tmp_clip);
 
 	time = 0;
-	Draw_Check = true;
 }
 
 bool Game2_Scene::Input(float fETime)
@@ -41,6 +54,7 @@ bool Game2_Scene::Input(float fETime)
 	if (JEngine::InputManager::GetInstance()->isKeyUp(VK_ESCAPE))
 	{
 		ShowCursor(true); // 커서 온
+		ClipCursor(NULL);
 		JEngine::SceneManager::GetInstance()->LoadScene(1);
 	}
 
@@ -56,8 +70,7 @@ void Game2_Scene::Update(float fETime)
 void Game2_Scene::Draw(HDC hdc)
 {
 	m_pBack->Draw(0, 0);
-	if (Draw_Check == true)
-		m_pFlight->Draw(m_pFlight_Pt);
+	m_pFlight->Draw(m_pFlight_Pt);
 }
 
 void Game2_Scene::Release()
@@ -68,31 +81,9 @@ void Game2_Scene::Release()
 void Game2_Scene::Set_Flight()
 {
 
-	pre_pt = m_pFlight_Pt;
-
 	m_pFlight_Pt = JEngine::InputManager::GetInstance()->GetMousePoint();
 	m_pFlight_Rt.Set(m_pFlight_Pt.x, m_pFlight_Pt.y, m_pFlight_Pt.x + 10, m_pFlight_Pt.y + 10);
 
-	if (m_pMovable_Rt.isCollision(m_pFlight_Rt))
-		Draw_Check = true;
-	else
-		Draw_Check = false;
-
-
-	/*
-	if (m_pMovable_Rt.isPtin(m_pFlight_Pt))
-	{
-		m_pFlight_Rt.Set(m_pFlight_Pt.x, m_pFlight_Pt.y, m_pFlight_Pt.x + 15, m_pFlight_Pt.y + 15);
-		Draw_Check = true;
-	}
-	else
-	{
-		m_pFlight_Pt = pre_pt;
-		m_pFlight_Rt.Set(m_pFlight_Pt.x, m_pFlight_Pt.y, m_pFlight_Pt.x + 15, m_pFlight_Pt.y + 15);
-		Draw_Check = false;
-	}
-	*/
-	// 비행기의 영역을 그린후에 나가면 안그리게 체크한다
 }
 
 Game2_Scene::~Game2_Scene()
