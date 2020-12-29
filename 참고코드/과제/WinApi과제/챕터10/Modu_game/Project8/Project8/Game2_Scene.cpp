@@ -28,10 +28,13 @@ void Game2_Scene::Init(HWND hWnd)
 	m_pShow_Fever[1] = JEngine::ResoucesManager::GetInstance()->GetBitmap("Fever2.bmp");
 	m_pShow_Fever[2] = JEngine::ResoucesManager::GetInstance()->GetBitmap("Fever3.bmp");
 	m_pFlight = JEngine::ResoucesManager::GetInstance()->GetBitmap("FlightGameFlight.bmp");
+	m_pBullet = JEngine::ResoucesManager::GetInstance()->GetBitmap("FlightGameBullet.bmp");
+	m_pExplosion[0] = JEngine::ResoucesManager::GetInstance()->GetBitmap("explosion1.bmp");
+	m_pExplosion[1] = JEngine::ResoucesManager::GetInstance()->GetBitmap("explosion2.bmp");
+	m_pExplosion[2] = JEngine::ResoucesManager::GetInstance()->GetBitmap("explosion3.bmp");
 
 	ShowCursor(false); // 커서 오프
 
-	m_pMovable_Rt.Set(0, 80, 360, 570); // left, top, right, bottom - 사용할때 다시수정 or 안쓰면 삭제하기
 	GetClientRect(hWnd, &tmp_clip);
 	
 	pt1.x = tmp_clip.left;
@@ -47,6 +50,8 @@ void Game2_Scene::Init(HWND hWnd)
 	ClipCursor(&tmp_clip);
 
 	time = 0;
+	bullet_move_time = 0;
+	player_alive = true;
 }
 
 bool Game2_Scene::Input(float fETime)
@@ -65,12 +70,22 @@ void Game2_Scene::Update(float fETime)
 {
 	time = fETime;
 	Set_Flight();
+	Set_Bullet();
+	Bullet_Collision();
 }
 
 void Game2_Scene::Draw(HDC hdc)
 {
 	m_pBack->Draw(0, 0);
-	m_pFlight->Draw(m_pFlight_Pt);
+	
+	if (player_alive == true)
+		m_pFlight->Draw(m_pFlight_Pt);
+
+	for (int i = 0; i < BULLET_MAX; i++)
+	{
+		if (bullet[i]->b_speed != 0)
+			m_pBullet->Draw(bullet[i]->b_rt.left, bullet[i]->b_rt.top);
+	}
 }
 
 void Game2_Scene::Release()
@@ -80,9 +95,183 @@ void Game2_Scene::Release()
 
 void Game2_Scene::Set_Flight()
 {
-
 	m_pFlight_Pt = JEngine::InputManager::GetInstance()->GetMousePoint();
 	m_pFlight_Rt.Set(m_pFlight_Pt.x, m_pFlight_Pt.y, m_pFlight_Pt.x + 10, m_pFlight_Pt.y + 10);
+}
+
+void Game2_Scene::Set_Bullet()
+{
+	int tmp_select = 0;
+	int dir_select = 0;
+
+	for (int i = 0; i < BULLET_MAX; i++)
+	{
+		if (bullet[i] == NULL)
+		{
+			bullet[i] = new Bullet_Info;
+			bullet[i]->b_speed = 0;
+		}
+
+		// 뒤에는 값이 0일경우 처음 좌표, 방향2개(ex))좌상, 우하) , 속도 랜덤설정
+		// 그뒤에는 좌표, 방향2개, 속도 설정된 총알은 계속 이동하게끔하기
+
+		else if (bullet[i]->b_speed == 0)
+		{
+			bullet[i]->b_speed = rand() % 2 + 1;
+
+			bullet[i]->b_dir1 = rand() % 4;
+			if (bullet[i]->b_dir1 == B_UP)
+				bullet[i]->b_dir2 = rand() % 2 + 2;
+			else if (bullet[i]->b_dir1 == B_DOWN)
+				bullet[i]->b_dir2 = rand() % 2 + 2;
+			else if (bullet[i]->b_dir1 == B_LEFT)
+				bullet[i]->b_dir2 = B_LEFT;
+			else if (bullet[i]->b_dir1 == B_RIGHT)
+				bullet[i]->b_dir2 = B_RIGHT;
+
+			tmp_select = rand() % 3;
+
+			if (tmp_select == 0)
+			{
+				bullet[i]->b_rt.left = 0;
+				bullet[i]->b_rt.top = rand() % 491 + 90;
+
+				dir_select = rand() % 3;
+
+				Set_Bullet_Dir(i, tmp_select, dir_select);
+			}
+			else if (tmp_select == 1)
+			{
+				bullet[i]->b_rt.left = 397;
+				bullet[i]->b_rt.top = rand() % 491 + 90;
+
+				dir_select = rand() % 3;
+
+				Set_Bullet_Dir(i, tmp_select, dir_select);
+			}
+			else if (tmp_select == 2)
+			{
+				bullet[i]->b_rt.left = rand() % 361;
+				bullet[i]->b_rt.top = 90;
+
+				dir_select = rand() % 3;
+
+				Set_Bullet_Dir(i, tmp_select, dir_select);
+			}
+
+			bullet[i]->b_rt.right = bullet[i]->b_rt.left + 5;
+			bullet[i]->b_rt.bottom = bullet[i]->b_rt.top + 5;
+		}
+
+		else if (bullet_move_time >= GetTickCount()) // 좌표이동
+		{
+			if (bullet[i]->b_dir1 == B_UP && bullet[i]->b_dir2 == B_LEFT)
+			{
+				bullet[i]->b_rt.left -= bullet[i]->b_speed;
+				bullet[i]->b_rt.top -= bullet[i]->b_speed;
+			}
+			else if (bullet[i]->b_dir1 == B_UP && bullet[i]->b_dir2 == B_RIGHT)
+			{
+				bullet[i]->b_rt.left += bullet[i]->b_speed;
+				bullet[i]->b_rt.top -= bullet[i]->b_speed;
+			}
+			else if (bullet[i]->b_dir1 == B_DOWN && bullet[i]->b_dir2 == B_LEFT)
+			{
+				bullet[i]->b_rt.left -= bullet[i]->b_speed;
+				bullet[i]->b_rt.top += bullet[i]->b_speed;
+			}
+			else if (bullet[i]->b_dir1 == B_DOWN && bullet[i]->b_dir2 == B_RIGHT)
+			{
+				bullet[i]->b_rt.left += bullet[i]->b_speed;
+				bullet[i]->b_rt.top += bullet[i]->b_speed;
+			}
+			else if (bullet[i]->b_dir1 == B_LEFT && bullet[i]->b_dir2 == B_LEFT)
+				bullet[i]->b_rt.left -= bullet[i]->b_speed;
+			else if (bullet[i]->b_dir1 == B_RIGHT && bullet[i]->b_dir2 == B_RIGHT)
+				bullet[i]->b_rt.left += bullet[i]->b_speed;
+			else if (bullet[i]->b_dir1 == B_DOWN && bullet[i]->b_dir2 == B_DOWN)
+				bullet[i]->b_rt.top += bullet[i]->b_speed;
+
+			bullet[i]->b_rt = { bullet[i]->b_rt.left, bullet[i]->b_rt.top, bullet[i]->b_rt.left + 5, bullet[i]->b_rt.top + 5 };
+		}
+	}
+
+	bullet_move_time = 10 + GetTickCount();
+	Out_of_Map();
+}
+
+void Game2_Scene::Set_Bullet_Dir(int num, int start_point, int dir)
+{
+	if (start_point == 0)
+	{
+		if (dir == 0)
+		{
+			bullet[num]->b_dir1 = B_UP;
+			bullet[num]->b_dir2 = B_RIGHT;
+		}
+		else if (dir == 1)
+		{
+			bullet[num]->b_dir1 = B_DOWN;
+			bullet[num]->b_dir2 = B_RIGHT;
+		}
+		else if (dir == 2)
+		{
+			bullet[num]->b_dir1 = B_RIGHT;
+			bullet[num]->b_dir2 = B_RIGHT;
+		}
+	}
+	else if (start_point == 1)
+	{
+		if (dir == 0)
+		{
+			bullet[num]->b_dir1 = B_UP;
+			bullet[num]->b_dir2 = B_LEFT;
+		}
+		else if (dir == 1)
+		{
+			bullet[num]->b_dir1 = B_DOWN;
+			bullet[num]->b_dir2 = B_LEFT;
+		}
+		else if (dir == 2)
+		{
+			bullet[num]->b_dir1 = B_LEFT;
+			bullet[num]->b_dir2 = B_LEFT;
+		}
+	}
+	else if (start_point == 2)
+	{
+		if (dir == 0)
+		{
+			bullet[num]->b_dir1 = B_DOWN;
+			bullet[num]->b_dir2 = B_LEFT;
+		}
+		else if (dir == 1)
+		{
+			bullet[num]->b_dir1 = B_DOWN;
+			bullet[num]->b_dir2 = B_RIGHT;
+		}
+		else if (dir == 2)
+		{
+			bullet[num]->b_dir1 = B_DOWN;
+			bullet[num]->b_dir2 = B_DOWN;
+		}
+	}
+}
+
+void Game2_Scene::Out_of_Map()
+{
+	for (int i = 0; i < BULLET_MAX; i++)
+	{
+		if (bullet[i] != NULL)
+			if (bullet[i]->b_rt.left < 0 || bullet[i]->b_rt.left > 397 || bullet[i]->b_rt.top < 90 || bullet[i]->b_rt.top > 580)
+			{
+				bullet[i]->b_speed = 0;
+			}
+	}
+}
+
+void Game2_Scene::Bullet_Collision()
+{
 
 }
 

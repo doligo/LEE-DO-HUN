@@ -2,6 +2,23 @@
 #include "GlobalDefine.h"
 #include "JEngine.h"
 
+#define BULLET_MAX 15
+
+enum dir {
+	B_UP,
+	B_DOWN,
+	B_LEFT,
+	B_RIGHT
+};
+
+struct Bullet_Info
+{
+	RECT b_rt;
+	int b_dir1;
+	int b_dir2;
+	int b_speed;
+};
+
 class Game2_Scene : public JEngine::Scene
 {
 private:
@@ -9,11 +26,17 @@ private:
 	JEngine::BitMap *m_pShow_Time;
 	JEngine::BitMap *m_pShow_Fever[3];
 	JEngine::BitMap *m_pFlight;
+	JEngine::BitMap *m_pBullet;
+	JEngine::BitMap *m_pExplosion[3];
+
+	bool player_alive;
 	float time;
 
 	JEngine::RECT m_pFlight_Rt;
 	JEngine::POINT m_pFlight_Pt;
-	JEngine::RECT m_pMovable_Rt; // 움직일수있는 범위
+
+	Bullet_Info *bullet[BULLET_MAX];
+	int bullet_move_time;
 public:
 	Game2_Scene();
 
@@ -25,6 +48,10 @@ public:
 	//bool ClickEvent();
 
 	void Set_Flight();
+	void Set_Bullet();
+	void Set_Bullet_Dir(int num, int start_point, int dir);
+	void Out_of_Map();
+	void Bullet_Collision();
 
 	virtual ~Game2_Scene();
 };
