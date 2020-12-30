@@ -1,6 +1,7 @@
 #pragma once
 #include "GlobalDefine.h"
 #include "JEngine.h"
+#include "TimeManager.h"
 
 #define BULLET_MAX 15
 
@@ -13,7 +14,7 @@ enum dir {
 
 struct Bullet_Info
 {
-	RECT b_rt;
+	JEngine::RECT b_rt;
 	int b_dir1;
 	int b_dir2;
 	int b_speed;
@@ -30,13 +31,15 @@ private:
 	JEngine::BitMap *m_pExplosion[3];
 
 	bool player_alive;
+	bool game_start;
+	float game_start_time;
 	float time;
 
 	JEngine::RECT m_pFlight_Rt;
 	JEngine::POINT m_pFlight_Pt;
 
 	Bullet_Info *bullet[BULLET_MAX];
-	int bullet_move_time;
+	int explosion_count;
 public:
 	Game2_Scene();
 

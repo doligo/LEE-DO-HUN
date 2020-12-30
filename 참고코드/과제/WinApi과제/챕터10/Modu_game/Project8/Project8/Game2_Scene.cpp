@@ -32,6 +32,7 @@ void Game2_Scene::Init(HWND hWnd)
 	m_pExplosion[0] = JEngine::ResoucesManager::GetInstance()->GetBitmap("explosion1.bmp");
 	m_pExplosion[1] = JEngine::ResoucesManager::GetInstance()->GetBitmap("explosion2.bmp");
 	m_pExplosion[2] = JEngine::ResoucesManager::GetInstance()->GetBitmap("explosion3.bmp");
+	JEngine::TimeManager::GetInstance()->init(1, 144); // 초당 프레임 설정
 
 	ShowCursor(false); // 커서 오프
 
@@ -50,8 +51,10 @@ void Game2_Scene::Init(HWND hWnd)
 	ClipCursor(&tmp_clip);
 
 	time = 0;
-	bullet_move_time = 0;
 	player_alive = true;
+	game_start = false;
+	game_start_time = 0;
+	explosion_count = 0;
 }
 
 bool Game2_Scene::Input(float fETime)
@@ -69,9 +72,11 @@ bool Game2_Scene::Input(float fETime)
 void Game2_Scene::Update(float fETime)
 {
 	time = fETime;
-	Set_Flight();
+	if (player_alive == true)
+		Set_Flight();
 	Set_Bullet();
 	Bullet_Collision();
+
 }
 
 void Game2_Scene::Draw(HDC hdc)
@@ -80,6 +85,26 @@ void Game2_Scene::Draw(HDC hdc)
 	
 	if (player_alive == true)
 		m_pFlight->Draw(m_pFlight_Pt);
+	else if (player_alive == false)
+	{
+		if (explosion_count <= 7)
+		{
+			m_pExplosion[0]->Draw(m_pFlight_Pt.x - 20, m_pFlight_Pt.y - 18);
+			explosion_count++;
+		}
+		else if (explosion_count <= 14)
+		{
+			m_pExplosion[1]->Draw(m_pFlight_Pt.x - 20, m_pFlight_Pt.y - 18);
+			explosion_count++;
+		}
+		else if (explosion_count <= 21)
+		{
+			m_pExplosion[2]->Draw(m_pFlight_Pt.x - 20, m_pFlight_Pt.y - 18);
+			explosion_count = 0;
+			player_alive = true;
+			game_start = false;
+		}
+	}
 
 	for (int i = 0; i < BULLET_MAX; i++)
 	{
@@ -95,8 +120,23 @@ void Game2_Scene::Release()
 
 void Game2_Scene::Set_Flight()
 {
-	m_pFlight_Pt = JEngine::InputManager::GetInstance()->GetMousePoint();
-	m_pFlight_Rt.Set(m_pFlight_Pt.x, m_pFlight_Pt.y, m_pFlight_Pt.x + 10, m_pFlight_Pt.y + 10);
+	if (game_start == true)
+	{
+		m_pFlight_Pt = JEngine::InputManager::GetInstance()->GetMousePoint();
+		m_pFlight_Rt.Set(m_pFlight_Pt.x + 22, m_pFlight_Pt.y + 15, m_pFlight_Pt.x + 22 + 15, m_pFlight_Pt.y + 15 + 16);
+	}
+	else if (game_start == false && game_start_time == 0)
+	{
+		m_pFlight_Pt.x = 220;
+		m_pFlight_Pt.y = 500;
+		m_pFlight_Rt.Set(m_pFlight_Pt.x + 22, m_pFlight_Pt.y + 15, m_pFlight_Pt.x + 22 + 15, m_pFlight_Pt.y + 15 + 16);
+		game_start_time = 1500 + GetTickCount();
+	}
+	else if (game_start_time <= GetTickCount())
+	{
+		game_start = true;
+		game_start_time = 0;
+	}
 }
 
 void Game2_Scene::Set_Bullet()
@@ -163,7 +203,7 @@ void Game2_Scene::Set_Bullet()
 			bullet[i]->b_rt.bottom = bullet[i]->b_rt.top + 5;
 		}
 
-		else if (bullet_move_time >= GetTickCount()) // 좌표이동
+		else if (JEngine::TimeManager::GetInstance()->GetElipseTime() <= GetTickCount()) // 좌표이동
 		{
 			if (bullet[i]->b_dir1 == B_UP && bullet[i]->b_dir2 == B_LEFT)
 			{
@@ -196,7 +236,6 @@ void Game2_Scene::Set_Bullet()
 		}
 	}
 
-	bullet_move_time = 10 + GetTickCount();
 	Out_of_Map();
 }
 
@@ -272,7 +311,14 @@ void Game2_Scene::Out_of_Map()
 
 void Game2_Scene::Bullet_Collision()
 {
-
+	for (int i = 0; i < BULLET_MAX; i++)
+	{
+		if (bullet[i]->b_rt.isCollision(m_pFlight_Rt))
+		{
+			player_alive = false;
+			break;
+		}
+	}
 }
 
 Game2_Scene::~Game2_Scene()
