@@ -98,6 +98,12 @@ namespace JEngine
 		return m_ptMouse;
 	}
 
+	void InputManager::SetMousePoint(int x, int y)
+	{
+		m_ptMouse.x = x;
+		m_ptMouse.y = y;
+	}
+
 	bool InputManager::isKeyPress(int keyCode)
 	{
 		for (auto iter = m_vecKeyRegist.begin(); iter != m_vecKeyRegist.end(); iter++)

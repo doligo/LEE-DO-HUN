@@ -2,14 +2,16 @@
 #include "GlobalDefine.h"
 #include "JEngine.h"
 #include "TimeManager.h"
+#include "Label.h"
 
 #define BULLET_MAX 15
+#define STAR_MAX 12
 
 enum dir {
-	B_UP,
-	B_DOWN,
-	B_LEFT,
-	B_RIGHT
+	D_UP,
+	D_DOWN,
+	D_LEFT,
+	D_RIGHT
 };
 
 struct Bullet_Info
@@ -18,6 +20,14 @@ struct Bullet_Info
 	int b_dir1;
 	int b_dir2;
 	int b_speed;
+};
+
+struct Star_Info
+{
+	JEngine::RECT s_rt;
+	int s_dir1;
+	int s_dir2;
+	int s_speed;
 };
 
 class Game2_Scene : public JEngine::Scene
@@ -29,17 +39,32 @@ private:
 	JEngine::BitMap *m_pFlight;
 	JEngine::BitMap *m_pBullet;
 	JEngine::BitMap *m_pExplosion[3];
+	JEngine::BitMap *m_pStar[3];
+	JEngine::Label *m_pShow_Score;
+	JEngine::Label *m_pShow_Star_Score;
 
 	bool player_alive;
 	bool game_start;
-	float game_start_time;
 	float time;
+	float b_create_time;
+	float s_create_time;
+	float s_create_time2;
+	RECT tmp_clip;
 
 	JEngine::RECT m_pFlight_Rt;
 	JEngine::POINT m_pFlight_Pt;
 
 	Bullet_Info *bullet[BULLET_MAX];
 	int explosion_count;
+
+	Star_Info *star[STAR_MAX];
+
+	int star_lv;
+	int star_score;
+	int game_score;
+	int fever_lv;
+	float fever_gauge;
+	int combo_count;
 public:
 	Game2_Scene();
 
@@ -52,9 +77,13 @@ public:
 
 	void Set_Flight();
 	void Set_Bullet();
-	void Set_Bullet_Dir(int num, int start_point, int dir);
-	void Out_of_Map();
+	void Set_Dir(int num, int start_point, int dir, int bullet_or_star);
+	void Out_of_Map(int num);
 	void Bullet_Collision();
+	void Player_Alive_Check();
+	void Set_Star();
+	void Set_Fever();
+	void Set_Score();
 
 	virtual ~Game2_Scene();
 };

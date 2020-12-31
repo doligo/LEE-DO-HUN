@@ -38,6 +38,7 @@ namespace JEngine
 		void Clear();
 
 		JEngine::POINT GetMousePoint();
+		void SetMousePoint(int x, int  y);
 		bool isKeyPress(int keyCode);
 		bool isKeyUp(int keyCode);
 		bool isKeyDown(int keyCode);

@@ -28,8 +28,8 @@ private:
 	JEngine::BitMap *m_pPaper[4];
 	JEngine::BitMap *m_pShow_Time; //남은시간
 	JEngine::BitMap *m_pShow_Fever[3];
-	JEngine::Label* m_pShow_Score;
-	JEngine::Label* m_pShow_Paper_Score;
+	JEngine::Label *m_pShow_Score;
+	JEngine::Label *m_pShow_Paper_Score;
 	JEngine::BitMap *m_pLoadingBack;
 	JEngine::BitMap *m_pLoading;
 	JEngine::BitMap *m_pLoadingWord;
