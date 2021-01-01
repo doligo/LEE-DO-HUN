@@ -34,9 +34,11 @@ void Game2_Scene::Init(HWND hWnd)
 	m_pStar[0] = JEngine::ResoucesManager::GetInstance()->GetBitmap("FlightGameStar1.bmp");
 	m_pStar[1] = JEngine::ResoucesManager::GetInstance()->GetBitmap("FlightGameStar2.bmp");
 	m_pStar[2] = JEngine::ResoucesManager::GetInstance()->GetBitmap("FlightGameStar3.bmp");
+	m_pFever_Effect = JEngine::ResoucesManager::GetInstance()->GetBitmap("FeverEffect3.bmp");
 
 	m_pShow_Score = new JEngine::Label();
-	m_pShow_Star_Score = new JEngine::Label();
+	for (int i = 0; i < STAR_MAX; i++)
+		m_pShow_Star_Score[i] = new JEngine::Label();
 
 	JEngine::TimeManager::GetInstance()->init(1, 144); // 초당 프레임 설정
 
@@ -65,10 +67,12 @@ void Game2_Scene::Init(HWND hWnd)
 	s_create_time2 = 0;
 
 	star_lv = 0;
-	fever_lv = 0;
+	fever_full_check = false;
 	combo_count = 0;
 	star_score = 100;
 	game_score = 0;
+	fever_light = 0;
+	full_fever_time = 0;
 }
 
 bool Game2_Scene::Input(float fETime)
@@ -91,8 +95,10 @@ void Game2_Scene::Update(float fETime)
 	Set_Bullet();
 	Set_Star();
 	Bullet_Collision();
+	Eat_Star();
 	Player_Alive_Check();
 	Set_Score();
+	Set_Fever();
 }
 
 void Game2_Scene::Draw(HDC hdc)
@@ -123,20 +129,42 @@ void Game2_Scene::Draw(HDC hdc)
 		}
 	}
 
-	for (int i = 0; i < STAR_MAX; i++)
+	for (int i = 0; i < STAR_MAX; i++) // 별
 	{
-		if (star[i] == NULL)
-			break;
-		if (star[i]->s_speed != 0)
+		if (star[i] != NULL && star[i]->s_speed != 0)
 			m_pStar[star_lv]->Draw(star[i]->s_rt.left, star[i]->s_rt.top);
 	}
 
-	for (int i = 0; i < BULLET_MAX; i++)
+	for (int i = 0; i < STAR_MAX; i++) // 별점수
 	{
-		if (bullet[i] == NULL)
-			break;
-		if (bullet[i]->b_speed != 0)
-			m_pBullet->Draw(bullet[i]->b_rt.left, bullet[i]->b_rt.top);
+		if (star[i] != NULL && star[i]->s_speed != 0)
+			m_pShow_Star_Score[i]->Draw();
+	}
+
+	for (int i = 0; i < BULLET_MAX; i++) // 총알
+	{
+		if (bullet[i] != NULL)
+			if (bullet[i]->b_speed != 0)
+				m_pBullet->Draw(bullet[i]->b_rt.left, bullet[i]->b_rt.top);
+	}
+
+	if (fever_full_check == false)
+		m_pShow_Fever[0]->Draw2(22, 53, fever_gauge / 200, 1);
+	else if (fever_full_check == true)
+	{
+		if (fever_light >= 0 && fever_light <= 9)
+			m_pShow_Fever[0]->Draw2(22, 53, 1, 1);
+		else if (fever_light >= 10 && fever_light <= 19)
+		{
+			m_pShow_Fever[1]->Draw2(22, 53, 1, 1);
+			m_pFever_Effect->Draw(0, 0);
+		}
+		else if (fever_light >= 20 && fever_light <= 29)
+			m_pShow_Fever[2]->Draw2(22, 53, 1, 1);
+		else
+			fever_light = 0;
+
+		fever_light++;
 	}
 }
 
@@ -182,87 +210,87 @@ void Game2_Scene::Set_Bullet()
 
 	for (int i = 0; i < BULLET_MAX; i++)
 	{
-		if (bullet[i] == NULL)
-			break;
-
-		if (bullet[i]->b_speed == 0)
+		if (bullet[i] != NULL)
 		{
-			bullet[i]->b_speed = rand() % 2 + 1;
-
-			bullet[i]->b_dir1 = rand() % 4;
-			if (bullet[i]->b_dir1 == D_UP)
-				bullet[i]->b_dir2 = rand() % 2 + 2;
-			else if (bullet[i]->b_dir1 == D_DOWN)
-				bullet[i]->b_dir2 = rand() % 2 + 2;
-			else if (bullet[i]->b_dir1 == D_LEFT)
-				bullet[i]->b_dir2 = D_LEFT;
-			else if (bullet[i]->b_dir1 == D_RIGHT)
-				bullet[i]->b_dir2 = D_RIGHT;
-
-			tmp_select = rand() % 3;
-
-			if (tmp_select == 0)
+			if (bullet[i]->b_speed == 0)
 			{
-				bullet[i]->b_rt.left = 0;
-				bullet[i]->b_rt.top = rand() % 491 + 90;
+				bullet[i]->b_speed = rand() % 2 + 1;
 
-				dir_select = rand() % 3;
+				bullet[i]->b_dir1 = rand() % 4;
+				if (bullet[i]->b_dir1 == D_UP)
+					bullet[i]->b_dir2 = rand() % 2 + 2;
+				else if (bullet[i]->b_dir1 == D_DOWN)
+					bullet[i]->b_dir2 = rand() % 2 + 2;
+				else if (bullet[i]->b_dir1 == D_LEFT)
+					bullet[i]->b_dir2 = D_LEFT;
+				else if (bullet[i]->b_dir1 == D_RIGHT)
+					bullet[i]->b_dir2 = D_RIGHT;
 
-				Set_Dir(i, tmp_select, dir_select, 0);
+				tmp_select = rand() % 3;
+
+				if (tmp_select == 0)
+				{
+					bullet[i]->b_rt.left = 0;
+					bullet[i]->b_rt.top = rand() % 491 + 90;
+
+					dir_select = rand() % 3;
+
+					Set_Dir(i, tmp_select, dir_select, 0);
+				}
+				else if (tmp_select == 1)
+				{
+					bullet[i]->b_rt.left = 397;
+					bullet[i]->b_rt.top = rand() % 491 + 90;
+
+					dir_select = rand() % 3;
+
+					Set_Dir(i, tmp_select, dir_select, 0);
+				}
+				else if (tmp_select == 2)
+				{
+					bullet[i]->b_rt.left = rand() % 361;
+					bullet[i]->b_rt.top = 90;
+
+					dir_select = rand() % 3;
+
+					Set_Dir(i, tmp_select, dir_select, 0);
+				}
+
+				bullet[i]->b_rt.right = bullet[i]->b_rt.left + 5;
+				bullet[i]->b_rt.bottom = bullet[i]->b_rt.top + 5;
 			}
-			else if (tmp_select == 1)
+
+			else if (JEngine::TimeManager::GetInstance()->GetElipseTime() <= GetTickCount()) // 좌표이동
 			{
-				bullet[i]->b_rt.left = 397;
-				bullet[i]->b_rt.top = rand() % 491 + 90;
+				if (bullet[i]->b_dir1 == D_UP && bullet[i]->b_dir2 == D_LEFT)
+				{
+					bullet[i]->b_rt.left -= bullet[i]->b_speed;
+					bullet[i]->b_rt.top -= bullet[i]->b_speed;
+				}
+				else if (bullet[i]->b_dir1 == D_UP && bullet[i]->b_dir2 == D_RIGHT)
+				{
+					bullet[i]->b_rt.left += bullet[i]->b_speed;
+					bullet[i]->b_rt.top -= bullet[i]->b_speed;
+				}
+				else if (bullet[i]->b_dir1 == D_DOWN && bullet[i]->b_dir2 == D_LEFT)
+				{
+					bullet[i]->b_rt.left -= bullet[i]->b_speed;
+					bullet[i]->b_rt.top += bullet[i]->b_speed;
+				}
+				else if (bullet[i]->b_dir1 == D_DOWN && bullet[i]->b_dir2 == D_RIGHT)
+				{
+					bullet[i]->b_rt.left += bullet[i]->b_speed;
+					bullet[i]->b_rt.top += bullet[i]->b_speed;
+				}
+				else if (bullet[i]->b_dir1 == D_LEFT && bullet[i]->b_dir2 == D_LEFT)
+					bullet[i]->b_rt.left -= bullet[i]->b_speed;
+				else if (bullet[i]->b_dir1 == D_RIGHT && bullet[i]->b_dir2 == D_RIGHT)
+					bullet[i]->b_rt.left += bullet[i]->b_speed;
+				else if (bullet[i]->b_dir1 == D_DOWN && bullet[i]->b_dir2 == D_DOWN)
+					bullet[i]->b_rt.top += bullet[i]->b_speed;
 
-				dir_select = rand() % 3;
-
-				Set_Dir(i, tmp_select, dir_select, 0);
+				bullet[i]->b_rt = { bullet[i]->b_rt.left, bullet[i]->b_rt.top, bullet[i]->b_rt.left + 5, bullet[i]->b_rt.top + 5 };
 			}
-			else if (tmp_select == 2)
-			{
-				bullet[i]->b_rt.left = rand() % 361;
-				bullet[i]->b_rt.top = 90;
-
-				dir_select = rand() % 3;
-
-				Set_Dir(i, tmp_select, dir_select, 0);
-			}
-
-			bullet[i]->b_rt.right = bullet[i]->b_rt.left + 5;
-			bullet[i]->b_rt.bottom = bullet[i]->b_rt.top + 5;
-		}
-
-		else if (JEngine::TimeManager::GetInstance()->GetElipseTime() <= GetTickCount()) // 좌표이동
-		{
-			if (bullet[i]->b_dir1 == D_UP && bullet[i]->b_dir2 == D_LEFT)
-			{
-				bullet[i]->b_rt.left -= bullet[i]->b_speed;
-				bullet[i]->b_rt.top -= bullet[i]->b_speed;
-			}
-			else if (bullet[i]->b_dir1 == D_UP && bullet[i]->b_dir2 == D_RIGHT)
-			{
-				bullet[i]->b_rt.left += bullet[i]->b_speed;
-				bullet[i]->b_rt.top -= bullet[i]->b_speed;
-			}
-			else if (bullet[i]->b_dir1 == D_DOWN && bullet[i]->b_dir2 == D_LEFT)
-			{
-				bullet[i]->b_rt.left -= bullet[i]->b_speed;
-				bullet[i]->b_rt.top += bullet[i]->b_speed;
-			}
-			else if (bullet[i]->b_dir1 == D_DOWN && bullet[i]->b_dir2 == D_RIGHT)
-			{
-				bullet[i]->b_rt.left += bullet[i]->b_speed;
-				bullet[i]->b_rt.top += bullet[i]->b_speed;
-			}
-			else if (bullet[i]->b_dir1 == D_LEFT && bullet[i]->b_dir2 == D_LEFT)
-				bullet[i]->b_rt.left -= bullet[i]->b_speed;
-			else if (bullet[i]->b_dir1 == D_RIGHT && bullet[i]->b_dir2 == D_RIGHT)
-				bullet[i]->b_rt.left += bullet[i]->b_speed;
-			else if (bullet[i]->b_dir1 == D_DOWN && bullet[i]->b_dir2 == D_DOWN)
-				bullet[i]->b_rt.top += bullet[i]->b_speed;
-
-			bullet[i]->b_rt = { bullet[i]->b_rt.left, bullet[i]->b_rt.top, bullet[i]->b_rt.left + 5, bullet[i]->b_rt.top + 5 };
 		}
 	}
 	Out_of_Map(0);
@@ -412,13 +440,16 @@ void Game2_Scene::Bullet_Collision()
 {
 	for (int i = 0; i < BULLET_MAX; i++)
 	{
-		if (bullet[i] == NULL)
-			break;
-		if (bullet[i]->b_rt.isCollision(m_pFlight_Rt))
-		{
-			player_alive = false;
-			break;
-		}
+		if (bullet[i] != NULL)
+			if (bullet[i]->b_rt.isCollision(m_pFlight_Rt))
+			{
+				player_alive = false;
+				combo_count = 0;
+				star_score = 100;
+				fever_full_check = false;
+				full_fever_time = 0;
+				break;
+			}
 	}
 }
 
@@ -463,105 +494,124 @@ void Game2_Scene::Set_Star()
 		{
 			star[i] = new Star_Info;
 			star[i]->s_speed = 0;
-			s_create_time = 3000 + GetTickCount();
+			s_create_time = 2000 + GetTickCount();
 			break;
 		}
 	}
 
 	for (int i = 0; i < STAR_MAX; i++)
 	{
-		if (star[i] == NULL)
-			break;
-
-		if (star[i]->s_speed == 0 && s_create_time2 <= GetTickCount())
+		if (star[i] != NULL)
 		{
-			star[i]->s_speed = 1;
-
-			star[i]->s_dir1 = rand() % 4;
-			if (star[i]->s_dir1 == D_UP)
-				star[i]->s_dir2 = rand() % 2 + 2;
-			else if (star[i]->s_dir1 == D_DOWN)
-				star[i]->s_dir2 = rand() % 2 + 2;
-			else if (star[i]->s_dir1 == D_LEFT)
-				star[i]->s_dir2 = D_LEFT;
-			else if (star[i]->s_dir1 == D_RIGHT)
-				star[i]->s_dir2 = D_RIGHT;
-
-			tmp_select = rand() % 3;
-
-			if (tmp_select == 0)
+			if (star[i]->s_speed == 0 && s_create_time2 <= GetTickCount())
 			{
-				star[i]->s_rt.left = 0;
-				star[i]->s_rt.top = rand() % 491 + 90;
+				star[i]->s_speed = 1;
 
-				dir_select = rand() % 3;
+				star[i]->s_dir1 = rand() % 4;
+				if (star[i]->s_dir1 == D_UP)
+					star[i]->s_dir2 = rand() % 2 + 2;
+				else if (star[i]->s_dir1 == D_DOWN)
+					star[i]->s_dir2 = rand() % 2 + 2;
+				else if (star[i]->s_dir1 == D_LEFT)
+					star[i]->s_dir2 = D_LEFT;
+				else if (star[i]->s_dir1 == D_RIGHT)
+					star[i]->s_dir2 = D_RIGHT;
 
-				Set_Dir(i, tmp_select, dir_select, 1);
+				tmp_select = rand() % 3;
+
+				if (tmp_select == 0)
+				{
+					star[i]->s_rt.left = 0;
+					star[i]->s_rt.top = rand() % 491 + 90;
+
+					dir_select = rand() % 3;
+
+					Set_Dir(i, tmp_select, dir_select, 1);
+				}
+				else if (tmp_select == 1)
+				{
+					star[i]->s_rt.left = 397;
+					star[i]->s_rt.top = rand() % 491 + 90;
+
+					dir_select = rand() % 3;
+
+					Set_Dir(i, tmp_select, dir_select, 1);
+				}
+				else if (tmp_select == 2)
+				{
+					star[i]->s_rt.left = rand() % 361;
+					star[i]->s_rt.top = 90;
+
+					dir_select = rand() % 3;
+
+					Set_Dir(i, tmp_select, dir_select, 1);
+				}
+
+				star[i]->s_rt.right = star[i]->s_rt.left + 12;
+				star[i]->s_rt.bottom = star[i]->s_rt.top + 12;
+
+				s_create_time2 = 1500 + GetTickCount();
 			}
-			else if (tmp_select == 1)
+
+			else if (JEngine::TimeManager::GetInstance()->GetElipseTime() <= GetTickCount())
 			{
-				star[i]->s_rt.left = 397;
-				star[i]->s_rt.top = rand() % 491 + 90;
+				if (star[i]->s_dir1 == D_UP && star[i]->s_dir2 == D_LEFT)
+				{
+					star[i]->s_rt.left -= star[i]->s_speed;
+					star[i]->s_rt.top -= star[i]->s_speed;
+				}
+				else if (star[i]->s_dir1 == D_UP && star[i]->s_dir2 == D_RIGHT)
+				{
+					star[i]->s_rt.left += star[i]->s_speed;
+					star[i]->s_rt.top -= star[i]->s_speed;
+				}
+				else if (star[i]->s_dir1 == D_DOWN && star[i]->s_dir2 == D_LEFT)
+				{
+					star[i]->s_rt.left -= star[i]->s_speed;
+					star[i]->s_rt.top += star[i]->s_speed;
+				}
+				else if (star[i]->s_dir1 == D_DOWN && star[i]->s_dir2 == D_RIGHT)
+				{
+					star[i]->s_rt.left += star[i]->s_speed;
+					star[i]->s_rt.top += star[i]->s_speed;
+				}
+				else if (star[i]->s_dir1 == D_LEFT && star[i]->s_dir2 == D_LEFT)
+					star[i]->s_rt.left -= star[i]->s_speed;
+				else if (star[i]->s_dir1 == D_RIGHT && star[i]->s_dir2 == D_RIGHT)
+					star[i]->s_rt.left += star[i]->s_speed;
+				else if (star[i]->s_dir1 == D_DOWN && star[i]->s_dir2 == D_DOWN)
+					star[i]->s_rt.top += star[i]->s_speed;
 
-				dir_select = rand() % 3;
-
-				Set_Dir(i, tmp_select, dir_select, 1);
+				star[i]->s_rt = { star[i]->s_rt.left, star[i]->s_rt.top, star[i]->s_rt.left + 47, star[i]->s_rt.top + 45 };
 			}
-			else if (tmp_select == 2)
-			{
-				star[i]->s_rt.left = rand() % 361;
-				star[i]->s_rt.top = 90;
-
-				dir_select = rand() % 3;
-
-				Set_Dir(i, tmp_select, dir_select, 1);
-			}
-
-			star[i]->s_rt.right = star[i]->s_rt.left + 12;
-			star[i]->s_rt.bottom = star[i]->s_rt.top + 12;
-
-			s_create_time2 = 1500 + GetTickCount();
-			break;
 		}
 
-		else if (JEngine::TimeManager::GetInstance()->GetElipseTime() <= GetTickCount())
-		{
-			if (star[i]->s_dir1 == D_UP && star[i]->s_dir2 == D_LEFT)
-			{
-				star[i]->s_rt.left -= star[i]->s_speed;
-				star[i]->s_rt.top -= star[i]->s_speed;
-			}
-			else if (star[i]->s_dir1 == D_UP && star[i]->s_dir2 == D_RIGHT)
-			{
-				star[i]->s_rt.left += star[i]->s_speed;
-				star[i]->s_rt.top -= star[i]->s_speed;
-			}
-			else if (star[i]->s_dir1 == D_DOWN && star[i]->s_dir2 == D_LEFT)
-			{
-				star[i]->s_rt.left -= star[i]->s_speed;
-				star[i]->s_rt.top += star[i]->s_speed;
-			}
-			else if (star[i]->s_dir1 == D_DOWN && star[i]->s_dir2 == D_RIGHT)
-			{
-				star[i]->s_rt.left += star[i]->s_speed;
-				star[i]->s_rt.top += star[i]->s_speed;
-			}
-			else if (star[i]->s_dir1 == D_LEFT && star[i]->s_dir2 == D_LEFT)
-				star[i]->s_rt.left -= star[i]->s_speed;
-			else if (star[i]->s_dir1 == D_RIGHT && star[i]->s_dir2 == D_RIGHT)
-				star[i]->s_rt.left += star[i]->s_speed;
-			else if (star[i]->s_dir1 == D_DOWN && star[i]->s_dir2 == D_DOWN)
-				star[i]->s_rt.top += star[i]->s_speed;
-
-			star[i]->s_rt = { star[i]->s_rt.left, star[i]->s_rt.top, star[i]->s_rt.left + 12, star[i]->s_rt.top + 12 };
-		}
 	}
 	Out_of_Map(1);
 }
 
 void Game2_Scene::Set_Fever()
 {
+	if (fever_gauge > 0 && fever_full_check == false)
+		fever_gauge += 0.02;
 
+	if (fever_gauge >= 200 && fever_full_check == false)
+	{
+		fever_gauge = 0;
+		fever_full_check = true;
+	}
+
+	if (fever_full_check == true)
+	{
+		if (full_fever_time == 0)
+			full_fever_time = 5500 + GetTickCount();
+		else if (full_fever_time <= GetTickCount())
+		{
+			full_fever_time = 0;
+			fever_gauge = 0;
+			fever_full_check = false;
+		}
+	}
 }
 
 void Game2_Scene::Set_Score()
@@ -572,6 +622,37 @@ void Game2_Scene::Set_Score()
 	sprintf_s(buf, "%d", game_score);
 	m_pShow_Score->Init(buf, 200, 25, DT_CENTER);
 
+	sprintf_s(buf2, "%d", star_score);
+	for (int i = 0; i < STAR_MAX; i++)
+	{
+		if (star[i] != NULL)
+			m_pShow_Star_Score[i]->Init(buf2, star[i]->s_rt.left + 17, star[i]->s_rt.top + 21, DT_CENTER);
+	}
+}
+
+void Game2_Scene::Eat_Star()
+{
+	for (int i = 0; i < STAR_MAX; i++)
+	{
+		if (star[i] != NULL)
+			if (star[i]->s_rt.isCollision(m_pFlight_Rt))
+			{
+				game_score += star_score;
+				star_score += 100;
+				combo_count++;
+				if (fever_full_check == false)
+					fever_gauge += 30;
+				star[i] = NULL;
+				break;
+			}
+	}
+
+	if (combo_count >= 10 && combo_count < 20)
+		star_lv = 1;
+	else if (combo_count >= 20)
+		star_lv = 2;
+	else if (combo_count < 10)
+		star_lv = 0;
 }
 
 Game2_Scene::~Game2_Scene()
@@ -580,12 +661,11 @@ Game2_Scene::~Game2_Scene()
 
 /*
 <콤보>
-5콤보당 별레벨 업하기
+10콤보당 별레벨 업하기
 죽으면 콤보 올초기화
 
 <피버>
 피버모드 진입 시 존재하는 모든별 젠되게하기 ( 딱한번만 )
 죽으면 피버 올초기화
 
-* 총알이 별보다 위에 그려지도록 나중에 그려지게하기
 */

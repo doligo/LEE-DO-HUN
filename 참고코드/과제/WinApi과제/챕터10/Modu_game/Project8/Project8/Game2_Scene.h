@@ -41,7 +41,8 @@ private:
 	JEngine::BitMap *m_pExplosion[3];
 	JEngine::BitMap *m_pStar[3];
 	JEngine::Label *m_pShow_Score;
-	JEngine::Label *m_pShow_Star_Score;
+	JEngine::Label *m_pShow_Star_Score[STAR_MAX];
+	JEngine::BitMap *m_pFever_Effect;
 
 	bool player_alive;
 	bool game_start;
@@ -62,8 +63,10 @@ private:
 	int star_lv;
 	int star_score;
 	int game_score;
-	int fever_lv;
+	int fever_full_check;
 	float fever_gauge;
+	int fever_light;
+	float full_fever_time;
 	int combo_count;
 public:
 	Game2_Scene();
@@ -84,6 +87,7 @@ public:
 	void Set_Star();
 	void Set_Fever();
 	void Set_Score();
+	void Eat_Star();
 
 	virtual ~Game2_Scene();
 };
