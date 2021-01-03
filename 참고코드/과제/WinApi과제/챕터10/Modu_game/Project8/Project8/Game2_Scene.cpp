@@ -118,7 +118,7 @@ void Game2_Scene::Update(float fETime)
 	time = fETime;
 	Time();
 
-	if (timeover_time == 0)
+	if (timeover_time == 0 && loading_time <= GetTickCount())
 	{
 		if (player_alive == true)
 			Set_Flight();
