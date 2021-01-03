@@ -53,7 +53,7 @@ void Game_Scene::Init(HWND hWnd)
 	for (int i = 0; i < 2; i++)
 		visible_paper[i] = rand() % 4;
 
-	game_time = 50000 + GetTickCount();
+	game_time = 45000 + GetTickCount();
 	loading_time = 2300 + GetTickCount();
 	timeover_time = 0;
 
@@ -105,6 +105,7 @@ void Game_Scene::Draw(HDC hdc)
 		m_pLoadingBack->Draw(0, 0); // ·Îµù
 		m_pLoading->Draw(115, 190);
 		m_pLoadingWord->Draw(150, 370);
+		game_time = 45000 + GetTickCount();
 	}
 	else
 	{
@@ -116,7 +117,7 @@ void Game_Scene::Draw(HDC hdc)
 		m_pShow_Score->Draw();
 		m_pShow_Paper_Score->Draw();
 		if (timeover_time == 0)
-			m_pShow_Time->Draw2(24, 618, (game_time - GetTickCount()) / 50000, 1.0);
+			m_pShow_Time->Draw2(24, 618, (game_time - GetTickCount()) / 45000, 1.0);
 
 		if (fever_lv == 1 && full_fever_time == 0)
 			m_pShow_Fever[0]->Draw2(22, 53, 1, 1);

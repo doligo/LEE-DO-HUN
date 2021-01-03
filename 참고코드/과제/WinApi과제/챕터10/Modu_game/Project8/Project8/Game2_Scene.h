@@ -43,10 +43,17 @@ private:
 	JEngine::Label *m_pShow_Score;
 	JEngine::Label *m_pShow_Star_Score[STAR_MAX];
 	JEngine::BitMap *m_pFever_Effect;
+	JEngine::BitMap *m_pTimeOut;
+	JEngine::BitMap *m_pLoadingBack;
+	JEngine::BitMap *m_pLoading;
+	JEngine::BitMap *m_pLoadingWord;
 
 	bool player_alive;
 	bool game_start;
 	float time;
+	float game_time;
+	float timeover_time;
+	float loading_time;
 	float b_create_time;
 	float s_create_time;
 	float s_create_time2;
@@ -88,6 +95,7 @@ public:
 	void Set_Fever();
 	void Set_Score();
 	void Eat_Star();
+	void Time();
 
 	virtual ~Game2_Scene();
 };

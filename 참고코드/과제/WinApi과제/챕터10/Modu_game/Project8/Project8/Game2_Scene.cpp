@@ -35,6 +35,11 @@ void Game2_Scene::Init(HWND hWnd)
 	m_pStar[1] = JEngine::ResoucesManager::GetInstance()->GetBitmap("FlightGameStar2.bmp");
 	m_pStar[2] = JEngine::ResoucesManager::GetInstance()->GetBitmap("FlightGameStar3.bmp");
 	m_pFever_Effect = JEngine::ResoucesManager::GetInstance()->GetBitmap("FeverEffect3.bmp");
+	m_pShow_Time = JEngine::ResoucesManager::GetInstance()->GetBitmap("ColoredPaperTimeBar.bmp");
+	m_pTimeOut = JEngine::ResoucesManager::GetInstance()->GetBitmap("TimeOver.bmp");
+	m_pLoadingBack = JEngine::ResoucesManager::GetInstance()->GetBitmap("LoadingBack.bmp");
+	m_pLoading = JEngine::ResoucesManager::GetInstance()->GetBitmap("Loading.bmp");
+	m_pLoadingWord = JEngine::ResoucesManager::GetInstance()->GetBitmap("Loading_Word.bmp");
 
 	m_pShow_Score = new JEngine::Label();
 	for (int i = 0; i < STAR_MAX; i++)
@@ -58,6 +63,24 @@ void Game2_Scene::Init(HWND hWnd)
 
 	ClipCursor(&tmp_clip);
 
+	for (int i = 0; i < BULLET_MAX; i++)
+	{
+		if (bullet[i] != NULL)
+		{
+			delete bullet[i];
+			bullet[i] = NULL;
+		}
+	}
+
+	for (int i = 0; i < STAR_MAX; i++)
+	{
+		if (star[i] != NULL)
+		{
+			delete star[i];
+			star[i] = NULL;
+		}
+	}
+
 	time = 0;
 	player_alive = true;
 	game_start = false;
@@ -73,6 +96,9 @@ void Game2_Scene::Init(HWND hWnd)
 	game_score = 0;
 	fever_light = 0;
 	full_fever_time = 0;
+	game_time = 45000 + GetTickCount();
+	loading_time = 2300 + GetTickCount();
+	timeover_time = 0;
 }
 
 bool Game2_Scene::Input(float fETime)
@@ -90,87 +116,108 @@ bool Game2_Scene::Input(float fETime)
 void Game2_Scene::Update(float fETime)
 {
 	time = fETime;
-	if (player_alive == true)
-		Set_Flight();
-	Set_Bullet();
-	Set_Star();
-	Bullet_Collision();
-	Eat_Star();
-	Player_Alive_Check();
-	Set_Score();
-	Set_Fever();
+	Time();
+
+	if (timeover_time == 0)
+	{
+		if (player_alive == true)
+			Set_Flight();
+		Set_Bullet();
+		Set_Star();
+		Bullet_Collision();
+		Eat_Star();
+		Player_Alive_Check();
+		Set_Score();
+		Set_Fever();
+	}
 }
 
 void Game2_Scene::Draw(HDC hdc)
 {
-	m_pBack->Draw(0, 0);
-	m_pShow_Score->Draw();
-	
-	if (player_alive == true)
-		m_pFlight->Draw(m_pFlight_Pt);
-	else if (player_alive == false)
+	if (loading_time >= GetTickCount())
 	{
-		if (explosion_count <= 7)
-		{
-			m_pExplosion[0]->Draw(m_pFlight_Pt.x - 20, m_pFlight_Pt.y - 18);
-			explosion_count++;
-		}
-		else if (explosion_count <= 14)
-		{
-			m_pExplosion[1]->Draw(m_pFlight_Pt.x - 20, m_pFlight_Pt.y - 18);
-			explosion_count++;
-		}
-		else if (explosion_count <= 21)
-		{
-			m_pExplosion[2]->Draw(m_pFlight_Pt.x - 20, m_pFlight_Pt.y - 18);
-			explosion_count = 0;
-			player_alive = true;
-			game_start = false;
-		}
+		m_pLoadingBack->Draw(0, 0);
+		m_pLoading->Draw(115, 190);
+		m_pLoadingWord->Draw(150, 370);
+		game_time = 45000 + GetTickCount();
 	}
-
-	for (int i = 0; i < STAR_MAX; i++) // 별
+	else
 	{
-		if (star[i] != NULL && star[i]->s_speed != 0)
-			m_pStar[star_lv]->Draw(star[i]->s_rt.left, star[i]->s_rt.top);
-	}
+		m_pBack->Draw(0, 0);
+		m_pShow_Score->Draw();
 
-	for (int i = 0; i < STAR_MAX; i++) // 별점수
-	{
-		if (star[i] != NULL && star[i]->s_speed != 0)
-			m_pShow_Star_Score[i]->Draw();
-	}
-
-	for (int i = 0; i < BULLET_MAX; i++) // 총알
-	{
-		if (bullet[i] != NULL)
-			if (bullet[i]->b_speed != 0)
-				m_pBullet->Draw(bullet[i]->b_rt.left, bullet[i]->b_rt.top);
-	}
-
-	if (fever_full_check == false)
-		m_pShow_Fever[0]->Draw2(22, 53, fever_gauge / 200, 1);
-	else if (fever_full_check == true)
-	{
-		if (fever_light >= 0 && fever_light <= 9)
-			m_pShow_Fever[0]->Draw2(22, 53, 1, 1);
-		else if (fever_light >= 10 && fever_light <= 19)
+		if (player_alive == true)
+			m_pFlight->Draw(m_pFlight_Pt);
+		else if (player_alive == false)
 		{
-			m_pShow_Fever[1]->Draw2(22, 53, 1, 1);
-			m_pFever_Effect->Draw(0, 0);
+			if (explosion_count <= 7)
+			{
+				m_pExplosion[0]->Draw(m_pFlight_Pt.x - 20, m_pFlight_Pt.y - 18);
+				explosion_count++;
+			}
+			else if (explosion_count <= 14)
+			{
+				m_pExplosion[1]->Draw(m_pFlight_Pt.x - 20, m_pFlight_Pt.y - 18);
+				explosion_count++;
+			}
+			else if (explosion_count <= 21)
+			{
+				m_pExplosion[2]->Draw(m_pFlight_Pt.x - 20, m_pFlight_Pt.y - 18);
+				explosion_count = 0;
+				player_alive = true;
+				game_start = false;
+			}
 		}
-		else if (fever_light >= 20 && fever_light <= 29)
-			m_pShow_Fever[2]->Draw2(22, 53, 1, 1);
-		else
-			fever_light = 0;
 
-		fever_light++;
+		for (int i = 0; i < STAR_MAX; i++) // 별
+		{
+			if (star[i] != NULL && star[i]->s_speed != 0)
+				m_pStar[star_lv]->Draw(star[i]->s_rt.left, star[i]->s_rt.top);
+		}
+
+		for (int i = 0; i < STAR_MAX; i++) // 별점수
+		{
+			if (star[i] != NULL && star[i]->s_speed != 0)
+				m_pShow_Star_Score[i]->Draw();
+		}
+
+		for (int i = 0; i < BULLET_MAX; i++) // 총알
+		{
+			if (bullet[i] != NULL)
+				if (bullet[i]->b_speed != 0)
+					m_pBullet->Draw(bullet[i]->b_rt.left, bullet[i]->b_rt.top);
+		}
+
+		if (fever_full_check == false)
+			m_pShow_Fever[0]->Draw2(22, 53, fever_gauge / 200, 1);
+		else if (fever_full_check == true)
+		{
+			if (fever_light >= 0 && fever_light <= 9)
+				m_pShow_Fever[0]->Draw2(22, 53, 1, 1);
+			else if (fever_light >= 10 && fever_light <= 19)
+			{
+				m_pShow_Fever[1]->Draw2(22, 53, 1, 1);
+				m_pFever_Effect->Draw(0, 0);
+			}
+			else if (fever_light >= 20 && fever_light <= 29)
+				m_pShow_Fever[2]->Draw2(22, 53, 1, 1);
+			else
+				fever_light = 0;
+
+			fever_light++;
+		}
+
+		if (timeover_time == 0)
+			m_pShow_Time->Draw2(24, 618, (game_time - GetTickCount()) / 45000, 1.0);
+
+		if (timeover_time != 0)
+			m_pTimeOut->Draw(115, 280);
 	}
 }
 
 void Game2_Scene::Release()
 {
-	
+	JEngine::UIManager::GetInstance()->RelaaseUI();
 }
 
 void Game2_Scene::Set_Flight()
@@ -604,13 +651,15 @@ void Game2_Scene::Set_Fever()
 	if (fever_full_check == true)
 	{
 		if (full_fever_time == 0)
-			full_fever_time = 5500 + GetTickCount();
+			full_fever_time = 4500 + GetTickCount();
 		else if (full_fever_time <= GetTickCount())
 		{
 			full_fever_time = 0;
 			fever_gauge = 0;
 			fever_full_check = false;
 		}
+		s_create_time = 0;
+		s_create_time2 = 0;
 	}
 }
 
@@ -641,7 +690,7 @@ void Game2_Scene::Eat_Star()
 				star_score += 100;
 				combo_count++;
 				if (fever_full_check == false)
-					fever_gauge += 30;
+					fever_gauge += 20;
 				star[i] = NULL;
 				break;
 			}
@@ -655,8 +704,37 @@ void Game2_Scene::Eat_Star()
 		star_lv = 0;
 }
 
+void Game2_Scene::Time()
+{
+	if (game_time <= GetTickCount() && timeover_time == 0)
+		timeover_time = 3000 + GetTickCount();
+	else if (game_time <= GetTickCount() && timeover_time <= GetTickCount())
+	{
+		ShowCursor(true); // 커서 온
+		ClipCursor(NULL);
+		JEngine::SceneManager::GetInstance()->LoadScene(1);
+	}
+}
+
 Game2_Scene::~Game2_Scene()
 {
+	for (int i = 0; i < BULLET_MAX; i++)
+	{
+		if (bullet[i] != NULL)
+		{
+			delete bullet[i];
+			bullet[i] = NULL;
+		}
+	}
+
+	for (int i = 0; i < STAR_MAX; i++)
+	{
+		if (star[i] != NULL)
+		{
+			delete star[i];
+			star[i] = NULL;
+		}
+	}
 }
 
 /*
@@ -665,7 +743,7 @@ Game2_Scene::~Game2_Scene()
 죽으면 콤보 올초기화
 
 <피버>
-피버모드 진입 시 존재하는 모든별 젠되게하기 ( 딱한번만 )
+피버모드 진입 시 존재하는 모든별 젠되게하기
 죽으면 피버 올초기화
 
 */
