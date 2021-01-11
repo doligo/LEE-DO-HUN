@@ -222,6 +222,7 @@ void Game2_Scene::Release()
 
 void Game2_Scene::Set_Flight()
 {
+	
 	if (game_start == true)
 	{
 		m_pFlight_Pt = JEngine::InputManager::GetInstance()->GetMousePoint();

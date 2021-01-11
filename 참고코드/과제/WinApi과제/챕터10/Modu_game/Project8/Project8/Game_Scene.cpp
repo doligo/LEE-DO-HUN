@@ -11,6 +11,9 @@ Game_Scene::Game_Scene()
 
 void Game_Scene::Init(HWND hWnd)
 {
+	ifstream Load;
+	ofstream Save;
+
 	JEngine::InputManager::GetInstance()->Clear();
 	JEngine::InputManager::GetInstance()->RegistKeyCode(VK_SPACE);
 	JEngine::InputManager::GetInstance()->RegistKeyCode(VK_ESCAPE);
@@ -57,6 +60,17 @@ void Game_Scene::Init(HWND hWnd)
 	loading_time = 2300 + GetTickCount();
 	timeover_time = 0;
 
+	Load.open("Rank1.txt");
+	if (!Load)
+	{
+		Save.open("Rank1.txt", ios::app);
+		Save.close();
+	}
+	Load.close();
+
+	// 랭킹
+
+	// 10개까지 그뒤는 지워지게하기
 }
 
 bool Game_Scene::Input(float fETime)
@@ -245,6 +259,7 @@ void Game_Scene::Point()
 
 	sprintf_s(buf2, "%d", paper_score);
 	m_pShow_Paper_Score->Init(buf2, paper_x + 40, paper_y + 45, DT_CENTER);
+
 }
 
 void Game_Scene::Time()
@@ -252,7 +267,10 @@ void Game_Scene::Time()
 	if (game_time <= GetTickCount() && timeover_time == 0)
 		timeover_time = 3000 + GetTickCount();
 	else if (game_time <= GetTickCount() && timeover_time <= GetTickCount())
+	{
+		Set_Rank();
 		JEngine::SceneManager::GetInstance()->LoadScene(1);
+	}
 }
 
 void Game_Scene::Fever()
@@ -307,6 +325,36 @@ void Game_Scene::Fever()
 
 	콤보 5번마다 피버게이지 2배 충전
 	*/
+}
+
+void Game_Scene::Load_Rank()
+{
+	ifstream Load;
+
+
+}
+
+void Game_Scene::Set_Rank()
+{
+	ofstream Save;
+	int rank = 1;
+	int count = 0;
+
+	while (count < 10)
+	{
+		if (Save.is_open())
+		{
+			Save << rank;
+			Save << " ";
+			Save << game_score;
+			Save << endl;
+
+			rank++;
+			count++;
+		}
+	}
+
+	Save.close();
 }
 
 Game_Scene::~Game_Scene()

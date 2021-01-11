@@ -2,6 +2,9 @@
 #include "GlobalDefine.h"
 #include "JEngine.h"
 #include "Label.h"
+#include <fstream>
+#include <iostream>
+#include <conio.h>
 
 enum Paper_Color
 {
@@ -53,6 +56,7 @@ private:
 	float fever_gauge;
 	int fever_light;
 	int combo_count;
+
 public:
 	Game_Scene();
 
@@ -66,6 +70,8 @@ public:
 	void Point();
 	void Time();
 	void Fever();
+	void Load_Rank();
+	void Set_Rank();
 
 	virtual ~Game_Scene();
 };
