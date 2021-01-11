@@ -10,7 +10,7 @@ int main()
 	}
 
 	MessageBox(NULL, L"윈속 초기화 성공", L"알림", MB_OK);
-
+	
 	//Socket 생성
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET)

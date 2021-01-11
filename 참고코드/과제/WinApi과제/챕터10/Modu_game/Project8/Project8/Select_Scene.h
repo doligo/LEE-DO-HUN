@@ -1,13 +1,25 @@
 #pragma once
 #include "GlobalDefine.h"
 #include "JEngine.h"
+#include "Label.h"
+#include <fstream>
+#include <iostream>
+#include <conio.h>
+
+struct Show_Top_Rank
+{
+	int rank;
+	int score;
+};
 
 class Select_Scene : public JEngine::Scene
 {
 private:
 	JEngine::BitMap *m_pBack;
+	JEngine::Label *m_pShow_Rank[2];
 
 	float time;
+	Show_Top_Rank *rank[2];
 public:
 	Select_Scene();
 
@@ -18,6 +30,7 @@ public:
 	virtual void Release();
 	//bool ClickEvent();
 
+	void Set_Show_Rank();
 	bool OnClick_Game();
 	bool OnClick_Game2();
 

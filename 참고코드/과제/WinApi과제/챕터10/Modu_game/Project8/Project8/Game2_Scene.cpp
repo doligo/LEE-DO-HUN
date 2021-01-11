@@ -11,6 +11,9 @@ Game2_Scene::Game2_Scene()
 void Game2_Scene::Init(HWND hWnd)
 {
 	POINT pt1;
+	ifstream Load;
+	ofstream Save;
+	int count = 0;
 
 	JEngine::InputManager::GetInstance()->Clear();
 	JEngine::InputManager::GetInstance()->RegistKeyCode(VK_SPACE);
@@ -44,6 +47,10 @@ void Game2_Scene::Init(HWND hWnd)
 	m_pShow_Score = new JEngine::Label();
 	for (int i = 0; i < STAR_MAX; i++)
 		m_pShow_Star_Score[i] = new JEngine::Label();
+
+	m_pRankBack = JEngine::ResoucesManager::GetInstance()->GetBitmap("RankBack.bmp");
+	for (int i = 0; i < 10; i++)
+		m_pShow_Rank[i] = new JEngine::Label();
 
 	JEngine::TimeManager::GetInstance()->init(1, 144); // 초당 프레임 설정
 
@@ -99,6 +106,30 @@ void Game2_Scene::Init(HWND hWnd)
 	game_time = 45000 + GetTickCount();
 	loading_time = 2300 + GetTickCount();
 	timeover_time = 0;
+	show_result = false;
+	rank_update = false;
+
+	for (int i = 0; i < 10; i++)
+		rank[i] = new Ranking2;
+
+	Load.open("Rank2.txt");
+	if (!Load) // 파일없으면 생성
+	{
+		Save.open("Rank2.txt", ios::app);
+		Save.close();
+	}
+	else // 불러오기
+	{
+		while (!Load.eof())
+		{
+			if (count == 10)
+				break;
+			Load >> rank[count]->rank;
+			Load >> rank[count]->score;
+			count++;
+		}
+	}
+	Load.close();
 }
 
 bool Game2_Scene::Input(float fETime)
@@ -130,6 +161,9 @@ void Game2_Scene::Update(float fETime)
 		Set_Score();
 		Set_Fever();
 	}
+
+	if (ShowCursor(false))
+		ShowCursor(true);
 }
 
 void Game2_Scene::Draw(HDC hdc)
@@ -140,6 +174,12 @@ void Game2_Scene::Draw(HDC hdc)
 		m_pLoading->Draw(115, 190);
 		m_pLoadingWord->Draw(150, 370);
 		game_time = 45000 + GetTickCount();
+	}
+	else if (show_result == true)
+	{
+		m_pRankBack->Draw(0, 0);
+		for (int i = 0; i < 10; i++)
+			m_pShow_Rank[i]->Draw();
 	}
 	else
 	{
@@ -711,10 +751,103 @@ void Game2_Scene::Time()
 		timeover_time = 3000 + GetTickCount();
 	else if (game_time <= GetTickCount() && timeover_time <= GetTickCount())
 	{
+		if (rank_update == false)
+		{
+			Set_Rank(); // 랭킹업뎃
+			Set_Show_Rank();
+		}
+		show_result = true;
+
 		ShowCursor(true); // 커서 온
 		ClipCursor(NULL);
-		JEngine::SceneManager::GetInstance()->LoadScene(1);
+
+		JEngine::UIManager::GetInstance()->AddButton(180, 520, "OnSelect.bmp", std::bind(&Game2_Scene::BackTo_Game, this));
 	}
+}
+
+void Game2_Scene::Set_Rank()
+{
+	ofstream Save;
+	int tmp_game_score = 0;
+	int count = 0;
+
+	for (int i = 0; i < 10; i++)
+	{
+		if (rank[i]->score < 0)
+		{
+			rank[i]->score = game_score;
+			break;
+		}
+		else if (i == 9 && rank[9] != NULL)
+		{
+			tmp_game_score = game_score;
+
+			for (int i = 9; i >= 0; i--)
+			{
+				if (rank[i]->score <= tmp_game_score)
+				{
+					rank[i]->score = tmp_game_score;
+					break;
+				}
+			}
+		}
+	}
+
+	tmp_game_score = 0;
+
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = i + 1; j < 10; j++)
+		{
+			if (rank[i]->score < rank[j]->score)
+			{
+				tmp_game_score = rank[i]->score;
+				rank[i]->score = rank[j]->score;
+				rank[j]->score = tmp_game_score;
+			}
+		}
+	}
+
+	for (int i = 0; i < 10; i++)
+		rank[i]->rank = i + 1;
+
+	Save.open("Rank2.txt");
+	if (Save.is_open())
+	{
+		while (count < 10)
+		{
+			Save << rank[count]->rank << " ";
+			Save << rank[count]->score << endl;
+			count++;
+		}
+	}
+	Save.close();
+
+	rank_update = true;
+}
+
+void Game2_Scene::Set_Show_Rank()
+{
+	int num = 0;
+	int tmp_y = 25;
+	char buf[256] = {};
+
+	while (num != 10)
+	{
+		if (rank[num]->score <= 0)
+			rank[num]->score = 0;
+
+		sprintf_s(buf, "%d등     %d", rank[num]->rank, rank[num]->score);
+		m_pShow_Rank[num]->Init(buf, 50, tmp_y, DT_CENTER);
+		num++;
+		tmp_y += 25;
+	}
+}
+
+bool Game2_Scene::BackTo_Game()
+{
+	JEngine::SceneManager::GetInstance()->LoadScene(1);
+	return true;
 }
 
 Game2_Scene::~Game2_Scene()
@@ -735,6 +868,12 @@ Game2_Scene::~Game2_Scene()
 			delete star[i];
 			star[i] = NULL;
 		}
+	}
+
+	for (int i = 0; i < 10; i++)
+	{
+		if (rank[i] != NULL)
+			delete rank[i];
 	}
 }
 

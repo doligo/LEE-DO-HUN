@@ -24,6 +24,12 @@ enum Paper_Color
 #define LEFT_END 16
 #define RIGHT_END 290
 
+struct Ranking
+{
+	int rank;
+	int score;
+};
+
 class Game_Scene : public JEngine::Scene
 {
 private:
@@ -37,6 +43,8 @@ private:
 	JEngine::BitMap *m_pLoading;
 	JEngine::BitMap *m_pLoadingWord;
 	JEngine::BitMap *m_pTimeOut;
+	JEngine::Label *m_pShow_Rank[10];
+	JEngine::BitMap *m_pRankBack;
 
 	float time;
 	float game_time;
@@ -57,6 +65,9 @@ private:
 	int fever_light;
 	int combo_count;
 
+	Ranking *rank[10];
+	bool show_result;
+	bool rank_update;
 public:
 	Game_Scene();
 
@@ -70,8 +81,9 @@ public:
 	void Point();
 	void Time();
 	void Fever();
-	void Load_Rank();
 	void Set_Rank();
+	void Set_Show_Rank();
+	bool BackTo_Game();
 
 	virtual ~Game_Scene();
 };

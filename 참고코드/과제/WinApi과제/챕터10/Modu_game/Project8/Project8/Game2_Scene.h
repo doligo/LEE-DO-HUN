@@ -3,6 +3,9 @@
 #include "JEngine.h"
 #include "TimeManager.h"
 #include "Label.h"
+#include <fstream>
+#include <iostream>
+#include <conio.h>
 
 #define BULLET_MAX 15
 #define STAR_MAX 12
@@ -30,6 +33,12 @@ struct Star_Info
 	int s_speed;
 };
 
+struct Ranking2
+{
+	int rank;
+	int score;
+};
+
 class Game2_Scene : public JEngine::Scene
 {
 private:
@@ -47,6 +56,8 @@ private:
 	JEngine::BitMap *m_pLoadingBack;
 	JEngine::BitMap *m_pLoading;
 	JEngine::BitMap *m_pLoadingWord;
+	JEngine::Label *m_pShow_Rank[10];
+	JEngine::BitMap *m_pRankBack;
 
 	bool player_alive;
 	bool game_start;
@@ -75,6 +86,10 @@ private:
 	int fever_light;
 	float full_fever_time;
 	int combo_count;
+
+	Ranking2 *rank[10];
+	bool show_result;
+	bool rank_update;
 public:
 	Game2_Scene();
 
@@ -96,6 +111,9 @@ public:
 	void Set_Score();
 	void Eat_Star();
 	void Time();
+	void Set_Rank();
+	void Set_Show_Rank();
+	bool BackTo_Game();
 
 	virtual ~Game2_Scene();
 };
