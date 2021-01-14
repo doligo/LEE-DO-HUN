@@ -109,8 +109,10 @@ void Game2_Scene::Init(HWND hWnd)
 	show_result = false;
 	rank_update = false;
 
-	for (int i = 0; i < 10; i++)
-		rank[i] = new Ranking2;
+	score.assign(10, 0);
+
+	for (int i = 0; i < RANK_MAX; i++)
+		ranking[i] = 0;
 
 	Load.open("Rank2.txt");
 	if (!Load) // 파일없으면 생성
@@ -124,8 +126,8 @@ void Game2_Scene::Init(HWND hWnd)
 		{
 			if (count == 10)
 				break;
-			Load >> rank[count]->rank;
-			Load >> rank[count]->score;
+			Load >> ranking[count];
+			Load >> score[count];
 			count++;
 		}
 	}
@@ -773,20 +775,20 @@ void Game2_Scene::Set_Rank()
 
 	for (int i = 0; i < 10; i++)
 	{
-		if (rank[i]->score < 0)
+		if (score[i] == 0)
 		{
-			rank[i]->score = game_score;
+			score[i] = game_score;
 			break;
 		}
-		else if (i == 9 && rank[9] != NULL)
+		else if (i == 9 && score[9] != 0)
 		{
 			tmp_game_score = game_score;
 
 			for (int i = 9; i >= 0; i--)
 			{
-				if (rank[i]->score <= tmp_game_score)
+				if (score[i] <= tmp_game_score)
 				{
-					rank[i]->score = tmp_game_score;
+					score[i] = tmp_game_score;
 					break;
 				}
 			}
@@ -795,29 +797,18 @@ void Game2_Scene::Set_Rank()
 
 	tmp_game_score = 0;
 
-	for (int i = 0; i < 10; i++)
-	{
-		for (int j = i + 1; j < 10; j++)
-		{
-			if (rank[i]->score < rank[j]->score)
-			{
-				tmp_game_score = rank[i]->score;
-				rank[i]->score = rank[j]->score;
-				rank[j]->score = tmp_game_score;
-			}
-		}
-	}
+	sort(score.begin(), score.end(), greater<int>());
 
 	for (int i = 0; i < 10; i++)
-		rank[i]->rank = i + 1;
+		ranking[i] = i + 1;
 
 	Save.open("Rank2.txt");
 	if (Save.is_open())
 	{
 		while (count < 10)
 		{
-			Save << rank[count]->rank << " ";
-			Save << rank[count]->score << endl;
+			Save << ranking[count] << " ";
+			Save << score[count] << endl;
 			count++;
 		}
 	}
@@ -834,10 +825,7 @@ void Game2_Scene::Set_Show_Rank()
 
 	while (num != 10)
 	{
-		if (rank[num]->score <= 0)
-			rank[num]->score = 0;
-
-		sprintf_s(buf, "%d등     %d", rank[num]->rank, rank[num]->score);
+		sprintf_s(buf, "%d등     %d", ranking[num], score[num]);
 		m_pShow_Rank[num]->Init(buf, 50, tmp_y, DT_CENTER);
 		num++;
 		tmp_y += 25;
@@ -870,11 +858,7 @@ Game2_Scene::~Game2_Scene()
 		}
 	}
 
-	for (int i = 0; i < 10; i++)
-	{
-		if (rank[i] != NULL)
-			delete rank[i];
-	}
+	score.clear();
 }
 
 /*

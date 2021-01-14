@@ -5,6 +5,10 @@
 #include <fstream>
 #include <iostream>
 #include <conio.h>
+#include <vector>
+#include <algorithm>
+
+#define RANK_MAX 10
 
 enum Paper_Color
 {
@@ -23,12 +27,6 @@ enum Paper_Color
 #define DOWN_END 443
 #define LEFT_END 16
 #define RIGHT_END 290
-
-struct Ranking
-{
-	int rank;
-	int score;
-};
 
 class Game_Scene : public JEngine::Scene
 {
@@ -65,9 +63,10 @@ private:
 	int fever_light;
 	int combo_count;
 
-	Ranking *rank[10];
 	bool show_result;
 	bool rank_update;
+	vector<int> score;
+	int ranking[RANK_MAX];
 public:
 	Game_Scene();
 

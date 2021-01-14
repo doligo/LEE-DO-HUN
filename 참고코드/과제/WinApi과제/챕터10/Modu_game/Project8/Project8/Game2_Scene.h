@@ -6,9 +6,12 @@
 #include <fstream>
 #include <iostream>
 #include <conio.h>
+#include <vector>
+#include <algorithm>
 
 #define BULLET_MAX 15
 #define STAR_MAX 12
+#define RANK_MAX 10
 
 enum dir {
 	D_UP,
@@ -31,12 +34,6 @@ struct Star_Info
 	int s_dir1;
 	int s_dir2;
 	int s_speed;
-};
-
-struct Ranking2
-{
-	int rank;
-	int score;
 };
 
 class Game2_Scene : public JEngine::Scene
@@ -87,9 +84,10 @@ private:
 	float full_fever_time;
 	int combo_count;
 
-	Ranking2 *rank[10];
 	bool show_result;
 	bool rank_update;
+	vector<int> score;
+	int ranking[RANK_MAX];
 public:
 	Game2_Scene();
 
