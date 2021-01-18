@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 	}
 
 	// bind()
-	SOCKADDR_IN serveraddr;
+	SOCKADDR_IN serveraddr;	
 	ZeroMemory(&serveraddr, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
 	serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
