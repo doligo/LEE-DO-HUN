@@ -1,8 +1,0 @@
-패킷개념 익히기
-
-기존채팅 프로젝트에서 패킷으로 바꾸면 뭐가 다른가?
-
-enum PACKET_INDEX
-{
-	PACKET_INDEX_CHAT,
-}; 이 있는 이유???
