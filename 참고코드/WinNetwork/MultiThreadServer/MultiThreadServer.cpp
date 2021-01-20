@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 	}
 
 	// listen()
-	retval = listen(listen_sock, SOMAXCONN);
+	retval = listen(listen_sock, 2);
 	if (retval == SOCKET_ERROR)
 	{
 		ErrorHandling("send() error");
