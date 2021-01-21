@@ -9,6 +9,8 @@ using namespace std;
 #define SERVERPORT 9001
 #define BUFSIZE 512
 
+CRITICAL_SECTION cs;
+
 enum PACKET_INDEX
 {
 	PACKET_INDEX_CHAT,
@@ -123,8 +125,10 @@ unsigned int WINAPI Thread_Recv(void *arg)
 	closesocket(listen_sock);
 }
 
-unsigned int WINAPI func1(void *arg)
+unsigned int WINAPI Login(void *arg)
 {
+	//EnterCriticalSection(&cs);
+
 	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, 0);
 
 	if (listen_sock == INVALID_SOCKET)
@@ -133,28 +137,69 @@ unsigned int WINAPI func1(void *arg)
 		return -1;
 	}
 
-	///// 이사이에 함수 넣어서 계산?
+	SOCKADDR_IN serveraddr;
+	memset(&serveraddr, 0, sizeof(serveraddr));
+	serveraddr.sin_family = AF_INET;
+	serveraddr.sin_port = htons(SERVERPORT);
+	serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
+	int return_value = bind(listen_sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
+
+	if (return_value == SOCKET_ERROR)
+	{
+		cout << "에러입니다 (bind)" << endl;
+		return -1;
+	}
+
+	return_value = listen(listen_sock, SOMAXCONN);
+
+	if (return_value == SOCKET_ERROR)
+	{
+		cout << "에러입니다 (listen)" << endl;
+		return -1;
+	}
+
+	SOCKET accept_sock;
+	SOCKADDR_IN clientaddr;
+	int addrlen;
+	HANDLE hThread;
+	DWORD Thread_id;
+
+	addrlen = sizeof(clientaddr);
+	accept_sock = accept(listen_sock, (SOCKADDR*)&clientaddr, &addrlen);
+	if (accept_sock == INVALID_SOCKET)
+	{
+		cout << "에러입니다 (accept)";
+		return -1;
+	}
+
+	cout << "[TCP 서버] 클라이언트 접속 ip = " << inet_ntoa(clientaddr.sin_addr) << ",포트 = " << ntohs(clientaddr.sin_port) << endl;
+
+	closesocket(listen_sock);
+	//LeaveCriticalSection(&cs);
 }
 
 int main()
 {
-	int return_value;
-	CRITICAL_SECTION cs;
-
+	int login_check[2] = {};
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return -1;
 
-	InitializeCriticalSection(&cs);
+	//InitializeCriticalSection(&cs);
 
 	HANDLE hThread;
 	DWORD dwThreadID;
-	hThread = (HANDLE)_beginthreadex(NULL, 0, Thread_Recv, NULL, 0, (unsigned*)&dwThreadID);
-	hThread = (HANDLE)_beginthreadex(NULL, 0, func1, NULL, 0, (unsigned*)&dwThreadID);
-	//WaitForSingleObject(hThread, INFINITE); - 크리티컬 섹션에서는 안씀
+	HANDLE hThread2;
+	DWORD dwThreadID2;
 
-	DeleteCriticalSection(&cs);
+	hThread = (HANDLE)_beginthreadex(NULL, 0, Login, NULL, 0, (unsigned*)&dwThreadID);
+	hThread2 = (HANDLE)_beginthreadex(NULL, 0, Login, NULL, 0, (unsigned*)&dwThreadID2);
+
+	WaitForSingleObject(hThread, INFINITE);
+	//WaitForSingleObject(hThread2, INFINITE);
+
+	//DeleteCriticalSection(&cs);
 
 	CloseHandle(hThread);
 	WSACleanup();
