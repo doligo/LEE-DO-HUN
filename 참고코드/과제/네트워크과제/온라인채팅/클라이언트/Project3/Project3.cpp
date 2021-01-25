@@ -13,7 +13,7 @@ unsigned WINAPI SendMsg(void *arg);
 unsigned WINAPI RecvMsg(void *arg);
 void ErrorHandling(const char *msg);
 
-char name[NAME_SIZE] = "[DEFAULT]";
+char name[NAME_SIZE] = "[사용자]";
 char msg[BUF_SIZE];
 
 int main()

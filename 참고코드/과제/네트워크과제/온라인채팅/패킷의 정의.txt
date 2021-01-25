@@ -6,3 +6,14 @@
 
 전달된 데이터가 어느정도인지 알아야 그길이만큼 패킷을 전송한다
 패킷이 어떤 성질인가에 따라 다르게 작동되야함
+
+•기본 패킷 포맷 •길이(byte) + 타입(type) + 데이터(Data) ....
+
+•Client -> Server •Login 요청, 이동 패킷
+
+•Server -> Client •Login 수락, 위치 지정, ID 접속 알림, ID 로그아웃 알림
+
+
+
+
+https://popcorntree.tistory.com/82 // 참조
