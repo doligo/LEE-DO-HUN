@@ -6,7 +6,7 @@
 #include <iostream>
 using namespace std;
 
-#define BUF_SIZE 100
+#define BUFSIZE 512
 #define NAME_SIZE 20
 
 unsigned WINAPI SendMsg(void *arg); //전방선언
@@ -14,7 +14,15 @@ unsigned WINAPI RecvMsg(void *arg);
 void ErrorHandling(const char *msg);
 
 char name[NAME_SIZE] = "[사용자]";
-char msg[BUF_SIZE];
+char msg[BUFSIZE];
+
+struct Packet_Chat
+{
+	char size;
+	char type;
+	int id;
+	char data[BUFSIZE];
+};
 
 int main()
 {
@@ -54,7 +62,7 @@ int main()
 unsigned WINAPI SendMsg(void *arg)
 {
 	SOCKET hSock = *((SOCKET*)arg);
-	char nameMsg[NAME_SIZE + BUF_SIZE];
+	char nameMsg[NAME_SIZE + BUFSIZE];
 
 	while (true)
 	{
@@ -76,17 +84,17 @@ unsigned WINAPI SendMsg(void *arg)
 unsigned WINAPI RecvMsg(void *arg)
 {
 	int hSock = *((SOCKET*)arg);
-	char nameMsg[NAME_SIZE + BUF_SIZE];
+	char nameMsg[NAME_SIZE + BUFSIZE];
 	int strLen;
 
 	while (1)
 	{
-		strLen = recv(hSock, nameMsg, NAME_SIZE + BUF_SIZE - 1, 0);
+		strLen = recv(hSock, nameMsg, NAME_SIZE + BUFSIZE - 1, 0); // -1 이유는 원래 글자수를 따오기위해
 
 		if (strLen == -1)
 			return -1;
 
-		nameMsg[strLen] = 0;
+		nameMsg[strLen] = '\0'; // 문자열 끝을 알리기 위해서
 
 		cout << nameMsg << "\n";
 	}

@@ -26,13 +26,15 @@ struct Packet_Chat
 };
 #pragma pack(pop)
 
+char buf[BUFSIZE + 1];
+int save_value;
+
 unsigned int WINAPI Thread_Recv(void *arg)
 {
 	SOCKET client_sock = (SOCKET)arg;
-	char buf[BUFSIZE + 1];
 	SOCKADDR_IN client_addr;
 	int addrlen;
-	int return_value;
+	int return_value = 0;
 
 	addrlen = sizeof(client_addr);
 
@@ -40,11 +42,6 @@ unsigned int WINAPI Thread_Recv(void *arg)
 
 	while (1)
 	{
-		for (int i = 0; i < BUFSIZE; i++)
-		{
-			buf[i] = '\0';
-		}
-
 		return_value = recv(client_sock, buf, BUFSIZE, NULL);
 
 		if (return_value == SOCKET_ERROR)
@@ -54,17 +51,14 @@ unsigned int WINAPI Thread_Recv(void *arg)
 		}
 		else if (return_value == 0) // 입력이 아무것도 없을시 break;
 			break;
+		else
+			save_value = return_value;
 
 		buf[return_value] = '\0'; // 문자열의 끝을 알리기위해 넣음
-		cout << "[TCP " << inet_ntoa(client_addr.sin_addr) << ":" << ntohs(client_addr.sin_port) << "]" << &buf[sizeof(Packet_Chat)];
 
-		return_value = send(client_sock, buf, return_value, 0);
+		cout << "[TCP " << inet_ntoa(client_addr.sin_addr) << ":" << ntohs(client_addr.sin_port) << "][" << &buf[sizeof(char)] << endl;
 
-		if (return_value == SOCKET_ERROR)
-		{
-			cout << "에러입니다 (send)" << endl;
-			break;
-		}
+		return_value = 0;
 	}
 
 	closesocket(client_sock);
@@ -76,23 +70,30 @@ unsigned int WINAPI Thread_Recv(void *arg)
 unsigned int WINAPI Thread_Send(void *arg)
 {
 	SOCKET client_sock = (SOCKET)arg;
-	char buf[BUFSIZE + 1];
 	SOCKADDR_IN client_addr;
 	int addrlen;
-	int return_value;
+	int return_value = 0;
 
 	addrlen = sizeof(client_addr);
 
 	getpeername(client_sock, (SOCKADDR*)&client_addr, &addrlen); // client_addr에 정보를 넣기위해 필요함
 
-	while (true)
+	while (1)
 	{
-		for (int i = 0; i < BUFSIZE; i++)
+		if (save_value != 0)
 		{
-			buf[i] = '\0';
+			return_value = send(client_sock, buf, save_value, 0);
+			save_value = 0;
 		}
-	}
 
+		if (return_value == SOCKET_ERROR)
+		{
+			cout << "에러입니다 (send)" << endl;
+			break;
+		}
+
+	}
+	closesocket(client_sock);
 	return 0;
 }
 
