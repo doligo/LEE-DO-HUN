@@ -16,13 +16,19 @@ void ErrorHandling(const char *msg);
 char name[NAME_SIZE] = "[사용자]";
 char msg[BUFSIZE];
 
+enum PACKET_INDEX
+{
+	PACKET_INDEX_CHAT,
+};
+
+#pragma pack(push, 1)
 struct Packet_Chat
 {
-	char size;
-	char type;
-	int id;
+	int type;
+	int size;
 	char data[BUFSIZE];
 };
+#pragma pack(pop)
 
 int main()
 {
@@ -63,10 +69,21 @@ unsigned WINAPI SendMsg(void *arg)
 {
 	SOCKET hSock = *((SOCKET*)arg);
 	char nameMsg[NAME_SIZE + BUFSIZE];
+	Packet_Chat *send_packet = NULL;
 
 	while (true)
 	{
+		if (send_packet != NULL)
+			delete send_packet;
+
+		send_packet = new Packet_Chat;
+		send_packet->type = PACKET_INDEX_CHAT;
+
 		cin >> msg;
+		sprintf(nameMsg, "%s %s", name, msg);
+
+		strcpy(send_packet->data, nameMsg);
+		send_packet->size = strlen(send_packet->data);
 
 		if (!strcmp(msg, "q\n") || !strcmp(msg, "Q\n"))
 		{
@@ -86,9 +103,12 @@ unsigned WINAPI RecvMsg(void *arg)
 	int hSock = *((SOCKET*)arg);
 	char nameMsg[NAME_SIZE + BUFSIZE];
 	int strLen;
+	Packet_Chat *recv_packet = NULL;
 
 	while (1)
 	{
+		recv_packet = new Packet_Chat;
+
 		strLen = recv(hSock, nameMsg, NAME_SIZE + BUFSIZE - 1, 0); // -1 이유는 원래 글자수를 따오기위해
 
 		if (strLen == -1)

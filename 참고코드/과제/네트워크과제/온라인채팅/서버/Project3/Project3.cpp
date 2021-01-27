@@ -19,9 +19,8 @@ enum PACKET_INDEX
 #pragma pack(push, 1)
 struct Packet_Chat
 {
-	char size;
-	char type;
-	int id;
+	int type;
+	int size;
 	char data[BUFSIZE];
 };
 #pragma pack(pop)
