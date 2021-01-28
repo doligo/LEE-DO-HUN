@@ -69,21 +69,18 @@ unsigned WINAPI SendMsg(void *arg)
 {
 	SOCKET hSock = *((SOCKET*)arg);
 	char nameMsg[NAME_SIZE + BUFSIZE];
-	Packet_Chat *send_packet = NULL;
+	Packet_Chat packet;
+	int len;
 
 	while (true)
 	{
-		if (send_packet != NULL)
-			delete send_packet;
-
-		send_packet = new Packet_Chat;
-		send_packet->type = PACKET_INDEX_CHAT;
-
+		packet.type = PACKET_INDEX_CHAT;
+ 
 		cin >> msg;
 		sprintf(nameMsg, "%s %s", name, msg);
 
-		strcpy(send_packet->data, nameMsg);
-		send_packet->size = strlen(send_packet->data);
+		strcpy(packet.data, nameMsg);
+		packet.size = strlen(packet.data);
 
 		if (!strcmp(msg, "q\n") || !strcmp(msg, "Q\n"))
 		{
@@ -91,8 +88,8 @@ unsigned WINAPI SendMsg(void *arg)
 			exit(0);
 		}
 
-		sprintf(nameMsg, "%s %s", name, msg);
-		send(hSock, nameMsg, strlen(nameMsg), 0);
+		send(hSock, (char*)&packet, sizeof(packet), 0);
+
 	}
 
 	return 0;
@@ -103,20 +100,17 @@ unsigned WINAPI RecvMsg(void *arg)
 	int hSock = *((SOCKET*)arg);
 	char nameMsg[NAME_SIZE + BUFSIZE];
 	int strLen;
-	Packet_Chat *recv_packet = NULL;
+	Packet_Chat *packet = NULL;
 
 	while (1)
 	{
-		recv_packet = new Packet_Chat;
-
-		strLen = recv(hSock, nameMsg, NAME_SIZE + BUFSIZE - 1, 0); // -1 이유는 원래 글자수를 따오기위해
+		strLen = recv(hSock, nameMsg, sizeof(nameMsg), 0);
+		packet = (Packet_Chat*)nameMsg;
 
 		if (strLen == -1)
 			return -1;
 
-		nameMsg[strLen] = '\0'; // 문자열 끝을 알리기 위해서
-
-		cout << nameMsg << "\n";
+		cout << packet->data << "\n";
 	}
 
 	return 0;

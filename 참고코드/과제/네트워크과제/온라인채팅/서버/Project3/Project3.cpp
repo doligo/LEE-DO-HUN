@@ -15,7 +15,7 @@ enum PACKET_INDEX
 	PACKET_INDEX_CHAT,
 };
 
-//가장작은 바이트 단위로 차례로 정렬을 해주겠다는 의미
+//가장작은 바이트 단위로 차례로 정렬을 해주겠다는 의미 - 패딩이라고하고 최적화를 위해 한다
 #pragma pack(push, 1)
 struct Packet_Chat
 {
@@ -27,6 +27,9 @@ struct Packet_Chat
 
 char buf[BUFSIZE + 1];
 int save_value;
+int save_type;
+int save_size;
+char save_buf[BUFSIZE + 1];
 
 unsigned int WINAPI Thread_Recv(void *arg)
 {
@@ -34,6 +37,7 @@ unsigned int WINAPI Thread_Recv(void *arg)
 	SOCKADDR_IN client_addr;
 	int addrlen;
 	int return_value = 0;
+	Packet_Chat *recv_packet;
 
 	addrlen = sizeof(client_addr);
 
@@ -41,7 +45,8 @@ unsigned int WINAPI Thread_Recv(void *arg)
 
 	while (1)
 	{
-		return_value = recv(client_sock, buf, BUFSIZE, NULL);
+		return_value = recv(client_sock, buf, sizeof(buf), NULL);
+		recv_packet = (Packet_Chat*)buf;
 
 		if (return_value == SOCKET_ERROR)
 		{
@@ -50,12 +55,17 @@ unsigned int WINAPI Thread_Recv(void *arg)
 		}
 		else if (return_value == 0) // 입력이 아무것도 없을시 break;
 			break;
-		else
+		else if (return_value == BUFSIZE + 1)
+		{
 			save_value = return_value;
-
-		buf[return_value] = '\0'; // 문자열의 끝을 알리기위해 넣음
-
-		cout << "[TCP " << inet_ntoa(client_addr.sin_addr) << ":" << ntohs(client_addr.sin_port) << "][" << &buf[sizeof(char)] << endl;
+			if (recv_packet->type == PACKET_INDEX_CHAT)
+			{
+				save_type = PACKET_INDEX_CHAT;
+				save_size = recv_packet->size;
+				strcpy(save_buf, recv_packet->data);
+			}
+			cout << "[TCP " << inet_ntoa(client_addr.sin_addr) << ":" << ntohs(client_addr.sin_port) << "][" << recv_packet->data << endl;
+		}
 
 		return_value = 0;
 	}
@@ -72,6 +82,7 @@ unsigned int WINAPI Thread_Send(void *arg)
 	SOCKADDR_IN client_addr;
 	int addrlen;
 	int return_value = 0;
+	Packet_Chat send_packet;
 
 	addrlen = sizeof(client_addr);
 
@@ -79,9 +90,12 @@ unsigned int WINAPI Thread_Send(void *arg)
 
 	while (1)
 	{
-		if (save_value != 0)
+		if (save_value == BUFSIZE + 1 && save_type == PACKET_INDEX_CHAT)
 		{
-			return_value = send(client_sock, buf, save_value, 0);
+			send_packet.type = save_type;
+			send_packet.size = save_size;
+			strcpy(send_packet.data, save_buf);
+			return_value = send(client_sock, (char*)&send_packet, sizeof(send_packet), 0);
 			save_value = 0;
 		}
 

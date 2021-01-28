@@ -13,7 +13,9 @@
 
 •Server -> Client •Login 수락, 위치 지정, ID 접속 알림, ID 로그아웃 알림
 
-
-
-
 https://popcorntree.tistory.com/82 // 참조
+
+
+구조체 패킷 전달과 받기
+http://egloos.zum.com/beaksuh/v/2768458
+https://windowshyun.tistory.com/5
