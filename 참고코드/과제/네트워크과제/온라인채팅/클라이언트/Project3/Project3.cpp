@@ -72,6 +72,8 @@ unsigned WINAPI SendMsg(void *arg)
 	Packet_Chat packet;
 	int len;
 
+	len = sizeof(packet);
+
 	while (true)
 	{
 		packet.type = PACKET_INDEX_CHAT;
@@ -87,7 +89,7 @@ unsigned WINAPI SendMsg(void *arg)
 			closesocket(hSock);
 			exit(0);
 		}
-
+		// 패킷헤더와 사이즈를 먼저 서버측에 보낸후 데이터(바디)를 보낸다
 		send(hSock, (char*)&packet, sizeof(packet), 0);
 
 	}

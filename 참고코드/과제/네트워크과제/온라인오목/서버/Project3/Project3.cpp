@@ -7,13 +7,19 @@
 using namespace std;
 
 #define SERVERPORT 9001
-#define BUFSIZE 512
+#define BUF_SIZE 512
+#define PLAYER_MAX 2
 
-CRITICAL_SECTION cs;
-
-enum PACKET_INDEX
+enum Color
 {
-	PACKET_INDEX_CHAT,
+	BLACK,
+	WHITE
+};
+
+struct Point // 오목알 좌표
+{
+	int x;
+	int y;
 };
 
 //가장작은 바이트 단위로 차례로 정렬을 해주겠다는 의미
@@ -25,184 +31,68 @@ struct PACKET_HEADER
 };
 #pragma pack(pop)
 
-void Recive(SOCKET sock)
+#pragma pack(push, 1)
+struct PLAYER_INFO
 {
-	char buf[BUFSIZE + 1];
-	SOCKADDR_IN client_addr;
-	int addrlen;
-	int return_value;
+	int player_color;
+	char player_name[BUF_SIZE];
+	string player_cursor;
+	string player_stone;
+	int player_stone_count;
+	Point *player_last_stone_pos;
 
-	addrlen = sizeof(client_addr);
-
-	getpeername(sock, (SOCKADDR*)&client_addr, &addrlen); // client_addr에 정보를 넣기위해 필요함
-
-	while (1)
-	{
-		for (int i = 0; i < BUFSIZE; i++)
-		{
-			buf[i] = '\0';
-		}
-
-		return_value = recv(sock, buf, BUFSIZE, NULL);
-
-		if (return_value == SOCKET_ERROR)
-		{
-			cout << "에러입니다 (recv)" << endl;
-			break;
-		}
-		else if (return_value == 0) // 입력이 아무것도 없을시 break;
-			break;
-
-		buf[return_value] = '\0'; // 문자열의 끝을 알리기위해 넣음
-		cout << "[TCP " << inet_ntoa(client_addr.sin_addr) << ":" << ntohs(client_addr.sin_port) << "]" << &buf[sizeof(PACKET_HEADER)];
-
-		return_value = send(sock, buf, return_value, 0);
-
-		if (return_value == SOCKET_ERROR)
-		{
-			cout << "에러입니다 (send)" << endl;
-			break;
-		}
-	}
-
-	closesocket(sock);
-	cout << "[TCP 서버] 클라이언트 종료 ip = " << inet_ntoa(client_addr.sin_addr) << ",포트 = " << ntohs(client_addr.sin_port) << endl;
-}
-
-unsigned int WINAPI Thread_Recv(void *arg)
-{
-	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, 0);
-
-	if (listen_sock == INVALID_SOCKET)
-	{
-		cout << "에러입니다 (listen_sock)" << endl;
-		return -1;
-	}
-
-	SOCKADDR_IN serveraddr;
-	memset(&serveraddr, 0, sizeof(serveraddr));
-	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_port = htons(SERVERPORT);
-	serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
-
-	int return_value = bind(listen_sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
-
-	if (return_value == SOCKET_ERROR)
-	{
-		cout << "에러입니다 (bind)" << endl;
-		return -1;
-	}
-
-	return_value = listen(listen_sock, SOMAXCONN);
-	
-	if (return_value == SOCKET_ERROR)
-	{
-		cout << "에러입니다 (listen)" << endl;
-		return -1;
-	}
-
-	SOCKET accept_sock;
-	SOCKADDR_IN clientaddr;
-	int addrlen;
-	HANDLE hThread;
-	DWORD Thread_id;
-
-	while (1)
-	{
-		addrlen = sizeof(clientaddr);
-		accept_sock = accept(listen_sock, (SOCKADDR*)&clientaddr, &addrlen);
-		if (accept_sock == INVALID_SOCKET)
-		{
-			cout << "에러입니다 (accept)";
-			continue;
-		}
-
-		cout << "[TCP 서버] 클라이언트 접속 ip = " << inet_ntoa(clientaddr.sin_addr) << ",포트 = " << ntohs(clientaddr.sin_port) << endl;
-
-		Recive(accept_sock);
-		
-	}
-	closesocket(listen_sock);
-}
-
-unsigned int WINAPI Login(void *arg)
-{
-	//EnterCriticalSection(&cs);
-
-	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, 0);
-
-	if (listen_sock == INVALID_SOCKET)
-	{
-		cout << "에러입니다 (listen_sock)" << endl;
-		return -1;
-	}
-
-	SOCKADDR_IN serveraddr;
-	memset(&serveraddr, 0, sizeof(serveraddr));
-	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_port = htons(SERVERPORT);
-	serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
-
-	int return_value = bind(listen_sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
-
-	if (return_value == SOCKET_ERROR)
-	{
-		cout << "에러입니다 (bind)" << endl;
-		return -1;
-	}
-
-	return_value = listen(listen_sock, SOMAXCONN);
-
-	if (return_value == SOCKET_ERROR)
-	{
-		cout << "에러입니다 (listen)" << endl;
-		return -1;
-	}
-
-	SOCKET accept_sock;
-	SOCKADDR_IN clientaddr;
-	int addrlen;
-	HANDLE hThread;
-	DWORD Thread_id;
-
-	addrlen = sizeof(clientaddr);
-	accept_sock = accept(listen_sock, (SOCKADDR*)&clientaddr, &addrlen);
-	if (accept_sock == INVALID_SOCKET)
-	{
-		cout << "에러입니다 (accept)";
-		return -1;
-	}
-
-	cout << "[TCP 서버] 클라이언트 접속 ip = " << inet_ntoa(clientaddr.sin_addr) << ",포트 = " << ntohs(clientaddr.sin_port) << endl;
-
-	closesocket(listen_sock);
-	//LeaveCriticalSection(&cs);
-}
+};
+#pragma pack(pop)
 
 int main()
 {
-	int login_check[2] = {};
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+	{
+		cout << "윈도우 소켓 에러입니다" << endl;
 		return -1;
+	}
 
-	//InitializeCriticalSection(&cs);
+	int value = 0;
+	HANDLE hThread[2];
+	DWORD dwThreadID[2];
 
-	HANDLE hThread;
-	DWORD dwThreadID;
-	HANDLE hThread2;
-	DWORD dwThreadID2;
+	SOCKET listen_sock;
+	listen_sock = socket(AF_INET, SOCK_STREAM, 0);// AF_INET 주소체계 PF_INET 프로토콜 체계
+	if (listen_sock == INVALID_SOCKET)
+	{
+		cout << "에러입니다 (listen_sock)" << endl;
+		return -1;
+	}
 
-	hThread = (HANDLE)_beginthreadex(NULL, 0, Login, NULL, 0, (unsigned*)&dwThreadID);
-	hThread2 = (HANDLE)_beginthreadex(NULL, 0, Login, NULL, 0, (unsigned*)&dwThreadID2);
+	SOCKADDR_IN server_addr;
+	memset(&server_addr, 0, sizeof(server_addr));
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_port = htons(9000);
+	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);// htons, htonl은 빅엔디안으로 바꿔줌
 
-	WaitForSingleObject(hThread, INFINITE);
-	//WaitForSingleObject(hThread2, INFINITE);
+	value = bind(listen_sock, (SOCKADDR*)&server_addr, sizeof(server_addr));
+	if (value == SOCKET_ERROR)
+	{
+		cout << "에러입니다 (bind)" << endl;
+		return -1;
+	}
 
-	//DeleteCriticalSection(&cs);
+	value = listen(listen_sock, SOMAXCONN);	// SOMAXCONN은 무한임 대기열을 무한으로 받아준다는 의미
+	if (value == SOCKET_ERROR)
+	{
+		cout << "에러입니다 (listen)" << endl;
+		return -1;
+	}
 
-	CloseHandle(hThread);
-	WSACleanup();
+	SOCKET accept_sock; // 클라의 연결을 받는 소켓
+	SOCKADDR_IN client_addr; // 클라의 주소
+	int addr_len; // 주소의 길이
+
+	while (true)
+	{
+
+	}
 
 
 	return 0;
