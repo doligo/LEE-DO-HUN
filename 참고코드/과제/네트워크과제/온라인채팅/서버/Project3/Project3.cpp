@@ -21,7 +21,6 @@ struct Packet_Chat
 {
 	int type;
 	int size;
-	char data[BUFSIZE];
 };
 #pragma pack(pop)
 
@@ -37,7 +36,7 @@ unsigned int WINAPI Thread_Recv(void *arg)
 	SOCKADDR_IN client_addr;
 	int addrlen;
 	int return_value = 0;
-	Packet_Chat *recv_packet;
+	Packet_Chat *recv_packet = NULL;
 
 	addrlen = sizeof(client_addr);
 
@@ -55,16 +54,23 @@ unsigned int WINAPI Thread_Recv(void *arg)
 		}
 		else if (return_value == 0) // 입력이 아무것도 없을시 break;
 			break;
-		else if (return_value == BUFSIZE + 1)
+		else if (return_value == 8 && recv_packet->type == PACKET_INDEX_CHAT)
 		{
 			save_value = return_value;
-			if (recv_packet->type == PACKET_INDEX_CHAT)
+			save_type = PACKET_INDEX_CHAT;
+			save_size = recv_packet->size;
+
+			return_value = recv(client_sock, buf, sizeof(buf), NULL);
+			if (return_value == SOCKET_ERROR)
 			{
-				save_type = PACKET_INDEX_CHAT;
-				save_size = recv_packet->size;
-				strcpy(save_buf, recv_packet->data);
+				cout << "에러입니다 (recv)" << endl;
+				break;
 			}
-			cout << "[TCP " << inet_ntoa(client_addr.sin_addr) << ":" << ntohs(client_addr.sin_port) << "][" << recv_packet->data << endl;
+			else if (return_value == 0) // 입력이 아무것도 없을시 break;
+				break;
+
+			strcpy(save_buf, buf);
+			cout << "[TCP " << inet_ntoa(client_addr.sin_addr) << ":" << ntohs(client_addr.sin_port) << "][" << buf << endl;
 		}
 
 		return_value = 0;
@@ -90,12 +96,21 @@ unsigned int WINAPI Thread_Send(void *arg)
 
 	while (1)
 	{
-		if (save_value == BUFSIZE + 1 && save_type == PACKET_INDEX_CHAT)
+		if (save_value == 8 && save_type == PACKET_INDEX_CHAT)
 		{
 			send_packet.type = save_type;
 			send_packet.size = save_size;
-			strcpy(send_packet.data, save_buf);
 			return_value = send(client_sock, (char*)&send_packet, sizeof(send_packet), 0);
+
+			if (return_value == 8)
+				return_value = send(client_sock, (char*)&buf, sizeof(buf), 0);
+			else if (return_value == 0) // 입력이 아무것도 없을시 break;
+				break;
+			else if (return_value == SOCKET_ERROR)
+			{
+				cout << "에러입니다 (recv)" << endl;
+				break;
+			}
 			save_value = 0;
 		}
 

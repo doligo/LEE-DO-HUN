@@ -15,6 +15,7 @@ void ErrorHandling(const char *msg);
 
 char name[NAME_SIZE] = "[사용자]";
 char msg[BUFSIZE];
+char buf[BUFSIZE + 1];
 
 enum PACKET_INDEX
 {
@@ -26,7 +27,6 @@ struct Packet_Chat
 {
 	int type;
 	int size;
-	char data[BUFSIZE];
 };
 #pragma pack(pop)
 
@@ -70,28 +70,29 @@ unsigned WINAPI SendMsg(void *arg)
 	SOCKET hSock = *((SOCKET*)arg);
 	char nameMsg[NAME_SIZE + BUFSIZE];
 	Packet_Chat packet;
-	int len;
-
-	len = sizeof(packet);
+	int return_value = 0;
 
 	while (true)
 	{
 		packet.type = PACKET_INDEX_CHAT;
- 
 		cin >> msg;
 		sprintf(nameMsg, "%s %s", name, msg);
-
-		strcpy(packet.data, nameMsg);
-		packet.size = strlen(packet.data);
+		packet.size = sizeof(nameMsg);
 
 		if (!strcmp(msg, "q\n") || !strcmp(msg, "Q\n"))
 		{
 			closesocket(hSock);
 			exit(0);
 		}
-		// 패킷헤더와 사이즈를 먼저 서버측에 보낸후 데이터(바디)를 보낸다
-		send(hSock, (char*)&packet, sizeof(packet), 0);
 
+		return_value = send(hSock, (char*)&packet, sizeof(packet), 0); // 타입과 길이를 먼저보낸다
+		if (return_value == 8)
+		{
+			send(hSock, (char*)&nameMsg, sizeof(nameMsg), 0); // 그 후 데이터를 보낸다
+			return_value = 0;
+		}
+		else if (return_value == -1) // 에러시 종료
+			break;
 	}
 
 	return 0;
@@ -101,18 +102,31 @@ unsigned WINAPI RecvMsg(void *arg)
 {
 	int hSock = *((SOCKET*)arg);
 	char nameMsg[NAME_SIZE + BUFSIZE];
-	int strLen;
 	Packet_Chat *packet = NULL;
+	int return_value;
 
 	while (1)
 	{
-		strLen = recv(hSock, nameMsg, sizeof(nameMsg), 0);
-		packet = (Packet_Chat*)nameMsg;
+		return_value = recv(hSock, buf, sizeof(buf), 0);
+		packet = (Packet_Chat*)buf;
 
-		if (strLen == -1)
+		if (return_value == 8 && packet->type == PACKET_INDEX_CHAT)
+		{
+			return_value = recv(hSock, buf, sizeof(buf), NULL);
+			if (return_value == SOCKET_ERROR)
+			{
+				cout << "에러입니다 (recv)" << endl;
+				break;
+			}
+			else if (return_value == 0) // 입력이 아무것도 없을시 break;
+				break;
+			else
+				cout << buf << "\n";
+		}
+
+		if (return_value == -1)
 			return -1;
 
-		cout << packet->data << "\n";
 	}
 
 	return 0;
