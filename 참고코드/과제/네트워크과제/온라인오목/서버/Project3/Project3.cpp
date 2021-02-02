@@ -44,6 +44,17 @@ struct PLAYER_INFO
 };
 #pragma pack(pop)
 
+HANDLE hMutex;
+int player_count = 0;
+SOCKET client_socket[PLAYER_MAX] = {};
+
+unsigned WINAPI Control_Client(void* arg)
+{
+	SOCKET hClient_Socket = *((SOCKET*)arg);
+
+	return 0;
+}
+
 int main()
 {
 	WSADATA wsa;
@@ -52,10 +63,12 @@ int main()
 		cout << "윈도우 소켓 에러입니다" << endl;
 		return -1;
 	}
+	
+	hMutex = CreateMutex(NULL, FALSE, NULL);
 
 	int value = 0;
-	HANDLE hThread[2];
-	DWORD dwThreadID[2];
+	HANDLE hThread;
+	DWORD dwThreadID;
 
 	SOCKET listen_sock;
 	listen_sock = socket(AF_INET, SOCK_STREAM, 0);// AF_INET 주소체계 PF_INET 프로토콜 체계
@@ -85,15 +98,42 @@ int main()
 		return -1;
 	}
 
-	SOCKET accept_sock; // 클라의 연결을 받는 소켓
+	SOCKET accept_sock; // 인원초과시 사용하는 소켓
 	SOCKADDR_IN client_addr; // 클라의 주소
 	int addr_len; // 주소의 길이
+	int str_len;
 
-	while (true)
+	while (1)
 	{
+		if (player_count < PLAYER_MAX)
+		{
+			WaitForSingleObject(hMutex, INFINITE);
+			addr_len = sizeof(client_addr);
+			client_socket[player_count] = accept(listen_sock, (SOCKADDR*)&client_addr, &addr_len);
+			player_count++;
 
+			hThread = (HANDLE)_beginthreadex(NULL, 0, Control_Client, (LPVOID)&client_socket[player_count], 0, (unsigned int*)&dwThreadID);
+			cout << "유저가 접속하였습니다 (IP : " << inet_ntoa(client_addr.sin_addr) << ")" << endl;
+			ReleaseMutex(hMutex);
+
+		}
+		else
+		{
+			addr_len = sizeof(client_addr);
+			accept_sock = accept(listen_sock, (SOCKADDR*)&client_addr, &addr_len);
+			str_len = strlen("인원이 가득 찼습니다");
+			send(accept_sock, "인원이 가득 찼습니다", str_len, 0);
+			cout << "인원 초과입니다!" << endl;
+			closesocket(accept_sock);
+		}
 	}
 
+	closesocket(listen_sock);
+
+	WaitForSingleObject(hThread, INFINITE);
+	CloseHandle(hThread);
+
+	WSACleanup();
 
 	return 0;
 }
