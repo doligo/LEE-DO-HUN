@@ -2,6 +2,10 @@
 #include"Mecro.h"
 #include"MapDraw.h"
 #include"Player.h"
+#include <winsock2.h>
+#include <stdlib.h>
+
+using namespace std;
 
 #define BLACKTEAMICON "○"
 #define WHITETEAMICON "●"
@@ -29,6 +33,14 @@ enum PLAYERTYPE
 	PLAYERTYPE_END
 };
 
+#pragma pack(push, 1)
+struct PACKET_HEADER
+{
+	WORD index;
+	WORD size;
+};
+#pragma pack(pop)
+
 class GameManager
 {
 private:
@@ -52,6 +64,8 @@ public:
 	void SetStone();
 	void LobbyDraw();
 	void GameMain();
+	int NetWork_Main(); // 소켓메인
+	unsigned WINAPI Control_Thread(void *arg);
 	GameManager();
 	~GameManager();
 };

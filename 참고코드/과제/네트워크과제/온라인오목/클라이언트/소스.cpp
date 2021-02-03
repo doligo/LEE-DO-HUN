@@ -1,13 +1,9 @@
-#pragma warning(disable:4996)
-#pragma comment(lib, "ws2_32.lib")
 #include"GameManager.h"
 #include<crtdbg.h>
 #include <iostream>
-#include <winsock2.h>
 #include <stdlib.h>
 #include <process.h>
 using namespace std;
-
 
 void main()
 {

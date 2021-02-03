@@ -1,5 +1,8 @@
 #pragma once
-
+#pragma warning(disable:4996)
+#pragma comment(lib, "ws2_32.lib")
+#include <winsock2.h>
+#include <process.h>
 #include<iostream>
 #include<string>
 #include<conio.h>

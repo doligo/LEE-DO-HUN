@@ -48,7 +48,7 @@ HANDLE hMutex;
 int player_count = 0;
 SOCKET client_socket[PLAYER_MAX] = {};
 
-unsigned WINAPI Control_Client(void* arg)
+unsigned WINAPI Control_Thread(void* arg)
 {
 	SOCKET hClient_Socket = *((SOCKET*)arg);
 
@@ -112,7 +112,7 @@ int main()
 			client_socket[player_count] = accept(listen_sock, (SOCKADDR*)&client_addr, &addr_len);
 			player_count++;
 
-			hThread = (HANDLE)_beginthreadex(NULL, 0, Control_Client, (LPVOID)&client_socket[player_count], 0, (unsigned int*)&dwThreadID);
+			hThread = (HANDLE)_beginthreadex(NULL, 0, Control_Thread, (LPVOID)&client_socket[player_count], 0, (unsigned int*)&dwThreadID);
 			cout << "유저가 접속하였습니다 (IP : " << inet_ntoa(client_addr.sin_addr) << ")" << endl;
 			ReleaseMutex(hMutex);
 

@@ -351,6 +351,8 @@ void GameManager::Option()
 
 void GameManager::GameMain()
 {
+	NetWork_Main(); // 실행시 소켓생성하고 스레드 할당해준다
+
 	char buf[256];
 	sprintf(buf, "mode con: lines=%d cols=%d", m_iHeight+5, (m_iWidth*2)+1);
 	system(buf);
@@ -375,6 +377,41 @@ void GameManager::GameMain()
 				return;
 		}
 	}
+}
+
+int GameManager::NetWork_Main() // 클라쪽 소켓메인
+{
+	WSADATA wsa;
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+		cout << "윈도우 소켓에러입니다" << endl;
+
+	SOCKET hSock;
+	hSock = socket(PF_INET, SOCK_STREAM, 0);
+
+	SOCKADDR_IN c_serveradr;
+	memset(&c_serveradr, 0, sizeof(c_serveradr));
+	c_serveradr.sin_family = AF_INET;
+	c_serveradr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	c_serveradr.sin_port = htons(9001);
+
+	if (connect(hSock, (SOCKADDR*)&c_serveradr, sizeof(c_serveradr)) == SOCKET_ERROR)
+		cout << "연결 오류입니다 (connect 오류)" << endl;
+
+	HANDLE hThread;
+	DWORD dwThreadID;
+
+	hThread = (HANDLE)_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Control_Thread(&hSock), (void*)&hSock, 0, (unsigned int*)&dwThreadID);
+
+	return 0;
+}
+
+unsigned WINAPI GameManager::Control_Thread(void *arg)
+{
+	SOCKET Socket = *((SOCKET*)arg);
+
+
+
+	return 0;
 }
 
 GameManager::~GameManager()
