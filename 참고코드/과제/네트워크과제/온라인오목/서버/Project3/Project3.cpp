@@ -16,6 +16,13 @@ enum Color
 	WHITE
 };
 
+enum GAME_STATUS
+{
+	PLAYER_WAIT,
+	PLAYER_WAIT2,
+	PLAYER_START
+};
+
 struct Point // 오목알 좌표
 {
 	int x;
@@ -28,6 +35,7 @@ struct PACKET_HEADER
 {
 	WORD index;
 	WORD size;
+	int player_count;
 };
 #pragma pack(pop)
 
@@ -51,7 +59,48 @@ SOCKET client_socket[PLAYER_MAX] = {};
 unsigned WINAPI Control_Thread(void* arg)
 {
 	SOCKET hClient_Socket = *((SOCKET*)arg);
+	SOCKADDR_IN client_addr;
+	int client_addr_len = 0;
+	int value = 0;
+	char buf[BUF_SIZE + 1] = {};
+	PACKET_HEADER *recv_packet;
+	PACKET_HEADER send_packet;
+	int len = 0;
 
+	client_addr_len = sizeof(client_addr);
+	getpeername(hClient_Socket, (SOCKADDR*)&client_addr, &client_addr_len);
+
+	while (1)
+	{
+		value = recv(hClient_Socket, buf, sizeof(buf), NULL);
+		recv_packet = (PACKET_HEADER*)buf;
+		if (value == -1)
+		{
+			cout << "에러입니다 (리시브 에러)" << endl;
+			break;
+		}
+		else if (value == 0)
+			break;
+		else if (value == 8 && recv_packet->size == 8 && recv_packet->index == PLAYER_WAIT)
+		{
+			send_packet.index = PLAYER_WAIT2;
+			len = sizeof(send_packet);
+			send_packet.size = len;
+			send_packet.player_count = player_count;
+
+			value = send(hClient_Socket, (char*)&send_packet, sizeof(send_packet), NULL);
+
+			if (value == SOCKET_ERROR)
+			{
+				cout << "에러입니다 (샌드 에러)" << endl;
+				break;
+			}
+		}
+	}
+
+	cout << "유저가 접속 종료를 하였습니다 (IP : " << inet_ntoa(client_addr.sin_addr) << ")" << endl;
+	closesocket(hClient_Socket);
+	player_count--;
 	return 0;
 }
 
@@ -66,9 +115,9 @@ int main()
 	
 	hMutex = CreateMutex(NULL, FALSE, NULL);
 
-	int value = 0;
 	HANDLE hThread;
 	DWORD dwThreadID;
+	int value = 0;
 
 	SOCKET listen_sock;
 	listen_sock = socket(AF_INET, SOCK_STREAM, 0);// AF_INET 주소체계 PF_INET 프로토콜 체계
@@ -81,7 +130,7 @@ int main()
 	SOCKADDR_IN server_addr;
 	memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
-	server_addr.sin_port = htons(9000);
+	server_addr.sin_port = htons(SERVERPORT);
 	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);// htons, htonl은 빅엔디안으로 바꿔줌
 
 	value = bind(listen_sock, (SOCKADDR*)&server_addr, sizeof(server_addr));
@@ -110,12 +159,13 @@ int main()
 			WaitForSingleObject(hMutex, INFINITE);
 			addr_len = sizeof(client_addr);
 			client_socket[player_count] = accept(listen_sock, (SOCKADDR*)&client_addr, &addr_len);
-			player_count++;
+			str_len = strlen("접속허가");
+			send(client_socket[player_count], "접속허가", str_len, 0);
 
 			hThread = (HANDLE)_beginthreadex(NULL, 0, Control_Thread, (LPVOID)&client_socket[player_count], 0, (unsigned int*)&dwThreadID);
-			cout << "유저가 접속하였습니다 (IP : " << inet_ntoa(client_addr.sin_addr) << ")" << endl;
+			cout << "유저가 접속을 하였습니다 (IP : " << inet_ntoa(client_addr.sin_addr) << ")" << endl;
+			player_count++;
 			ReleaseMutex(hMutex);
-
 		}
 		else
 		{

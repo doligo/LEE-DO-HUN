@@ -12,15 +12,22 @@ GameManager::GameManager()
 	m_Player[PLAYERTYPE_BLACK].SetStoneIcon(BLACKTEAMICON);
 	m_Player[PLAYERTYPE_WHITE].SetCursorIcon(WHITETEAMICON);
 	m_Player[PLAYERTYPE_WHITE].SetStoneIcon(WHITETEAMICON);
+	m_iplayer_count = 0;
 }
 
 void GameManager::LobbyDraw()
 {
+	char buf[256] = {};
+
 	m_DrawManager.DrawMidText("★ 오 목 ★", m_iWidth, m_iHeight* 0.3f);
 	m_DrawManager.DrawMidText("1.게임 시작", m_iWidth, m_iHeight* 0.4f);
 	m_DrawManager.DrawMidText("2.옵션 설정", m_iWidth, m_iHeight* 0.5f);
 	m_DrawManager.DrawMidText("3.게임 종료", m_iWidth, m_iHeight* 0.6f);
 	m_DrawManager.BoxDraw(m_iWidth, m_iHeight* 0.7, m_iWidth / 2, 3);
+
+	sprintf(buf, "접속한 유저수 : %d", m_iplayer_count);
+	m_DrawManager.DrawMidText(buf, m_iWidth, m_iHeight* 1.1f);
+
 	m_DrawManager.gotoxy(m_iWidth, m_iHeight* 0.7 + 1);
 }
 
@@ -352,35 +359,41 @@ void GameManager::Option()
 void GameManager::GameMain()
 {
 	NetWork_Main(); // 실행시 소켓생성하고 스레드 할당해준다
+}
 
-	char buf[256];
-	sprintf(buf, "mode con: lines=%d cols=%d", m_iHeight+5, (m_iWidth*2)+1);
-	system(buf);
-	while(1)
+void GameManager::Game_Menu_Main()
+{
+	char buf_[256];
+	sprintf(buf_, "mode con: lines=%d cols=%d", m_iHeight + 5, (m_iWidth * 2) + 1);
+	system(buf_);
+	while (1)
 	{
 		system("cls");
 		m_DrawManager.Draw(m_iWidth, m_iHeight);
 		LobbyDraw();
 		int Select;
 		cin >> Select;
-		switch(Select)
+		switch (Select)
 		{
-			case LOBBYMENU_START:
-				m_bPlayState = true;
-				m_iTurn = 1;
-				GameStart();
-				break;
-			case LOBBYMENU_OPTION:
-				Option();
-				break;
-			case LOBBYMENU_EXIT:
-				return;
+		case LOBBYMENU_START:
+			m_bPlayState = true;
+			m_iTurn = 1;
+			GameStart();
+			break;
+		case LOBBYMENU_OPTION:
+			Option();
+			break;
+		case LOBBYMENU_EXIT:
+			return;
 		}
 	}
 }
 
 int GameManager::NetWork_Main() // 클라쪽 소켓메인
 {
+	int value = 0;
+	char buf[BUFSIZ] = {};
+
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		cout << "윈도우 소켓에러입니다" << endl;
@@ -388,28 +401,81 @@ int GameManager::NetWork_Main() // 클라쪽 소켓메인
 	SOCKET hSock;
 	hSock = socket(PF_INET, SOCK_STREAM, 0);
 
-	SOCKADDR_IN c_serveradr;
-	memset(&c_serveradr, 0, sizeof(c_serveradr));
-	c_serveradr.sin_family = AF_INET;
-	c_serveradr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	c_serveradr.sin_port = htons(9001);
+	SOCKADDR_IN serveradr;
+	memset(&serveradr, 0, sizeof(serveradr));
+	serveradr.sin_family = AF_INET;
+	serveradr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	serveradr.sin_port = htons(9001);
 
-	if (connect(hSock, (SOCKADDR*)&c_serveradr, sizeof(c_serveradr)) == SOCKET_ERROR)
+	if (connect(hSock, (SOCKADDR*)&serveradr, sizeof(serveradr)) == SOCKET_ERROR)
 		cout << "연결 오류입니다 (connect 오류)" << endl;
 
 	HANDLE hThread;
 	DWORD dwThreadID;
 
-	hThread = (HANDLE)_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Control_Thread(&hSock), (void*)&hSock, 0, (unsigned int*)&dwThreadID);
+	value = recv(hSock, buf, sizeof(buf), NULL); // 인원이 가득찼는지 체크하는 리시브함수
 
+	if (value == -1)
+		return 0;
+	else if (value == 20)
+	{
+		cout << "인원이 가득 찼습니다" << endl;
+		system("pause");
+		return 0;
+	}
+	else if (value == 8)
+		hThread = (HANDLE)_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Control_Thread(&hSock), (void*)&hSock, 0, (unsigned int*)&dwThreadID);
+
+	closesocket(hSock);
+
+	WaitForSingleObject(hThread, INFINITE);
+	CloseHandle(hThread);
+
+	WSACleanup();
 	return 0;
 }
 
 unsigned WINAPI GameManager::Control_Thread(void *arg)
 {
 	SOCKET Socket = *((SOCKET*)arg);
+	int value = 0;
+	PACKET_HEADER send_packet;
+	PACKET_HEADER *recv_packet;
+	int len = 0;
+	char buf[BUFSIZ] = {};
+	// 클라쪽은 getpeername 할필요없다
 
+	send_packet.index = PLAYER_WAIT;
+	len = sizeof(send_packet);
+	send_packet.size = len;
 
+	while (1)
+	{
+		value = send(Socket, (char*)&send_packet, sizeof(send_packet), 0);
+		if (value == SOCKET_ERROR)
+		{
+			cout << "소켓 에러입니다" << endl;
+			return 0;
+		}
+		else if (value == 0)
+			break;
+		else if (value == 8)
+		{
+			//// recv 받고 조건이 되면 밑의 함수실행, 아니면 인원초과나 오류 메시지 출력
+			value = recv(Socket, buf, sizeof(buf), NULL);
+			recv_packet = (PACKET_HEADER*)buf;
+
+			if (value == SOCKET_ERROR)
+			{
+				cout << "리시브 에러입니다" << endl;
+				break;
+			}
+			else if (value == 8 && recv_packet->index == PLAYER_WAIT2)
+				Game_Menu_Main();
+		}
+	}
+
+	closesocket(Socket);
 
 	return 0;
 }
