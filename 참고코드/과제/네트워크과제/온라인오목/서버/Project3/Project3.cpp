@@ -20,7 +20,14 @@ enum GAME_STATUS
 {
 	PLAYER_WAIT,
 	PLAYER_WAIT2,
+	PLAYER_WAIT3,
 	PLAYER_START
+};
+
+enum PLAYER_COLOR
+{
+	PLAYERTYPE_WHITE,
+	PLAYERTYPE_BLACK
 };
 
 struct Point // 오목알 좌표
@@ -35,12 +42,11 @@ struct PACKET_HEADER
 {
 	WORD index;
 	WORD size;
-	int player_count;
 };
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-struct PLAYER_INFO
+struct SAMEPLE_PLAYER_INFO
 {
 	int player_color;
 	char player_name[BUF_SIZE];
@@ -48,13 +54,22 @@ struct PLAYER_INFO
 	string player_stone;
 	int player_stone_count;
 	Point *player_last_stone_pos;
+};
+#pragma pack(pop)
 
+#pragma pack(push, 1)
+struct PLAYER_INFO
+{
+	int player_color = 0;
+	char player_name[BUF_SIZE];
 };
 #pragma pack(pop)
 
 HANDLE hMutex;
 int player_count = 0;
+int player_wait = 0;
 SOCKET client_socket[PLAYER_MAX] = {};
+PLAYER_INFO send_player_packet;
 
 unsigned WINAPI Control_Thread(void* arg)
 {
@@ -70,10 +85,17 @@ unsigned WINAPI Control_Thread(void* arg)
 	client_addr_len = sizeof(client_addr);
 	getpeername(hClient_Socket, (SOCKADDR*)&client_addr, &client_addr_len);
 
+	value = recv(hClient_Socket, buf, sizeof(buf), NULL); // buf 양만큼 받는다
+	if (value == 513)
+	{
+		value = send(hClient_Socket, (char*)&send_player_packet, sizeof(send_player_packet), NULL);
+	}
+
 	while (1)
 	{
 		value = recv(hClient_Socket, buf, sizeof(buf), NULL);
 		recv_packet = (PACKET_HEADER*)buf;
+
 		if (value == -1)
 		{
 			cout << "에러입니다 (리시브 에러)" << endl;
@@ -81,21 +103,27 @@ unsigned WINAPI Control_Thread(void* arg)
 		}
 		else if (value == 0)
 			break;
-		else if (value == 8 && recv_packet->size == 8 && recv_packet->index == PLAYER_WAIT)
+		else if (value == 4 && recv_packet->size == 4 && recv_packet->index == PLAYER_WAIT)
 		{
 			send_packet.index = PLAYER_WAIT2;
 			len = sizeof(send_packet);
 			send_packet.size = len;
-			send_packet.player_count = player_count;
-
-			value = send(hClient_Socket, (char*)&send_packet, sizeof(send_packet), NULL);
-
-			if (value == SOCKET_ERROR)
-			{
-				cout << "에러입니다 (샌드 에러)" << endl;
-				break;
-			}
 		}
+		else if (player_wait == 2 && value == 4 && recv_packet->size == 4 && recv_packet->index == PLAYER_WAIT2)
+		{
+			send_packet.index = PLAYER_WAIT3;
+			len = sizeof(send_packet);
+			send_packet.size = len;
+		}
+
+		value = send(hClient_Socket, (char*)&send_packet, sizeof(send_packet), NULL);
+		if (value == SOCKET_ERROR)
+		{
+			cout << "에러입니다 (샌드 에러)" << endl;
+			break;
+		}
+		else if (value == 0)
+			break;
 	}
 
 	cout << "유저가 접속 종료를 하였습니다 (IP : " << inet_ntoa(client_addr.sin_addr) << ")" << endl;
@@ -151,6 +179,7 @@ int main()
 	SOCKADDR_IN client_addr; // 클라의 주소
 	int addr_len; // 주소의 길이
 	int str_len;
+	char buf[BUF_SIZE + 1] = {};
 
 	while (1)
 	{
@@ -161,6 +190,12 @@ int main()
 			client_socket[player_count] = accept(listen_sock, (SOCKADDR*)&client_addr, &addr_len);
 			str_len = strlen("접속허가");
 			send(client_socket[player_count], "접속허가", str_len, 0);
+			player_wait++;
+			if (player_wait == 2)
+				send_player_packet.player_color++;
+
+			sprintf(buf, "player_%d", player_wait);
+			strcpy(send_player_packet.player_name, buf);
 
 			hThread = (HANDLE)_beginthreadex(NULL, 0, Control_Thread, (LPVOID)&client_socket[player_count], 0, (unsigned int*)&dwThreadID);
 			cout << "유저가 접속을 하였습니다 (IP : " << inet_ntoa(client_addr.sin_addr) << ")" << endl;

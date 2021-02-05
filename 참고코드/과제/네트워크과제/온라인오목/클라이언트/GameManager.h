@@ -9,6 +9,7 @@ using namespace std;
 
 #define BLACKTEAMICON "○"
 #define WHITETEAMICON "●"
+#define BUF_SIZE 512
 
 enum OPTIONMENU
 {
@@ -37,6 +38,7 @@ enum GAME_STATUS
 {
 	PLAYER_WAIT,
 	PLAYER_WAIT2,
+	PLAYER_WAIT3,
 	PLAYER_START
 };
 
@@ -45,7 +47,14 @@ struct PACKET_HEADER
 {
 	WORD index;
 	WORD size;
-	int player_count;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct PLAYER_INFO
+{
+	int player_color;
+	char player_name[BUF_SIZE];
 };
 #pragma pack(pop)
 
@@ -58,8 +67,6 @@ private:
 	bool m_bPlayState;
 	MapDraw m_DrawManager;
 	Player m_Player[PLAYERTYPE_END];
-
-	int m_iplayer_count;
 public:
 	void SetMapSize();
 	void CurPlayerInfoDraw();
@@ -76,7 +83,9 @@ public:
 	void GameMain();
 	int NetWork_Main(); // 소켓메인
 	unsigned WINAPI Control_Thread(void *arg);
-	void Game_Menu_Main();
+	void Game_Menu_Main(SOCKET socket);
+	PLAYER_INFO send_player_packet;
+	PLAYER_INFO *recv_player_packet;
 	GameManager();
 	~GameManager();
 };

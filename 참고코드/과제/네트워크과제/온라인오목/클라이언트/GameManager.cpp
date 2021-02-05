@@ -12,22 +12,15 @@ GameManager::GameManager()
 	m_Player[PLAYERTYPE_BLACK].SetStoneIcon(BLACKTEAMICON);
 	m_Player[PLAYERTYPE_WHITE].SetCursorIcon(WHITETEAMICON);
 	m_Player[PLAYERTYPE_WHITE].SetStoneIcon(WHITETEAMICON);
-	m_iplayer_count = 0;
 }
 
 void GameManager::LobbyDraw()
 {
-	char buf[256] = {};
-
 	m_DrawManager.DrawMidText("★ 오 목 ★", m_iWidth, m_iHeight* 0.3f);
 	m_DrawManager.DrawMidText("1.게임 시작", m_iWidth, m_iHeight* 0.4f);
 	m_DrawManager.DrawMidText("2.옵션 설정", m_iWidth, m_iHeight* 0.5f);
 	m_DrawManager.DrawMidText("3.게임 종료", m_iWidth, m_iHeight* 0.6f);
 	m_DrawManager.BoxDraw(m_iWidth, m_iHeight* 0.7, m_iWidth / 2, 3);
-
-	sprintf(buf, "접속한 유저수 : %d", m_iplayer_count);
-	m_DrawManager.DrawMidText(buf, m_iWidth, m_iHeight* 1.1f);
-
 	m_DrawManager.gotoxy(m_iWidth, m_iHeight* 0.7 + 1);
 }
 
@@ -361,8 +354,10 @@ void GameManager::GameMain()
 	NetWork_Main(); // 실행시 소켓생성하고 스레드 할당해준다
 }
 
-void GameManager::Game_Menu_Main()
+void GameManager::Game_Menu_Main(SOCKET socket)
 {
+	SOCKET Socket = socket;
+
 	char buf_[256];
 	sprintf(buf_, "mode con: lines=%d cols=%d", m_iHeight + 5, (m_iWidth * 2) + 1);
 	system(buf_);
@@ -443,36 +438,53 @@ unsigned WINAPI GameManager::Control_Thread(void *arg)
 	PACKET_HEADER *recv_packet;
 	int len = 0;
 	char buf[BUFSIZ] = {};
+	int trigger = false;
 	// 클라쪽은 getpeername 할필요없다
 
 	send_packet.index = PLAYER_WAIT;
 	len = sizeof(send_packet);
 	send_packet.size = len;
 
+	value = send(Socket, (char*)&send_player_packet, sizeof(send_player_packet), NULL);
+	value = recv(Socket, buf, sizeof(buf), NULL);
+	recv_player_packet = (PLAYER_INFO*)buf;
+
 	while (1)
 	{
 		value = send(Socket, (char*)&send_packet, sizeof(send_packet), 0);
 		if (value == SOCKET_ERROR)
 		{
-			cout << "소켓 에러입니다" << endl;
+			cout << "샌드 에러입니다" << endl;
 			return 0;
 		}
 		else if (value == 0)
 			break;
-		else if (value == 8)
-		{
-			//// recv 받고 조건이 되면 밑의 함수실행, 아니면 인원초과나 오류 메시지 출력
-			value = recv(Socket, buf, sizeof(buf), NULL);
-			recv_packet = (PACKET_HEADER*)buf;
 
-			if (value == SOCKET_ERROR)
-			{
-				cout << "리시브 에러입니다" << endl;
-				break;
-			}
-			else if (value == 8 && recv_packet->index == PLAYER_WAIT2)
-				Game_Menu_Main();
+		value = recv(Socket, buf, sizeof(buf), NULL);
+		recv_packet = (PACKET_HEADER*)buf;
+		if (value == SOCKET_ERROR)
+		{
+			cout << "리시브 에러입니다" << endl;
+			return 0;
 		}
+		else if (value == 0)
+			break;
+		else if (value == 4 && recv_packet->index == PLAYER_WAIT2)
+		{
+			send_packet.index = PLAYER_WAIT2;
+			len = sizeof(send_packet);
+			send_packet.size = len;
+			if (trigger == false)
+			{
+				cout << "유저를 기다리는 중..." << endl;
+				trigger = true;
+			}
+		}
+		else if (value == 4 && recv_packet->index == PLAYER_WAIT3)
+		{
+			Game_Menu_Main(Socket);
+		}
+
 	}
 
 	closesocket(Socket);
