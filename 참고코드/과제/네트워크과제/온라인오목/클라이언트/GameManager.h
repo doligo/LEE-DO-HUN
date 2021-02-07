@@ -39,6 +39,7 @@ enum GAME_STATUS
 	PLAYER_WAIT,
 	PLAYER_WAIT2,
 	PLAYER_WAIT3,
+	PLAYER_READY,
 	PLAYER_START
 };
 
@@ -66,7 +67,7 @@ private:
 	int m_iHeight;
 	bool m_bPlayState;
 	MapDraw m_DrawManager;
-	Player m_Player[PLAYERTYPE_END];
+	Player m_Player;
 public:
 	void SetMapSize();
 	void CurPlayerInfoDraw();
@@ -84,8 +85,7 @@ public:
 	int NetWork_Main(); // 소켓메인
 	unsigned WINAPI Control_Thread(void *arg);
 	void Game_Menu_Main(SOCKET socket);
-	PLAYER_INFO send_player_packet;
-	PLAYER_INFO *recv_player_packet;
+	PLAYER_INFO save_player_packet;
 	GameManager();
 	~GameManager();
 };

@@ -21,6 +21,7 @@ enum GAME_STATUS
 	PLAYER_WAIT,
 	PLAYER_WAIT2,
 	PLAYER_WAIT3,
+	PLAYER_READY,
 	PLAYER_START
 };
 
@@ -82,6 +83,11 @@ unsigned WINAPI Control_Thread(void* arg)
 	PACKET_HEADER send_packet;
 	int len = 0;
 
+	if (player_wait == 1)
+		send_player_packet.player_color = 0;
+	else if (player_wait == 2)
+		send_player_packet.player_color = 1;
+
 	client_addr_len = sizeof(client_addr);
 	getpeername(hClient_Socket, (SOCKADDR*)&client_addr, &client_addr_len);
 
@@ -129,6 +135,7 @@ unsigned WINAPI Control_Thread(void* arg)
 	cout << "유저가 접속 종료를 하였습니다 (IP : " << inet_ntoa(client_addr.sin_addr) << ")" << endl;
 	closesocket(hClient_Socket);
 	player_count--;
+	player_wait--;
 	return 0;
 }
 
@@ -191,8 +198,6 @@ int main()
 			str_len = strlen("접속허가");
 			send(client_socket[player_count], "접속허가", str_len, 0);
 			player_wait++;
-			if (player_wait == 2)
-				send_player_packet.player_color++;
 
 			sprintf(buf, "player_%d", player_wait);
 			strcpy(send_player_packet.player_name, buf);

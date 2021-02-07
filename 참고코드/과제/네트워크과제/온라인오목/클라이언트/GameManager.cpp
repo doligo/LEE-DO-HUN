@@ -8,10 +8,6 @@ GameManager::GameManager()
 	m_iTurn = 1;
 	m_iHeight = HEIGHT;
 	m_iWidth = WIDTH;
-	m_Player[PLAYERTYPE_BLACK].SetCursorIcon(BLACKTEAMICON);
-	m_Player[PLAYERTYPE_BLACK].SetStoneIcon(BLACKTEAMICON);
-	m_Player[PLAYERTYPE_WHITE].SetCursorIcon(WHITETEAMICON);
-	m_Player[PLAYERTYPE_WHITE].SetStoneIcon(WHITETEAMICON);
 }
 
 void GameManager::LobbyDraw()
@@ -27,9 +23,8 @@ void GameManager::LobbyDraw()
 
 void GameManager::DrawPoint()
 {
-	m_DrawManager.Erase(m_Player[m_iTurn % 2].GetCursor().m_ix, m_Player[m_iTurn % 2].GetCursor().m_iy, m_iWidth, m_iHeight);
-	m_Player[PLAYERTYPE_BLACK].DrawStone(m_Player[m_iTurn % 2].GetCursor().m_ix, m_Player[m_iTurn % 2].GetCursor().m_iy);
-	m_Player[PLAYERTYPE_WHITE].DrawStone(m_Player[m_iTurn % 2].GetCursor().m_ix, m_Player[m_iTurn % 2].GetCursor().m_iy);
+	m_DrawManager.Erase(m_Player.GetCursor().m_ix, m_Player.GetCursor().m_iy, m_iWidth, m_iHeight);
+	m_Player.DrawStone(m_Player.GetCursor().m_ix, m_Player.GetCursor().m_iy);
 
 }
 
@@ -42,9 +37,9 @@ void GameManager::InputInfoDraw()
 
 void GameManager::CurPlayerInfoDraw()
 {
-	string Name = m_Player[m_iTurn % 2].GetName();
-	int UndoCount = m_Player[m_iTurn % 2].GetUndo();
-	string str = "Player Name : " + Name + "       무르기 : " + to_string(UndoCount) + "  ";
+	string Name = m_Player.GetName();
+	int UndoCount = m_Player.GetUndo();
+	string str = "Player Name : " + Name + " 무르기 : " + to_string(UndoCount) + "  ";
 	m_DrawManager.DrawMidText(str, m_iWidth, m_iHeight + 3);
 	m_DrawManager.DrawMidText("Turn : " + to_string(m_iTurn) + "  " , m_iWidth, m_iHeight + 4);
 }
@@ -60,20 +55,20 @@ void GameManager::Input()
 		case KEY_UP:
 		case KEY_DOWN:
 			DrawPoint();
-			m_Player[m_iTurn % 2].Move(ch, m_iWidth, m_iHeight);
+			m_Player.Move(ch, m_iWidth, m_iHeight);
 			break;
 		case KEY_ESC:
 			m_bPlayState = false;
 			break;
 		case KEY_DROP:
-			Cursor = m_Player[m_iTurn % 2].GetCursor();
-			if(m_Player[PLAYERTYPE_BLACK].CompareStone(Cursor.m_ix, Cursor.m_iy) || m_Player[PLAYERTYPE_WHITE].CompareStone(Cursor.m_ix, Cursor.m_iy))
+			Cursor = m_Player.GetCursor();
+			if(m_Player.CompareStone(Cursor.m_ix, Cursor.m_iy))
 				break;
-			m_Player[m_iTurn % 2].CreateStone();
-			if(m_Player[m_iTurn % 2].WinCheck(m_iWidth, m_iHeight))
+			m_Player.CreateStone();
+			if(m_Player.WinCheck(m_iWidth, m_iHeight))
 			{
 				m_bPlayState = false;
-				m_DrawManager.DrawMidText(m_Player[m_iTurn % 2].GetName() + "팀 승리!!", m_iWidth, m_iHeight* 0.5f);
+				m_DrawManager.DrawMidText(m_Player.GetName() + "팀 승리!!", m_iWidth, m_iHeight* 0.5f);
 				getch();
 				return;
 			}
@@ -81,12 +76,12 @@ void GameManager::Input()
 			CurPlayerInfoDraw();
 			break;
 		case KEY_UNDO:
-			if(m_Player[m_iTurn % 2].GetUndo() > 0 && m_iTurn > 1)
+			if(m_Player.GetUndo() > 0 && m_iTurn > 1)
 			{
-				m_Player[m_iTurn % 2].EraseCursor(m_iWidth,m_iHeight);
-				m_Player[m_iTurn % 2].DownUndo();
+				m_Player.EraseCursor(m_iWidth,m_iHeight);
+				m_Player.DownUndo();
 				m_iTurn--;
-				m_Player[m_iTurn % 2].Undo(m_iWidth, m_iHeight);
+				m_Player.Undo(m_iWidth, m_iHeight);
 				CurPlayerInfoDraw();
 			}
 			break;
@@ -96,8 +91,7 @@ void GameManager::Input()
 			m_DrawManager.Draw(m_iWidth, m_iHeight);
 			InputInfoDraw();
 			CurPlayerInfoDraw();
-			m_Player[PLAYERTYPE_BLACK].AllStoneDraw();
-			m_Player[PLAYERTYPE_WHITE].AllStoneDraw();
+			m_Player.AllStoneDraw();
 			break;
 	}
 }
@@ -105,25 +99,25 @@ void GameManager::Input()
 
 void GameManager::SetName(string str,PLAYERTYPE type, int x, int y)
 {
-	m_DrawManager.DrawMidText(str, x,y);
-	m_DrawManager.DrawMidText("입력 : ", x, y + 1);
-	m_Player[type].SetName();
-	m_Player[type].PlayerSet(m_iWidth, m_iHeight);
+	m_Player.SetName(save_player_packet.player_name);
+	m_Player.PlayerSet(m_iWidth, m_iHeight);
 }
 
 void GameManager::GameStart()
 {
+	int tmp_player_color = 0;
+	tmp_player_color = save_player_packet.player_color;
+
 	system("cls");
 	m_DrawManager.BoxDraw(0, 0, m_iWidth, m_iHeight);
-	SetName("P1 이름", PLAYERTYPE_BLACK, m_iWidth, m_iHeight * 0.3f);
-	SetName("P2 이름", PLAYERTYPE_WHITE, m_iWidth, m_iHeight * 0.5f);
+	SetName("플레이어 이름", (PLAYERTYPE)tmp_player_color, m_iWidth, m_iHeight * 0.3f);
 	system("cls");
 	m_DrawManager.Draw(m_iWidth, m_iHeight); 
 	InputInfoDraw();
 	CurPlayerInfoDraw();
 	while(m_bPlayState)
 	{
-		m_Player[m_iTurn % 2].DrawCursor();
+		m_Player.DrawCursor();
 		Input();
 	}
 }
@@ -156,8 +150,7 @@ void GameManager::SetUndo()
 						cin >> Select;
 						if(Select <= 10 && Select >= 0)
 						{
-							m_Player[PLAYERTYPE_BLACK].SetUndo(Select);
-							m_Player[PLAYERTYPE_WHITE].SetUndo(Select);
+							m_Player.SetUndo(Select);
 							break;
 						}
 						m_DrawManager.DrawMidText("범위가 맞지 않습니다 ( 0 ~ 10 )", m_iWidth, m_iHeight* 0.6f);
@@ -168,8 +161,7 @@ void GameManager::SetUndo()
 					system("cls");
 					m_DrawManager.BoxDraw(0, 0, m_iWidth, m_iHeight);
 					m_DrawManager.DrawMidText("무르기 Off", m_iWidth, m_iHeight* 0.5f);
-					m_Player[PLAYERTYPE_BLACK].SetUndo(0);
-					m_Player[PLAYERTYPE_WHITE].SetUndo(0);
+					m_Player.SetUndo(0);
 					getch();
 					break;
 				case 3:
@@ -249,23 +241,31 @@ void GameManager::SetCursor()
 	switch(Select)
 	{
 		case 1:
-			m_Player[PLAYERTYPE_BLACK].SetCursorIcon("○");
-			m_Player[PLAYERTYPE_WHITE].SetCursorIcon("●");
+			if (save_player_packet.player_color == 0)
+				m_Player.SetCursorIcon("●");
+			else if (save_player_packet.player_color == 1)
+				m_Player.SetCursorIcon("○");
 			system("pause");
 			break;
 		case 2:
-			m_Player[PLAYERTYPE_BLACK].SetCursorIcon("♡");
-			m_Player[PLAYERTYPE_WHITE].SetCursorIcon("♥");
+			if (save_player_packet.player_color == 0)
+				m_Player.SetCursorIcon("♥");
+			else if (save_player_packet.player_color == 1)
+				m_Player.SetCursorIcon("♡");
 			system("pause");
 			break;
 		case 3:
-			m_Player[PLAYERTYPE_BLACK].SetCursorIcon("☞");
-			m_Player[PLAYERTYPE_WHITE].SetCursorIcon("☜");
+			if (save_player_packet.player_color == 0)
+				m_Player.SetCursorIcon("☜");
+			else if (save_player_packet.player_color == 1)
+				m_Player.SetCursorIcon("☞");
 			system("pause");
 			break;
 		case 4:
-			m_Player[PLAYERTYPE_BLACK].SetCursorIcon("①");
-			m_Player[PLAYERTYPE_WHITE].SetCursorIcon("②");
+			if (save_player_packet.player_color == 0)
+				m_Player.SetCursorIcon("②");
+			else if (save_player_packet.player_color == 1)
+				m_Player.SetCursorIcon("①");
 			system("pause");
 			break;
 		case 5:
@@ -290,23 +290,31 @@ void GameManager::SetStone()
 	switch(Select)
 	{
 		case 1:
-			m_Player[PLAYERTYPE_BLACK].SetStoneIcon("○");
-			m_Player[PLAYERTYPE_WHITE].SetStoneIcon("●");
+			if (save_player_packet.player_color == 0)
+				m_Player.SetStoneIcon("●");
+			else if (save_player_packet.player_color == 1)
+				m_Player.SetStoneIcon("○");
 			system("pause");
 			break;
 		case 2:
-			m_Player[PLAYERTYPE_BLACK].SetStoneIcon("♡");
-			m_Player[PLAYERTYPE_WHITE].SetStoneIcon("♥");
+			if (save_player_packet.player_color == 0)
+				m_Player.SetStoneIcon("♥");
+			else if (save_player_packet.player_color == 1)
+				m_Player.SetStoneIcon("♡");
 			system("pause");
 			break;
 		case 3:
-			m_Player[PLAYERTYPE_BLACK].SetStoneIcon("☏");
-			m_Player[PLAYERTYPE_WHITE].SetStoneIcon("☎");
+			if (save_player_packet.player_color == 0)
+				m_Player.SetStoneIcon("☎");
+			else if (save_player_packet.player_color == 1)
+				m_Player.SetStoneIcon("☏");
 			system("pause");
 			break;
 		case 4:
-			m_Player[PLAYERTYPE_BLACK].SetStoneIcon("①");
-			m_Player[PLAYERTYPE_WHITE].SetStoneIcon("②");
+			if (save_player_packet.player_color == 0)
+				m_Player.SetStoneIcon("②");
+			else if (save_player_packet.player_color == 1)
+				m_Player.SetStoneIcon("①");
 			system("pause");
 			break;
 		case 5:
@@ -357,6 +365,17 @@ void GameManager::GameMain()
 void GameManager::Game_Menu_Main(SOCKET socket)
 {
 	SOCKET Socket = socket;
+
+	if (save_player_packet.player_color == 0)
+	{
+		m_Player.SetCursorIcon(WHITETEAMICON);
+		m_Player.SetStoneIcon(WHITETEAMICON);
+	}
+	else if (save_player_packet.player_color == 1)
+	{
+		m_Player.SetCursorIcon(BLACKTEAMICON);
+		m_Player.SetStoneIcon(BLACKTEAMICON);
+	}
 
 	char buf_[256];
 	sprintf(buf_, "mode con: lines=%d cols=%d", m_iHeight + 5, (m_iWidth * 2) + 1);
@@ -436,6 +455,8 @@ unsigned WINAPI GameManager::Control_Thread(void *arg)
 	int value = 0;
 	PACKET_HEADER send_packet;
 	PACKET_HEADER *recv_packet;
+	PLAYER_INFO send_player_packet;
+	PLAYER_INFO *recv_player_packet;
 	int len = 0;
 	char buf[BUFSIZ] = {};
 	int trigger = false;
@@ -448,6 +469,9 @@ unsigned WINAPI GameManager::Control_Thread(void *arg)
 	value = send(Socket, (char*)&send_player_packet, sizeof(send_player_packet), NULL);
 	value = recv(Socket, buf, sizeof(buf), NULL);
 	recv_player_packet = (PLAYER_INFO*)buf;
+
+	save_player_packet.player_color = recv_player_packet->player_color;
+	strcpy(save_player_packet.player_name, recv_player_packet->player_name);
 
 	while (1)
 	{
@@ -481,9 +505,7 @@ unsigned WINAPI GameManager::Control_Thread(void *arg)
 			}
 		}
 		else if (value == 4 && recv_packet->index == PLAYER_WAIT3)
-		{
 			Game_Menu_Main(Socket);
-		}
 
 	}
 

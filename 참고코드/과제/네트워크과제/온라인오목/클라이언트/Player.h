@@ -42,7 +42,7 @@ public:
 	inline string GetName() { return m_strName; }
 	inline void SetStoneIcon(string Icon) { m_strStoneIcon = Icon; }
 	inline void SetCursorIcon(string Icon) { m_strCursorIcon = Icon; }
-	inline void SetName(){ cin >> m_strName; }
+	inline void SetName(string player_name){ m_strName = player_name; }
 	Player();
 	~Player();
 };
