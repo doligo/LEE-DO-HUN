@@ -63,14 +63,17 @@ struct PLAYER_INFO
 {
 	int player_color = 0;
 	char player_name[BUF_SIZE];
+	int player_ready = 0;
 };
 #pragma pack(pop)
 
 HANDLE hMutex;
 int player_count = 0;
 int player_wait = 0;
+int player_ready_count = 0;
 SOCKET client_socket[PLAYER_MAX] = {};
 PLAYER_INFO send_player_packet;
+PLAYER_INFO *recv_player_packet;
 
 unsigned WINAPI Control_Thread(void* arg)
 {
@@ -82,6 +85,7 @@ unsigned WINAPI Control_Thread(void* arg)
 	PACKET_HEADER *recv_packet;
 	PACKET_HEADER send_packet;
 	int len = 0;
+	int trigger_ready = false;
 
 	if (player_wait == 1)
 		send_player_packet.player_color = 0;
@@ -118,6 +122,29 @@ unsigned WINAPI Control_Thread(void* arg)
 		else if (player_wait == 2 && value == 4 && recv_packet->size == 4 && recv_packet->index == PLAYER_WAIT2)
 		{
 			send_packet.index = PLAYER_WAIT3;
+			len = sizeof(send_packet);
+			send_packet.size = len;
+		}
+		else if (trigger_ready == false && value == 4 && recv_packet->size == 4 && recv_packet->index == PLAYER_READY)
+		{
+			send_player_packet.player_ready = true;
+			value = send(hClient_Socket, (char*)&send_player_packet, sizeof(send_player_packet), NULL);
+
+			value = recv(hClient_Socket, buf, sizeof(buf), NULL);
+			recv_player_packet = (PLAYER_INFO*)buf;
+
+			if (recv_player_packet->player_ready == true) // 여기가 문제다
+				player_ready_count++;
+
+			send_packet.index = PLAYER_READY;
+			len = sizeof(send_packet);
+			send_packet.size = len;
+
+			trigger_ready = true;
+		}
+		else if (trigger_ready == true && player_ready_count == 2 && value == 4)
+		{
+			send_packet.index = PLAYER_START;
 			len = sizeof(send_packet);
 			send_packet.size = len;
 		}

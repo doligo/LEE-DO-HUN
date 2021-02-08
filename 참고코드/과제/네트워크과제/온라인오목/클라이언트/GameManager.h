@@ -56,6 +56,7 @@ struct PLAYER_INFO
 {
 	int player_color;
 	char player_name[BUF_SIZE];
+	int player_ready = 0;
 };
 #pragma pack(pop)
 
@@ -75,7 +76,7 @@ public:
 	void SetName(string str,PLAYERTYPE type, int x, int y);
 	void DrawPoint();
 	void Input();
-	void GameStart();
+	void GameStart(SOCKET socket);
 	void SetUndo();
 	void Option();
 	void SetCursor();
@@ -86,6 +87,7 @@ public:
 	unsigned WINAPI Control_Thread(void *arg);
 	void Game_Menu_Main(SOCKET socket);
 	PLAYER_INFO save_player_packet;
+	PACKET_HEADER save_packet_header;
 	GameManager();
 	~GameManager();
 };

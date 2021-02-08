@@ -103,22 +103,55 @@ void GameManager::SetName(string str,PLAYERTYPE type, int x, int y)
 	m_Player.PlayerSet(m_iWidth, m_iHeight);
 }
 
-void GameManager::GameStart()
+void GameManager::GameStart(SOCKET socket)
 {
+	SOCKET Socket = socket;
+	PACKET_HEADER send_packet;
+	PACKET_HEADER *recv_packet = NULL;
+	PLAYER_INFO *recv_save_player_packet;
+	int value = 0;
+	char buf[BUFSIZ + 50] = {};
 	int tmp_player_color = 0;
-	tmp_player_color = save_player_packet.player_color;
 
-	system("cls");
-	m_DrawManager.BoxDraw(0, 0, m_iWidth, m_iHeight);
-	SetName("플레이어 이름", (PLAYERTYPE)tmp_player_color, m_iWidth, m_iHeight * 0.3f);
-	system("cls");
-	m_DrawManager.Draw(m_iWidth, m_iHeight); 
-	InputInfoDraw();
-	CurPlayerInfoDraw();
-	while(m_bPlayState)
+	tmp_player_color = save_player_packet.player_color;
+	send_packet.index = PLAYER_READY;
+	send_packet.size = sizeof(send_packet);
+
+	value = send(Socket, (char*)&send_packet, sizeof(send_packet), NULL);
+	value = recv(Socket, buf, sizeof(buf), NULL);
+	recv_save_player_packet = (PLAYER_INFO*)buf;
+	save_player_packet.player_ready = recv_save_player_packet->player_ready;
+
+	value = send(Socket, (char*)&save_player_packet, sizeof(save_player_packet), NULL);
+
+	save_packet_header.index = PLAYER_READY;
+	save_packet_header.size = sizeof(save_packet_header);
+
+	while (save_packet_header.index != PLAYER_START)
 	{
-		m_Player.DrawCursor();
-		Input();
+		value = recv(Socket, buf, sizeof(buf), NULL);
+		recv_packet = (PACKET_HEADER*)buf;
+		save_packet_header.index = recv_packet->index;
+
+		send_packet.index = PLAYER_READY;
+		send_packet.size = sizeof(send_packet);
+		value = send(Socket, (char*)&send_packet, sizeof(send_packet), NULL);
+	}
+
+	if (save_packet_header.index != PLAYER_START)
+	{
+		system("cls");
+		m_DrawManager.BoxDraw(0, 0, m_iWidth, m_iHeight);
+		SetName("플레이어 이름", (PLAYERTYPE)tmp_player_color, m_iWidth, m_iHeight * 0.3f);
+		system("cls");
+		m_DrawManager.Draw(m_iWidth, m_iHeight);
+		InputInfoDraw();
+		CurPlayerInfoDraw();
+		while (m_bPlayState)
+		{
+			m_Player.DrawCursor();
+			Input();
+		}
 	}
 }
 
@@ -392,7 +425,7 @@ void GameManager::Game_Menu_Main(SOCKET socket)
 		case LOBBYMENU_START:
 			m_bPlayState = true;
 			m_iTurn = 1;
-			GameStart();
+			GameStart(Socket);
 			break;
 		case LOBBYMENU_OPTION:
 			Option();
