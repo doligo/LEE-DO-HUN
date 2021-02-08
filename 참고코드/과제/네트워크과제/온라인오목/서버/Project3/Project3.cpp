@@ -22,7 +22,7 @@ enum GAME_STATUS
 	PLAYER_WAIT2,
 	PLAYER_WAIT3,
 	PLAYER_READY,
-	PLAYER_START
+	PLAYER_START,
 };
 
 enum PLAYER_COLOR
@@ -47,23 +47,13 @@ struct PACKET_HEADER
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-struct SAMEPLE_PLAYER_INFO
-{
-	int player_color;
-	char player_name[BUF_SIZE];
-	string player_cursor;
-	string player_stone;
-	int player_stone_count;
-	Point *player_last_stone_pos;
-};
-#pragma pack(pop)
-
-#pragma pack(push, 1)
 struct PLAYER_INFO
 {
 	int player_color = 0;
 	char player_name[BUF_SIZE];
 	int player_ready = 0;
+	Point player_stone;
+	int turn_count = 1;
 };
 #pragma pack(pop)
 
@@ -74,6 +64,7 @@ int player_ready_count = 0;
 SOCKET client_socket[PLAYER_MAX] = {};
 PLAYER_INFO send_player_packet;
 PLAYER_INFO *recv_player_packet;
+int turn_trigger = false;
 
 unsigned WINAPI Control_Thread(void* arg)
 {
@@ -81,7 +72,8 @@ unsigned WINAPI Control_Thread(void* arg)
 	SOCKADDR_IN client_addr;
 	int client_addr_len = 0;
 	int value = 0;
-	char buf[BUF_SIZE + 1] = {};
+	char buf[BUF_SIZE] = {};
+	char buf2[BUF_SIZE + 20] = {}; // PLAYER_INFO 리시브용 528크기임
 	PACKET_HEADER *recv_packet;
 	PACKET_HEADER send_packet;
 	int len = 0;
@@ -96,7 +88,7 @@ unsigned WINAPI Control_Thread(void* arg)
 	getpeername(hClient_Socket, (SOCKADDR*)&client_addr, &client_addr_len);
 
 	value = recv(hClient_Socket, buf, sizeof(buf), NULL); // buf 양만큼 받는다
-	if (value == 513)
+	if (value == 512)
 	{
 		value = send(hClient_Socket, (char*)&send_player_packet, sizeof(send_player_packet), NULL);
 	}
@@ -130,10 +122,10 @@ unsigned WINAPI Control_Thread(void* arg)
 			send_player_packet.player_ready = true;
 			value = send(hClient_Socket, (char*)&send_player_packet, sizeof(send_player_packet), NULL);
 
-			value = recv(hClient_Socket, buf, sizeof(buf), NULL);
-			recv_player_packet = (PLAYER_INFO*)buf;
+			value = recv(hClient_Socket, buf2, sizeof(buf2), NULL);
+			recv_player_packet = (PLAYER_INFO*)buf2;
 
-			if (recv_player_packet->player_ready == true) // 여기가 문제다
+			if (recv_player_packet->player_ready == true)
 				player_ready_count++;
 
 			send_packet.index = PLAYER_READY;
@@ -142,13 +134,17 @@ unsigned WINAPI Control_Thread(void* arg)
 
 			trigger_ready = true;
 		}
-		else if (trigger_ready == true && player_ready_count == 2 && value == 4)
+		else if (trigger_ready == true && player_ready_count == 2 && value == 4 && recv_packet->index != PLAYER_START)
 		{
 			send_packet.index = PLAYER_START;
 			len = sizeof(send_packet);
 			send_packet.size = len;
 		}
+		else if (value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_START) // 게임중
+		{
 
+		}
+		
 		value = send(hClient_Socket, (char*)&send_packet, sizeof(send_packet), NULL);
 		if (value == SOCKET_ERROR)
 		{

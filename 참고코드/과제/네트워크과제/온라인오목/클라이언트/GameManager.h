@@ -40,7 +40,7 @@ enum GAME_STATUS
 	PLAYER_WAIT2,
 	PLAYER_WAIT3,
 	PLAYER_READY,
-	PLAYER_START
+	PLAYER_START,
 };
 
 #pragma pack(push, 1)
@@ -57,6 +57,8 @@ struct PLAYER_INFO
 	int player_color;
 	char player_name[BUF_SIZE];
 	int player_ready = 0;
+	Point player_stone;
+	int turn_count = 1;
 };
 #pragma pack(pop)
 
@@ -75,7 +77,7 @@ public:
 	void InputInfoDraw();
 	void SetName(string str,PLAYERTYPE type, int x, int y);
 	void DrawPoint();
-	void Input();
+	void Input(SOCKET socket);
 	void GameStart(SOCKET socket);
 	void SetUndo();
 	void Option();

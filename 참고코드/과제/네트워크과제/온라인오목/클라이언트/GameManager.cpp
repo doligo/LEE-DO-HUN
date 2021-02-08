@@ -44,8 +44,12 @@ void GameManager::CurPlayerInfoDraw()
 	m_DrawManager.DrawMidText("Turn : " + to_string(m_iTurn) + "  " , m_iWidth, m_iHeight + 4);
 }
 
-void GameManager::Input()
+void GameManager::Input(SOCKET socket)
 {
+	SOCKET Socket = socket;
+	PLAYER_INFO *recv_save_player_packet;
+	char buf[BUF_SIZE + 28] = {};
+	int value = 0;
 	char ch = getch();
 	Point Cursor;
 	switch(ch)
@@ -65,6 +69,9 @@ void GameManager::Input()
 			if(m_Player.CompareStone(Cursor.m_ix, Cursor.m_iy))
 				break;
 			m_Player.CreateStone();
+
+			save_player_packet.player_stone = Cursor;
+
 			if(m_Player.WinCheck(m_iWidth, m_iHeight))
 			{
 				m_bPlayState = false;
@@ -110,7 +117,7 @@ void GameManager::GameStart(SOCKET socket)
 	PACKET_HEADER *recv_packet = NULL;
 	PLAYER_INFO *recv_save_player_packet;
 	int value = 0;
-	char buf[BUFSIZ + 50] = {};
+	char buf[BUF_SIZE + 20] = {};
 	int tmp_player_color = 0;
 
 	tmp_player_color = save_player_packet.player_color;
@@ -120,7 +127,10 @@ void GameManager::GameStart(SOCKET socket)
 	value = send(Socket, (char*)&send_packet, sizeof(send_packet), NULL);
 	value = recv(Socket, buf, sizeof(buf), NULL);
 	recv_save_player_packet = (PLAYER_INFO*)buf;
+
 	save_player_packet.player_ready = recv_save_player_packet->player_ready;
+	save_player_packet.player_stone.m_ix = 0;
+	save_player_packet.player_stone.m_iy = 0;
 
 	value = send(Socket, (char*)&save_player_packet, sizeof(save_player_packet), NULL);
 
@@ -138,7 +148,7 @@ void GameManager::GameStart(SOCKET socket)
 		value = send(Socket, (char*)&send_packet, sizeof(send_packet), NULL);
 	}
 
-	if (save_packet_header.index != PLAYER_START)
+	if (save_packet_header.index == PLAYER_START)
 	{
 		system("cls");
 		m_DrawManager.BoxDraw(0, 0, m_iWidth, m_iHeight);
@@ -147,10 +157,14 @@ void GameManager::GameStart(SOCKET socket)
 		m_DrawManager.Draw(m_iWidth, m_iHeight);
 		InputInfoDraw();
 		CurPlayerInfoDraw();
+
 		while (m_bPlayState)
 		{
-			m_Player.DrawCursor();
-			Input();
+			if (save_player_packet.player_color == 0 && save_player_packet.turn_count % 2 == 1 || save_player_packet.player_color == 1 && save_player_packet.turn_count % 2 == 0)
+			{
+				m_Player.DrawCursor();
+				Input(Socket);
+			}
 		}
 	}
 }
@@ -439,7 +453,7 @@ void GameManager::Game_Menu_Main(SOCKET socket)
 int GameManager::NetWork_Main() // 클라쪽 소켓메인
 {
 	int value = 0;
-	char buf[BUFSIZ] = {};
+	char buf[BUF_SIZE] = {};
 
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
@@ -491,13 +505,15 @@ unsigned WINAPI GameManager::Control_Thread(void *arg)
 	PLAYER_INFO send_player_packet;
 	PLAYER_INFO *recv_player_packet;
 	int len = 0;
-	char buf[BUFSIZ] = {};
+	char buf[BUF_SIZE] = {};
 	int trigger = false;
 	// 클라쪽은 getpeername 할필요없다
 
 	send_packet.index = PLAYER_WAIT;
 	len = sizeof(send_packet);
 	send_packet.size = len;
+
+	len = sizeof(PLAYER_INFO);
 
 	value = send(Socket, (char*)&send_player_packet, sizeof(send_player_packet), NULL);
 	value = recv(Socket, buf, sizeof(buf), NULL);
