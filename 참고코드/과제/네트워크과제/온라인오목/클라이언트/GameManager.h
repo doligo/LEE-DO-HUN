@@ -41,6 +41,7 @@ enum GAME_STATUS
 	PLAYER_WAIT3,
 	PLAYER_READY,
 	PLAYER_START,
+	PLAYER_TURN
 };
 
 #pragma pack(push, 1)

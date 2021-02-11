@@ -47,8 +47,9 @@ void GameManager::CurPlayerInfoDraw()
 void GameManager::Input(SOCKET socket)
 {
 	SOCKET Socket = socket;
-	PLAYER_INFO *recv_save_player_packet;
-	char buf[BUF_SIZE + 28] = {};
+	PLAYER_INFO *recv_save_player_packet = NULL;
+	PACKET_HEADER *recv_packet = NULL;
+	char buf[BUF_SIZE + 20] = {};
 	int value = 0;
 	char ch = getch();
 	Point Cursor;
@@ -81,6 +82,11 @@ void GameManager::Input(SOCKET socket)
 			}
 			m_iTurn++;
 			CurPlayerInfoDraw();
+
+			value = send(Socket, (char*)&save_packet_header, sizeof(save_packet_header), NULL);
+			value = recv(Socket, buf, sizeof(buf), NULL);
+			recv_packet = (PACKET_HEADER*)buf; // 데이터가 안들어옴
+			save_packet_header.index = recv_packet->index;
 			break;
 		case KEY_UNDO:
 			if(m_Player.GetUndo() > 0 && m_iTurn > 1)
@@ -124,6 +130,8 @@ void GameManager::GameStart(SOCKET socket)
 	send_packet.index = PLAYER_READY;
 	send_packet.size = sizeof(send_packet);
 
+	value = sizeof(PLAYER_INFO);
+
 	value = send(Socket, (char*)&send_packet, sizeof(send_packet), NULL);
 	value = recv(Socket, buf, sizeof(buf), NULL);
 	recv_save_player_packet = (PLAYER_INFO*)buf;
@@ -158,9 +166,12 @@ void GameManager::GameStart(SOCKET socket)
 		InputInfoDraw();
 		CurPlayerInfoDraw();
 
+		if (save_player_packet.player_color == 1)
+			save_packet_header.index = PLAYER_TURN;
+
 		while (m_bPlayState)
 		{
-			if (save_player_packet.player_color == 0 && save_player_packet.turn_count % 2 == 1 || save_player_packet.player_color == 1 && save_player_packet.turn_count % 2 == 0)
+			if (save_packet_header.index == PLAYER_TURN)
 			{
 				m_Player.DrawCursor();
 				Input(Socket);
@@ -453,7 +464,7 @@ void GameManager::Game_Menu_Main(SOCKET socket)
 int GameManager::NetWork_Main() // 클라쪽 소켓메인
 {
 	int value = 0;
-	char buf[BUF_SIZE] = {};
+	char buf[BUF_SIZE + 20] = {};
 
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
@@ -505,15 +516,13 @@ unsigned WINAPI GameManager::Control_Thread(void *arg)
 	PLAYER_INFO send_player_packet;
 	PLAYER_INFO *recv_player_packet;
 	int len = 0;
-	char buf[BUF_SIZE] = {};
+	char buf[BUF_SIZE + 20] = {};
 	int trigger = false;
 	// 클라쪽은 getpeername 할필요없다
 
 	send_packet.index = PLAYER_WAIT;
 	len = sizeof(send_packet);
 	send_packet.size = len;
-
-	len = sizeof(PLAYER_INFO);
 
 	value = send(Socket, (char*)&send_player_packet, sizeof(send_player_packet), NULL);
 	value = recv(Socket, buf, sizeof(buf), NULL);

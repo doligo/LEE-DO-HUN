@@ -23,6 +23,7 @@ enum GAME_STATUS
 	PLAYER_WAIT3,
 	PLAYER_READY,
 	PLAYER_START,
+	PLAYER_TURN
 };
 
 enum PLAYER_COLOR
@@ -62,9 +63,21 @@ int player_count = 0;
 int player_wait = 0;
 int player_ready_count = 0;
 SOCKET client_socket[PLAYER_MAX] = {};
-PLAYER_INFO send_player_packet;
+PLAYER_INFO send_player_packet[2]; ///// 이거를 배열로 두개로 관리해서 turn_count의 변수에 따라 턴을 관리해보기
 PLAYER_INFO *recv_player_packet;
-int turn_trigger = false;
+
+void Send_Control(SOCKET sock, PACKET_HEADER ph, int len)
+{
+	int value = 0;
+
+	WaitForSingleObject(hMutex, INFINITE);
+
+	value = send(sock, (char*)&ph, len, NULL);
+	if (value == SOCKET_ERROR)
+		cout << "에러입니다 (샌드 에러)" << endl;
+
+	ReleaseMutex(hMutex);
+}
 
 unsigned WINAPI Control_Thread(void* arg)
 {
@@ -72,25 +85,30 @@ unsigned WINAPI Control_Thread(void* arg)
 	SOCKADDR_IN client_addr;
 	int client_addr_len = 0;
 	int value = 0;
-	char buf[BUF_SIZE] = {};
-	char buf2[BUF_SIZE + 20] = {}; // PLAYER_INFO 리시브용 528크기임
+	char buf[BUF_SIZE + 20] = {};
+	char buf2[BUF_SIZE + 20] = {}; // PLAYER_INFO 리시브용
 	PACKET_HEADER *recv_packet;
 	PACKET_HEADER send_packet;
 	int len = 0;
 	int trigger_ready = false;
 
-	if (player_wait == 1)
-		send_player_packet.player_color = 0;
-	else if (player_wait == 2)
-		send_player_packet.player_color = 1;
+	len = sizeof(send_player_packet);
+
+	if (hClient_Socket == client_socket[0])
+		send_player_packet[0].player_color = 0;
+	else if (hClient_Socket == client_socket[1])
+		send_player_packet[1].player_color = 1;
 
 	client_addr_len = sizeof(client_addr);
 	getpeername(hClient_Socket, (SOCKADDR*)&client_addr, &client_addr_len);
 
 	value = recv(hClient_Socket, buf, sizeof(buf), NULL); // buf 양만큼 받는다
-	if (value == 512)
+	if (value == 532)
 	{
-		value = send(hClient_Socket, (char*)&send_player_packet, sizeof(send_player_packet), NULL);
+		if (hClient_Socket == client_socket[0])
+			value = send(hClient_Socket, (char*)&send_player_packet[0], sizeof(send_player_packet[0]), NULL);
+		else if (hClient_Socket == client_socket[1])
+			value = send(hClient_Socket, (char*)&send_player_packet[1], sizeof(send_player_packet[1]), NULL);
 	}
 
 	while (1)
@@ -119,8 +137,16 @@ unsigned WINAPI Control_Thread(void* arg)
 		}
 		else if (trigger_ready == false && value == 4 && recv_packet->size == 4 && recv_packet->index == PLAYER_READY)
 		{
-			send_player_packet.player_ready = true;
-			value = send(hClient_Socket, (char*)&send_player_packet, sizeof(send_player_packet), NULL);
+			if (hClient_Socket == client_socket[0])
+			{
+				send_player_packet[0].player_ready = true;
+				value = send(hClient_Socket, (char*)&send_player_packet[0], sizeof(send_player_packet[0]), NULL);
+			}
+			else if (hClient_Socket == client_socket[1])
+			{
+				send_player_packet[1].player_ready = true;
+				value = send(hClient_Socket, (char*)&send_player_packet[1], sizeof(send_player_packet[1]), NULL);
+			}
 
 			value = recv(hClient_Socket, buf2, sizeof(buf2), NULL);
 			recv_player_packet = (PLAYER_INFO*)buf2;
@@ -142,17 +168,27 @@ unsigned WINAPI Control_Thread(void* arg)
 		}
 		else if (value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_START) // 게임중
 		{
+			send_packet.index = PLAYER_TURN;
+			len = sizeof(send_packet);
+			send_packet.size = len;
 
 		}
-		
-		value = send(hClient_Socket, (char*)&send_packet, sizeof(send_packet), NULL);
-		if (value == SOCKET_ERROR)
+		else if (value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_TURN)
 		{
-			cout << "에러입니다 (샌드 에러)" << endl;
-			break;
+			send_packet.index = PLAYER_START;
+			len = sizeof(send_packet);
+			send_packet.size = len;
+			
+			if (hClient_Socket == client_socket[0])
+				send_player_packet[0].turn_count++;
+			else if (hClient_Socket == client_socket[1])
+				send_player_packet[1].turn_count++;
 		}
-		else if (value == 0)
-			break;
+
+		if (hClient_Socket == client_socket[0])
+			Send_Control(client_socket[0], send_packet, sizeof(send_packet));
+		else if (hClient_Socket == client_socket[1])
+			Send_Control(client_socket[1], send_packet, sizeof(send_packet));
 	}
 
 	cout << "유저가 접속 종료를 하였습니다 (IP : " << inet_ntoa(client_addr.sin_addr) << ")" << endl;
@@ -209,13 +245,12 @@ int main()
 	SOCKADDR_IN client_addr; // 클라의 주소
 	int addr_len; // 주소의 길이
 	int str_len;
-	char buf[BUF_SIZE + 1] = {};
+	char buf[BUF_SIZE + 20] = {};
 
 	while (1)
 	{
 		if (player_count < PLAYER_MAX)
 		{
-			WaitForSingleObject(hMutex, INFINITE);
 			addr_len = sizeof(client_addr);
 			client_socket[player_count] = accept(listen_sock, (SOCKADDR*)&client_addr, &addr_len);
 			str_len = strlen("접속허가");
@@ -223,12 +258,14 @@ int main()
 			player_wait++;
 
 			sprintf(buf, "player_%d", player_wait);
-			strcpy(send_player_packet.player_name, buf);
+			strcpy(send_player_packet[0].player_name, buf);
 
+			WaitForSingleObject(hMutex, INFINITE);
 			hThread = (HANDLE)_beginthreadex(NULL, 0, Control_Thread, (LPVOID)&client_socket[player_count], 0, (unsigned int*)&dwThreadID);
+			ReleaseMutex(hMutex);
+
 			cout << "유저가 접속을 하였습니다 (IP : " << inet_ntoa(client_addr.sin_addr) << ")" << endl;
 			player_count++;
-			ReleaseMutex(hMutex);
 		}
 		else
 		{
