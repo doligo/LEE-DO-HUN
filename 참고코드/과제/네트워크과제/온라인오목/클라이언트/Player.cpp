@@ -6,6 +6,8 @@ Player::Player()
 	m_iStoneCount = 0;
 	m_bMyWindState = false;
 	m_iUndo = DEFAULT_UNDO;
+	m_pStoneList_Enemy = NULL;
+	m_iStoneCount_Enemy = 0;
 }
 
 
@@ -16,6 +18,13 @@ bool Player::CompareStone(int x, int y)
 		if(m_pStoneList[i].m_ix == x &&m_pStoneList[i].m_iy == y)
 			return true;
 	}
+
+	for (int i = 0; i < m_iStoneCount_Enemy; i++)
+	{
+		if (m_pStoneList_Enemy[i].m_ix == x && m_pStoneList_Enemy[i].m_iy == y)
+			return true;
+	}
+
 	return false;
 }
 
@@ -24,12 +33,21 @@ void Player::AllStoneDraw()
 
 	for(int i = 0; i < m_iStoneCount; i++)
 		m_DrawManager.DrawPoint(m_strStoneIcon, m_pStoneList[i].m_ix, m_pStoneList[i].m_iy);
+
+	for (int i = 0; i < m_iStoneCount_Enemy; i++)
+		m_DrawManager.DrawPoint(m_strStoneIcon_Enemy, m_pStoneList_Enemy[i].m_ix, m_pStoneList_Enemy[i].m_iy);
 }
 
 void Player::DrawStone(int x, int y)
 {
 	if(CompareStone(x, y))
 		m_DrawManager.DrawPoint(m_strStoneIcon, x, y);
+}
+
+void Player::DrawStone_Enemy(int x, int y)
+{
+	if (CompareStone(x, y))
+		m_DrawManager.DrawPoint(m_strStoneIcon_Enemy, x, y);
 }
 
 
@@ -46,6 +64,16 @@ void Player::CreateStone()
 		m_pStoneList[m_iStoneCount].m_ix = m_Cursor.m_ix;
 		m_pStoneList[m_iStoneCount++].m_iy = m_Cursor.m_iy;
 		DrawStone(m_Cursor.m_ix, m_Cursor.m_iy);
+	}
+}
+
+void Player::CreateStone_Enemy()
+{
+	if (CompareStone(m_Cursor_Enemy.m_ix, m_Cursor_Enemy.m_iy) == false)
+	{
+		m_pStoneList_Enemy[m_iStoneCount_Enemy].m_ix = m_Cursor_Enemy.m_ix;
+		m_pStoneList_Enemy[m_iStoneCount_Enemy++].m_iy = m_Cursor_Enemy.m_iy;
+		DrawStone_Enemy(m_Cursor_Enemy.m_ix, m_Cursor_Enemy.m_iy);
 	}
 }
 
@@ -75,7 +103,6 @@ void Player::Move(char ch, int Width, int Height)
 
 void Player::EraseCursor(int Width, int Height)
 {
-
 	m_DrawManager.Erase(m_Cursor.m_ix, m_Cursor.m_iy,Width,Height);
 }
 
@@ -91,6 +118,12 @@ void Player::DeleteStone()
 		delete[] m_pStoneList;
 		m_pStoneList = NULL;
 	}
+
+	if (m_pStoneList_Enemy != NULL)
+	{
+		delete[] m_pStoneList_Enemy;
+		m_pStoneList_Enemy = NULL;
+	}
 }
 
 void Player::PlayerSet(int Width,int Height)
@@ -101,6 +134,8 @@ void Player::PlayerSet(int Width,int Height)
 	m_Cursor.m_ix = Width * 0.5f;
 	m_Cursor.m_iy = Height* 0.5f;
 	m_bMyWindState = false;
+
+	m_pStoneList_Enemy = new Point[(Width*Height) / 2];
 }
 
 
@@ -144,8 +179,17 @@ bool Player::WinCheck(int Width, int Height)
 	return false;
 }
 
+void Player::SetCurosr_Enemy(int x, int y)
+{
+	m_Cursor_Enemy.m_ix = x;
+	m_Cursor_Enemy.m_iy = y;
+}
+
 Player::~Player()
 {
 	if(m_pStoneList != NULL)
 		delete[] m_pStoneList;
+
+	if (m_pStoneList_Enemy != NULL)
+		delete[] m_pStoneList_Enemy;
 }

@@ -67,7 +67,7 @@ void GameManager::Input(SOCKET socket)
 			break;
 		case KEY_DROP:
 			Cursor = m_Player.GetCursor();
-			if(m_Player.CompareStone(Cursor.m_ix, Cursor.m_iy))
+			if (m_Player.CompareStone(Cursor.m_ix, Cursor.m_iy))
 				break;
 			m_Player.CreateStone();
 
@@ -85,8 +85,13 @@ void GameManager::Input(SOCKET socket)
 
 			value = send(Socket, (char*)&save_packet_header, sizeof(save_packet_header), NULL);
 			value = recv(Socket, buf, sizeof(buf), NULL);
-			recv_packet = (PACKET_HEADER*)buf; // 데이터가 안들어옴
+			recv_packet = (PACKET_HEADER*)buf;
 			save_packet_header.index = recv_packet->index;
+
+			save_player_packet.player_stone.m_ix = Cursor.m_ix;
+			save_player_packet.player_stone.m_iy = Cursor.m_iy;
+
+			value = send(Socket, (char*)&save_player_packet, sizeof(save_player_packet), NULL);
 			break;
 		case KEY_UNDO:
 			if(m_Player.GetUndo() > 0 && m_iTurn > 1)
@@ -122,6 +127,7 @@ void GameManager::GameStart(SOCKET socket)
 	PACKET_HEADER send_packet;
 	PACKET_HEADER *recv_packet = NULL;
 	PLAYER_INFO *recv_save_player_packet;
+	PLAYER_INFO tmp_save_player_packet;
 	int value = 0;
 	char buf[BUF_SIZE + 20] = {};
 	int tmp_player_color = 0;
@@ -175,6 +181,26 @@ void GameManager::GameStart(SOCKET socket)
 			{
 				m_Player.DrawCursor();
 				Input(Socket);
+			}
+			else
+			{
+				value = send(Socket, (char*)&save_packet_header, sizeof(save_packet_header), NULL);
+				value = recv(Socket, buf, sizeof(buf), NULL);
+				recv_packet = (PACKET_HEADER*)buf;
+				save_packet_header.index = recv_packet->index;
+
+				if (recv_packet->index == PLAYER_TURN)
+				{
+					value = send(Socket, (char*)&save_player_packet, sizeof(save_player_packet), NULL);
+					value = recv(Socket, buf, sizeof(buf), NULL);
+					recv_save_player_packet = (PLAYER_INFO*)buf;
+					tmp_save_player_packet.player_stone = recv_save_player_packet->player_stone;
+
+					m_Player.SetCurosr_Enemy(tmp_save_player_packet.player_stone.m_ix, tmp_save_player_packet.player_stone.m_iy);
+					m_Player.CreateStone_Enemy();
+
+					//// 지나가면 돌색바뀌는것, 어쩌다 멈추는것 두개 수정
+				}
 			}
 		}
 	}
@@ -349,30 +375,54 @@ void GameManager::SetStone()
 	{
 		case 1:
 			if (save_player_packet.player_color == 0)
+			{
 				m_Player.SetStoneIcon("●");
+				m_Player.SetStoneIcon_Enemy("○");
+			}
 			else if (save_player_packet.player_color == 1)
+			{
 				m_Player.SetStoneIcon("○");
+				m_Player.SetStoneIcon_Enemy("●");
+			}
 			system("pause");
 			break;
 		case 2:
 			if (save_player_packet.player_color == 0)
+			{
 				m_Player.SetStoneIcon("♥");
+				m_Player.SetStoneIcon_Enemy("♡");
+			}
 			else if (save_player_packet.player_color == 1)
+			{
 				m_Player.SetStoneIcon("♡");
+				m_Player.SetStoneIcon_Enemy("♥");
+			}
 			system("pause");
 			break;
 		case 3:
 			if (save_player_packet.player_color == 0)
+			{
 				m_Player.SetStoneIcon("☎");
+				m_Player.SetStoneIcon_Enemy("☏");
+			}
 			else if (save_player_packet.player_color == 1)
+			{
 				m_Player.SetStoneIcon("☏");
+				m_Player.SetStoneIcon_Enemy("☎");
+			}
 			system("pause");
 			break;
 		case 4:
 			if (save_player_packet.player_color == 0)
+			{
 				m_Player.SetStoneIcon("②");
+				m_Player.SetStoneIcon_Enemy("①");
+			}
 			else if (save_player_packet.player_color == 1)
+			{
 				m_Player.SetStoneIcon("①");
+				m_Player.SetStoneIcon_Enemy("②");
+			}
 			system("pause");
 			break;
 		case 5:
@@ -428,11 +478,13 @@ void GameManager::Game_Menu_Main(SOCKET socket)
 	{
 		m_Player.SetCursorIcon(WHITETEAMICON);
 		m_Player.SetStoneIcon(WHITETEAMICON);
+		m_Player.SetStoneIcon_Enemy("○");
 	}
 	else if (save_player_packet.player_color == 1)
 	{
 		m_Player.SetCursorIcon(BLACKTEAMICON);
 		m_Player.SetStoneIcon(BLACKTEAMICON);
+		m_Player.SetStoneIcon_Enemy("●");
 	}
 
 	char buf_[256];

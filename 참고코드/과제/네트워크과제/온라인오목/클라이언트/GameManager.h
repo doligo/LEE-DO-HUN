@@ -72,6 +72,7 @@ private:
 	bool m_bPlayState;
 	MapDraw m_DrawManager;
 	Player m_Player;
+	Player m_Enemy;
 public:
 	void SetMapSize();
 	void CurPlayerInfoDraw();

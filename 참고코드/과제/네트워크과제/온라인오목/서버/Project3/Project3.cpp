@@ -65,6 +65,7 @@ int player_ready_count = 0;
 SOCKET client_socket[PLAYER_MAX] = {};
 PLAYER_INFO send_player_packet[2]; ///// 이거를 배열로 두개로 관리해서 turn_count의 변수에 따라 턴을 관리해보기
 PLAYER_INFO *recv_player_packet;
+bool trigger_onoff = false;
 
 void Send_Control(SOCKET sock, PACKET_HEADER ph, int len)
 {
@@ -160,35 +161,77 @@ unsigned WINAPI Control_Thread(void* arg)
 
 			trigger_ready = true;
 		}
-		else if (trigger_ready == true && player_ready_count == 2 && value == 4 && recv_packet->index != PLAYER_START)
+		else if (trigger_ready == true && player_ready_count == 2 && value == 4 && recv_packet->index != PLAYER_START && recv_packet->index != PLAYER_TURN)
 		{
 			send_packet.index = PLAYER_START;
 			len = sizeof(send_packet);
 			send_packet.size = len;
-		}
-		else if (value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_START) // 게임중
-		{
-			send_packet.index = PLAYER_TURN;
-			len = sizeof(send_packet);
-			send_packet.size = len;
-
 		}
 		else if (value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_TURN)
 		{
 			send_packet.index = PLAYER_START;
 			len = sizeof(send_packet);
 			send_packet.size = len;
-			
+
+			send_player_packet[0].turn_count++;
+			send_player_packet[1].turn_count++;
+
 			if (hClient_Socket == client_socket[0])
-				send_player_packet[0].turn_count++;
+				Send_Control(client_socket[0], send_packet, sizeof(send_packet));
 			else if (hClient_Socket == client_socket[1])
-				send_player_packet[1].turn_count++;
+				Send_Control(client_socket[1], send_packet, sizeof(send_packet));
+
+			value = recv(hClient_Socket, buf, sizeof(buf), NULL);
+			recv_player_packet = (PLAYER_INFO*)buf;
+			if (hClient_Socket == client_socket[0])
+				send_player_packet[0].player_stone = recv_player_packet->player_stone;
+			else if (hClient_Socket == client_socket[1])
+				send_player_packet[1].player_stone = recv_player_packet->player_stone;
+
+			trigger_onoff = true;
+
+		}
+		else if (value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_START)
+		{
+			if (hClient_Socket == client_socket[0] && send_player_packet[0].turn_count % 2 == 0)
+			{
+				send_packet.index = PLAYER_TURN;
+				len = sizeof(send_packet);
+				send_packet.size = len;
+			}
+			else if (hClient_Socket == client_socket[1] && send_player_packet[1].turn_count % 2 == 1)
+			{
+				send_packet.index = PLAYER_TURN;
+				len = sizeof(send_packet);
+				send_packet.size = len;
+			}
+
+			if (hClient_Socket == client_socket[0])
+				Send_Control(client_socket[0], send_packet, sizeof(send_packet));
+			else if (hClient_Socket == client_socket[1])
+				Send_Control(client_socket[1], send_packet, sizeof(send_packet));
+
+			value = recv(hClient_Socket, buf, sizeof(buf), NULL);
+			recv_player_packet = (PLAYER_INFO*)buf;
+			if (recv_player_packet->player_stone.x != send_player_packet[0].player_stone.x && recv_player_packet->player_stone.y != send_player_packet[0].player_stone.y
+				|| recv_player_packet->player_stone.x != send_player_packet[1].player_stone.x && recv_player_packet->player_stone.y != send_player_packet[1].player_stone.y)
+			{
+				if (hClient_Socket == client_socket[0])
+					value = send(hClient_Socket, (char*)&send_player_packet[1], sizeof(send_player_packet[1]), 0);
+				else if (hClient_Socket == client_socket[1])
+					value = send(hClient_Socket, (char*)&send_player_packet[0], sizeof(send_player_packet[0]), 0);
+			}
+
+			trigger_onoff = true;
 		}
 
-		if (hClient_Socket == client_socket[0])
+		if (hClient_Socket == client_socket[0] && trigger_onoff == false)
 			Send_Control(client_socket[0], send_packet, sizeof(send_packet));
-		else if (hClient_Socket == client_socket[1])
+		else if (hClient_Socket == client_socket[1] && trigger_onoff == false)
 			Send_Control(client_socket[1], send_packet, sizeof(send_packet));
+
+		trigger_onoff = false;
+
 	}
 
 	cout << "유저가 접속 종료를 하였습니다 (IP : " << inet_ntoa(client_addr.sin_addr) << ")" << endl;
