@@ -9,6 +9,7 @@ using namespace std;
 #define SERVERPORT 9001
 #define BUF_SIZE 512
 #define PLAYER_MAX 2
+#define PLAYER_WIN 3
 
 enum Color
 {
@@ -23,7 +24,8 @@ enum GAME_STATUS
 	PLAYER_WAIT3,
 	PLAYER_READY,
 	PLAYER_START,
-	PLAYER_TURN
+	PLAYER_TURN,
+	PLAYER_GAME_OVER
 };
 
 enum PLAYER_COLOR
@@ -161,7 +163,7 @@ unsigned WINAPI Control_Thread(void* arg)
 
 			trigger_ready = true;
 		}
-		else if (trigger_ready == true && player_ready_count == 2 && value == 4 && recv_packet->index != PLAYER_START && recv_packet->index != PLAYER_TURN)
+		else if (trigger_ready == true && player_ready_count == 2 && value == 4 && recv_packet->index != PLAYER_START && recv_packet->index != PLAYER_TURN && recv_packet->index != PLAYER_GAME_OVER)
 		{
 			send_packet.index = PLAYER_START;
 			len = sizeof(send_packet);
@@ -193,7 +195,7 @@ unsigned WINAPI Control_Thread(void* arg)
 		}
 		else if (value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_START)
 		{
-			if (hClient_Socket == client_socket[0] && send_player_packet[0].turn_count % 2 == 0)
+			if (hClient_Socket == client_socket[0] && send_player_packet[0].turn_count % 2 == 0 || hClient_Socket == client_socket[1] && send_player_packet[1].turn_count % 2 == 1)
 			{
 				send_packet.index = PLAYER_TURN;
 				len = sizeof(send_packet);
@@ -206,50 +208,37 @@ unsigned WINAPI Control_Thread(void* arg)
 
 				value = recv(hClient_Socket, buf, sizeof(buf), NULL);
 				recv_player_packet = (PLAYER_INFO*)buf;
-				//if (recv_player_packet->player_stone.x != send_player_packet[0].player_stone.x && recv_player_packet->player_stone.y != send_player_packet[0].player_stone.y
-				//	|| recv_player_packet->player_stone.x != send_player_packet[1].player_stone.x && recv_player_packet->player_stone.y != send_player_packet[1].player_stone.y)
-				{
-					if (hClient_Socket == client_socket[0])
-						value = send(hClient_Socket, (char*)&send_player_packet[1], sizeof(send_player_packet[1]), 0);
-					else if (hClient_Socket == client_socket[1])
-						value = send(hClient_Socket, (char*)&send_player_packet[0], sizeof(send_player_packet[0]), 0);
-				}
+
+				if (hClient_Socket == client_socket[0])
+					value = send(hClient_Socket, (char*)&send_player_packet[1], sizeof(send_player_packet[1]), 0);
+				else if (hClient_Socket == client_socket[1])
+					value = send(hClient_Socket, (char*)&send_player_packet[0], sizeof(send_player_packet[0]), 0);
+
+				trigger_onoff = true;
 			}
-			else if (hClient_Socket == client_socket[1] && send_player_packet[1].turn_count % 2 == 1)
+			else if (send_player_packet[0].player_ready == PLAYER_WIN || send_player_packet[1].player_ready == PLAYER_WIN)
 			{
-				send_packet.index = PLAYER_TURN;
+				send_packet.index = PLAYER_GAME_OVER;
 				len = sizeof(send_packet);
 				send_packet.size = len;
-		
-				if (hClient_Socket == client_socket[0])
-					Send_Control(client_socket[0], send_packet, sizeof(send_packet));
-				else if (hClient_Socket == client_socket[1])
-					Send_Control(client_socket[1], send_packet, sizeof(send_packet));
-
-				value = recv(hClient_Socket, buf, sizeof(buf), NULL);
-				recv_player_packet = (PLAYER_INFO*)buf;
-				//if (recv_player_packet->player_stone.x != send_player_packet[0].player_stone.x && recv_player_packet->player_stone.y != send_player_packet[0].player_stone.y
-				//	|| recv_player_packet->player_stone.x != send_player_packet[1].player_stone.x && recv_player_packet->player_stone.y != send_player_packet[1].player_stone.y)
-				{
-					if (hClient_Socket == client_socket[0])
-						value = send(hClient_Socket, (char*)&send_player_packet[1], sizeof(send_player_packet[1]), 0);
-					else if (hClient_Socket == client_socket[1])
-						value = send(hClient_Socket, (char*)&send_player_packet[0], sizeof(send_player_packet[0]), 0);
-				}
 			}
 			else
 			{
 				send_packet.index = PLAYER_START;
 				len = sizeof(send_packet);
 				send_packet.size = len;
-
-				if (hClient_Socket == client_socket[0])
-					Send_Control(client_socket[0], send_packet, sizeof(send_packet));
-				else if (hClient_Socket == client_socket[1])
-					Send_Control(client_socket[1], send_packet, sizeof(send_packet));
 			}
-
-			trigger_onoff = true;
+		}
+		else if (value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_GAME_OVER)
+		{
+		if (hClient_Socket == client_socket[0])
+		{
+			send_player_packet[0].player_ready = PLAYER_WIN;
+		}
+		else if (hClient_Socket == client_socket[1])
+		{
+			send_player_packet[1].player_ready = PLAYER_WIN;
+		}
 		}
 
 		if (hClient_Socket == client_socket[0] && trigger_onoff == false)
@@ -258,7 +247,6 @@ unsigned WINAPI Control_Thread(void* arg)
 			Send_Control(client_socket[1], send_packet, sizeof(send_packet));
 
 		trigger_onoff = false;
-
 	}
 
 	cout << "유저가 접속 종료를 하였습니다 (IP : " << inet_ntoa(client_addr.sin_addr) << ")" << endl;
@@ -328,7 +316,7 @@ int main()
 			player_wait++;
 
 			sprintf(buf, "player_%d", player_wait);
-			strcpy(send_player_packet[0].player_name, buf);
+			strcpy(send_player_packet[player_wait - 1].player_name, buf);
 
 			WaitForSingleObject(hMutex, INFINITE);
 			hThread = (HANDLE)_beginthreadex(NULL, 0, Control_Thread, (LPVOID)&client_socket[player_count], 0, (unsigned int*)&dwThreadID);

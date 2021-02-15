@@ -15,8 +15,6 @@ enum OPTIONMENU
 {
 	OPTIONMENU_MAPSIZE = 1,
 	OPTIONMENU_CURSOR,
-	OPTIONMENU_STONE,
-	OPTIONMENU_UNDO,
 	OPTIONMENU_RETURN
 };
 
@@ -41,7 +39,8 @@ enum GAME_STATUS
 	PLAYER_WAIT3,
 	PLAYER_READY,
 	PLAYER_START,
-	PLAYER_TURN
+	PLAYER_TURN,
+	PLAYER_GAME_OVER
 };
 
 #pragma pack(push, 1)
@@ -72,7 +71,7 @@ private:
 	bool m_bPlayState;
 	MapDraw m_DrawManager;
 	Player m_Player;
-	Player m_Enemy;
+	bool game_exit;
 public:
 	void SetMapSize();
 	void CurPlayerInfoDraw();
@@ -81,10 +80,8 @@ public:
 	void DrawPoint();
 	void Input(SOCKET socket);
 	void GameStart(SOCKET socket);
-	void SetUndo();
 	void Option();
 	void SetCursor();
-	void SetStone();
 	void LobbyDraw();
 	void GameMain();
 	int NetWork_Main(); // 소켓메인

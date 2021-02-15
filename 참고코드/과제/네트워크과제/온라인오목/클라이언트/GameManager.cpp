@@ -8,6 +8,7 @@ GameManager::GameManager()
 	m_iTurn = 1;
 	m_iHeight = HEIGHT;
 	m_iWidth = WIDTH;
+	game_exit = false;
 }
 
 void GameManager::LobbyDraw()
@@ -32,14 +33,14 @@ void GameManager::InputInfoDraw()
 {
 	m_DrawManager.DrawMidText("====조작키====", m_iWidth, m_iHeight);
 	m_DrawManager.DrawMidText("이동 : A,S,W,D 돌놓기 : ENTER", m_iWidth, m_iHeight+1);
-	m_DrawManager.DrawMidText("무르기 : N 옵션 : P 종료 : ESC", m_iWidth, m_iHeight + 2);
+	m_DrawManager.DrawMidText("옵션 : P 종료 : ESC", m_iWidth, m_iHeight + 2);
 }
 
 void GameManager::CurPlayerInfoDraw()
 {
 	string Name = m_Player.GetName();
 	int UndoCount = m_Player.GetUndo();
-	string str = "Player Name : " + Name + " 무르기 : " + to_string(UndoCount) + "  ";
+	string str = "Player Name : " + Name;
 	m_DrawManager.DrawMidText(str, m_iWidth, m_iHeight + 3);
 	m_DrawManager.DrawMidText("Turn : " + to_string(m_iTurn) + "  " , m_iWidth, m_iHeight + 4);
 }
@@ -77,7 +78,10 @@ void GameManager::Input(SOCKET socket)
 			if(m_Player.WinCheck(m_iWidth, m_iHeight))
 			{
 				m_bPlayState = false;
-				m_DrawManager.DrawMidText(m_Player.GetName() + "팀 승리!!", m_iWidth, m_iHeight* 0.5f);
+				m_DrawManager.DrawMidText("승리하였습니다!!", m_iWidth, m_iHeight* 0.5f);
+			
+				save_packet_header.index = PLAYER_GAME_OVER;
+				value = send(Socket, (char*)&save_packet_header, sizeof(save_packet_header), NULL);
 				getch();
 				return;
 			}
@@ -93,16 +97,6 @@ void GameManager::Input(SOCKET socket)
 			save_player_packet.player_stone.m_iy = Cursor.m_iy;
 
 			value = send(Socket, (char*)&save_player_packet, sizeof(save_player_packet), NULL);
-			break;
-		case KEY_UNDO:
-			if(m_Player.GetUndo() > 0 && m_iTurn > 1)
-			{
-				m_Player.EraseCursor(m_iWidth,m_iHeight);
-				m_Player.DownUndo();
-				m_iTurn--;
-				m_Player.Undo(m_iWidth, m_iHeight);
-				CurPlayerInfoDraw();
-			}
 			break;
 		case KEY_OPTION:
 			Option();
@@ -199,65 +193,13 @@ void GameManager::GameStart(SOCKET socket)
 					m_Player.SetCurosr_Enemy(tmp_save_player_packet.player_stone.m_ix, tmp_save_player_packet.player_stone.m_iy);
 					m_Player.CreateStone_Enemy();
 				}
-			}
-		}
-	}
-}
-
-void GameManager::SetUndo()
-{
-	while(1)
-	{
-		system("cls");
-		int Height, Width;
-		if(m_bPlayState == false)
-		{
-			int Select;
-			system("cls");
-			m_DrawManager.BoxDraw(0, 0, m_iWidth, m_iHeight);
-			m_DrawManager.DrawMidText("= Set Undo  =", m_iWidth, m_iHeight* 0.2f);
-			m_DrawManager.DrawMidText("1.Set Undo Count", m_iWidth, m_iHeight* 0.3f);
-			m_DrawManager.DrawMidText("2.Undo Off", m_iWidth, m_iHeight* 0.4f);
-			m_DrawManager.DrawMidText("3.Return", m_iWidth, m_iHeight* 0.5f);
-			m_DrawManager.DrawMidText("입력 : ", m_iWidth, m_iHeight* 0.6f);
-			cin >> Select;
-			switch(Select)
-			{
-				case 1:
-					while(1)
-					{
-						system("cls");
-						m_DrawManager.BoxDraw(0, 0, m_iWidth, m_iHeight);
-						m_DrawManager.DrawMidText("무르기 횟수 입력(최대 10회) : ", m_iWidth, m_iHeight* 0.5f);
-						cin >> Select;
-						if(Select <= 10 && Select >= 0)
-						{
-							m_Player.SetUndo(Select);
-							break;
-						}
-						m_DrawManager.DrawMidText("범위가 맞지 않습니다 ( 0 ~ 10 )", m_iWidth, m_iHeight* 0.6f);
-						getch();
-					}
-					break;
-				case 2:
-					system("cls");
-					m_DrawManager.BoxDraw(0, 0, m_iWidth, m_iHeight);
-					m_DrawManager.DrawMidText("무르기 Off", m_iWidth, m_iHeight* 0.5f);
-					m_Player.SetUndo(0);
+				else if (save_packet_header.index == PLAYER_GAME_OVER)
+				{
+					m_bPlayState = false;
+					m_DrawManager.DrawMidText("패배 하였습니다ㅠㅠ", m_iWidth, m_iHeight* 0.5f);
 					getch();
-					break;
-				case 3:
-					return;
+				}
 			}
-		}
-		else
-		{
-			system("cls");
-			m_DrawManager.DrawMidText("접근 불가능", m_iWidth, m_iHeight* 0.4f);
-			m_DrawManager.DrawMidText("(Game Play중)", m_iWidth, m_iHeight* 0.5f);
-			m_DrawManager.gotoxy(0, m_iHeight);
-			system("pause");
-			return;
 		}
 	}
 }
@@ -355,79 +297,6 @@ void GameManager::SetCursor()
 	}
 }
 
-
-void GameManager::SetStone()
-{
-	int Select;
-	system("cls");
-	m_DrawManager.BoxDraw(0, 0, m_iWidth, m_iHeight);
-	m_DrawManager.DrawMidText("= Set Cursor =", m_iWidth, m_iHeight* 0.2f);
-	m_DrawManager.DrawMidText("1.○,●", m_iWidth, m_iHeight* 0.3f);
-	m_DrawManager.DrawMidText("2.♡,♥", m_iWidth, m_iHeight* 0.4f);
-	m_DrawManager.DrawMidText("3.☏,☎", m_iWidth, m_iHeight* 0.5f);
-	m_DrawManager.DrawMidText("4.①,②", m_iWidth, m_iHeight* 0.6f);
-	m_DrawManager.DrawMidText("5.Return", m_iWidth, m_iHeight* 0.7f);
-	m_DrawManager.DrawMidText("입력 : ", m_iWidth, m_iHeight* 0.8f);
-	cin >> Select;
-	switch(Select)
-	{
-		case 1:
-			if (save_player_packet.player_color == 0)
-			{
-				m_Player.SetStoneIcon("●");
-				m_Player.SetStoneIcon_Enemy("○");
-			}
-			else if (save_player_packet.player_color == 1)
-			{
-				m_Player.SetStoneIcon("○");
-				m_Player.SetStoneIcon_Enemy("●");
-			}
-			system("pause");
-			break;
-		case 2:
-			if (save_player_packet.player_color == 0)
-			{
-				m_Player.SetStoneIcon("♥");
-				m_Player.SetStoneIcon_Enemy("♡");
-			}
-			else if (save_player_packet.player_color == 1)
-			{
-				m_Player.SetStoneIcon("♡");
-				m_Player.SetStoneIcon_Enemy("♥");
-			}
-			system("pause");
-			break;
-		case 3:
-			if (save_player_packet.player_color == 0)
-			{
-				m_Player.SetStoneIcon("☎");
-				m_Player.SetStoneIcon_Enemy("☏");
-			}
-			else if (save_player_packet.player_color == 1)
-			{
-				m_Player.SetStoneIcon("☏");
-				m_Player.SetStoneIcon_Enemy("☎");
-			}
-			system("pause");
-			break;
-		case 4:
-			if (save_player_packet.player_color == 0)
-			{
-				m_Player.SetStoneIcon("②");
-				m_Player.SetStoneIcon_Enemy("①");
-			}
-			else if (save_player_packet.player_color == 1)
-			{
-				m_Player.SetStoneIcon("①");
-				m_Player.SetStoneIcon_Enemy("②");
-			}
-			system("pause");
-			break;
-		case 5:
-			return;
-	}
-}
-
 void GameManager::Option()
 {
 	int Select;
@@ -437,10 +306,8 @@ void GameManager::Option()
 		m_DrawManager.DrawMidText("= Option =", m_iWidth, m_iHeight* 0.2f);
 		m_DrawManager.DrawMidText("1.Map Size Set", m_iWidth, m_iHeight* 0.3f);
 		m_DrawManager.DrawMidText("2.Cursor Custom", m_iWidth, m_iHeight* 0.4f);
-		m_DrawManager.DrawMidText("3.Stone Custom", m_iWidth, m_iHeight* 0.5f);
-		m_DrawManager.DrawMidText("4.Undo Count Set", m_iWidth, m_iHeight* 0.6f);
-		m_DrawManager.DrawMidText("5.Return", m_iWidth, m_iHeight* 0.7f);
-		m_DrawManager.DrawMidText("입력 : ", m_iWidth, m_iHeight* 0.8f);
+		m_DrawManager.DrawMidText("3.Return", m_iWidth, m_iHeight* 0.5f);
+		m_DrawManager.DrawMidText("입력 : ", m_iWidth, m_iHeight* 0.6f);
 		cin >> Select;
 		switch(Select)
 		{
@@ -449,12 +316,6 @@ void GameManager::Option()
 				break;
 			case OPTIONMENU_CURSOR:
 				SetCursor();
-				break;
-			case OPTIONMENU_STONE:
-				SetStone();
-				break;
-			case OPTIONMENU_UNDO:
-				SetUndo();
 				break;
 			case OPTIONMENU_RETURN:
 				return;
@@ -506,6 +367,7 @@ void GameManager::Game_Menu_Main(SOCKET socket)
 			Option();
 			break;
 		case LOBBYMENU_EXIT:
+			game_exit = true;
 			return;
 		}
 	}
@@ -613,10 +475,16 @@ unsigned WINAPI GameManager::Control_Thread(void *arg)
 			}
 		}
 		else if (value == 4 && recv_packet->index == PLAYER_WAIT3)
-			Game_Menu_Main(Socket);
-
+		{
+			if (game_exit == true)
+				break;
+			else
+				Game_Menu_Main(Socket);
+		}
 	}
-
+	//// 게임 승리나 패배후 리게임시 PLAYER_WAIT3 상태만들고 바둑판, 바둑알 초기화하기
+	//// m_Player.PlayerSet 이걸로초기화, 서버쪽은 turn_count 초기화
+	//// 상대방이 갑자기 접속종료했을시, 나도 게임이 꺼지고 유저 기다림으로 바꾸기
 	closesocket(Socket);
 
 	return 0;
