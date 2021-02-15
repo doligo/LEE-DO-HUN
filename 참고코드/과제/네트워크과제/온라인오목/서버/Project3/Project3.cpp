@@ -198,28 +198,55 @@ unsigned WINAPI Control_Thread(void* arg)
 				send_packet.index = PLAYER_TURN;
 				len = sizeof(send_packet);
 				send_packet.size = len;
+
+				if (hClient_Socket == client_socket[0])
+					Send_Control(client_socket[0], send_packet, sizeof(send_packet));
+				else if (hClient_Socket == client_socket[1])
+					Send_Control(client_socket[1], send_packet, sizeof(send_packet));
+
+				value = recv(hClient_Socket, buf, sizeof(buf), NULL);
+				recv_player_packet = (PLAYER_INFO*)buf;
+				//if (recv_player_packet->player_stone.x != send_player_packet[0].player_stone.x && recv_player_packet->player_stone.y != send_player_packet[0].player_stone.y
+				//	|| recv_player_packet->player_stone.x != send_player_packet[1].player_stone.x && recv_player_packet->player_stone.y != send_player_packet[1].player_stone.y)
+				{
+					if (hClient_Socket == client_socket[0])
+						value = send(hClient_Socket, (char*)&send_player_packet[1], sizeof(send_player_packet[1]), 0);
+					else if (hClient_Socket == client_socket[1])
+						value = send(hClient_Socket, (char*)&send_player_packet[0], sizeof(send_player_packet[0]), 0);
+				}
 			}
 			else if (hClient_Socket == client_socket[1] && send_player_packet[1].turn_count % 2 == 1)
 			{
 				send_packet.index = PLAYER_TURN;
 				len = sizeof(send_packet);
 				send_packet.size = len;
-			}
-
-			if (hClient_Socket == client_socket[0])
-				Send_Control(client_socket[0], send_packet, sizeof(send_packet));
-			else if (hClient_Socket == client_socket[1])
-				Send_Control(client_socket[1], send_packet, sizeof(send_packet));
-
-			value = recv(hClient_Socket, buf, sizeof(buf), NULL);
-			recv_player_packet = (PLAYER_INFO*)buf;
-			if (recv_player_packet->player_stone.x != send_player_packet[0].player_stone.x && recv_player_packet->player_stone.y != send_player_packet[0].player_stone.y
-				|| recv_player_packet->player_stone.x != send_player_packet[1].player_stone.x && recv_player_packet->player_stone.y != send_player_packet[1].player_stone.y)
-			{
+		
 				if (hClient_Socket == client_socket[0])
-					value = send(hClient_Socket, (char*)&send_player_packet[1], sizeof(send_player_packet[1]), 0);
+					Send_Control(client_socket[0], send_packet, sizeof(send_packet));
 				else if (hClient_Socket == client_socket[1])
-					value = send(hClient_Socket, (char*)&send_player_packet[0], sizeof(send_player_packet[0]), 0);
+					Send_Control(client_socket[1], send_packet, sizeof(send_packet));
+
+				value = recv(hClient_Socket, buf, sizeof(buf), NULL);
+				recv_player_packet = (PLAYER_INFO*)buf;
+				//if (recv_player_packet->player_stone.x != send_player_packet[0].player_stone.x && recv_player_packet->player_stone.y != send_player_packet[0].player_stone.y
+				//	|| recv_player_packet->player_stone.x != send_player_packet[1].player_stone.x && recv_player_packet->player_stone.y != send_player_packet[1].player_stone.y)
+				{
+					if (hClient_Socket == client_socket[0])
+						value = send(hClient_Socket, (char*)&send_player_packet[1], sizeof(send_player_packet[1]), 0);
+					else if (hClient_Socket == client_socket[1])
+						value = send(hClient_Socket, (char*)&send_player_packet[0], sizeof(send_player_packet[0]), 0);
+				}
+			}
+			else
+			{
+				send_packet.index = PLAYER_START;
+				len = sizeof(send_packet);
+				send_packet.size = len;
+
+				if (hClient_Socket == client_socket[0])
+					Send_Control(client_socket[0], send_packet, sizeof(send_packet));
+				else if (hClient_Socket == client_socket[1])
+					Send_Control(client_socket[1], send_packet, sizeof(send_packet));
 			}
 
 			trigger_onoff = true;

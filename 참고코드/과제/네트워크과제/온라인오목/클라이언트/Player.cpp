@@ -11,18 +11,30 @@ Player::Player()
 }
 
 
-bool Player::CompareStone(int x, int y)
+bool Player::CompareStone(int player_check, int x, int y)
 {
-	for(int i = 0; i < m_iStoneCount; i++)
+	if (player_check == 1)
 	{
-		if(m_pStoneList[i].m_ix == x &&m_pStoneList[i].m_iy == y)
-			return true;
+		for (int i = 0; i < m_iStoneCount; i++)
+		{
+			if (m_pStoneList[i].m_ix == x && m_pStoneList[i].m_iy == y)
+				return true;
+		}
 	}
 
-	for (int i = 0; i < m_iStoneCount_Enemy; i++)
+	else if (player_check == 2)
 	{
-		if (m_pStoneList_Enemy[i].m_ix == x && m_pStoneList_Enemy[i].m_iy == y)
-			return true;
+		for (int i = 0; i < m_iStoneCount; i++)
+		{
+			if (m_pStoneList[i].m_ix == x && m_pStoneList[i].m_iy == y)
+				return true;
+		}
+
+		for (int i = 0; i < m_iStoneCount_Enemy; i++)
+		{
+			if (m_pStoneList_Enemy[i].m_ix == x && m_pStoneList_Enemy[i].m_iy == y)
+				return true;
+		}
 	}
 
 	return false;
@@ -40,13 +52,13 @@ void Player::AllStoneDraw()
 
 void Player::DrawStone(int x, int y)
 {
-	if(CompareStone(x, y))
+	if(CompareStone(2, x, y))
 		m_DrawManager.DrawPoint(m_strStoneIcon, x, y);
 }
 
 void Player::DrawStone_Enemy(int x, int y)
 {
-	if (CompareStone(x, y))
+	if (CompareStone(2, x, y))
 		m_DrawManager.DrawPoint(m_strStoneIcon_Enemy, x, y);
 }
 
@@ -59,7 +71,7 @@ void Player::Undo(int Width, int Height)
 
 void Player::CreateStone()
 {
-	if(CompareStone(m_Cursor.m_ix, m_Cursor.m_iy) == false)
+	if(CompareStone(2, m_Cursor.m_ix, m_Cursor.m_iy) == false)
 	{
 		m_pStoneList[m_iStoneCount].m_ix = m_Cursor.m_ix;
 		m_pStoneList[m_iStoneCount++].m_iy = m_Cursor.m_iy;
@@ -69,7 +81,7 @@ void Player::CreateStone()
 
 void Player::CreateStone_Enemy()
 {
-	if (CompareStone(m_Cursor_Enemy.m_ix, m_Cursor_Enemy.m_iy) == false)
+	if (CompareStone(2, m_Cursor_Enemy.m_ix, m_Cursor_Enemy.m_iy) == false)
 	{
 		m_pStoneList_Enemy[m_iStoneCount_Enemy].m_ix = m_Cursor_Enemy.m_ix;
 		m_pStoneList_Enemy[m_iStoneCount_Enemy++].m_iy = m_Cursor_Enemy.m_iy;
@@ -145,7 +157,7 @@ int Player::NextStoneCheck(int x, int y, int addx, int addy,int Width, int Heigh
 	int count = 0;
 	for(; (x >= 0 && x < Width) && (y >= 0 && y < Height); x += addx, y += addy)
 	{
-		if(CompareStone(x, y))
+		if(CompareStone(1, x, y))
 			count++;
 		else
 			break;

@@ -32,7 +32,7 @@ public:
 	void DrawStone(int x, int y);
 	void DrawStone_Enemy(int x, int y);
 	void AllStoneDraw();
-	bool CompareStone(int x, int y);
+	bool CompareStone(int player_check, int x, int y);
 	void CreateStone();
 	void CreateStone_Enemy();
 	void Move(char ch,int Width,int Height);

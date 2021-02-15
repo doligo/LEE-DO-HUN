@@ -25,7 +25,7 @@ void GameManager::DrawPoint()
 {
 	m_DrawManager.Erase(m_Player.GetCursor().m_ix, m_Player.GetCursor().m_iy, m_iWidth, m_iHeight);
 	m_Player.DrawStone(m_Player.GetCursor().m_ix, m_Player.GetCursor().m_iy);
-
+	m_Player.AllStoneDraw();
 }
 
 void GameManager::InputInfoDraw()
@@ -53,6 +53,7 @@ void GameManager::Input(SOCKET socket)
 	int value = 0;
 	char ch = getch();
 	Point Cursor;
+
 	switch(ch)
 	{
 		case KEY_LEFT:
@@ -67,7 +68,7 @@ void GameManager::Input(SOCKET socket)
 			break;
 		case KEY_DROP:
 			Cursor = m_Player.GetCursor();
-			if (m_Player.CompareStone(Cursor.m_ix, Cursor.m_iy))
+			if (m_Player.CompareStone(2, Cursor.m_ix, Cursor.m_iy))
 				break;
 			m_Player.CreateStone();
 
@@ -127,7 +128,6 @@ void GameManager::GameStart(SOCKET socket)
 	PACKET_HEADER send_packet;
 	PACKET_HEADER *recv_packet = NULL;
 	PLAYER_INFO *recv_save_player_packet;
-	PLAYER_INFO tmp_save_player_packet;
 	int value = 0;
 	char buf[BUF_SIZE + 20] = {};
 	int tmp_player_color = 0;
@@ -182,14 +182,14 @@ void GameManager::GameStart(SOCKET socket)
 				m_Player.DrawCursor();
 				Input(Socket);
 			}
-			else
+			else if (save_packet_header.index == PLAYER_START)
 			{
 				value = send(Socket, (char*)&save_packet_header, sizeof(save_packet_header), NULL);
 				value = recv(Socket, buf, sizeof(buf), NULL);
 				recv_packet = (PACKET_HEADER*)buf;
 				save_packet_header.index = recv_packet->index;
 
-				if (recv_packet->index == PLAYER_TURN)
+				if (save_packet_header.index == PLAYER_TURN)
 				{
 					value = send(Socket, (char*)&save_player_packet, sizeof(save_player_packet), NULL);
 					value = recv(Socket, buf, sizeof(buf), NULL);
@@ -198,8 +198,6 @@ void GameManager::GameStart(SOCKET socket)
 
 					m_Player.SetCurosr_Enemy(tmp_save_player_packet.player_stone.m_ix, tmp_save_player_packet.player_stone.m_iy);
 					m_Player.CreateStone_Enemy();
-
-					//// 지나가면 돌색바뀌는것, 어쩌다 멈추는것 두개 수정
 				}
 			}
 		}
