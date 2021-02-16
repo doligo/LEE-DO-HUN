@@ -75,16 +75,19 @@ void GameManager::Input(SOCKET socket)
 
 			save_player_packet.player_stone = Cursor;
 
-			if(m_Player.WinCheck(m_iWidth, m_iHeight))
+			if (m_Player.WinCheck(m_iWidth, m_iHeight))
 			{
 				m_bPlayState = false;
 				m_DrawManager.DrawMidText("승리하였습니다!!", m_iWidth, m_iHeight* 0.5f);
-			
+
 				save_packet_header.index = PLAYER_GAME_OVER;
 				value = send(Socket, (char*)&save_packet_header, sizeof(save_packet_header), NULL);
+				value = send(Socket, (char*)&save_player_packet, sizeof(save_player_packet), NULL);
+				m_Player.PlayerSet(m_iWidth, m_iHeight);
 				getch();
 				return;
 			}
+
 			m_iTurn++;
 			CurPlayerInfoDraw();
 
@@ -97,6 +100,7 @@ void GameManager::Input(SOCKET socket)
 			save_player_packet.player_stone.m_iy = Cursor.m_iy;
 
 			value = send(Socket, (char*)&save_player_packet, sizeof(save_player_packet), NULL);
+
 			break;
 		case KEY_OPTION:
 			Option();
@@ -127,18 +131,19 @@ void GameManager::GameStart(SOCKET socket)
 	int tmp_player_color = 0;
 
 	tmp_player_color = save_player_packet.player_color;
-	send_packet.index = PLAYER_READY;
-	send_packet.size = sizeof(send_packet);
+	save_packet_header.index = PLAYER_READY;
+	save_packet_header.size = sizeof(save_packet_header);
 
 	value = sizeof(PLAYER_INFO);
 
-	value = send(Socket, (char*)&send_packet, sizeof(send_packet), NULL);
+	value = send(Socket, (char*)&save_packet_header, sizeof(save_packet_header), NULL);
 	value = recv(Socket, buf, sizeof(buf), NULL);
 	recv_save_player_packet = (PLAYER_INFO*)buf;
 
 	save_player_packet.player_ready = recv_save_player_packet->player_ready;
 	save_player_packet.player_stone.m_ix = 0;
 	save_player_packet.player_stone.m_iy = 0;
+	save_player_packet.turn_count = 1;
 
 	value = send(Socket, (char*)&save_player_packet, sizeof(save_player_packet), NULL);
 
@@ -195,8 +200,17 @@ void GameManager::GameStart(SOCKET socket)
 				}
 				else if (save_packet_header.index == PLAYER_GAME_OVER)
 				{
+					value = send(Socket, (char*)&save_player_packet, sizeof(save_player_packet), NULL);
+					value = recv(Socket, buf, sizeof(buf), NULL);
+					recv_save_player_packet = (PLAYER_INFO*)buf;
+					tmp_save_player_packet.player_stone = recv_save_player_packet->player_stone;
+
+					m_Player.SetCurosr_Enemy(tmp_save_player_packet.player_stone.m_ix, tmp_save_player_packet.player_stone.m_iy);
+					m_Player.CreateStone_Enemy();
+
 					m_bPlayState = false;
 					m_DrawManager.DrawMidText("패배 하였습니다ㅠㅠ", m_iWidth, m_iHeight* 0.5f);
+					m_Player.PlayerSet(m_iWidth, m_iHeight);
 					getch();
 				}
 			}
@@ -332,6 +346,9 @@ void GameManager::GameMain()
 void GameManager::Game_Menu_Main(SOCKET socket)
 {
 	SOCKET Socket = socket;
+	int value = 0;
+	char buf2[BUF_SIZE + 20] = {};
+	PACKET_HEADER *recv_packet;
 
 	if (save_player_packet.player_color == 0)
 	{
@@ -351,6 +368,12 @@ void GameManager::Game_Menu_Main(SOCKET socket)
 	system(buf_);
 	while (1)
 	{
+		if (save_packet_header.index == PLAYER_GAME_OVER)
+		{
+			save_packet_header.index = PLAYER_REGAME;
+			value = send(Socket, (char*)&save_packet_header, sizeof(save_packet_header), NULL);
+		}
+
 		system("cls");
 		m_DrawManager.Draw(m_iWidth, m_iHeight);
 		LobbyDraw();
@@ -482,9 +505,7 @@ unsigned WINAPI GameManager::Control_Thread(void *arg)
 				Game_Menu_Main(Socket);
 		}
 	}
-	//// 게임 승리나 패배후 리게임시 PLAYER_WAIT3 상태만들고 바둑판, 바둑알 초기화하기
-	//// m_Player.PlayerSet 이걸로초기화, 서버쪽은 turn_count 초기화
-	//// 상대방이 갑자기 접속종료했을시, 나도 게임이 꺼지고 유저 기다림으로 바꾸기
+
 	closesocket(Socket);
 
 	return 0;

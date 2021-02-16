@@ -148,6 +148,7 @@ void Player::PlayerSet(int Width,int Height)
 	m_bMyWindState = false;
 
 	m_pStoneList_Enemy = new Point[(Width*Height) / 2];
+	m_iStoneCount_Enemy = 0;
 }
 
 

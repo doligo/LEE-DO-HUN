@@ -25,7 +25,8 @@ enum GAME_STATUS
 	PLAYER_READY,
 	PLAYER_START,
 	PLAYER_TURN,
-	PLAYER_GAME_OVER
+	PLAYER_GAME_OVER,
+	PLAYER_REGAME,
 };
 
 enum PLAYER_COLOR
@@ -68,6 +69,7 @@ SOCKET client_socket[PLAYER_MAX] = {};
 PLAYER_INFO send_player_packet[2]; ///// 이거를 배열로 두개로 관리해서 turn_count의 변수에 따라 턴을 관리해보기
 PLAYER_INFO *recv_player_packet;
 bool trigger_onoff = false;
+bool game_over = false;
 
 void Send_Control(SOCKET sock, PACKET_HEADER ph, int len)
 {
@@ -138,7 +140,7 @@ unsigned WINAPI Control_Thread(void* arg)
 			len = sizeof(send_packet);
 			send_packet.size = len;
 		}
-		else if (trigger_ready == false && value == 4 && recv_packet->size == 4 && recv_packet->index == PLAYER_READY)
+		else if (trigger_ready == false && value == 4 && recv_packet->size == 4 && recv_packet->index == PLAYER_READY && recv_packet->index != PLAYER_REGAME)
 		{
 			if (hClient_Socket == client_socket[0])
 			{
@@ -153,7 +155,6 @@ unsigned WINAPI Control_Thread(void* arg)
 
 			value = recv(hClient_Socket, buf2, sizeof(buf2), NULL);
 			recv_player_packet = (PLAYER_INFO*)buf2;
-
 			if (recv_player_packet->player_ready == true)
 				player_ready_count++;
 
@@ -163,13 +164,13 @@ unsigned WINAPI Control_Thread(void* arg)
 
 			trigger_ready = true;
 		}
-		else if (trigger_ready == true && player_ready_count == 2 && value == 4 && recv_packet->index != PLAYER_START && recv_packet->index != PLAYER_TURN && recv_packet->index != PLAYER_GAME_OVER)
+		else if (trigger_ready == true && player_ready_count == 2 && value == 4 && recv_packet->index != PLAYER_START && recv_packet->index != PLAYER_TURN && recv_packet->index != PLAYER_GAME_OVER && recv_packet->index != PLAYER_REGAME)
 		{
 			send_packet.index = PLAYER_START;
 			len = sizeof(send_packet);
 			send_packet.size = len;
 		}
-		else if (value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_TURN)
+		else if (trigger_ready == true && value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_TURN)
 		{
 			send_packet.index = PLAYER_START;
 			len = sizeof(send_packet);
@@ -193,13 +194,23 @@ unsigned WINAPI Control_Thread(void* arg)
 			trigger_onoff = true;
 
 		}
-		else if (value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_START)
+		else if (value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_START && recv_packet->index != PLAYER_REGAME)
 		{
-			if (hClient_Socket == client_socket[0] && send_player_packet[0].turn_count % 2 == 0 || hClient_Socket == client_socket[1] && send_player_packet[1].turn_count % 2 == 1)
+			if (hClient_Socket == client_socket[0] && send_player_packet[0].turn_count % 2 == 0 || hClient_Socket == client_socket[1] && send_player_packet[1].turn_count % 2 == 1 || game_over == true)
 			{
-				send_packet.index = PLAYER_TURN;
-				len = sizeof(send_packet);
-				send_packet.size = len;
+				if (game_over == true)
+				{
+					send_packet.index = PLAYER_GAME_OVER;
+					len = sizeof(send_packet);
+					send_packet.size = len;
+				}
+				else
+				{
+					send_packet.index = PLAYER_TURN;
+					len = sizeof(send_packet);
+					send_packet.size = len;
+
+				}
 
 				if (hClient_Socket == client_socket[0])
 					Send_Control(client_socket[0], send_packet, sizeof(send_packet));
@@ -216,12 +227,6 @@ unsigned WINAPI Control_Thread(void* arg)
 
 				trigger_onoff = true;
 			}
-			else if (send_player_packet[0].player_ready == PLAYER_WIN || send_player_packet[1].player_ready == PLAYER_WIN)
-			{
-				send_packet.index = PLAYER_GAME_OVER;
-				len = sizeof(send_packet);
-				send_packet.size = len;
-			}
 			else
 			{
 				send_packet.index = PLAYER_START;
@@ -229,18 +234,35 @@ unsigned WINAPI Control_Thread(void* arg)
 				send_packet.size = len;
 			}
 		}
-		else if (value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_GAME_OVER)
+		else if (value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_GAME_OVER && recv_packet->index != PLAYER_REGAME)
 		{
-		if (hClient_Socket == client_socket[0])
-		{
-			send_player_packet[0].player_ready = PLAYER_WIN;
-		}
-		else if (hClient_Socket == client_socket[1])
-		{
-			send_player_packet[1].player_ready = PLAYER_WIN;
-		}
-		}
 
+		value = recv(hClient_Socket, buf, sizeof(buf), NULL);
+		recv_player_packet = (PLAYER_INFO*)buf;
+		if (hClient_Socket == client_socket[0])
+			send_player_packet[0].player_stone = recv_player_packet->player_stone;
+		else if (hClient_Socket == client_socket[1])
+			send_player_packet[1].player_stone = recv_player_packet->player_stone;
+
+		if (hClient_Socket == client_socket[0])
+			value = send(hClient_Socket, (char*)&send_player_packet[1], sizeof(send_player_packet[1]), 0);
+		else if (hClient_Socket == client_socket[1])
+			value = send(hClient_Socket, (char*)&send_player_packet[0], sizeof(send_player_packet[0]), 0);
+
+		trigger_onoff = true;
+		game_over = true;
+
+		}
+		else if (value == 4 && player_ready_count == 2 && recv_packet->size == 4 && recv_packet->index == PLAYER_REGAME)
+		{
+		game_over = false;
+		trigger_ready = false;
+		trigger_onoff = true;
+		player_ready_count = 0;
+		send_player_packet[0].player_ready = 0;
+		send_player_packet[1].player_ready = 0;
+        }
+ 
 		if (hClient_Socket == client_socket[0] && trigger_onoff == false)
 			Send_Control(client_socket[0], send_packet, sizeof(send_packet));
 		else if (hClient_Socket == client_socket[1] && trigger_onoff == false)
