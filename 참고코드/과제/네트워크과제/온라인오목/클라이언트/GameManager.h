@@ -90,6 +90,7 @@ public:
 	void Game_Menu_Main(SOCKET socket);
 	PLAYER_INFO save_player_packet;
 	PACKET_HEADER save_packet_header;
+	PACKET_HEADER connect_header;
 	PLAYER_INFO tmp_save_player_packet;
 	GameManager();
 	~GameManager();

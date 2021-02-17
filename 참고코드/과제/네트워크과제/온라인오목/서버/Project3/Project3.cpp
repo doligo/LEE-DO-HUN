@@ -70,7 +70,6 @@ PLAYER_INFO send_player_packet[2]; ///// 이거를 배열로 두개로 관리해
 PLAYER_INFO *recv_player_packet;
 bool trigger_onoff = false;
 bool game_over = false;
-bool connect_check = false;
 
 void Send_Control(SOCKET sock, PACKET_HEADER ph, int len)
 {
@@ -267,7 +266,6 @@ unsigned WINAPI Control_Thread(void* arg)
 	closesocket(hClient_Socket);
 	player_count--;
 	player_wait--;
-	connect_check = true;
 	return 0;
 }
 
@@ -339,21 +337,6 @@ int main()
 
 			cout << "유저가 접속을 하였습니다 (IP : " << inet_ntoa(client_addr.sin_addr) << ")" << endl;
 			player_count++;
-			if (player_count == 2)
-				connect_check = true;
-		}
-		else
-		{
-
-			if (player_count >= PLAYER_MAX && connect_check == false)
-			{
-				addr_len = sizeof(client_addr);
-				accept_sock = accept(listen_sock, (SOCKADDR*)&client_addr, &addr_len);
-				str_len = strlen("인원이 가득 찼습니다");
-				send(accept_sock, "인원이 가득 찼습니다", str_len, 0);
-				cout << "인원 초과입니다!" << endl;
-				closesocket(accept_sock);
-			}
 		}
 	}
 

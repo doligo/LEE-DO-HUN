@@ -1,7 +1,5 @@
 #include "GameManager.h"
 
-
-
 GameManager::GameManager()
 {
 	m_bPlayState = false;
@@ -405,10 +403,12 @@ int GameManager::NetWork_Main() // 클라쪽 소켓메인
 	if (connect(hSock, (SOCKADDR*)&serveradr, sizeof(serveradr)) == SOCKET_ERROR)
 		cout << "연결 오류입니다 (connect 오류)" << endl;
 
-	HANDLE hThread;
+	HANDLE hThread = NULL;
 	DWORD dwThreadID;
 
-	value = recv(hSock, buf, sizeof(buf), NULL); // 인원이 가득찼는지 체크하는 리시브함수
+	cout << "<이용자가 너무 많습니다>" << endl;
+	cout << "서버로 부터 응답을 기다리는 중 ..." << endl;
+	value = recv(hSock, buf, sizeof(buf), 0); // 인원이 가득찼는지 체크하는 리시브함수
 
 	if (value == -1)
 		return 0;
@@ -416,7 +416,6 @@ int GameManager::NetWork_Main() // 클라쪽 소켓메인
 	{
 		cout << "인원이 가득 찼습니다" << endl;
 		system("pause");
-		return 0;
 	}
 	else if (value == 8)
 		hThread = (HANDLE)_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Control_Thread(&hSock), (void*)&hSock, 0, (unsigned int*)&dwThreadID);
@@ -481,6 +480,7 @@ unsigned WINAPI GameManager::Control_Thread(void *arg)
 			send_packet.size = len;
 			if (trigger == false)
 			{
+				system("cls");
 				cout << "유저를 기다리는 중..." << endl;
 				trigger = true;
 			}
