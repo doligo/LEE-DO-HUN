@@ -33,7 +33,6 @@ void GameManager::InputInfoDraw()
 {
 	m_DrawManager.DrawMidText("====조작키====", m_iWidth, m_iHeight);
 	m_DrawManager.DrawMidText("이동 : A,S,W,D 돌놓기 : ENTER", m_iWidth, m_iHeight+1);
-	m_DrawManager.DrawMidText("옵션 : P 종료 : ESC", m_iWidth, m_iHeight + 2);
 }
 
 void GameManager::CurPlayerInfoDraw()
@@ -63,9 +62,6 @@ void GameManager::Input(SOCKET socket)
 		case KEY_DOWN:
 			DrawPoint();
 			m_Player.Move(ch, m_iWidth, m_iHeight);
-			break;
-		case KEY_ESC:
-			m_bPlayState = false;
 			break;
 		case KEY_DROP:
 			Cursor = m_Player.GetCursor();
@@ -101,14 +97,6 @@ void GameManager::Input(SOCKET socket)
 
 			value = send(Socket, (char*)&save_player_packet, sizeof(save_player_packet), NULL);
 
-			break;
-		case KEY_OPTION:
-			Option();
-			system("cls");
-			m_DrawManager.Draw(m_iWidth, m_iHeight);
-			InputInfoDraw();
-			CurPlayerInfoDraw();
-			m_Player.AllStoneDraw();
 			break;
 	}
 }
