@@ -2,8 +2,10 @@
 #pragma comment(lib, "ws2_32.lib")
 #include <winsock2.h>
 #include <process.h>
-#include<windows.h>
+#include <windows.h>
 #include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
 #include "Game_System.h"
 using namespace std;
 
@@ -12,6 +14,8 @@ HINSTANCE g_hInst;//글로벌 인스턴스핸들값
 LPCTSTR lpszClass = TEXT("체스게임"); //창이름
 
 #pragma comment(lib, "msimg32.lib")
+
+#define WM_SOCKET (WM_USER + 1) //네트워크 이벤트를 전달할 사용자 정의 윈도우 메시지
 
 void ErrorHandling(const char *msg)
 {
@@ -60,6 +64,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	int mouse_x = 0;
 	int mouse_y = 0;
+	int value = 0;
 
 	WSADATA wsaData;
 	SOCKET hSock = NULL;
@@ -75,7 +80,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		{
 			ErrorHandling("WSAStartup() error!");
 		}
+
 		hSock = socket(PF_INET, SOCK_STREAM, 0);
+		value = WSAAsyncSelect(hSock, hWnd, WM_SOCKET, FD_ACCEPT | FD_CLOSE);
 
 		memset(&servAdr, 0, sizeof(servAdr));
 		servAdr.sin_family = AF_INET;
@@ -87,7 +94,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			ErrorHandling("connect() error");
 		}
 
-		//hThread = (HANDLE)_beginthreadex(NULL, 0, SendMsg, (void*)&hSock, 0, NULL);
+
 
 		gs.Init_System(hdc, g_hInst);
 

@@ -5,7 +5,6 @@
 #define SERVERPORT 9001
 #define BUFSIZE 512
 #define WM_SOCKET (WM_USER + 1) //네트워크 이벤트를 전달할 사용자 정의 윈도우 메시지
-#define TEST_DEFINE (WM_USER + 2)
 
 // 소켓 정보 저장을 위한 구조체
 // 널문자열를 추가하기 위해 BUFSIZE + 1이다.
