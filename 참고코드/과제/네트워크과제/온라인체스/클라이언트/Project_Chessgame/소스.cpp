@@ -15,8 +15,6 @@ LPCTSTR lpszClass = TEXT("체스게임"); //창이름
 
 #pragma comment(lib, "msimg32.lib")
 
-#define WM_SOCKET (WM_USER + 1) //네트워크 이벤트를 전달할 사용자 정의 윈도우 메시지
-
 void ErrorHandling(const char *msg)
 {
 	cout << msg << "\n";
@@ -66,35 +64,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	int mouse_y = 0;
 	int value = 0;
 
-	WSADATA wsaData;
-	SOCKET hSock = NULL;
-	SOCKADDR_IN servAdr;
-	HANDLE hThread = NULL;
-
 	switch (iMessage)
 	{
 	case WM_CREATE:
 		SetTimer(hWnd, 1, 1000, NULL);
-
-		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-		{
-			ErrorHandling("WSAStartup() error!");
-		}
-
-		hSock = socket(PF_INET, SOCK_STREAM, 0);
-		value = WSAAsyncSelect(hSock, hWnd, WM_SOCKET, FD_ACCEPT | FD_CLOSE);
-
-		memset(&servAdr, 0, sizeof(servAdr));
-		servAdr.sin_family = AF_INET;
-		servAdr.sin_addr.s_addr = inet_addr("127.0.0.1");
-		servAdr.sin_port = htons(9001);
-
-		if (connect(hSock, (SOCKADDR*)&servAdr, sizeof(servAdr)) == SOCKET_ERROR)
-		{
-			ErrorHandling("connect() error");
-		}
-
-
 
 		gs.Init_System(hdc, g_hInst);
 
@@ -139,10 +112,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:// 윈도우가 파괴되었다는 메세지
 		PostQuitMessage(0); //GetMessage함수에 WM_QUIT 메시지를 보낸다.
 		KillTimer(hWnd, 1);
-
-		WaitForSingleObject(hThread, INFINITE);
-		closesocket(hSock);
-		WSACleanup();
 		return 0; //WndProc의 Switch는 break 대신 return 0; 를 쓴다.
 	}
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam)); // case에 있는 메시지를 제외한 나머지 메시지를 처리한다.

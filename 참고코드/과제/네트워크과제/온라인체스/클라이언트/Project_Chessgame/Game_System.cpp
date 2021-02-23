@@ -12,6 +12,10 @@ void Game_System::Init_System(HDC hdc, HINSTANCE hinst)
 	int x = 0;
 	int y = 0;
 
+	if (m_nt != NULL)
+		delete m_nt;
+
+	m_nt = new Network; // 네트워크
 	m_bd = new Board[BOARD_MAX];
 
 	for (int i = 0; i < BOARD_MAX; i++)

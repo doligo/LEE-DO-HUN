@@ -1,13 +1,14 @@
 #include "Board.h"
 #include "chess_pieces.h"
+#include "Network.h"
 #pragma once
-
 
 class Game_System
 {
 private:
 	Board *m_bd;
 	Player *m_pr;
+	Network *m_nt;
 public:
 	Game_System();
 

@@ -122,6 +122,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	switch (iMessage)
 	{
+	case WM_CREATE:
+		break;
 		//등록한 유저 메시지를 받게 되면 처리하는 부분
 		//메시지 처리를 위한 공간이 길어질 경우를 대비해서 따로 메시지를 처리하는 함수를 만들어준다.
 		//윈도우 메시지를 그대로 처리해야하기때문에 인자를 그대로 넘져주는 네트워크 메시지 처리 함수를 만들어 준다.
