@@ -39,7 +39,8 @@ void err_display(const char* msg);
 void err_display(int errcode);
 
 HINSTANCE g_hInst;//글로벌 인스턴스핸들값
-LPCTSTR lpszClass = TEXT("WSAAsyncSelect"); //창이름
+LPCTSTR lpszClass = TEXT("체스서버"); //창이름
+HWND g_log;
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmdParam, int nCmdShow)
 {
@@ -92,20 +93,20 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 	retval = bind(listen_sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 
 	if (retval == SOCKET_ERROR)
-		err_quit("listen()");
+		err_quit("bind 에러입니다");
 
 	//listen()
 	retval = listen(listen_sock, SOMAXCONN);
 
 	if (retval == SOCKET_ERROR)
-		err_quit("listen()");
+		err_quit("listen 에러입니다");
 
 	//WSAAsySelect()
 	//FD_ACCEPT, FD_CLOSE 이벤트만 등록
 	retval = WSAAsyncSelect(listen_sock, hWnd, WM_SOCKET, FD_ACCEPT | FD_CLOSE);
 
 	if (retval == SOCKET_ERROR)
-		err_quit("listen()");
+		err_quit("WSAAsyncSelect 에러입니다");
 
 	while (GetMessage(&Message, NULL, 0, 0))//사용자에게 메시지를 받아오는 함수(WM_QUIT 메시지 받을 시 종료)
 	{
@@ -123,6 +124,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	switch (iMessage)
 	{
 	case WM_CREATE:
+		g_log = CreateWindow("listbox", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER, 10, 10, 500, 500, hWnd, (HMENU)100, g_hInst, NULL);
 		break;
 		//등록한 유저 메시지를 받게 되면 처리하는 부분
 		//메시지 처리를 위한 공간이 길어질 경우를 대비해서 따로 메시지를 처리하는 함수를 만들어준다.
@@ -143,10 +145,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	//데이터 통신에 사용할 변수
-	SOCKETINFO *ptr;
+	SOCKETINFO *ptr; // 이 구조체 말고 리시브와 샌드용 두개로 사용하기
+	SOCKETINFO *send_sock_info;
+	SOCKETINFO *recv_sock_info;
+
 	SOCKET client_sock;
 	SOCKADDR_IN clientaddr;
+
 	int addrlen, retval;
+	char buf[BUFSIZE];
 
 	//오류 발생 여부 확인
 	if (WSAGETSELECTERROR(lParam))
