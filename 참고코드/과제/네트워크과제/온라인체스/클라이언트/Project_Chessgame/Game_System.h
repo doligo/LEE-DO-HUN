@@ -9,6 +9,7 @@ private:
 	Board *m_bd;
 	Player *m_pr;
 	Network *m_nt;
+	HWND m_hWnd;
 public:
 	Game_System();
 

@@ -16,6 +16,9 @@ void Game_System::Init_System(HDC hdc, HINSTANCE hinst)
 		delete m_nt;
 
 	m_nt = new Network; // 네트워크
+
+	m_nt->Init_Network(m_hWnd); // 네트워크 초기화
+
 	m_bd = new Board[BOARD_MAX];
 
 	for (int i = 0; i < BOARD_MAX; i++)

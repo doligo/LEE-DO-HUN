@@ -92,6 +92,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 					game_result = 0;
 				}
 			}
+			InvalidateRect(hWnd, NULL, TRUE); // 네트워크 정보받아오고 그려주기위함
 		return 0;
 	case WM_LBUTTONDOWN:
 		mouse_x = LOWORD(lParam);

@@ -19,13 +19,14 @@ void Network::Init_Network(HWND hWnd)
 
 	memset(&m_ServerAddr, 0, sizeof(m_ServerAddr));
 	m_ServerAddr.sin_family = AF_INET;
-	m_ServerAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	m_ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	m_ServerAddr.sin_port = htons(9001);
 
 	if (connect(m_ServerSock, (SOCKADDR*)&m_ServerAddr, sizeof(m_ServerAddr)) == SOCKET_ERROR)
 	{
 		cout << "Connet() Error!" << endl;
 		system("pause");
+		return;
 	}
 
 	m_player_connect = true;
@@ -44,6 +45,13 @@ void Network::Init_Network(HWND hWnd)
 unsigned WINAPI Network::Send(void *arg)
 {
 	SOCKET sock = *((SOCKET*)arg);
+	int value = 0;
+	char buf[BUFSIZ];
+
+	while (1)
+	{
+		value = send(sock, (char*)&buf, sizeof(buf), 0);
+	}
 
 	return 0;
 }
@@ -51,6 +59,7 @@ unsigned WINAPI Network::Send(void *arg)
 unsigned WINAPI Network::Recv(void *arg)
 {
 	SOCKET sock = *((SOCKET*)arg);
+	int value = 0;
 
 	return 0;
 }
