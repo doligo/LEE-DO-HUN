@@ -1,6 +1,11 @@
+#pragma warning(disable:4996)
+#pragma comment(lib, "ws2_32.lib")
 #include <winsock2.h>
+#include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
+
+using namespace std;
 
 #define SERVERPORT 9001
 #define BUFSIZE 512
@@ -24,6 +29,17 @@ struct SOCKETINFO
 
 SOCKETINFO* SocketInfoList;
 
+struct POINT_XY
+{
+	int x;
+	int y;
+};
+
+SOCKET Black_Player = NULL;
+SOCKET White_Player = NULL;
+bool black_set_check = false;
+bool white_set_check = false;
+
 //소켓 메시지 처리
 void ProcessSocketMessage(HWND, UINT, WPARAM, LPARAM);
 //WINDOW 메시지 처리
@@ -37,6 +53,9 @@ void RemoveSocketInfo(SOCKET sock);
 void err_quit(const char* msg);
 void err_display(const char* msg);
 void err_display(int errcode);
+
+//로그창 출력을 위한 함수이다
+void Log_Add(char *buf);
 
 HINSTANCE g_hInst;//글로벌 인스턴스핸들값
 LPCTSTR lpszClass = TEXT("체스서버"); //창이름
@@ -145,10 +164,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	//데이터 통신에 사용할 변수
-	SOCKETINFO *ptr; // 이 구조체 말고 리시브와 샌드용 두개로 사용하기
-	SOCKETINFO *send_sock_info;
-	SOCKETINFO *recv_sock_info;
-
+	SOCKETINFO *ptr_sock;
 	SOCKET client_sock;
 	SOCKADDR_IN clientaddr;
 
@@ -178,14 +194,14 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			return;
 		}
 
-		//화면에 출력해야 하지만 현재 윈도우로 서버를 만들었기 때문에 Window에 표시되는 함수로 변경해보자!!
-		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
-			inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+		sprintf(buf, "\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+		Log_Add(buf); // 접속자의 로그 추가해서 출력을 해준다
 
 		//접속한 클라이언트 소켓을 등록한다.
 		AddSocketInfo(client_sock);
 
 		//FD_READ, FD_WRITE, FD_CLOSE를 등록한다.
+		//ACCPET한후에 다시 새로운 설정으로 등록하면 덮어씌워진다 (최근 등록할걸 따른다)
 		retval = WSAAsyncSelect(client_sock, hWnd, WM_SOCKET, FD_READ | FD_WRITE | FD_CLOSE);
 
 		if (retval == SOCKET_ERROR)
@@ -196,50 +212,52 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		break;
 	case FD_READ:
-
 		//소켓 정보 구조체를 받는다.
-		ptr = GetSocketInfo(wParam);
+		ptr_sock = GetSocketInfo(wParam);
+
+		if (ptr_sock == NULL)
+			return;
 
 		//이번에 받았지만 아직 보내지 않은 데이커가 있다면 받았다는 사실만 기록하고 리턴한다.
-		if(ptr->recvbytes > 0)
+		if(ptr_sock->recvbytes > 0)
 		{
-			ptr->recvdelayed = TRUE;
+			ptr_sock->recvdelayed = TRUE;
 			return;
 		}
 
 		//데이터받기
-		retval = recv(ptr->sock, ptr->buf, BUFSIZE, 0);
+		retval = recv(ptr_sock->sock, ptr_sock->buf, BUFSIZE, 0);
 
 		if (retval == SOCKET_ERROR)
 		{
-			err_display("recv()");
+			err_display("recv() 에러입니다.");
 			RemoveSocketInfo(wParam);
 			return;
 		}
 
-		ptr->recvbytes = retval;
+		ptr_sock->recvbytes = retval; // 리턴받은값을 recvbytes에 저장해준다
 
 		//받은 데이터 출력
-		ptr->buf[retval] = '\0';
+		ptr_sock->buf[retval] = '\0';
 		addrlen = sizeof(clientaddr);
 		getpeername(wParam, (SOCKADDR*)&clientaddr, &addrlen);
 
 		//화면에 출력해야 하지만 현재 윈도우로 서버를 만들었기 때문에 Window에 표시되는 함수로 변경해보자!!
 		printf("[TCP/%s:%d] %s\n", inet_ntoa(clientaddr.sin_addr),
-			ntohs(clientaddr.sin_port), ptr->buf);
+			ntohs(clientaddr.sin_port), ptr_sock->buf);
 
 		// 이곳에 break가 없다고 이상할게 없다 Write까지 처리해야 하기 때문이다.
 
 	case FD_WRITE:
+		ptr_sock = GetSocketInfo(wParam);
 
-		ptr = GetSocketInfo(wParam);
-
-		if (ptr->recvbytes <= ptr->sendbytes)
+		if (ptr_sock == NULL)
+			return;
+		if (ptr_sock->recvbytes <= ptr_sock->sendbytes)
 			return;
 
 		//데이터 보내기
-		retval = send(ptr->sock, ptr->buf + ptr->sendbytes,
-			ptr->recvbytes - ptr->sendbytes, 0);
+		retval = send(ptr_sock->sock, ptr_sock->buf + ptr_sock->sendbytes, ptr_sock->recvbytes - ptr_sock->sendbytes, 0);
 
 		if (retval == SOCKET_ERROR)
 		{
@@ -248,17 +266,17 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			return;
 		}
 
-		ptr->sendbytes += retval;
+		ptr_sock->sendbytes += retval;
 
 		//받은 데이터를 모두 보냈는지 체크
 		//받았지만 보내지 않은 파일 즉 TRUE로만 만들어둔 데이터들을 보낸다
-		if (ptr->recvbytes == ptr->sendbytes)
+		if (ptr_sock->recvbytes == ptr_sock->sendbytes)
 		{
-			ptr->recvbytes = ptr->sendbytes = 0;
+			ptr_sock->recvbytes = ptr_sock->sendbytes = 0;
 
-			if (ptr->recvdelayed)
+			if (ptr_sock->recvdelayed)
 			{
-				ptr->recvdelayed = FALSE;
+				ptr_sock->recvdelayed = FALSE;
 				PostMessage(hWnd, WM_SOCKET, wParam, FD_READ);
 			}
 		}
@@ -375,4 +393,9 @@ void err_display(int errcode)
 	//화면에 출력해야 하지만 현재 윈도우로 서버를 만들었기 때문에 Window에 표시되는 함수로 변경해보자!!
 	printf("[오류] %s", (const char*)lpMsgBuf);
 	LocalFree(lpMsgBuf);
+}
+
+void Log_Add(char *buf)
+{
+	SendMessage(g_log, LB_ADDSTRING, 0, (LPARAM)buf);
 }

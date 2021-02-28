@@ -46,12 +46,7 @@ unsigned WINAPI Network::Send(void *arg)
 {
 	SOCKET sock = *((SOCKET*)arg);
 	int value = 0;
-	char buf[BUFSIZ];
 
-	while (1)
-	{
-		value = send(sock, (char*)&buf, sizeof(buf), 0);
-	}
 
 	return 0;
 }
