@@ -190,7 +190,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		if (client_sock == INVALID_SOCKET)
 		{
-			err_display("accept()");
+			err_display("accept() 에러입니다.");
 			return;
 		}
 
@@ -206,19 +206,19 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		if (retval == SOCKET_ERROR)
 		{
-			err_display("SWAAsyncSelect()");
+			err_display("SWAAsyncSelect() 에러입니다.");
 			RemoveSocketInfo(client_sock);
 		}
 
 		break;
-	case FD_READ:
+	case FD_READ: // 클라에서 데이터를 보내면 반응한다
 		//소켓 정보 구조체를 받는다.
 		ptr_sock = GetSocketInfo(wParam);
 
 		if (ptr_sock == NULL)
 			return;
 
-		//이번에 받았지만 아직 보내지 않은 데이커가 있다면 받았다는 사실만 기록하고 리턴한다.
+		//이번에 받았지만 아직 보내지 않은 데이터가 있다면 받았다는 사실만 기록하고 리턴한다.
 		if(ptr_sock->recvbytes > 0)
 		{
 			ptr_sock->recvdelayed = TRUE;
@@ -239,12 +239,12 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		//받은 데이터 출력
 		ptr_sock->buf[retval] = '\0';
-		addrlen = sizeof(clientaddr);
-		getpeername(wParam, (SOCKADDR*)&clientaddr, &addrlen);
 
-		//화면에 출력해야 하지만 현재 윈도우로 서버를 만들었기 때문에 Window에 표시되는 함수로 변경해보자!!
-		printf("[TCP/%s:%d] %s\n", inet_ntoa(clientaddr.sin_addr),
-			ntohs(clientaddr.sin_port), ptr_sock->buf);
+		//if (ptr_sock->recvbytes == sizeof(bool) && (bool)ptr_sock->buf == true)**
+		{
+	
+			ptr_sock->recvbytes = ptr_sock->sendbytes = 0;
+		}
 
 		// 이곳에 break가 없다고 이상할게 없다 Write까지 처리해야 하기 때문이다.
 
@@ -282,7 +282,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 
 		break;
-	case FD_CLOSE:
+	case FD_CLOSE: // 접속이 끊어지면 반응한다
 		RemoveSocketInfo(wParam);
 		break;
 	}

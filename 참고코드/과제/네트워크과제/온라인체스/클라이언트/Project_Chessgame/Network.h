@@ -31,7 +31,12 @@ private:
 	HANDLE m_RecvThread;
 
 	HWND m_hWnd;
-	bool m_player_connect;
+	static POINT_XY m_point;
+	static bool m_player_connect;
+	static bool m_player_turn;
+	static bool m_player_done_check; // 본인턴의 끝을체크 (말을 놓았는지)
+	static int m_set_player_color;
+	//// unsigned WINAPI라서 static을 써준다
 public:
 	Network();
 

@@ -46,7 +46,22 @@ unsigned WINAPI Network::Send(void *arg)
 {
 	SOCKET sock = *((SOCKET*)arg);
 	int value = 0;
+	int connect_check = 0;
 
+	while (1)
+	{
+		if (connect_check == false)
+		{
+			send(sock, (char*)&m_player_connect, sizeof(m_player_connect), 0);
+			connect_check = true;
+		}
+		else if (m_player_done_check == true)
+		{
+			send(sock, (char*)&m_point, sizeof(m_point), 0);
+			m_player_done_check = false;
+			m_player_turn = false;
+		}
+	}
 
 	return 0;
 }
@@ -55,6 +70,17 @@ unsigned WINAPI Network::Recv(void *arg)
 {
 	SOCKET sock = *((SOCKET*)arg);
 	int value = 0;
+	char buf[BUFSIZ];
+
+	while (1)
+	{
+		value = recv(sock, buf, sizeof(buf), 0);
+
+		if (value == SOCKET_ERROR)
+			break;
+		if (value == 0)
+			break;
+	}
 
 	return 0;
 }
