@@ -43,6 +43,7 @@ public:
 	void Init_Network(HWND hWnd);
 	static unsigned WINAPI Send(void *arg);
 	static unsigned WINAPI Recv(void *arg);
+	void Release_Network();
 
 	~Network();
 };

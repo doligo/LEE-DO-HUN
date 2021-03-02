@@ -40,13 +40,6 @@ void Network::Init_Network(HWND hWnd)
 
 	m_SendThread = (HANDLE)_beginthreadex(NULL, 0, Send, (void*)&m_ServerSock, 0, NULL);
 	m_RecvThread = (HANDLE)_beginthreadex(NULL, 0, Recv, (void*)&m_ServerSock, 0, NULL);
-
-	WaitForSingleObject(m_SendThread, INFINITE);
-	WaitForSingleObject(m_RecvThread, INFINITE);
-
-	closesocket(m_ServerSock);
-
-	WSACleanup();
 }
 
 unsigned WINAPI Network::Send(void *arg)
@@ -90,6 +83,18 @@ unsigned WINAPI Network::Recv(void *arg)
 	}
 
 	return 0;
+}
+
+void Network::Release_Network()
+{
+	//// 따로 분류해줘야 오브젝트를 기다리지않고 계속돌아간다
+	//// 대신 종료시에 꼭 이 함수를 사용해서 해제 해줘야 한다
+	WaitForSingleObject(m_SendThread, INFINITE);
+	WaitForSingleObject(m_RecvThread, INFINITE);
+
+	closesocket(m_ServerSock);
+
+	WSACleanup();
 }
 
 Network::~Network()

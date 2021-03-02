@@ -14,9 +14,7 @@ void Game_System::Init_System(HDC hdc, HINSTANCE hinst)
 
 	if (m_nt != NULL)
 		delete m_nt;
-
 	m_nt = new Network; // 네트워크
-
 	m_nt->Init_Network(m_hWnd); // 네트워크 초기화
 
 	m_bd = new Board[BOARD_MAX];
@@ -2791,5 +2789,9 @@ int Game_System::Game_Over_Check()
 
 Game_System::~Game_System()
 {
-
+	if (m_nt != NULL)
+	{
+		m_nt->Release_Network();
+		delete m_nt;
+	}
 }

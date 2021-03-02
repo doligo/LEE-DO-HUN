@@ -35,6 +35,13 @@ struct POINT_XY
 	int y;
 };
 
+enum PLAYER_COLOR
+{
+	BLACK,
+	WHITE
+};
+
+int Player_Max = 0;
 SOCKET Black_Player = NULL;
 SOCKET White_Player = NULL;
 bool black_set_check = false;
@@ -56,7 +63,7 @@ void err_display(int errcode);
 
 //로그창 출력을 위한 함수이다
 void Log_Add(char *buf);
-void Set_Player(SOCKET sock); // 처음접속했을시에 플레이어 설정
+void RemoveSocketInfo_Max(SOCKET sock);
 
 HINSTANCE g_hInst;//글로벌 인스턴스핸들값
 LPCTSTR lpszClass = TEXT("체스서버"); //창이름
@@ -81,7 +88,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 	WndClass.style = CS_HREDRAW | CS_VREDRAW;//윈도우의 수직과 수평이 변경 시 다시 그린다.
 	RegisterClass(&WndClass);  //만들어진 WidClass를 등록
 
-	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, (HMENU)NULL, hInstance, NULL);
+	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 540, 560, NULL, (HMENU)NULL, hInstance, NULL);
 	
 	if (hWnd == NULL)
 		return 1;
@@ -172,6 +179,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	int addrlen, retval;
 	char buf[BUFSIZE];
 	bool tmp = false;
+	int set_color = 0;
 
 	//오류 발생 여부 확인
 	if (WSAGETSELECTERROR(lParam))
@@ -200,7 +208,21 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		Log_Add(buf); // 접속자의 로그 추가해서 출력을 해준다
 
 		//접속한 클라이언트 소켓을 등록한다.
-		AddSocketInfo(client_sock);
+		if (Player_Max < 2)
+		{
+			Player_Max++;
+			AddSocketInfo(client_sock);
+		}
+		else
+		{
+			RemoveSocketInfo_Max(client_sock); // 인원초과시
+			break;
+		}
+
+		if (Black_Player == NULL) // 접속 순으로 블랙,화이트
+			Black_Player = client_sock;
+		else if (White_Player == NULL)
+			White_Player = client_sock;
 
 		//FD_READ, FD_WRITE, FD_CLOSE를 등록한다.
 		//ACCPET한후에 다시 새로운 설정으로 등록하면 덮어씌워진다 (최근 등록할걸 따른다)
@@ -246,7 +268,23 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		if (ptr_sock->recvbytes == sizeof(bool) && tmp == true) // 로그인시에는 bool값이 들어오기때문이다
 		{
-			Set_Player(ptr_sock->sock); // 플레이어 색깔과 기타 세팅
+			if (Black_Player == ptr_sock->sock && black_set_check == false)
+			{
+				black_set_check = true;
+				set_color = BLACK;
+				send(ptr_sock->sock, (char*)&set_color, sizeof(set_color), NULL);
+				sprintf_s(buf, "검은색 플레이어 준비완료");
+				Log_Add(buf);
+			}
+			else if (White_Player == ptr_sock->sock && white_set_check == false)
+			{
+				white_set_check = true;
+				set_color = WHITE;
+				send(ptr_sock->sock, (char*)&set_color, sizeof(set_color), NULL);
+				sprintf_s(buf, "흰색 플레이어 준비완료");
+				Log_Add(buf);
+			}
+
 			ptr_sock->recvbytes = ptr_sock->sendbytes = 0; // 초기화해준다
 		}
 
@@ -353,6 +391,18 @@ void RemoveSocketInfo(SOCKET sock)
 				SocketInfoList = curr->next;
 
 			closesocket(curr->sock);
+
+			if (Black_Player == sock)
+			{
+				black_set_check = false;
+				Black_Player = NULL;
+			}
+			else if (White_Player == sock)
+			{
+				white_set_check = false;
+				White_Player = NULL;
+			}
+			Player_Max--;
 		}
 
 		prev = curr;
@@ -404,10 +454,16 @@ void Log_Add(char *buf)
 	SendMessage(g_log, LB_ADDSTRING, 0, (LPARAM)buf);
 }
 
-void Set_Player(SOCKET sock)
+// 접속자가 가득차있을때 종료
+void RemoveSocketInfo_Max(SOCKET sock)
 {
-	if (Black_Player == NULL)
-		Black_Player = sock;
-	else if (White_Player == NULL)
-		White_Player = sock;
+	char buf[BUFSIZ];
+	SOCKADDR_IN clientaddr;
+	int addrlen = sizeof(clientaddr);
+	getpeername(sock, (SOCKADDR*)&clientaddr, &addrlen);
+
+	sprintf_s(buf, "인원초과로 강제종료 : IP 주소=%s, 포트 번호=%d", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+	Log_Add(buf);
+
+	closesocket(sock);
 }
