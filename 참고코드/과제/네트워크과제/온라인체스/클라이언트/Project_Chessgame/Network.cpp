@@ -1,8 +1,15 @@
 #include "Network.h"
 
+POINT_XY Network::m_point;
+bool Network::m_player_connect = false;
+bool Network::m_player_turn = false;
+bool Network::m_player_done_check = false;
+int Network::m_set_player_color;
+//// LINK 오류방지
+
 Network::Network()
 {
-	m_player_connect = false;
+
 }
 
 void Network::Init_Network(HWND hWnd)

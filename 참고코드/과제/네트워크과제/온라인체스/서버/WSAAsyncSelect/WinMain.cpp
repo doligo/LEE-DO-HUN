@@ -56,6 +56,7 @@ void err_display(int errcode);
 
 //로그창 출력을 위한 함수이다
 void Log_Add(char *buf);
+void Set_Player(SOCKET sock); // 처음접속했을시에 플레이어 설정
 
 HINSTANCE g_hInst;//글로벌 인스턴스핸들값
 LPCTSTR lpszClass = TEXT("체스서버"); //창이름
@@ -170,6 +171,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	int addrlen, retval;
 	char buf[BUFSIZE];
+	bool tmp = false;
 
 	//오류 발생 여부 확인
 	if (WSAGETSELECTERROR(lParam))
@@ -194,7 +196,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			return;
 		}
 
-		sprintf(buf, "\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+		sprintf(buf, "[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
 		Log_Add(buf); // 접속자의 로그 추가해서 출력을 해준다
 
 		//접속한 클라이언트 소켓을 등록한다.
@@ -240,10 +242,12 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//받은 데이터 출력
 		ptr_sock->buf[retval] = '\0';
 
-		//if (ptr_sock->recvbytes == sizeof(bool) && (bool)ptr_sock->buf == true)**
+		tmp = (bool)ptr_sock->buf;
+
+		if (ptr_sock->recvbytes == sizeof(bool) && tmp == true) // 로그인시에는 bool값이 들어오기때문이다
 		{
-	
-			ptr_sock->recvbytes = ptr_sock->sendbytes = 0;
+			Set_Player(ptr_sock->sock); // 플레이어 색깔과 기타 세팅
+			ptr_sock->recvbytes = ptr_sock->sendbytes = 0; // 초기화해준다
 		}
 
 		// 이곳에 break가 없다고 이상할게 없다 Write까지 처리해야 하기 때문이다.
@@ -261,7 +265,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		if (retval == SOCKET_ERROR)
 		{
-			err_display("send()");
+			err_display("send() 에러입니다.");
 			RemoveSocketInfo(wParam);
 			return;
 		}
@@ -328,13 +332,13 @@ SOCKETINFO* GetSocketInfo(SOCKET sock)
 //소켓 정보 제거
 void RemoveSocketInfo(SOCKET sock)
 {
+	char buf[BUFSIZ];
 	SOCKADDR_IN clientaddr;
 	int addrlen = sizeof(clientaddr);
 	getpeername(sock, (SOCKADDR*)&clientaddr, &addrlen);
 
-	//화면에 출력해야 하지만 현재 윈도우로 서버를 만들었기 때문에 Window에 표시되는 함수로 변경해보자!!
-	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
-		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+	sprintf_s(buf, "[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+	Log_Add(buf);
 
 	SOCKETINFO* curr = SocketInfoList;
 	SOCKETINFO* prev = NULL;
@@ -398,4 +402,12 @@ void err_display(int errcode)
 void Log_Add(char *buf)
 {
 	SendMessage(g_log, LB_ADDSTRING, 0, (LPARAM)buf);
+}
+
+void Set_Player(SOCKET sock)
+{
+	if (Black_Player == NULL)
+		Black_Player = sock;
+	else if (White_Player == NULL)
+		White_Player = sock;
 }
