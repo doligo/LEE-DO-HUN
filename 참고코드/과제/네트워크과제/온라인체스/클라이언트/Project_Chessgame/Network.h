@@ -11,8 +11,8 @@ using namespace std;
 
 enum PLAYER_COLOR
 {
-	BLACK,
-	WHITE
+	WHITE,
+	BLACK
 };
 
 struct POINT_XY
@@ -36,6 +36,7 @@ private:
 	static bool m_player_turn;
 	static bool m_player_done_check; // 본인턴의 끝을체크 (말을 놓았는지)
 	static int m_set_player_color;
+	static int m_color_set_check;
 	//// unsigned WINAPI라서 static을 써준다
 public:
 	Network();

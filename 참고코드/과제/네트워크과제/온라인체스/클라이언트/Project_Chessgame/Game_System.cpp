@@ -103,6 +103,7 @@ int Game_System::Click(HDC hdc, int x, int y)
 	int trigger = 0;
 	int result = 0;
 
+	//// 여기서 입력을 받아서 send하고 턴종료 등등을 추가한다**
 	for (int i = 0; i < 2; i++)
 	{
 		result = Game_Over_Check();

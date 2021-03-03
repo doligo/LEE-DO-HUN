@@ -37,8 +37,8 @@ struct POINT_XY
 
 enum PLAYER_COLOR
 {
-	BLACK,
-	WHITE
+	WHITE,
+	BLACK
 };
 
 int Player_Max = 0;
@@ -46,6 +46,7 @@ SOCKET Black_Player = NULL;
 SOCKET White_Player = NULL;
 bool black_set_check = false;
 bool white_set_check = false;
+POINT_XY *save_xy;
 
 //소켓 메시지 처리
 void ProcessSocketMessage(HWND, UINT, WPARAM, LPARAM);
@@ -264,28 +265,32 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//받은 데이터 출력
 		ptr_sock->buf[retval] = '\0';
 
-		tmp = (bool)ptr_sock->buf;
-
+		if (retval == 1)
+			tmp = (bool)ptr_sock->buf;
 		if (ptr_sock->recvbytes == sizeof(bool) && tmp == true) // 로그인시에는 bool값이 들어오기때문이다
 		{
 			if (Black_Player == ptr_sock->sock && black_set_check == false)
 			{
 				black_set_check = true;
-				set_color = BLACK;
-				send(ptr_sock->sock, (char*)&set_color, sizeof(set_color), NULL);
-				sprintf_s(buf, "검은색 플레이어 준비완료");
-				Log_Add(buf);
-			}
-			else if (White_Player == ptr_sock->sock && white_set_check == false)
-			{
-				white_set_check = true;
 				set_color = WHITE;
 				send(ptr_sock->sock, (char*)&set_color, sizeof(set_color), NULL);
 				sprintf_s(buf, "흰색 플레이어 준비완료");
 				Log_Add(buf);
 			}
+			else if (White_Player == ptr_sock->sock && white_set_check == false)
+			{
+				white_set_check = true;
+				set_color = BLACK;
+				send(ptr_sock->sock, (char*)&set_color, sizeof(set_color), NULL);
+				sprintf_s(buf, "검은색 플레이어 준비완료");
+				Log_Add(buf);
+			}
 
 			ptr_sock->recvbytes = ptr_sock->sendbytes = 0; // 초기화해준다
+		}
+		else if (ptr_sock->recvbytes == 8)
+		{
+			save_xy = (POINT_XY*)ptr_sock->buf;
 		}
 
 		// 이곳에 break가 없다고 이상할게 없다 Write까지 처리해야 하기 때문이다.

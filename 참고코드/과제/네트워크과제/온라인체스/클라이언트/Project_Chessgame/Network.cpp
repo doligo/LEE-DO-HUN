@@ -5,6 +5,7 @@ bool Network::m_player_connect = false;
 bool Network::m_player_turn = false;
 bool Network::m_player_done_check = false;
 int Network::m_set_player_color;
+int Network::m_color_set_check = false;
 //// LINK 오류방지
 
 Network::Network()
@@ -80,6 +81,21 @@ unsigned WINAPI Network::Recv(void *arg)
 			break;
 		if (value == 0)
 			break;
+
+		buf[value] = '\n';  // 끝을 구별하기 위해
+
+		if (value == 4 && m_color_set_check == false) // 처음때만 설정해준다
+		{
+			m_set_player_color = (int)*buf; // *포인터 붙여줘야한다*
+			m_color_set_check = true;
+
+			if (m_set_player_color == WHITE)
+				m_player_turn = true;
+			else if (m_set_player_color == BLACK)
+				m_player_turn = false;
+		}
+
+		//else if ()
 	}
 
 	return 0;
