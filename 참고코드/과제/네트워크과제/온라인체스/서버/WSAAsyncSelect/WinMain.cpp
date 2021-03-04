@@ -291,6 +291,15 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		else if (ptr_sock->recvbytes == 8)
 		{
 			save_xy = (POINT_XY*)ptr_sock->buf;
+
+			if (Black_Player == ptr_sock->sock)
+			{
+
+			}
+			else if (White_Player == ptr_sock->sock)
+			{
+
+			}
 		}
 
 		// 이곳에 break가 없다고 이상할게 없다 Write까지 처리해야 하기 때문이다.

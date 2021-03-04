@@ -71,6 +71,9 @@ void Game_System::Init_System(HDC hdc, HINSTANCE hinst)
 		m_pr[i].Init_Player(hdc, m_pr[i].m_player_num);
 
 	Set_All_Pawn_Pos();
+
+	if (m_nt->Get_Player_Turn() == true)
+		m_pr[0].my_turn = true;
 }
 
 void Game_System::Draw(HDC hdc)
@@ -106,6 +109,16 @@ int Game_System::Click(HDC hdc, int x, int y)
 	//// 여기서 입력을 받아서 send하고 턴종료 등등을 추가한다**
 	for (int i = 0; i < 2; i++)
 	{
+
+		if (m_nt->Get_Player_Color() == WHITE && i == 0)
+		{
+									// 구조다시살펴보기**
+		}
+		else if (m_nt->Get_Player_Color() == BLACK && i == 1)
+		{
+
+		}
+
 		result = Game_Over_Check();
 		if (result == 10)
 			return 10;

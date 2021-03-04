@@ -46,6 +46,16 @@ public:
 	static unsigned WINAPI Recv(void *arg);
 	void Release_Network();
 
+	inline int Get_Player_Turn()
+	{
+		return m_player_turn;
+	}
+	inline int Get_Player_Color()
+
+	{
+		return m_set_player_color;
+	}
+
 	~Network();
 };
 

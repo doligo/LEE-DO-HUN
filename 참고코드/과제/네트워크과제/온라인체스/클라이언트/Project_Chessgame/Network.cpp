@@ -95,7 +95,10 @@ unsigned WINAPI Network::Recv(void *arg)
 				m_player_turn = false;
 		}
 
-		//else if ()
+		else if (value == 8)
+		{
+
+		}
 	}
 
 	return 0;
