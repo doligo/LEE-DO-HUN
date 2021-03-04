@@ -49,7 +49,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPervlnstance, LPSTR lpszCmd
 		DispatchMessage(&Message); //받은 메시지를 WndProc에 전달하는 함수
 	}
 	return (int)Message.wParam;
-
+	
 }
 
 HDC hdc;
@@ -63,7 +63,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	int mouse_x = 0;
 	int mouse_y = 0;
 	int value = 0;
-
+	
 	switch (iMessage)
 	{
 	case WM_CREATE:

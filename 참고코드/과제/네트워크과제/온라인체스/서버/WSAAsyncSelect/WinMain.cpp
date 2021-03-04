@@ -29,10 +29,12 @@ struct SOCKETINFO
 
 SOCKETINFO* SocketInfoList;
 
-struct POINT_XY
+struct CHESS_PIECE
 {
 	int x;
 	int y;
+	int piece_name;
+	int piece_num;
 };
 
 enum PLAYER_COLOR
@@ -46,7 +48,7 @@ SOCKET Black_Player = NULL;
 SOCKET White_Player = NULL;
 bool black_set_check = false;
 bool white_set_check = false;
-POINT_XY *save_xy;
+CHESS_PIECE *save_piece;
 
 //家南 皋矫瘤 贸府
 void ProcessSocketMessage(HWND, UINT, WPARAM, LPARAM);
@@ -290,7 +292,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		else if (ptr_sock->recvbytes == 8)
 		{
-			save_xy = (POINT_XY*)ptr_sock->buf;
+			save_piece = (CHESS_PIECE*)ptr_sock->buf;
 
 			if (Black_Player == ptr_sock->sock)
 			{

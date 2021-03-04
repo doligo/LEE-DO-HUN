@@ -613,6 +613,12 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Pawn[clicked_object_num].first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_PAWN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
+
 			return TRUE;
 		}
 		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - 150 <= y && selected_object_rt.bottom - 150 >= y && Cp->m_Pawn[clicked_object_num].first_move != TRUE && someting == FALSE)
@@ -629,6 +635,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Pawn[clicked_object_num].first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_PAWN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && pawn_diagonal1 == TRUE)
@@ -644,6 +655,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_PAWN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && pawn_diagonal2 == TRUE)
@@ -659,6 +675,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_PAWN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 	}
@@ -679,6 +700,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Pawn[clicked_object_num].first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_PAWN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + 150 <= y && selected_object_rt.bottom + 150 >= y && Cp->m_Pawn[clicked_object_num].first_move != TRUE && someting == FALSE)
@@ -695,6 +721,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Pawn[clicked_object_num].first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_PAWN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && pawn_diagonal1 == TRUE)
@@ -710,6 +741,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_PAWN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && pawn_diagonal2 == TRUE)
@@ -725,6 +761,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_PAWN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 	}
@@ -753,6 +794,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				my_turn = FALSE;
 				Cp->m_Rook[clicked_object_num].first_move = TRUE;
 				who_is_moved = clicked_object_num;
+
+				tmp_piece_save.tmp_x = tmp_rt.x;
+				tmp_piece_save.tmp_y = tmp_rt.y;
+				tmp_piece_save.tmp_piece_name = SELECT_ROOK;
+				tmp_piece_save.tmp_piece_num = clicked_object_num;
 				return TRUE;
 
 			}
@@ -771,6 +817,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				my_turn = FALSE;
 				Cp->m_Rook[clicked_object_num].first_move = TRUE;
 				who_is_moved = clicked_object_num;
+
+				tmp_piece_save.tmp_x = tmp_rt.x;
+				tmp_piece_save.tmp_y = tmp_rt.y;
+				tmp_piece_save.tmp_piece_name = SELECT_ROOK;
+				tmp_piece_save.tmp_piece_num = clicked_object_num;
 				return TRUE;
 			}
 			//왼쪽
@@ -788,6 +839,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				my_turn = FALSE;
 				Cp->m_Rook[clicked_object_num].first_move = TRUE;
 				who_is_moved = clicked_object_num;
+
+				tmp_piece_save.tmp_x = tmp_rt.x;
+				tmp_piece_save.tmp_y = tmp_rt.y;
+				tmp_piece_save.tmp_piece_name = SELECT_ROOK;
+				tmp_piece_save.tmp_piece_num = clicked_object_num;
 				return TRUE;
 			}
 			//오른쪽
@@ -805,6 +861,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				my_turn = FALSE;
 				Cp->m_Rook[clicked_object_num].first_move = TRUE;
 				who_is_moved = clicked_object_num;
+
+				tmp_piece_save.tmp_x = tmp_rt.x;
+				tmp_piece_save.tmp_y = tmp_rt.y;
+				tmp_piece_save.tmp_piece_name = SELECT_ROOK;
+				tmp_piece_save.tmp_piece_num = clicked_object_num;
 				return TRUE;
 			}
 			else
@@ -843,6 +904,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Rook[clicked_object_num].first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_ROOK;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 
 		}
@@ -861,6 +927,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Rook[clicked_object_num].first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_ROOK;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		//왼쪽
@@ -878,6 +949,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Rook[clicked_object_num].first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_ROOK;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		//오른쪽
@@ -895,6 +971,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Rook[clicked_object_num].first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_ROOK;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else
@@ -924,6 +1005,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
 	else if (selected_object_rt.left - 150 <= x && selected_object_rt.right - 150 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && knight_front_left_diagonal2 != TRUE)
@@ -939,6 +1025,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
 	else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top - 150 <= y && selected_object_rt.bottom - 150 >= y && knight_front_right_diagonal1 != TRUE)
@@ -954,6 +1045,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
 	else if (selected_object_rt.left + 150 <= x && selected_object_rt.right + 150 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && knight_front_right_diagonal2 != TRUE)
@@ -969,6 +1065,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
 	else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top + 150 <= y && selected_object_rt.bottom + 150 >= y && knight_back_left_diagonal1 != TRUE)
@@ -984,6 +1085,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
 	else if (selected_object_rt.left - 150 <= x && selected_object_rt.right - 150 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && knight_back_left_diagonal2 != TRUE)
@@ -999,6 +1105,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
 	else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top + 150 <= y && selected_object_rt.bottom + 150 >= y && knight_back_right_diagonal1 != TRUE)
@@ -1014,6 +1125,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
 	else if (selected_object_rt.left + 150 <= x && selected_object_rt.right + 150 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && knight_back_right_diagonal2 != TRUE)
@@ -1029,6 +1145,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
     }
@@ -1048,6 +1169,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
 	else if (selected_object_rt.left - 150 <= x && selected_object_rt.right - 150 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && knight_front_left_diagonal2 != TRUE)
@@ -1063,6 +1189,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
 	else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top + 150 <= y && selected_object_rt.bottom + 150 >= y && knight_front_right_diagonal1 != TRUE)
@@ -1078,6 +1209,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
 	else if (selected_object_rt.left + 150 <= x && selected_object_rt.right + 150 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && knight_front_right_diagonal2 != TRUE)
@@ -1093,6 +1229,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
 	else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top - 150 <= y && selected_object_rt.bottom - 150 >= y && knight_back_left_diagonal1 != TRUE)
@@ -1108,6 +1249,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
 	else if (selected_object_rt.left - 150 <= x && selected_object_rt.right - 150 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && knight_back_left_diagonal2 != TRUE)
@@ -1123,6 +1269,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
 	else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top - 150 <= y && selected_object_rt.bottom - 150 >= y && knight_back_right_diagonal1 != TRUE)
@@ -1138,6 +1289,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
 	else if (selected_object_rt.left + 150 <= x && selected_object_rt.right + 150 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && knight_back_right_diagonal2 != TRUE)
@@ -1153,6 +1309,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KNIGHT;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 	}
     }
@@ -1181,6 +1342,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				my_turn = FALSE;
 				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
 				who_is_moved = clicked_object_num;
+
+				tmp_piece_save.tmp_x = tmp_rt.x;
+				tmp_piece_save.tmp_y = tmp_rt.y;
+				tmp_piece_save.tmp_piece_name = SELECT_BISHOP;
+				tmp_piece_save.tmp_piece_num = clicked_object_num;
 				return TRUE;
 
 			}
@@ -1199,6 +1365,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				my_turn = FALSE;
 				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
 				who_is_moved = clicked_object_num;
+
+				tmp_piece_save.tmp_x = tmp_rt.x;
+				tmp_piece_save.tmp_y = tmp_rt.y;
+				tmp_piece_save.tmp_piece_name = SELECT_BISHOP;
+				tmp_piece_save.tmp_piece_num = clicked_object_num;
 				return TRUE;
 			}
 			//뒤의 왼쪽대각
@@ -1217,6 +1388,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				my_turn = FALSE;
 				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
 				who_is_moved = clicked_object_num;
+
+				tmp_piece_save.tmp_x = tmp_rt.x;
+				tmp_piece_save.tmp_y = tmp_rt.y;
+				tmp_piece_save.tmp_piece_name = SELECT_BISHOP;
+				tmp_piece_save.tmp_piece_num = clicked_object_num;
 				return TRUE;
 
 			}
@@ -1235,6 +1411,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				my_turn = FALSE;
 				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
 				who_is_moved = clicked_object_num;
+
+				tmp_piece_save.tmp_x = tmp_rt.x;
+				tmp_piece_save.tmp_y = tmp_rt.y;
+				tmp_piece_save.tmp_piece_name = SELECT_BISHOP;
+				tmp_piece_save.tmp_piece_num = clicked_object_num;
 				return TRUE;
 			}
 			else
@@ -1272,6 +1453,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				my_turn = FALSE;
 				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
 				who_is_moved = clicked_object_num;
+
+				tmp_piece_save.tmp_x = tmp_rt.x;
+				tmp_piece_save.tmp_y = tmp_rt.y;
+				tmp_piece_save.tmp_piece_name = SELECT_BISHOP;
+				tmp_piece_save.tmp_piece_num = clicked_object_num;
 				return TRUE;
 			}
 			//앞의 오른쪽대각
@@ -1289,6 +1475,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				my_turn = FALSE;
 				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
 				who_is_moved = clicked_object_num;
+
+				tmp_piece_save.tmp_x = tmp_rt.x;
+				tmp_piece_save.tmp_y = tmp_rt.y;
+				tmp_piece_save.tmp_piece_name = SELECT_BISHOP;
+				tmp_piece_save.tmp_piece_num = clicked_object_num;
 				return TRUE;
 			}
 			//뒤의 왼쪽대각
@@ -1306,6 +1497,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				my_turn = FALSE;
 				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
 				who_is_moved = clicked_object_num;
+
+				tmp_piece_save.tmp_x = tmp_rt.x;
+				tmp_piece_save.tmp_y = tmp_rt.y;
+				tmp_piece_save.tmp_piece_name = SELECT_BISHOP;
+				tmp_piece_save.tmp_piece_num = clicked_object_num;
 				return TRUE;
 			}
 			//뒤의 오른쪽대각
@@ -1323,6 +1519,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 				my_turn = FALSE;
 				Cp->m_Bishop[clicked_object_num].first_move = TRUE;
 				who_is_moved = clicked_object_num;
+
+				tmp_piece_save.tmp_x = tmp_rt.x;
+				tmp_piece_save.tmp_y = tmp_rt.y;
+				tmp_piece_save.tmp_piece_name = SELECT_BISHOP;
+				tmp_piece_save.tmp_piece_num = clicked_object_num;
 				return TRUE;
 			}
 			else
@@ -1360,6 +1561,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Queen.first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 
 		}
@@ -1378,6 +1584,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Queen.first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 
 		}
@@ -1396,6 +1607,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Queen.first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 
 		}
@@ -1414,6 +1630,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Queen.first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 
 		}
@@ -1432,6 +1653,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Queen.first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 
 		}
@@ -1450,6 +1676,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Queen.first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 
 		}
@@ -1468,6 +1699,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		my_turn = FALSE;
 		Cp->m_Queen.first_move = TRUE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 
 		}
@@ -1486,6 +1722,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		my_turn = FALSE;
 		Cp->m_Queen.first_move = TRUE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 
 		}
@@ -1528,6 +1769,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Queen.first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 
 		}
@@ -1546,6 +1792,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Queen.first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 
 		}
@@ -1564,6 +1815,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Queen.first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 
 		}
@@ -1582,6 +1838,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Queen.first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 
 		}
@@ -1600,6 +1861,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Queen.first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 
 		}
@@ -1618,6 +1884,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			my_turn = FALSE;
 			Cp->m_Queen.first_move = TRUE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 
 		}
@@ -1636,6 +1907,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		my_turn = FALSE;
 		Cp->m_Queen.first_move = TRUE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 
 		}
@@ -1654,6 +1930,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		my_turn = FALSE;
 		Cp->m_Queen.first_move = TRUE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_QUEEN;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 
 		}
@@ -1688,6 +1969,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_KING;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && king_front_left_diagonal != TRUE)
@@ -1703,6 +1989,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_KING;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && king_front_right_diagonal != TRUE)
@@ -1718,6 +2009,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_KING;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && king_left != TRUE)
@@ -1733,6 +2029,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_KING;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && king_right != TRUE)
@@ -1748,6 +2049,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_KING;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && king_back != TRUE)
@@ -1763,6 +2069,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_KING;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && king_back_left_diagonal != TRUE)
@@ -1778,6 +2089,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_KING;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && king_back_right_diagonal != TRUE)
@@ -1793,6 +2109,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KING;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 		}
 	}
@@ -1812,6 +2133,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_KING;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && king_front_left_diagonal != TRUE)
@@ -1827,6 +2153,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_KING;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top + 75 <= y && selected_object_rt.bottom + 75 >= y && king_front_right_diagonal != TRUE)
@@ -1842,6 +2173,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_KING;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && king_left != TRUE)
@@ -1857,6 +2193,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_KING;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top <= y && selected_object_rt.bottom >= y && king_right != TRUE)
@@ -1872,6 +2213,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_KING;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left <= x && selected_object_rt.right >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && king_back != TRUE)
@@ -1887,6 +2233,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_KING;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left - 75 <= x && selected_object_rt.right - 75 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && king_back_left_diagonal != TRUE)
@@ -1902,6 +2253,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 			select_num = 0;
 			my_turn = FALSE;
 			who_is_moved = clicked_object_num;
+
+			tmp_piece_save.tmp_x = tmp_rt.x;
+			tmp_piece_save.tmp_y = tmp_rt.y;
+			tmp_piece_save.tmp_piece_name = SELECT_KING;
+			tmp_piece_save.tmp_piece_num = clicked_object_num;
 			return TRUE;
 		}
 		else if (selected_object_rt.left + 75 <= x && selected_object_rt.right + 75 >= x && selected_object_rt.top - 75 <= y && selected_object_rt.bottom - 75 >= y && king_back_right_diagonal != TRUE)
@@ -1917,6 +2273,11 @@ int Player::Move_Check(HDC hdc, int x, int y)
 		select_num = 0;
 		my_turn = FALSE;
 		who_is_moved = clicked_object_num;
+
+		tmp_piece_save.tmp_x = tmp_rt.x;
+		tmp_piece_save.tmp_y = tmp_rt.y;
+		tmp_piece_save.tmp_piece_name = SELECT_KING;
+		tmp_piece_save.tmp_piece_num = clicked_object_num;
 		return TRUE;
 		}
     }

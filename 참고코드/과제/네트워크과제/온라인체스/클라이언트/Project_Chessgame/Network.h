@@ -15,10 +15,12 @@ enum PLAYER_COLOR
 	BLACK
 };
 
-struct POINT_XY
+struct CHESS_PIECE
 {
 	int x;
 	int y;
+	int piece_name;
+	int piece_num;
 };
 
 class Network
@@ -31,16 +33,17 @@ private:
 	HANDLE m_RecvThread;
 
 	HWND m_hWnd;
-	static POINT_XY m_point;
 	static bool m_player_connect;
 	static bool m_player_turn;
-	static bool m_player_done_check; // 본인턴의 끝을체크 (말을 놓았는지)
 	static int m_set_player_color;
 	static int m_color_set_check;
+	static bool m_recv_check;
 	//// unsigned WINAPI라서 static을 써준다
 public:
 	Network();
 
+	static CHESS_PIECE m_piece;
+	static bool m_player_done_check; // 본인턴의 끝을체크 (말을 놓았는지)
 	void Init_Network(HWND hWnd);
 	static unsigned WINAPI Send(void *arg);
 	static unsigned WINAPI Recv(void *arg);

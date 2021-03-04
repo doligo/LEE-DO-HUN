@@ -18,7 +18,7 @@ void Game_System::Init_System(HDC hdc, HINSTANCE hinst)
 	m_nt->Init_Network(m_hWnd); // 네트워크 초기화
 
 	m_bd = new Board[BOARD_MAX];
-
+	
 	for (int i = 0; i < BOARD_MAX; i++)
 	{
 		if (count == 16)
@@ -106,19 +106,8 @@ int Game_System::Click(HDC hdc, int x, int y)
 	int trigger = 0;
 	int result = 0;
 
-	//// 여기서 입력을 받아서 send하고 턴종료 등등을 추가한다**
 	for (int i = 0; i < 2; i++)
 	{
-
-		if (m_nt->Get_Player_Color() == WHITE && i == 0)
-		{
-									// 구조다시살펴보기**
-		}
-		else if (m_nt->Get_Player_Color() == BLACK && i == 1)
-		{
-
-		}
-
 		result = Game_Over_Check();
 		if (result == 10)
 			return 10;
@@ -131,10 +120,19 @@ int Game_System::Click(HDC hdc, int x, int y)
 
 		if (m_pr[i].who_is_moved != -1)
 		Die_Check(i);
-
+		
 		m_pr[i].select_what = 0;
 
-		m_pr[i].Click_Check(hdc, i, x, y);
+		if (m_nt->Get_Player_Color() == WHITE && i == 0)
+		{
+			m_pr[0].Click_Check(hdc, i, x, y);
+		}
+		else if (m_nt->Get_Player_Color() == BLACK && i == 1)
+		{
+			m_pr[1].Click_Check(hdc, i, x, y);
+		}
+
+		//m_pr[i].Click_Check(hdc, i, x, y);
 		Pawn_Check(i);
 		Rook_Check(i);
 		Knight_Check(i);
@@ -144,6 +142,12 @@ int Game_System::Click(HDC hdc, int x, int y)
 
 		if (i == 0 && trigger == TRUE)
 		{
+			m_nt->m_piece.x = m_pr[i].tmp_piece_save.tmp_x;
+			m_nt->m_piece.y = m_pr[i].tmp_piece_save.tmp_y;
+			m_nt->m_piece.piece_name = m_pr[i].tmp_piece_save.tmp_piece_name;
+			m_nt->m_piece.piece_num = m_pr[i].tmp_piece_save.tmp_piece_num;
+
+			m_nt->m_player_done_check = true;
 			if (m_pr[0].my_turn == FALSE)
 			{
 				m_pr[1].my_turn = TRUE;
@@ -151,6 +155,12 @@ int Game_System::Click(HDC hdc, int x, int y)
 		}
 		else if (i == 1 && trigger == TRUE)
 		{
+			m_nt->m_piece.x = m_pr[i].tmp_piece_save.tmp_x;
+			m_nt->m_piece.y = m_pr[i].tmp_piece_save.tmp_y;
+			m_nt->m_piece.piece_name = m_pr[i].tmp_piece_save.tmp_piece_name;
+			m_nt->m_piece.piece_num = m_pr[i].tmp_piece_save.tmp_piece_num;
+
+			m_nt->m_player_done_check = true;
 			if (m_pr[1].my_turn == FALSE)
 			{
 				m_pr[0].my_turn = TRUE;

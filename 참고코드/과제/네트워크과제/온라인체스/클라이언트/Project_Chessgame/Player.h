@@ -8,17 +8,26 @@
 #define SELECT_QUEEN 62
 #define SELECT_KING 63
 
+struct TMP_PIECE_SAVE
+{
+	int tmp_x;
+	int tmp_y;
+	int tmp_piece_name;
+	int tmp_piece_num;
+};
+
 class Player
 {
 private:
 	chess_pieces *Cp;
-	int select_num;
 	HDC MemDC;
 	HBITMAP hbtmap, old_hbtmap;
 	BITMAP btmap;
 public:
 	Player();
 
+	TMP_PIECE_SAVE tmp_piece_save;
+	int select_num;
 	int m_x;
 	int m_y;
 	int clicked_pos_x;

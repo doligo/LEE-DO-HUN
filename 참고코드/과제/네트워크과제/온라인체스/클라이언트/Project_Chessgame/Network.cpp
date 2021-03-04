@@ -1,11 +1,12 @@
 #include "Network.h"
 
-POINT_XY Network::m_point;
+CHESS_PIECE Network::m_piece;
 bool Network::m_player_connect = false;
 bool Network::m_player_turn = false;
 bool Network::m_player_done_check = false;
 int Network::m_set_player_color;
 int Network::m_color_set_check = false;
+bool Network::m_recv_check = false;
 //// LINK 오류방지
 
 Network::Network()
@@ -58,7 +59,7 @@ unsigned WINAPI Network::Send(void *arg)
 		}
 		else if (m_player_done_check == true)
 		{
-			send(sock, (char*)&m_point, sizeof(m_point), 0);
+			send(sock, (char*)&m_piece, sizeof(m_piece), 0);
 			m_player_done_check = false;
 			m_player_turn = false;
 		}
@@ -95,7 +96,7 @@ unsigned WINAPI Network::Recv(void *arg)
 				m_player_turn = false;
 		}
 
-		else if (value == 8)
+		//else if (value ==  && m_recv_check == false)
 		{
 
 		}
