@@ -1,6 +1,7 @@
 #include "Network.h"
 
 CHESS_PIECE Network::m_piece;
+CHESS_PIECE Network::m_recv_piece;
 bool Network::m_player_connect = false;
 bool Network::m_player_turn = false;
 bool Network::m_player_done_check = false;
@@ -96,9 +97,17 @@ unsigned WINAPI Network::Recv(void *arg)
 				m_player_turn = false;
 		}
 
-		//else if (value ==  && m_recv_check == false)
+		else if (value == sizeof(CHESS_PIECE) && m_recv_check == false) // 상대방 체스말의 값
 		{
+			CHESS_PIECE *tmp_piece;
+			tmp_piece = (CHESS_PIECE*)buf;
 
+			m_recv_piece.piece_name = tmp_piece->piece_name;
+			m_recv_piece.piece_num = tmp_piece->piece_num;
+			m_recv_piece.x = tmp_piece->x;
+			m_recv_piece.y = tmp_piece->y;
+
+			m_recv_check = true; // 다음턴까지 true
 		}
 	}
 

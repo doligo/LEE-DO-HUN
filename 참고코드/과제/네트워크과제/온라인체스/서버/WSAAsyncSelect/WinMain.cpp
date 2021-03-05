@@ -290,17 +290,19 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			ptr_sock->recvbytes = ptr_sock->sendbytes = 0; // 초기화해준다
 		}
-		else if (ptr_sock->recvbytes == 8)
+		else if (ptr_sock->recvbytes == sizeof(CHESS_PIECE))
 		{
 			save_piece = (CHESS_PIECE*)ptr_sock->buf;
 
 			if (Black_Player == ptr_sock->sock)
 			{
-
+				sprintf(buf, "흰색 플레이어 이동[X: %d, Y: %d]", save_piece->x, save_piece->y);
+				Log_Add(buf);
 			}
 			else if (White_Player == ptr_sock->sock)
 			{
-
+				sprintf(buf, "검은색 플레이어 이동[X: %d, Y: %d]", save_piece->x, save_piece->y);
+				Log_Add(buf);
 			}
 		}
 
@@ -315,7 +317,10 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			return;
 
 		//데이터 보내기
-		retval = send(ptr_sock->sock, ptr_sock->buf + ptr_sock->sendbytes, ptr_sock->recvbytes - ptr_sock->sendbytes, 0);
+		if (Black_Player == ptr_sock->sock)
+			retval = send(White_Player, ptr_sock->buf + ptr_sock->sendbytes, ptr_sock->recvbytes - ptr_sock->sendbytes, 0);
+		else if (White_Player == ptr_sock->sock)
+			retval = send(Black_Player, ptr_sock->buf + ptr_sock->sendbytes, ptr_sock->recvbytes - ptr_sock->sendbytes, 0);
 
 		if (retval == SOCKET_ERROR)
 		{
@@ -443,12 +448,13 @@ void err_quit(const char* msg)
 void err_display(const char* msg)
 {
 	LPVOID lpMsgBuf;
+	char buf[BUFSIZ];
 
 	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL,
 		WSAGetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
 
-	//화면에 출력해야 하지만 현재 윈도우로 서버를 만들었기 때문에 Window에 표시되는 함수로 변경해보자!!
-	printf("[%s] %s", msg, (const char*)lpMsgBuf);
+	sprintf_s(buf, "[%s] %s", msg, (const char*)lpMsgBuf);
+	Log_Add(buf);
 	LocalFree(lpMsgBuf);
 }
 
@@ -456,12 +462,13 @@ void err_display(const char* msg)
 void err_display(int errcode)
 {
 	LPVOID lpMsgBuf;
+	char buf[BUFSIZ];
 
 	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL,
 		errcode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
 
-	//화면에 출력해야 하지만 현재 윈도우로 서버를 만들었기 때문에 Window에 표시되는 함수로 변경해보자!!
-	printf("[오류] %s", (const char*)lpMsgBuf);
+	sprintf_s(buf, "[오류] %s", (const char*)lpMsgBuf);
+	Log_Add(buf);
 	LocalFree(lpMsgBuf);
 }
 

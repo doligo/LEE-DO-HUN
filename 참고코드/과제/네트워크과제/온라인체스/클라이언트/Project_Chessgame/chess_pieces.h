@@ -8,6 +8,13 @@ using namespace std;
 #define ALIVE 20
 #define DEAD 21
 
+#define SELECT_PAWN 58
+#define SELECT_ROOK 59
+#define SELECT_KNIGHT 60
+#define SELECT_BISHOP 61
+#define SELECT_QUEEN 62
+#define SELECT_KING 63
+
 struct RECT_AND_STATUS
 {
 	RECT rt;
@@ -48,6 +55,7 @@ public:
 	void Init_pieces(HDC hdc, int player_num);
 	void Init_pieces_2(HDC hdc, int player_num);
 	void Pieces_Draw(HDC hdc, int x, int y, string name);
+	void Set_Piece_Info(int name, int num, int x, int y);
 
 	~chess_pieces();
 };

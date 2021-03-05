@@ -371,6 +371,40 @@ void chess_pieces::Pieces_Draw(HDC hdc, int x, int y, string name)
 		TransparentBlt(hdc, x, y, m_x - 50, m_y - 50, MemDC[15], 0, 0, m_x, m_y, RGB(255, 0, 255));
 }
 
+void chess_pieces::Set_Piece_Info(int name, int num, int x, int y)
+{
+	if (name == SELECT_PAWN)
+	{
+		m_Pawn[num].x = x;
+		m_Pawn[num].y = y;
+	}
+	else if (name == SELECT_ROOK)
+	{
+		m_Rook[num].x = x;
+		m_Rook[num].y = y;
+	}
+	else if (name == SELECT_KNIGHT)
+	{
+		m_Knight[num].x = x;
+		m_Knight[num].y = y;
+	}
+	else if (name == SELECT_BISHOP)
+	{
+		m_Bishop[num].x = x;
+		m_Bishop[num].y = y;
+	}
+	else if (name == SELECT_QUEEN)
+	{
+		m_Queen.x = x;
+		m_Queen.y = y;
+	}
+	else if (name == SELECT_KING)
+	{
+		m_King.x = x;
+		m_King.y = y;
+	}
+}
+
 chess_pieces::~chess_pieces()
 {
 	for (int i = 0; i < PIECE_MAX; i++)

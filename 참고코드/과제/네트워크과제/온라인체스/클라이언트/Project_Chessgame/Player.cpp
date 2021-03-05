@@ -37,9 +37,12 @@ void Player::Init_Player(HDC hdc, int player_num)
 
 }
 
-void Player::Player_Pieces_Draw(HDC hdc)
+void Player::Player_Pieces_Draw(HDC hdc, int name, int num, int x, int y)
 {
 	char buf[30] = {};
+
+	if (name != 0)
+		Cp->Set_Piece_Info(name, num, x, y);
 
 	if (Cp->m_King.status == ALIVE)
 	Cp->Pieces_Draw(hdc, Cp->m_King.x, Cp->m_King.y, "king");

@@ -43,6 +43,7 @@ public:
 	Network();
 
 	static CHESS_PIECE m_piece;
+	static CHESS_PIECE m_recv_piece;
 	static bool m_player_done_check; // 본인턴의 끝을체크 (말을 놓았는지)
 	void Init_Network(HWND hWnd);
 	static unsigned WINAPI Send(void *arg);
@@ -54,9 +55,17 @@ public:
 		return m_player_turn;
 	}
 	inline int Get_Player_Color()
-
 	{
 		return m_set_player_color;
+	}
+	inline int Get_Recv_Check()
+	{
+		return m_recv_check;
+	}
+
+	void Set_Player_Turn(bool value)
+	{
+		m_player_turn = value;
 	}
 
 	~Network();

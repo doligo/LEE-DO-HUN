@@ -1,13 +1,6 @@
 #include "chess_pieces.h"
 #pragma once
 
-#define SELECT_PAWN 58
-#define SELECT_ROOK 59
-#define SELECT_KNIGHT 60
-#define SELECT_BISHOP 61
-#define SELECT_QUEEN 62
-#define SELECT_KING 63
-
 struct TMP_PIECE_SAVE
 {
 	int tmp_x;
@@ -85,7 +78,7 @@ public:
 	int king_back_right_diagonal;
 
 	void Init_Player(HDC hdc, int player_num);
-	void Player_Pieces_Draw(HDC hdc);
+	void Player_Pieces_Draw(HDC hdc, int name, int num, int x, int y);
 	void Move_Able_Point(HDC hdc);
 	void Click_Check(HDC hdc, int player_num, int x, int y);
 	int Move_Check(HDC hdc, int x, int y);

@@ -74,6 +74,7 @@ void Game_System::Init_System(HDC hdc, HINSTANCE hinst)
 
 	if (m_nt->Get_Player_Turn() == true)
 		m_pr[0].my_turn = true;
+	m_nt->m_recv_piece.piece_name = 0;
 }
 
 void Game_System::Draw(HDC hdc)
@@ -81,6 +82,9 @@ void Game_System::Draw(HDC hdc)
 	int x = 0;
 	int y = 0;
 	int count = 0;
+
+	if (m_nt->Get_Recv_Check() == true)
+		m_nt->Set_Player_Turn(true);
 
 	for (int i = 0; i < BOARD_MAX; i++)
 	{
@@ -95,9 +99,25 @@ void Game_System::Draw(HDC hdc)
 		count++;
 	}
 
+	//for (int i = 0; i < 2; i++)
+	//{
+	//	m_pr[i].Player_Pieces_Draw(hdc, 0, 0, 0, 0);
+	//}
 
-	for (int i = 0; i < 2; i++)
-		m_pr[i].Player_Pieces_Draw(hdc);
+	if (m_nt->Get_Player_Color() == WHITE && m_nt->m_player_done_check == false)
+	{
+		m_pr[0].Player_Pieces_Draw(hdc, 0, 0, 0, 0);
+		m_pr[1].Player_Pieces_Draw(hdc, m_nt->m_recv_piece.piece_name, m_nt->m_recv_piece.piece_num, m_nt->m_recv_piece.x, m_nt->m_recv_piece.y);
+	}
+	else if (m_nt->Get_Player_Color() == BLACK && m_nt->m_player_done_check == false)
+	{
+		m_pr[1].Player_Pieces_Draw(hdc, 0, 0, 0, 0);
+		m_pr[0].Player_Pieces_Draw(hdc, m_nt->m_recv_piece.piece_name, m_nt->m_recv_piece.piece_num, m_nt->m_recv_piece.x, m_nt->m_recv_piece.y);
+	}
+
+	//// RECT_AND_STATUS << 모든말들 위치 저장하는것에도 받은 데이터를 적용해서**
+	//// 이동가능한 경로 나타나게하고, 상대방 말을 죽일수있게 수정하기**
+	//// 턴이 꼬이는것 수정하기**
 
 }
 
@@ -105,6 +125,13 @@ int Game_System::Click(HDC hdc, int x, int y)
 {
 	int trigger = 0;
 	int result = 0;
+
+	if (m_nt->Get_Player_Turn() == true && m_nt->Get_Player_Color() == WHITE)
+		m_pr[0].my_turn = true;
+	else if (m_nt->Get_Player_Turn() == true && m_nt->Get_Player_Color() == BLACK)
+		m_pr[1].my_turn = true;
+
+	m_nt->m_recv_piece.piece_name = 0;
 
 	for (int i = 0; i < 2; i++)
 	{
@@ -148,6 +175,7 @@ int Game_System::Click(HDC hdc, int x, int y)
 			m_nt->m_piece.piece_num = m_pr[i].tmp_piece_save.tmp_piece_num;
 
 			m_nt->m_player_done_check = true;
+
 			if (m_pr[0].my_turn == FALSE)
 			{
 				m_pr[1].my_turn = TRUE;
