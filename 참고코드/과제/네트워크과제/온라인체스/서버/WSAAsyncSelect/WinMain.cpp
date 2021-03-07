@@ -49,6 +49,7 @@ SOCKET White_Player = NULL;
 bool black_set_check = false;
 bool white_set_check = false;
 CHESS_PIECE *save_piece;
+int log_count = 0;
 
 //소켓 메시지 처리
 void ProcessSocketMessage(HWND, UINT, WPARAM, LPARAM);
@@ -475,15 +476,24 @@ void err_display(int errcode)
 void Log_Add(char *buf)
 {
 	SendMessage(g_log, LB_ADDSTRING, 0, (LPARAM)buf);
+	log_count++;
+
+	if (log_count >= 31)
+	{
+		SendMessage(g_log, LB_SETTOPINDEX, log_count - 1, 0);
+	}
 }
 
 // 접속자가 가득차있을때 종료
 void RemoveSocketInfo_Max(SOCKET sock)
 {
+	bool no_login = false;
 	char buf[BUFSIZ];
 	SOCKADDR_IN clientaddr;
 	int addrlen = sizeof(clientaddr);
 	getpeername(sock, (SOCKADDR*)&clientaddr, &addrlen);
+
+	send(sock, (char*)&no_login, sizeof(no_login), NULL);
 
 	sprintf_s(buf, "인원초과로 강제종료 : IP 주소=%s, 포트 번호=%d", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
 	Log_Add(buf);

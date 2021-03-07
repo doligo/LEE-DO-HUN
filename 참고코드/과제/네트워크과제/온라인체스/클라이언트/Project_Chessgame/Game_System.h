@@ -21,7 +21,7 @@ public:
 	RECT_AND_STATUS m_All_King[2];
 	int dead_num;
 
-	void Init_System(HDC hdc, HINSTANCE hinst);
+	int Init_System(HDC hdc, HINSTANCE hinst);
 	void Draw(HDC hdc);
 	int Click(HDC hdc, int x , int y);
 	void Set_All_Pawn_Pos();
@@ -35,6 +35,7 @@ public:
 	void Piece_Rules(int num);
 	void Die_Check(int player_num);
 	int Game_Over_Check();
+	int Get_Login_Fail();
 
 	~Game_System();
 };

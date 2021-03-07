@@ -1,5 +1,6 @@
 #include "Network.h"
 
+int Network::login_fail;
 CHESS_PIECE Network::m_piece;
 CHESS_PIECE Network::m_recv_piece;
 bool Network::m_player_connect = false;
@@ -109,6 +110,11 @@ unsigned WINAPI Network::Recv(void *arg)
 
 			m_recv_check = true; // 다음턴까지 true
 		}
+
+		else if (value == sizeof(bool))
+		{
+			login_fail = 10;
+		}
 	}
 
 	return 0;
@@ -118,8 +124,8 @@ void Network::Release_Network()
 {
 	//// 따로 분류해줘야 오브젝트를 기다리지않고 계속돌아간다
 	//// 대신 종료시에 꼭 이 함수를 사용해서 해제 해줘야 한다
-	WaitForSingleObject(m_SendThread, INFINITE);
-	WaitForSingleObject(m_RecvThread, INFINITE);
+	//WaitForSingleObject(m_SendThread, INFINITE);
+	//WaitForSingleObject(m_RecvThread, INFINITE);
 
 	closesocket(m_ServerSock);
 

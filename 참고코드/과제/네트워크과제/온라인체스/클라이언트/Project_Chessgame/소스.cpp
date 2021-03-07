@@ -67,7 +67,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	switch (iMessage)
 	{
 	case WM_CREATE:
-		SetTimer(hWnd, 1, 1000, NULL);
+		SetTimer(hWnd, 1, 400, NULL);
 
 		gs.Init_System(hdc, g_hInst);
 
@@ -92,6 +92,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 					game_result = 0;
 				}
 			}
+
+			value = gs.Get_Login_Fail();
+			if (value == 10)
+			{
+				cout << "인원이 초과되었습니다" << endl;
+				system("pause");
+				PostQuitMessage(0);
+				KillTimer(hWnd, 1);
+				return 0;
+			}
+
 			InvalidateRect(hWnd, NULL, TRUE); // 네트워크 정보받아오고 그려주기위함
 		return 0;
 	case WM_LBUTTONDOWN:

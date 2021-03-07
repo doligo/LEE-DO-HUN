@@ -5,7 +5,13 @@ Game_System::Game_System()
 
 }
 
-void Game_System::Init_System(HDC hdc, HINSTANCE hinst)
+int Game_System::Get_Login_Fail()
+{
+	if (m_nt->login_fail == 10)
+		return 10;
+}
+
+int Game_System::Init_System(HDC hdc, HINSTANCE hinst)
 {
 	int trigger = FALSE;
 	int count = 0;
@@ -75,6 +81,8 @@ void Game_System::Init_System(HDC hdc, HINSTANCE hinst)
 	if (m_nt->Get_Player_Turn() == true)
 		m_pr[0].my_turn = true;
 	m_nt->m_recv_piece.piece_name = 0;
+
+	return 0;
 }
 
 void Game_System::Draw(HDC hdc)
@@ -83,7 +91,7 @@ void Game_System::Draw(HDC hdc)
 	int y = 0;
 	int count = 0;
 
-	if (m_nt->Get_Recv_Check() == true)
+	if (m_nt->Get_Recv_Check() == true && m_nt->m_player_done_check == false)
 		m_nt->Set_Player_Turn(true);
 
 	for (int i = 0; i < BOARD_MAX; i++)
@@ -117,8 +125,6 @@ void Game_System::Draw(HDC hdc)
 
 	//// RECT_AND_STATUS << 모든말들 위치 저장하는것에도 받은 데이터를 적용해서**
 	//// 이동가능한 경로 나타나게하고, 상대방 말을 죽일수있게 수정하기**
-	//// 턴이 꼬이는것 수정하기**
-
 }
 
 int Game_System::Click(HDC hdc, int x, int y)
@@ -175,6 +181,7 @@ int Game_System::Click(HDC hdc, int x, int y)
 			m_nt->m_piece.piece_num = m_pr[i].tmp_piece_save.tmp_piece_num;
 
 			m_nt->m_player_done_check = true;
+			m_nt->Set_Recv_Check(false);
 
 			if (m_pr[0].my_turn == FALSE)
 			{
@@ -189,6 +196,7 @@ int Game_System::Click(HDC hdc, int x, int y)
 			m_nt->m_piece.piece_num = m_pr[i].tmp_piece_save.tmp_piece_num;
 
 			m_nt->m_player_done_check = true;
+			m_nt->Set_Recv_Check(false);
 			if (m_pr[1].my_turn == FALSE)
 			{
 				m_pr[0].my_turn = TRUE;

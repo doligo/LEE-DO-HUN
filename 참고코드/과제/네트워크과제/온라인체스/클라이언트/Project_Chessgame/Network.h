@@ -42,6 +42,7 @@ private:
 public:
 	Network();
 
+	static int login_fail;
 	static CHESS_PIECE m_piece;
 	static CHESS_PIECE m_recv_piece;
 	static bool m_player_done_check; // 본인턴의 끝을체크 (말을 놓았는지)
@@ -66,6 +67,10 @@ public:
 	void Set_Player_Turn(bool value)
 	{
 		m_player_turn = value;
+	}
+	void Set_Recv_Check(bool value)
+	{
+		m_recv_check = value;
 	}
 
 	~Network();
