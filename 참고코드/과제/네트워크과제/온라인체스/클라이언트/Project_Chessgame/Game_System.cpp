@@ -85,14 +85,172 @@ int Game_System::Init_System(HDC hdc, HINSTANCE hinst)
 	return 0;
 }
 
-void Game_System::Draw(HDC hdc)
+int Game_System::Draw(HDC hdc)
 {
 	int x = 0;
 	int y = 0;
 	int count = 0;
 
 	if (m_nt->Get_Recv_Check() == true && m_nt->m_player_done_check == false)
+	{
 		m_nt->Set_Player_Turn(true);
+
+		if (m_nt->m_recv_piece.piece_name == SELECT_PAWN)
+		{
+			if (m_nt->Get_Player_Color() == WHITE)
+			{
+				m_All_Pawn[m_nt->m_recv_piece.piece_num + 8].x = m_nt->m_recv_piece.x;
+				m_All_Pawn[m_nt->m_recv_piece.piece_num + 8].y = m_nt->m_recv_piece.y;
+
+				m_All_Pawn[m_nt->m_recv_piece.piece_num + 8].rt.left = m_nt->m_recv_piece.x;
+				m_All_Pawn[m_nt->m_recv_piece.piece_num + 8].rt.top = m_nt->m_recv_piece.y;
+				m_All_Pawn[m_nt->m_recv_piece.piece_num + 8].rt.right = m_All_Pawn[m_nt->m_recv_piece.piece_num + 8].rt.left + 75;
+				m_All_Pawn[m_nt->m_recv_piece.piece_num + 8].rt.bottom = m_All_Pawn[m_nt->m_recv_piece.piece_num + 8].rt.top + 75;
+			}
+			else if (m_nt->Get_Player_Color() == BLACK)
+			{
+				m_All_Pawn[m_nt->m_recv_piece.piece_num].x = m_nt->m_recv_piece.x;
+				m_All_Pawn[m_nt->m_recv_piece.piece_num].y = m_nt->m_recv_piece.y;
+
+				m_All_Pawn[m_nt->m_recv_piece.piece_num].rt.left = m_nt->m_recv_piece.x;
+				m_All_Pawn[m_nt->m_recv_piece.piece_num].rt.top = m_nt->m_recv_piece.y;
+				m_All_Pawn[m_nt->m_recv_piece.piece_num].rt.right = m_All_Pawn[m_nt->m_recv_piece.piece_num].rt.left + 75;
+				m_All_Pawn[m_nt->m_recv_piece.piece_num].rt.bottom = m_All_Pawn[m_nt->m_recv_piece.piece_num].rt.top + 75;
+			}
+		}
+		else if (m_nt->m_recv_piece.piece_name == SELECT_ROOK)
+		{
+			if (m_nt->Get_Player_Color() == WHITE)
+			{
+				m_All_Rook[m_nt->m_recv_piece.piece_num + 2].x = m_nt->m_recv_piece.x;
+				m_All_Rook[m_nt->m_recv_piece.piece_num + 2].y = m_nt->m_recv_piece.y;
+
+				m_All_Rook[m_nt->m_recv_piece.piece_num + 2].rt.left = m_nt->m_recv_piece.x;
+				m_All_Rook[m_nt->m_recv_piece.piece_num + 2].rt.top = m_nt->m_recv_piece.y;
+				m_All_Rook[m_nt->m_recv_piece.piece_num + 2].rt.right = m_All_Rook[m_nt->m_recv_piece.piece_num + 2].rt.left + 75;
+				m_All_Rook[m_nt->m_recv_piece.piece_num + 2].rt.bottom = m_All_Rook[m_nt->m_recv_piece.piece_num + 2].rt.top + 75;
+			}
+			else if (m_nt->Get_Player_Color() == BLACK)
+			{
+				m_All_Rook[m_nt->m_recv_piece.piece_num].x = m_nt->m_recv_piece.x;
+				m_All_Rook[m_nt->m_recv_piece.piece_num].y = m_nt->m_recv_piece.y;
+
+				m_All_Rook[m_nt->m_recv_piece.piece_num].rt.left = m_nt->m_recv_piece.x;
+				m_All_Rook[m_nt->m_recv_piece.piece_num].rt.top = m_nt->m_recv_piece.y;
+				m_All_Rook[m_nt->m_recv_piece.piece_num].rt.right = m_All_Rook[m_nt->m_recv_piece.piece_num].rt.left + 75;
+				m_All_Rook[m_nt->m_recv_piece.piece_num].rt.bottom = m_All_Rook[m_nt->m_recv_piece.piece_num].rt.top + 75;
+			}
+		}
+		else if (m_nt->m_recv_piece.piece_name == SELECT_KNIGHT)
+		{
+			if (m_nt->Get_Player_Color() == WHITE)
+			{
+				m_All_Knight[m_nt->m_recv_piece.piece_num + 2].x = m_nt->m_recv_piece.x;
+				m_All_Knight[m_nt->m_recv_piece.piece_num + 2].y = m_nt->m_recv_piece.y;
+
+				m_All_Knight[m_nt->m_recv_piece.piece_num + 2].rt.left = m_nt->m_recv_piece.x;
+				m_All_Knight[m_nt->m_recv_piece.piece_num + 2].rt.top = m_nt->m_recv_piece.y;
+				m_All_Knight[m_nt->m_recv_piece.piece_num + 2].rt.right = m_All_Knight[m_nt->m_recv_piece.piece_num + 2].rt.left + 75;
+				m_All_Knight[m_nt->m_recv_piece.piece_num + 2].rt.bottom = m_All_Knight[m_nt->m_recv_piece.piece_num + 2].rt.top + 75;
+			}
+			else if (m_nt->Get_Player_Color() == BLACK)
+			{
+				m_All_Knight[m_nt->m_recv_piece.piece_num].x = m_nt->m_recv_piece.x;
+				m_All_Knight[m_nt->m_recv_piece.piece_num].y = m_nt->m_recv_piece.y;
+
+				m_All_Knight[m_nt->m_recv_piece.piece_num].rt.left = m_nt->m_recv_piece.x;
+				m_All_Knight[m_nt->m_recv_piece.piece_num].rt.top = m_nt->m_recv_piece.y;
+				m_All_Knight[m_nt->m_recv_piece.piece_num].rt.right = m_All_Knight[m_nt->m_recv_piece.piece_num].rt.left + 75;
+				m_All_Knight[m_nt->m_recv_piece.piece_num].rt.bottom = m_All_Knight[m_nt->m_recv_piece.piece_num].rt.top + 75;
+
+			}
+		}
+		else if (m_nt->m_recv_piece.piece_name == SELECT_BISHOP)
+		{
+			if (m_nt->Get_Player_Color() == WHITE)
+			{
+				m_All_Bishop[m_nt->m_recv_piece.piece_num + 2].x = m_nt->m_recv_piece.x;
+				m_All_Bishop[m_nt->m_recv_piece.piece_num + 2].y = m_nt->m_recv_piece.y;
+
+				m_All_Bishop[m_nt->m_recv_piece.piece_num + 2].rt.left = m_nt->m_recv_piece.x;
+				m_All_Bishop[m_nt->m_recv_piece.piece_num + 2].rt.top = m_nt->m_recv_piece.y;
+				m_All_Bishop[m_nt->m_recv_piece.piece_num + 2].rt.right = m_All_Bishop[m_nt->m_recv_piece.piece_num + 2].rt.left + 75;
+				m_All_Bishop[m_nt->m_recv_piece.piece_num + 2].rt.bottom = m_All_Bishop[m_nt->m_recv_piece.piece_num + 2].rt.top + 75;
+
+			}
+			else if (m_nt->Get_Player_Color() == BLACK)
+			{
+				m_All_Bishop[m_nt->m_recv_piece.piece_num].x = m_nt->m_recv_piece.x;
+				m_All_Bishop[m_nt->m_recv_piece.piece_num].y = m_nt->m_recv_piece.y;
+
+				m_All_Bishop[m_nt->m_recv_piece.piece_num].rt.left = m_nt->m_recv_piece.x;
+				m_All_Bishop[m_nt->m_recv_piece.piece_num].rt.top = m_nt->m_recv_piece.y;
+				m_All_Bishop[m_nt->m_recv_piece.piece_num].rt.right = m_All_Bishop[m_nt->m_recv_piece.piece_num].rt.left + 75;
+				m_All_Bishop[m_nt->m_recv_piece.piece_num].rt.bottom = m_All_Bishop[m_nt->m_recv_piece.piece_num].rt.top + 75;
+
+			}
+		}
+		else if (m_nt->m_recv_piece.piece_name == SELECT_QUEEN)
+		{
+			if (m_nt->Get_Player_Color() == WHITE)
+			{
+				m_All_Queen[m_nt->m_recv_piece.piece_num + 1].x = m_nt->m_recv_piece.x;
+				m_All_Queen[m_nt->m_recv_piece.piece_num + 1].y = m_nt->m_recv_piece.y;
+
+				m_All_Queen[m_nt->m_recv_piece.piece_num + 1].rt.left = m_nt->m_recv_piece.x;
+				m_All_Queen[m_nt->m_recv_piece.piece_num + 1].rt.top = m_nt->m_recv_piece.y;
+				m_All_Queen[m_nt->m_recv_piece.piece_num + 1].rt.right = m_All_Queen[m_nt->m_recv_piece.piece_num + 1].rt.left + 75;
+				m_All_Queen[m_nt->m_recv_piece.piece_num + 1].rt.bottom = m_All_Queen[m_nt->m_recv_piece.piece_num + 1].rt.top + 75;
+
+			}
+			else if (m_nt->Get_Player_Color() == BLACK)
+			{
+				m_All_Queen[m_nt->m_recv_piece.piece_num].x = m_nt->m_recv_piece.x;
+				m_All_Queen[m_nt->m_recv_piece.piece_num].y = m_nt->m_recv_piece.y;
+
+				m_All_Queen[m_nt->m_recv_piece.piece_num].rt.left = m_nt->m_recv_piece.x;
+				m_All_Queen[m_nt->m_recv_piece.piece_num].rt.top = m_nt->m_recv_piece.y;
+				m_All_Queen[m_nt->m_recv_piece.piece_num].rt.right = m_All_Queen[m_nt->m_recv_piece.piece_num].rt.left + 75;
+				m_All_Queen[m_nt->m_recv_piece.piece_num].rt.bottom = m_All_Queen[m_nt->m_recv_piece.piece_num].rt.top + 75;
+
+			}
+		}
+		else if (m_nt->m_recv_piece.piece_name == SELECT_KING)
+		{
+		if (m_nt->Get_Player_Color() == WHITE)
+		{
+			m_All_King[m_nt->m_recv_piece.piece_num + 1].x = m_nt->m_recv_piece.x;
+			m_All_King[m_nt->m_recv_piece.piece_num + 1].y = m_nt->m_recv_piece.y;
+
+			m_All_King[m_nt->m_recv_piece.piece_num + 1].rt.left = m_nt->m_recv_piece.x;
+			m_All_King[m_nt->m_recv_piece.piece_num + 1].rt.top = m_nt->m_recv_piece.y;
+			m_All_King[m_nt->m_recv_piece.piece_num + 1].rt.right = m_All_King[m_nt->m_recv_piece.piece_num + 1].rt.left + 75;
+			m_All_King[m_nt->m_recv_piece.piece_num + 1].rt.bottom = m_All_King[m_nt->m_recv_piece.piece_num + 1].rt.top + 75;
+
+		}
+		else if (m_nt->Get_Player_Color() == BLACK)
+		{
+			m_All_King[m_nt->m_recv_piece.piece_num].x = m_nt->m_recv_piece.x;
+			m_All_King[m_nt->m_recv_piece.piece_num].y = m_nt->m_recv_piece.y;
+
+			m_All_King[m_nt->m_recv_piece.piece_num].rt.left = m_nt->m_recv_piece.x;
+			m_All_King[m_nt->m_recv_piece.piece_num].rt.top = m_nt->m_recv_piece.y;
+			m_All_King[m_nt->m_recv_piece.piece_num].rt.right = m_All_King[m_nt->m_recv_piece.piece_num].rt.left + 75;
+			m_All_King[m_nt->m_recv_piece.piece_num].rt.bottom = m_All_King[m_nt->m_recv_piece.piece_num].rt.top + 75;
+
+		}
+		}
+
+		if (m_nt->Get_Player_Color() == WHITE)
+		{
+			Die_Check2(BLACK, m_nt->m_recv_piece.x, m_nt->m_recv_piece.y);
+		}
+		else if (m_nt->Get_Player_Color() == BLACK)
+		{
+			Die_Check2(WHITE, m_nt->m_recv_piece.x, m_nt->m_recv_piece.y);
+		}
+	}
+
 
 	for (int i = 0; i < BOARD_MAX; i++)
 	{
@@ -123,8 +281,7 @@ void Game_System::Draw(HDC hdc)
 		m_pr[0].Player_Pieces_Draw(hdc, m_nt->m_recv_piece.piece_name, m_nt->m_recv_piece.piece_num, m_nt->m_recv_piece.x, m_nt->m_recv_piece.y);
 	}
 
-	//// RECT_AND_STATUS << 모든말들 위치 저장하는것에도 받은 데이터를 적용해서**
-	//// 이동가능한 경로 나타나게하고, 상대방 말을 죽일수있게 수정하기**
+	return 0;
 }
 
 int Game_System::Click(HDC hdc, int x, int y)
@@ -152,7 +309,7 @@ int Game_System::Click(HDC hdc, int x, int y)
 		All_Piece_Pos(i); // 이동했을때 좌표저장
 
 		if (m_pr[i].who_is_moved != -1)
-		Die_Check(i);
+			Die_Check(i);
 		
 		m_pr[i].select_what = 0;
 
@@ -165,13 +322,15 @@ int Game_System::Click(HDC hdc, int x, int y)
 			m_pr[1].Click_Check(hdc, i, x, y);
 		}
 
-		//m_pr[i].Click_Check(hdc, i, x, y);
 		Pawn_Check(i);
 		Rook_Check(i);
 		Knight_Check(i);
 		Bishop_Check(i);
 		Queen_Check(i);
 		King_Check(i);
+
+		//m_pr[i].Click_Check(hdc, i, x, y);
+
 
 		if (i == 0 && trigger == TRUE)
 		{
@@ -2169,6 +2328,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Pawn[i].status = DEAD;
 				dead_num = i - 8;
 				m_pr[1].Player_Die_Check(10, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2179,6 +2340,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Rook[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(20, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Pawn[m_pr[player_num].who_is_moved].x == m_All_Knight[i].x && m_All_Pawn[m_pr[player_num].who_is_moved].y == m_All_Knight[i].y && m_All_Knight[i].status != DEAD)
@@ -2186,6 +2349,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Knight[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(30, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Pawn[m_pr[player_num].who_is_moved].x == m_All_Bishop[i].x && m_All_Pawn[m_pr[player_num].who_is_moved].y == m_All_Bishop[i].y && m_All_Bishop[i].status != DEAD)
@@ -2193,6 +2358,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Bishop[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(40, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2202,6 +2369,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_Queen[1].status = DEAD;
 			dead_num = 0;
 			m_pr[1].Player_Die_Check(50, dead_num);
+
+			//
 			return;
 		}
 		if (m_All_Pawn[m_pr[player_num].who_is_moved].x == m_All_King[1].x && m_All_Pawn[m_pr[player_num].who_is_moved].y == m_All_King[1].y && m_All_King[1].status != DEAD)
@@ -2209,6 +2378,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_King[1].status = DEAD;
 			dead_num = 0;
 			m_pr[1].Player_Die_Check(60, dead_num);
+
+			//
 			return;
 		}
 	}
@@ -2221,6 +2392,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Pawn[i].status = DEAD;
 				dead_num = i - 8;
 				m_pr[1].Player_Die_Check(10, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2231,6 +2404,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Rook[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(20, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Rook[m_pr[player_num].who_is_moved].x == m_All_Knight[i].x && m_All_Rook[m_pr[player_num].who_is_moved].y == m_All_Knight[i].y && m_All_Knight[i].status != DEAD)
@@ -2238,6 +2413,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Knight[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(30, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Rook[m_pr[player_num].who_is_moved].x == m_All_Bishop[i].x && m_All_Rook[m_pr[player_num].who_is_moved].y == m_All_Bishop[i].y && m_All_Bishop[i].status != DEAD)
@@ -2245,6 +2422,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Bishop[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(40, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2254,6 +2433,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_Queen[1].status = DEAD;
 			dead_num = 0;
 			m_pr[1].Player_Die_Check(50, dead_num);
+
+			//
 			return;
 		}
 		if (m_All_Rook[m_pr[player_num].who_is_moved].x == m_All_King[1].x && m_All_Rook[m_pr[player_num].who_is_moved].y == m_All_King[1].y && m_All_King[1].status != DEAD)
@@ -2261,6 +2442,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_King[1].status = DEAD;
 			dead_num = 0;
 			m_pr[1].Player_Die_Check(60, dead_num);
+
+			//
 			return;
 		}
 	}
@@ -2273,6 +2456,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Pawn[i].status = DEAD;
 				dead_num = i - 8;
 				m_pr[1].Player_Die_Check(10, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2283,6 +2468,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Rook[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(20, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Knight[m_pr[player_num].who_is_moved].x == m_All_Knight[i].x && m_All_Knight[m_pr[player_num].who_is_moved].y == m_All_Knight[i].y && m_All_Knight[i].status != DEAD)
@@ -2290,6 +2477,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Knight[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(30, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Knight[m_pr[player_num].who_is_moved].x == m_All_Bishop[i].x && m_All_Knight[m_pr[player_num].who_is_moved].y == m_All_Bishop[i].y && m_All_Bishop[i].status != DEAD)
@@ -2297,6 +2486,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Bishop[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(40, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2306,6 +2497,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_Queen[1].status = DEAD;
 			dead_num = 0;
 			m_pr[1].Player_Die_Check(50, dead_num);
+
+			//
 			return;
 		}
 		if (m_All_Knight[m_pr[player_num].who_is_moved].x == m_All_King[1].x && m_All_Knight[m_pr[player_num].who_is_moved].y == m_All_King[1].y && m_All_King[1].status != DEAD)
@@ -2313,6 +2506,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_King[1].status = DEAD;
 			dead_num = 0;
 			m_pr[1].Player_Die_Check(60, dead_num);
+
+			//
 			return;
 		}
 	}
@@ -2325,6 +2520,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Pawn[i].status = DEAD;
 				dead_num = i - 8;
 				m_pr[1].Player_Die_Check(10, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2335,6 +2532,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Rook[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(20, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Bishop[m_pr[player_num].who_is_moved].x == m_All_Knight[i].x && m_All_Bishop[m_pr[player_num].who_is_moved].y == m_All_Knight[i].y && m_All_Knight[i].status != DEAD)
@@ -2342,6 +2541,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Knight[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(30, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Bishop[m_pr[player_num].who_is_moved].x == m_All_Bishop[i].x && m_All_Bishop[m_pr[player_num].who_is_moved].y == m_All_Bishop[i].y && m_All_Bishop[i].status != DEAD)
@@ -2349,6 +2550,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Bishop[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(40, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2358,6 +2561,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_Queen[1].status = DEAD;
 			dead_num = 0;
 			m_pr[1].Player_Die_Check(50, dead_num);
+
+			//
 			return;
 		}
 		if (m_All_Bishop[m_pr[player_num].who_is_moved].x == m_All_King[1].x && m_All_Bishop[m_pr[player_num].who_is_moved].y == m_All_King[1].y && m_All_King[1].status != DEAD)
@@ -2365,6 +2570,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_King[1].status = DEAD;
 			dead_num = 0;
 			m_pr[1].Player_Die_Check(60, dead_num);
+
+			//
 			return;
 		}
     }
@@ -2377,6 +2584,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Pawn[i].status = DEAD;
 				dead_num = i - 8;
 				m_pr[1].Player_Die_Check(10, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2387,6 +2596,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Rook[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(20, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Queen[m_pr[player_num].who_is_moved].x == m_All_Knight[i].x && m_All_Queen[m_pr[player_num].who_is_moved].y == m_All_Knight[i].y && m_All_Knight[i].status != DEAD)
@@ -2394,6 +2605,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Knight[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(30, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Queen[m_pr[player_num].who_is_moved].x == m_All_Bishop[i].x && m_All_Queen[m_pr[player_num].who_is_moved].y == m_All_Bishop[i].y && m_All_Bishop[i].status != DEAD)
@@ -2401,6 +2614,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Bishop[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(40, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2410,6 +2625,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_Queen[1].status = DEAD;
 			dead_num = 0;
 			m_pr[1].Player_Die_Check(50, dead_num);
+
+			//
 			return;
 		}
 		if (m_All_Queen[m_pr[player_num].who_is_moved].x == m_All_King[1].x && m_All_Queen[m_pr[player_num].who_is_moved].y == m_All_King[1].y && m_All_King[1].status != DEAD)
@@ -2417,6 +2634,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_King[1].status = DEAD;
 			dead_num = 0;
 			m_pr[1].Player_Die_Check(60, dead_num);
+
+			//
 			return;
 		}
     }
@@ -2430,6 +2649,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Pawn[i].status = DEAD;
 				dead_num = i - 8;
 				m_pr[1].Player_Die_Check(10, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2440,6 +2661,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Rook[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(20, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_King[m_pr[player_num].who_is_moved].x == m_All_Knight[i].x && m_All_King[m_pr[player_num].who_is_moved].y == m_All_Knight[i].y && m_All_Knight[i].status != DEAD)
@@ -2447,6 +2670,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Knight[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(30, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_King[m_pr[player_num].who_is_moved].x == m_All_Bishop[i].x && m_All_King[m_pr[player_num].who_is_moved].y == m_All_Bishop[i].y && m_All_Bishop[i].status != DEAD)
@@ -2454,6 +2679,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Bishop[i].status = DEAD;
 				dead_num = i - 2;
 				m_pr[1].Player_Die_Check(40, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2463,6 +2690,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_Queen[1].status = DEAD;
 			dead_num = 0;
 			m_pr[1].Player_Die_Check(50, dead_num);
+
+			//
 			return;
 		}
 		if (m_All_King[m_pr[player_num].who_is_moved].x == m_All_King[1].x && m_All_King[m_pr[player_num].who_is_moved].y == m_All_King[1].y && m_All_King[1].status != DEAD)
@@ -2470,6 +2699,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_King[1].status = DEAD;
 			dead_num = 0;
 			m_pr[1].Player_Die_Check(60, dead_num);
+
+			//
 			return;
 		}
     }
@@ -2485,6 +2716,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Pawn[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(10, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2495,6 +2728,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Rook[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(20, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Pawn[m_pr[player_num].who_is_moved + 8].x == m_All_Knight[i].x && m_All_Pawn[m_pr[player_num].who_is_moved + 8].y == m_All_Knight[i].y && m_All_Knight[i].status != DEAD)
@@ -2502,6 +2737,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Knight[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(30, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Pawn[m_pr[player_num].who_is_moved + 8].x == m_All_Bishop[i].x && m_All_Pawn[m_pr[player_num].who_is_moved + 8].y == m_All_Bishop[i].y && m_All_Bishop[i].status != DEAD)
@@ -2509,6 +2746,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Bishop[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(40, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2518,6 +2757,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_Queen[0].status = DEAD;
 			dead_num = 0;
 			m_pr[0].Player_Die_Check(50, dead_num);
+
+			//
 			return;
 		}
 		if (m_All_Pawn[m_pr[player_num].who_is_moved + 8].x == m_All_King[0].x && m_All_Pawn[m_pr[player_num].who_is_moved + 8].y == m_All_King[0].y && m_All_King[0].status != DEAD)
@@ -2525,6 +2766,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_King[0].status = DEAD;
 			dead_num = 0;
 			m_pr[0].Player_Die_Check(60, dead_num);
+
+			//
 			return;
 		}
 	}
@@ -2537,6 +2780,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Pawn[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(10, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2547,6 +2792,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Rook[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(20, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Rook[m_pr[player_num].who_is_moved + 2].x == m_All_Knight[i].x && m_All_Rook[m_pr[player_num].who_is_moved + 2].y == m_All_Knight[i].y && m_All_Knight[i].status != DEAD)
@@ -2554,6 +2801,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Knight[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(30, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Rook[m_pr[player_num].who_is_moved + 2].x == m_All_Bishop[i].x && m_All_Rook[m_pr[player_num].who_is_moved + 2].y == m_All_Bishop[i].y && m_All_Bishop[i].status != DEAD)
@@ -2561,6 +2810,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Bishop[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(40, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2570,6 +2821,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_Queen[0].status = DEAD;
 			dead_num = 0;
 			m_pr[0].Player_Die_Check(50, dead_num);
+
+			//
 			return;
 		}
 		if (m_All_Rook[m_pr[player_num].who_is_moved + 2].x == m_All_King[0].x && m_All_Rook[m_pr[player_num].who_is_moved + 2].y == m_All_King[0].y && m_All_King[0].status != DEAD)
@@ -2577,6 +2830,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_King[0].status = DEAD;
 			dead_num = 0;
 			m_pr[0].Player_Die_Check(60, dead_num);
+
+			//
 			return;
 		}
 	}
@@ -2589,6 +2844,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Pawn[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(10, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2599,6 +2856,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Rook[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(20, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Knight[m_pr[player_num].who_is_moved + 2].x == m_All_Knight[i].x && m_All_Knight[m_pr[player_num].who_is_moved + 2].y == m_All_Knight[i].y && m_All_Knight[i].status != DEAD)
@@ -2606,6 +2865,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Knight[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(30, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Knight[m_pr[player_num].who_is_moved + 2].x == m_All_Bishop[i].x && m_All_Knight[m_pr[player_num].who_is_moved + 2].y == m_All_Bishop[i].y && m_All_Bishop[i].status != DEAD)
@@ -2613,6 +2874,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Bishop[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(40, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2622,6 +2885,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_Queen[0].status = DEAD;
 			dead_num = 0;
 			m_pr[0].Player_Die_Check(50, dead_num);
+
+			//
 			return;
 		}
 		if (m_All_Knight[m_pr[player_num].who_is_moved + 2].x == m_All_King[0].x && m_All_Knight[m_pr[player_num].who_is_moved + 2].y == m_All_King[0].y && m_All_King[0].status != DEAD)
@@ -2629,6 +2894,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_King[0].status = DEAD;
 			dead_num = 0;
 			m_pr[0].Player_Die_Check(60, dead_num);
+
+			//
 			return;
 		}
     }
@@ -2641,6 +2908,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Pawn[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(10, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2651,6 +2920,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Rook[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(20, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Bishop[m_pr[player_num].who_is_moved + 2].x == m_All_Knight[i].x && m_All_Bishop[m_pr[player_num].who_is_moved + 2].y == m_All_Knight[i].y && m_All_Knight[i].status != DEAD)
@@ -2658,6 +2929,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Knight[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(30, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Bishop[m_pr[player_num].who_is_moved + 2].x == m_All_Bishop[i].x && m_All_Bishop[m_pr[player_num].who_is_moved + 2].y == m_All_Bishop[i].y && m_All_Bishop[i].status != DEAD)
@@ -2665,6 +2938,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Bishop[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(40, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2674,6 +2949,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_Queen[0].status = DEAD;
 			dead_num = 0;
 			m_pr[0].Player_Die_Check(50, dead_num);
+
+			//
 			return;
 		}
 		if (m_All_Bishop[m_pr[player_num].who_is_moved + 2].x == m_All_King[0].x && m_All_Bishop[m_pr[player_num].who_is_moved + 2].y == m_All_King[0].y && m_All_King[0].status != DEAD)
@@ -2681,6 +2958,8 @@ void Game_System::Die_Check(int player_num)
 			m_All_King[0].status = DEAD;
 			dead_num = 0;
 			m_pr[0].Player_Die_Check(60, dead_num);
+
+			//
 			return;
 		}
     }
@@ -2693,6 +2972,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Pawn[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(10, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2703,6 +2984,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Rook[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(20, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Queen[m_pr[player_num].who_is_moved + 1].x == m_All_Knight[i].x && m_All_Queen[m_pr[player_num].who_is_moved + 1].y == m_All_Knight[i].y && m_All_Knight[i].status != DEAD)
@@ -2710,6 +2993,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Knight[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(30, dead_num);
+
+				//
 				return;
 			}
 			else if (m_All_Queen[m_pr[player_num].who_is_moved + 1].x == m_All_Bishop[i].x && m_All_Queen[m_pr[player_num].who_is_moved + 1].y == m_All_Bishop[i].y && m_All_Bishop[i].status != DEAD)
@@ -2717,6 +3002,8 @@ void Game_System::Die_Check(int player_num)
 				m_All_Bishop[i].status = DEAD;
 				dead_num = i;
 				m_pr[0].Player_Die_Check(40, dead_num);
+
+				//
 				return;
 			}
 		}
@@ -2845,6 +3132,106 @@ int Game_System::Game_Over_Check()
 		return 20;
 
 	return 0;
+}
+
+void Game_System::Die_Check2(int enemy_num, int x, int y)
+{
+	if (enemy_num == BLACK)
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			if (x == m_All_Pawn[i].x && y == m_All_Pawn[i].y)
+			{
+				m_All_Pawn[i].status = DEAD;
+				m_pr[0].Player_Die_Check(10, i);
+				break;
+			}
+		}
+		for (int i = 0; i < 2; i++)
+		{
+			if (x == m_All_Rook[i].x && y == m_All_Rook[i].y)
+			{
+				m_All_Rook[i].status = DEAD;
+				m_pr[0].Player_Die_Check(20, i);
+				break;
+			}
+			else if (x == m_All_Knight[i].x && y == m_All_Knight[i].y)
+			{
+				m_All_Knight[i].status = DEAD;
+				m_pr[0].Player_Die_Check(30, i);
+				break;
+			}
+			else if (x == m_All_Bishop[i].x && y == m_All_Bishop[i].y)
+			{
+				m_All_Bishop[i].status = DEAD;
+				m_pr[0].Player_Die_Check(40, i);
+				break;
+			}
+		}
+		for (int i = 0; i < 1; i++)
+		{
+			if (x == m_All_Queen[i].x && y == m_All_Queen[i].y)
+			{
+				m_All_Queen[i].status = DEAD;
+				m_pr[0].Player_Die_Check(50, i);
+				break;
+			}
+			else if (x == m_All_King[i].x && y == m_All_King[i].y)
+			{
+				m_All_King[i].status = DEAD;
+				m_pr[0].Player_Die_Check(60, i);
+				break;
+			}
+		}
+	}
+	else if (enemy_num == WHITE)
+	{
+		for (int i = 8; i < 16; i++)
+		{
+			if (x == m_All_Pawn[i].x && y == m_All_Pawn[i].y)
+			{
+				m_All_Pawn[i].status = DEAD;
+				m_pr[1].Player_Die_Check(10, i - 8);
+				break;
+			}
+		}
+		for (int i = 2; i < 4; i++)
+		{
+			if (x == m_All_Rook[i].x && y == m_All_Rook[i].y)
+			{
+				m_All_Rook[i].status = DEAD;
+				m_pr[1].Player_Die_Check(20, i - 2);
+				break;
+			}
+			else if (x == m_All_Knight[i].x && y == m_All_Knight[i].y)
+			{
+				m_All_Knight[i].status = DEAD;
+				m_pr[1].Player_Die_Check(30, i - 2);
+				break;
+			}
+			else if (x == m_All_Bishop[i].x && y == m_All_Bishop[i].y)
+			{
+				m_All_Bishop[i].status = DEAD;
+				m_pr[1].Player_Die_Check(40, i - 2);
+				break;
+			}
+		}
+		for (int i = 1; i < 2; i++)
+		{
+			if (x == m_All_Queen[i].x && y == m_All_Queen[i].y)
+			{
+				m_All_Queen[i].status = DEAD;
+				m_pr[1].Player_Die_Check(50, i - 1);
+				break;
+			}
+			else if (x == m_All_King[i].x && y == m_All_King[i].y)
+			{
+				m_All_King[i].status = DEAD;
+				m_pr[1].Player_Die_Check(50, i - 1);
+				break;
+			}
+		}
+	}
 }
 
 Game_System::~Game_System()

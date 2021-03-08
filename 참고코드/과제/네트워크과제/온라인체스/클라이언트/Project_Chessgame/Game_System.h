@@ -22,7 +22,7 @@ public:
 	int dead_num;
 
 	int Init_System(HDC hdc, HINSTANCE hinst);
-	void Draw(HDC hdc);
+	int Draw(HDC hdc);
 	int Click(HDC hdc, int x , int y);
 	void Set_All_Pawn_Pos();
 	void All_Piece_Pos(int player_num);
@@ -36,6 +36,7 @@ public:
 	void Die_Check(int player_num);
 	int Game_Over_Check();
 	int Get_Login_Fail();
+	void Die_Check2(int enemy_num, int x, int y);
 
 	~Game_System();
 };

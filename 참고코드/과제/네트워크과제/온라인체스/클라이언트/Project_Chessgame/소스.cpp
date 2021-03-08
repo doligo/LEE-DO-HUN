@@ -111,6 +111,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 		game_result = gs.Click(hdc, mouse_x, mouse_y);
 
+		if (game_result == 10 && game_over == TRUE)
+		{
+			if (MessageBox(hWnd, TEXT("ÈæÆÀ½Â¸®!!"), TEXT("Black Win"), MB_OK) == IDOK)
+			{
+				game_result = 0;
+			}
+		}
+		else if (game_result == 20 && game_over == TRUE)
+		{
+			if (MessageBox(hWnd, TEXT("¹éÆÀ½Â¸®!!"), TEXT("White Win"), MB_OK) == IDOK)
+			{
+				game_result = 0;
+			}
+		}
+
 		InvalidateRect(hWnd, NULL, TRUE);
 		return 0;
 	case WM_PAINT:
