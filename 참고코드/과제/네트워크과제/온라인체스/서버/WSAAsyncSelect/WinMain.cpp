@@ -50,7 +50,6 @@ bool black_set_check = false;
 bool white_set_check = false;
 CHESS_PIECE *save_piece;
 int log_count = 0;
-int log_out = 0;
 
 //소켓 메시지 처리
 void ProcessSocketMessage(HWND, UINT, WPARAM, LPARAM);
@@ -185,11 +184,30 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	char buf[BUFSIZE];
 	bool tmp = false;
 	int set_color = 0;
+	int log_out = true;
 
 	//오류 발생 여부 확인
 	if (WSAGETSELECTERROR(lParam))
 	{
 		err_display(WSAGETSELECTERROR(lParam));
+
+		if (Black_Player == wParam)
+		{
+			send(White_Player, (char*)&log_out, sizeof(log_out), 0);
+			Black_Player = NULL;
+			White_Player = NULL;
+			black_set_check = false;
+			white_set_check = false;
+		}
+		else if (White_Player == wParam)
+		{
+			send(Black_Player, (char*)&log_out, sizeof(log_out), 0);
+			Black_Player = NULL;
+			White_Player = NULL;
+			black_set_check = false;
+			white_set_check = false;
+		}
+
 		RemoveSocketInfo(wParam);
 		return;
 	}
@@ -415,22 +433,6 @@ void RemoveSocketInfo(SOCKET sock)
 
 			closesocket(curr->sock);
 
-			if (Black_Player == sock)
-			{
-				black_set_check = false;
-				Black_Player = NULL;
-				log_out = 100;
-				send(White_Player, (char*)&log_out, sizeof(log_out), NULL);
-				log_out = 0;
-			}
-			else if (White_Player == sock)
-			{
-				white_set_check = false;
-				White_Player = NULL;
-				log_out = 100;
-				send(Black_Player, (char*)&log_out, sizeof(log_out), NULL);
-				log_out = 0;
-			}
 			Player_Max--;
 		}
 

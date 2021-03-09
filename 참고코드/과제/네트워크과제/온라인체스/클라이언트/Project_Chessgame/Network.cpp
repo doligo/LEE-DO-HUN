@@ -1,6 +1,6 @@
 #include "Network.h"
 
-int Network::login_fail;
+int Network::login_fail = 0;
 CHESS_PIECE Network::m_piece;
 CHESS_PIECE Network::m_recv_piece;
 bool Network::m_player_connect = false;
@@ -118,8 +118,8 @@ unsigned WINAPI Network::Recv(void *arg)
 		}
 		else if (value == sizeof(int))
 		{
-			tmp = (int)buf;
-			if (tmp == 100)
+			tmp = (bool)buf;
+			if (tmp == true)
 			{
 				login_fail = 100;
 			}
