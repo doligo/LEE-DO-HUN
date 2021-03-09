@@ -50,6 +50,7 @@ bool black_set_check = false;
 bool white_set_check = false;
 CHESS_PIECE *save_piece;
 int log_count = 0;
+int log_out = 0;
 
 //家南 皋矫瘤 贸府
 void ProcessSocketMessage(HWND, UINT, WPARAM, LPARAM);
@@ -418,11 +419,17 @@ void RemoveSocketInfo(SOCKET sock)
 			{
 				black_set_check = false;
 				Black_Player = NULL;
+				log_out = 100;
+				send(White_Player, (char*)&log_out, sizeof(log_out), NULL);
+				log_out = 0;
 			}
 			else if (White_Player == sock)
 			{
 				white_set_check = false;
 				White_Player = NULL;
+				log_out = 100;
+				send(Black_Player, (char*)&log_out, sizeof(log_out), NULL);
+				log_out = 0;
 			}
 			Player_Max--;
 		}

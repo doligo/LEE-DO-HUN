@@ -102,6 +102,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 				KillTimer(hWnd, 1);
 				return 0;
 			}
+			else if (value == 100)
+			{
+				cout << "상대방이 퇴장하였습니다" << endl;
+				system("pause");
+				PostQuitMessage(0);
+				KillTimer(hWnd, 1);
+				return 0;
+			}
 
 			InvalidateRect(hWnd, NULL, TRUE); // 네트워크 정보받아오고 그려주기위함
 		return 0;

@@ -75,6 +75,7 @@ unsigned WINAPI Network::Recv(void *arg)
 	SOCKET sock = *((SOCKET*)arg);
 	int value = 0;
 	char buf[BUFSIZ];
+	int tmp = 0;
 
 	while (1)
 	{
@@ -114,6 +115,17 @@ unsigned WINAPI Network::Recv(void *arg)
 		else if (value == sizeof(bool))
 		{
 			login_fail = 10;
+		}
+		else if (value == sizeof(int))
+		{
+			tmp = (int)buf;
+			if (tmp == 100)
+			{
+				login_fail = 100;
+			}
+			else
+				break;
+			tmp = 0;
 		}
 	}
 

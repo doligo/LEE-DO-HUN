@@ -9,6 +9,8 @@ int Game_System::Get_Login_Fail()
 {
 	if (m_nt->login_fail == 10)
 		return 10;
+	else if (m_nt->login_fail == 100)
+		return 100;
 }
 
 int Game_System::Init_System(HDC hdc, HINSTANCE hinst)
@@ -1969,7 +1971,7 @@ void Game_System::Queen_Check(int num)
 				m_All_Queen[m_pr[num].clicked_object_num + 1].rt.left - rt_num == -75 ||
 				i < 4 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 1 && m_All_Bishop[i].rt.top == m_All_Queen[m_pr[num].clicked_object_num + 1].rt.top && m_All_Bishop[i].rt.left == m_All_Queen[m_pr[num].clicked_object_num + 1].rt.left - rt_num ||
 				i < 2 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 1 && m_All_Queen[i].rt.top == m_All_Queen[m_pr[num].clicked_object_num + 1].rt.top && m_All_Queen[i].rt.left == m_All_Queen[m_pr[num].clicked_object_num + 1].rt.left - rt_num ||
-				i < 2 && m_All_King[i].status == ALIVE && m_All_King[i].player_num == 1 && m_All_King[i].rt.top == m_All_Queen[m_pr[num].clicked_object_num + 1].rt.top && m_All_Queen[i].rt.left == m_All_King[m_pr[num].clicked_object_num + 1].rt.left - rt_num)
+				i < 2 && m_All_King[i].status == ALIVE && m_All_King[i].player_num == 1 && m_All_King[i].rt.top == m_All_Queen[m_pr[num].clicked_object_num + 1].rt.top && m_All_King[i].rt.left == m_All_Queen[m_pr[num].clicked_object_num + 1].rt.left - rt_num)
 			{
 				break;
 			}
@@ -1980,7 +1982,7 @@ void Game_System::Queen_Check(int num)
 				m_All_Queen[m_pr[num].clicked_object_num + 1].rt.left - rt_num == -75 ||
 				i < 2 && m_All_Bishop[i].status == ALIVE && m_All_Bishop[i].player_num == 0 && m_All_Bishop[i].rt.top == m_All_Queen[m_pr[num].clicked_object_num + 1].rt.top && m_All_Bishop[i].rt.left == m_All_Queen[m_pr[num].clicked_object_num + 1].rt.left - rt_num ||
 				i < 1 && m_All_Queen[i].status == ALIVE && m_All_Queen[i].player_num == 0 && m_All_Queen[i].rt.top == m_All_Queen[m_pr[num].clicked_object_num + 1].rt.top && m_All_Queen[i].rt.left == m_All_Queen[m_pr[num].clicked_object_num + 1].rt.left - rt_num ||
-				i < 1 && m_All_King[i].status == ALIVE && m_All_King[i].player_num == 0 && m_All_King[i].rt.top == m_All_Queen[m_pr[num].clicked_object_num + 1].rt.top && m_All_Queen[i].rt.left == m_All_King[m_pr[num].clicked_object_num + 1].rt.left - rt_num)
+				i < 1 && m_All_King[i].status == ALIVE && m_All_King[i].player_num == 0 && m_All_King[i].rt.top == m_All_Queen[m_pr[num].clicked_object_num + 1].rt.top && m_All_King[i].rt.left == m_All_Queen[m_pr[num].clicked_object_num + 1].rt.left - rt_num)
 			{
 				if (m_All_Queen[m_pr[num].clicked_object_num + 1].rt.left != 0)
 					m_pr[1].queen_left++;
