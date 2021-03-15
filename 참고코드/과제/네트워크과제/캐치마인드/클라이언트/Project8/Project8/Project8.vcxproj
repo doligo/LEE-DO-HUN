@@ -153,11 +153,13 @@
   <ItemGroup>
     <ClCompile Include="BitMap_And_Draw.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="NetWork.cpp" />
     <ClCompile Include="Project8.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitMap_And_Draw.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="NetWork.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

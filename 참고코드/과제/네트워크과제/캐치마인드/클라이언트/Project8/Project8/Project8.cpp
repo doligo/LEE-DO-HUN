@@ -1,4 +1,8 @@
-﻿#include <windows.h>
+﻿#pragma once
+#pragma warning(disable:4996)
+#pragma comment(lib, "ws2_32.lib")
+#include <winsock2.h>
+#include <windows.h>
 #include <iostream>
 #include <vector>
 #include <time.h>
@@ -30,7 +34,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	RegisterClass(&WndClass);
 
 	hWnd = CreateWindow(g_szClassName, g_szClassName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-		1200, 738, NULL, (HMENU)NULL, hInstance, NULL);
+		1040, 738, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 
 	GameManager::GetInstane()->Init(hWnd);
@@ -49,7 +53,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		}
 		else
 		{
-
+			GameManager::GetInstane()->Update();
 		}
 
 	}

@@ -1,12 +1,6 @@
 #pragma once
-#include <Windows.h>
-#include <vector>
-#include <stdlib.h>
-#include <stdio.h>
-#include <process.h>
-#include <iostream>
-#include <string.h>
 #include "BitMap_And_Draw.h"
+#include "NetWork.h"
 using namespace std;
 
 class GameManager
@@ -14,6 +8,9 @@ class GameManager
 private:
 	static GameManager *SingleTone_GM;
 	BitMap_And_Draw *Bt_Draw;
+	NetWork *NT;
+
+	int m_select_character;
 public:
 	GameManager();
 
@@ -25,6 +22,7 @@ public:
 	}
 
 	void Init(HWND hWnd);
+	void Update();
 
 	~GameManager();
 };

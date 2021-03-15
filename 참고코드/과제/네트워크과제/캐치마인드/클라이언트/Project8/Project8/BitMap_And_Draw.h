@@ -1,3 +1,4 @@
+#pragma once
 #include <Windows.h>
 #include <iostream>
 #include <string.h>
@@ -5,7 +6,7 @@
 #include <conio.h>
 #include <stack>
 using namespace std;
-#pragma once
+
 
 #define BITMAP_MAX 32
 #define BITMAP_SIZE_MAX 32
