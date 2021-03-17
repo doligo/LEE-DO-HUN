@@ -3,6 +3,21 @@
 #include "NetWork.h"
 using namespace std;
 
+#define CHARACTER_MAX 16
+
+enum GAME_STATUS
+{
+	Status_Select_Character = 10,
+	Status_Wait_Room
+};
+
+struct Charater_Pos
+{
+	int x;
+	int y;
+	RECT rt;
+};
+
 class GameManager
 {
 private:
@@ -10,7 +25,11 @@ private:
 	BitMap_And_Draw *Bt_Draw;
 	NetWork *NT;
 
+	Charater_Pos My_Character_Pos[CHARACTER_MAX];
 	int m_select_character;
+	int m_game_status;
+	int m_my_mouse_x;
+	int m_my_mouse_y;
 public:
 	GameManager();
 
@@ -23,6 +42,7 @@ public:
 
 	void Init(HWND hWnd);
 	void Update();
+	void Input_Mouse(LPARAM lParam);
 
 	~GameManager();
 };
