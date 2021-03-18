@@ -39,7 +39,10 @@ void BitMap_And_Draw::Draw_Ready(int _x, int _y, int _m_size, int dc_num)
 
 void BitMap_And_Draw::Draw_Detail_Ready(int _x, int _y, int _m_size, int dc_num, int x_size, int y_size)
 {
-	TransparentBlt(Entire_DC, _x, _y, m_size[_m_size].cx + x_size, m_size[_m_size].cy + y_size, MemDC[dc_num], 0, 0, m_size[_m_size].cx, m_size[_m_size].cy, RGB(255, 255, 255));
+	if (_m_size == 10 || _m_size == 8 || _m_size == 7 || _m_size == 11 || _m_size == 22 || _m_size == 14)
+		TransparentBlt(Entire_DC, _x, _y, m_size[_m_size].cx + x_size, m_size[_m_size].cy + y_size, MemDC[dc_num], 0, 0, m_size[_m_size].cx, m_size[_m_size].cy, RGB(255, 0, 255));
+	else
+		TransparentBlt(Entire_DC, _x, _y, m_size[_m_size].cx + x_size, m_size[_m_size].cy + y_size, MemDC[dc_num], 0, 0, m_size[_m_size].cx, m_size[_m_size].cy, RGB(255, 255, 255));
 }
 
 void BitMap_And_Draw::Draw_Go()
@@ -51,11 +54,6 @@ void BitMap_And_Draw::Draw_Black_BackGround()
 {
 	TransparentBlt(Entire_DC, 0, 0, m_size[Black_BackGround].cx + 1200, m_size[Black_BackGround].cy + 680, MemDC[Black_BackGround], 0, 0, m_size[Black_BackGround].cx, m_size[Black_BackGround].cy, RGB(255, 0, 255));
 	BitBlt(hdc, 0, 0, 1200, 700, Entire_DC, 0, 0, SRCCOPY);
-}
-
-void BitMap_And_Draw::Draw_Detail_Ready2(int _x, int _y, int _m_size, int dc_num, int x_size, int y_size)
-{
-	TransparentBlt(Entire_DC, _x, _y, m_size[_m_size].cx + x_size, m_size[_m_size].cy + y_size, MemDC[dc_num], 0, 0, m_size[_m_size].cx, m_size[_m_size].cy, RGB(255, 0, 255));
 }
 
 BitMap_And_Draw::~BitMap_And_Draw()

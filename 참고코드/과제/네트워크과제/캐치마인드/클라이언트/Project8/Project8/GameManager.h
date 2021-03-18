@@ -16,6 +16,7 @@ struct Charater_Pos
 	int x;
 	int y;
 	RECT rt;
+	int name;
 };
 
 class GameManager
@@ -41,8 +42,9 @@ public:
 	}
 
 	void Init(HWND hWnd);
-	void Update();
+	void Update(LPARAM lParam);
 	void Input_Mouse(LPARAM lParam);
+	void Set_Select_Character_Pos();
 
 	~GameManager();
 };
