@@ -7,12 +7,16 @@ GameManager::GameManager()
 
 }
 
-void GameManager::Init(HWND hWnd)
+void GameManager::Init(HWND hWnd, HINSTANCE hInstance)
 {
 	Bt_Draw = new BitMap_And_Draw;
 	Bt_Draw->Init_Bitmap(hWnd);
 	NT = new NetWork;
 	NT->Init_Network(hWnd);
+
+	m_hWnd = hWnd;
+	m_hInst = hInstance;
+	m_NameBox = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL, 600, 550, 120, 20, m_hWnd, (HMENU)200, m_hInst, NULL);
 
 	m_select_character = Character_Orange;
 	m_game_status = Status_Select_Character;
@@ -22,7 +26,7 @@ void GameManager::Init(HWND hWnd)
 	Set_Select_Character_Pos();
 }
 
-void GameManager::Update(LPARAM lParam)
+void GameManager::Update(LPARAM lParam, WPARAM wParam)
 {
 	if (m_game_status == Status_Select_Character)
 	{
@@ -54,21 +58,28 @@ void GameManager::Update(LPARAM lParam)
 		Bt_Draw->Draw_Go();
 	}
 
-	Input_Mouse(lParam);
+	Input(lParam, wParam);
 }
 
-void GameManager::Input_Mouse(LPARAM lParam)
+void GameManager::Input(LPARAM lParam , WPARAM wParam)
 {
 	if (GetAsyncKeyState(VK_LBUTTON) & 0x8001)
 	{
 		m_my_mouse_x = LOWORD(lParam);
 		m_my_mouse_y = HIWORD(lParam);
-		
-		for (int i = 0; i < 13; i++)
+
+		if (m_game_status == Status_Select_Character) // 캐릭터 선택창
 		{
-			if (My_Character_Pos[i].rt.left <= m_my_mouse_x && My_Character_Pos[i].rt.top <= m_my_mouse_y && My_Character_Pos[i].rt.right >= m_my_mouse_x && My_Character_Pos[i].rt.bottom >= m_my_mouse_y)
-				m_select_character = My_Character_Pos[i].name;
+			for (int i = 0; i < 16; i++)
+			{
+				if (My_Character_Pos[i].rt.left <= m_my_mouse_x && My_Character_Pos[i].rt.top <= m_my_mouse_y && My_Character_Pos[i].rt.right >= m_my_mouse_x && My_Character_Pos[i].rt.bottom >= m_my_mouse_y)
+					m_select_character = My_Character_Pos[i].name;
+			}
 		}
+	}
+	else if (GetAsyncKeyState(WM_KEYDOWN) & 0x8001)
+	{
+
 	}
 }
 
@@ -100,6 +111,12 @@ void GameManager::Set_Select_Character_Pos()
 	My_Character_Pos[11].name = Character_Garlic;
 	My_Character_Pos[12].rt = { 374, 481, 454, 551 };
 	My_Character_Pos[12].name = Character_MushRoom;
+	My_Character_Pos[13].rt = { 479, 481, 558, 551 };
+	My_Character_Pos[13].name = Character_Banana;
+	My_Character_Pos[14].rt = { 584, 481, 665, 551 };
+	My_Character_Pos[14].name = Character_Tomato;
+	My_Character_Pos[15].rt = { 691, 481, 769, 551 };
+	My_Character_Pos[15].name = Character_Grape;
 }
 
 GameManager::~GameManager()

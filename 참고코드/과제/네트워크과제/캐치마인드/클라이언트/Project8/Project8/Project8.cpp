@@ -37,7 +37,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		1040, 738, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 
-	GameManager::GetInstane()->Init(hWnd);
+	GameManager::GetInstane()->Init(hWnd, g_hInst);
 
 	srand((unsigned)time(NULL));
 
@@ -53,7 +53,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		}
 		else
 		{
-			GameManager::GetInstane()->Update(Message.lParam);
+			GameManager::GetInstane()->Update(Message.lParam, Message.wParam);
 		}
 
 	}

@@ -8,7 +8,8 @@ using namespace std;
 enum GAME_STATUS
 {
 	Status_Select_Character = 10,
-	Status_Wait_Room
+	Status_Wait_Room,
+	Status_Exit_Game
 };
 
 struct Charater_Pos
@@ -31,6 +32,12 @@ private:
 	int m_game_status;
 	int m_my_mouse_x;
 	int m_my_mouse_y;
+
+	RECT m_enter_button;
+	RECT m_exit_button;
+	HWND m_NameBox;
+	HWND m_hWnd;
+	HINSTANCE m_hInst;
 public:
 	GameManager();
 
@@ -41,9 +48,9 @@ public:
 		return SingleTone_GM;
 	}
 
-	void Init(HWND hWnd);
-	void Update(LPARAM lParam);
-	void Input_Mouse(LPARAM lParam);
+	void Init(HWND hWnd, HINSTANCE hInstance);
+	void Update(LPARAM lParam, WPARAM wParam);
+	void Input(LPARAM lParam , WPARAM wParam);
 	void Set_Select_Character_Pos();
 
 	~GameManager();
