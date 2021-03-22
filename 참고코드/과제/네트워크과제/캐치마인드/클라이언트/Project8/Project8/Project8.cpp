@@ -53,7 +53,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		}
 		else
 		{
-			GameManager::GetInstane()->Update(Message.lParam, Message.wParam, Message);
+			GameManager::GetInstane()->Update(Message.lParam, Message.wParam);
 		}
 
 	}

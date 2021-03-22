@@ -35,9 +35,11 @@ private:
 
 	RECT m_enter_button;
 	RECT m_exit_button;
+	RECT m_input_name_rt;
 	HWND m_NameBox;
 	HWND m_hWnd;
 	HINSTANCE m_hInst;
+	MSG m_Message;
 
 	char m_Player_Name[512];
 public:
@@ -51,10 +53,9 @@ public:
 	}
 
 	void Init(HWND hWnd, HINSTANCE hInstance);
-	void Update(LPARAM lParam, WPARAM wParam, MSG Message);
-	void Input(LPARAM lParam , WPARAM wParam, MSG Message);
+	void Update(LPARAM lParam, WPARAM wParam);
+	void Input(LPARAM lParam , WPARAM wParam);
 	void Set_Select_Character_Pos();
-	void PreTranslateMessage(MSG pMsg);
 
 	~GameManager();
 };

@@ -160,7 +160,6 @@
     <ClInclude Include="BitMap_And_Draw.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="NetWork.h" />
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
