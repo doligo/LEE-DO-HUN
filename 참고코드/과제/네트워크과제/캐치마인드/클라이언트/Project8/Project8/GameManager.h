@@ -38,6 +38,8 @@ private:
 	HWND m_NameBox;
 	HWND m_hWnd;
 	HINSTANCE m_hInst;
+
+	char m_Player_Name[512];
 public:
 	GameManager();
 
@@ -49,9 +51,10 @@ public:
 	}
 
 	void Init(HWND hWnd, HINSTANCE hInstance);
-	void Update(LPARAM lParam, WPARAM wParam);
-	void Input(LPARAM lParam , WPARAM wParam);
+	void Update(LPARAM lParam, WPARAM wParam, MSG Message);
+	void Input(LPARAM lParam , WPARAM wParam, MSG Message);
 	void Set_Select_Character_Pos();
+	void PreTranslateMessage(MSG pMsg);
 
 	~GameManager();
 };

@@ -16,7 +16,7 @@ void GameManager::Init(HWND hWnd, HINSTANCE hInstance)
 
 	m_hWnd = hWnd;
 	m_hInst = hInstance;
-	m_NameBox = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL, 600, 550, 120, 20, m_hWnd, (HMENU)200, m_hInst, NULL);
+	m_NameBox = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL, 640, 650, 120, 20, m_hWnd, (HMENU)200, m_hInst, NULL);
 
 	m_select_character = Character_Orange;
 	m_game_status = Status_Select_Character;
@@ -26,7 +26,7 @@ void GameManager::Init(HWND hWnd, HINSTANCE hInstance)
 	Set_Select_Character_Pos();
 }
 
-void GameManager::Update(LPARAM lParam, WPARAM wParam)
+void GameManager::Update(LPARAM lParam, WPARAM wParam, MSG Message)
 {
 	if (m_game_status == Status_Select_Character)
 	{
@@ -57,11 +57,11 @@ void GameManager::Update(LPARAM lParam, WPARAM wParam)
 		Bt_Draw->Draw_Detail_Ready(502, 590, m_select_character, m_select_character, 15, 15);
 		Bt_Draw->Draw_Go();
 	}
-
-	Input(lParam, wParam);
+	InvalidateRect(m_NameBox, FALSE, NULL);
+	Input(lParam, wParam, Message);
 }
 
-void GameManager::Input(LPARAM lParam , WPARAM wParam)
+void GameManager::Input(LPARAM lParam , WPARAM wParam, MSG Message)
 {
 	if (GetAsyncKeyState(VK_LBUTTON) & 0x8001)
 	{
@@ -77,9 +77,12 @@ void GameManager::Input(LPARAM lParam , WPARAM wParam)
 			}
 		}
 	}
-	else if (GetAsyncKeyState(WM_KEYDOWN) & 0x8001)
+	else if (GetAsyncKeyState(VK_RETURN) & 0x8001)	 //	WM_KEYDOWN
 	{
-
+		if (m_game_status == Status_Select_Character) // 캐릭터 선택창
+		{
+			PreTranslateMessage(Message);
+		}
 	}
 }
 
@@ -117,6 +120,23 @@ void GameManager::Set_Select_Character_Pos()
 	My_Character_Pos[14].name = Character_Tomato;
 	My_Character_Pos[15].rt = { 691, 481, 769, 551 };
 	My_Character_Pos[15].name = Character_Grape;
+}
+
+
+void GameManager::PreTranslateMessage(MSG pMsg) //다이알로그 클래스위자드에서 키값 캡처함수
+{
+	// TODO: Add your specialized code here and/or call the base class
+	if (pMsg.message == WM_KEYDOWN && pMsg.hwnd == GetDlgItem(m_NameBox, 200))
+	{ //에디트박스에서 키다운이 발생하였는가 체크                       요기가 에디트박스
+		if (pMsg.wParam == VK_RETURN) //<-- 눌려진키가 엔터키인가  체크
+		{
+			cout << "테스트입니다" << endl;
+			system("pause");
+			//OnSend();   //<-- 전송함수 실
+			//return TRUE;
+		}
+	}
+	//return CDialog::PreTranslateMessage(pMsg);
 }
 
 GameManager::~GameManager()
