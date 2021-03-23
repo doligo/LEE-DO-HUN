@@ -8,6 +8,7 @@ using namespace std;
 enum GAME_STATUS
 {
 	Status_Select_Character = 10,
+	Status_Input_YourName,
 	Status_Wait_Room,
 	Status_Exit_Game
 };
@@ -32,14 +33,13 @@ private:
 	int m_game_status;
 	int m_my_mouse_x;
 	int m_my_mouse_y;
+	int m_Draw_Check;
 
 	RECT m_enter_button;
 	RECT m_exit_button;
-	RECT m_input_name_rt;
 	HWND m_NameBox;
 	HWND m_hWnd;
 	HINSTANCE m_hInst;
-	MSG m_Message;
 
 	char m_Player_Name[512];
 public:

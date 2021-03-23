@@ -16,14 +16,17 @@ void GameManager::Init(HWND hWnd, HINSTANCE hInstance)
 
 	m_hWnd = hWnd;
 	m_hInst = hInstance;
-	m_NameBox = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL, 640, 650, 120, 20, m_hWnd, (HMENU)200, m_hInst, NULL);
+	m_NameBox = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL, 432, 240, 120, 20, m_hWnd, (HMENU)200, m_hInst, NULL);
 
 	m_select_character = Character_Orange;
 	m_game_status = Status_Select_Character;
 	m_my_mouse_x = 0;
 	m_my_mouse_y = 0;
+	m_Player_Name[0] = { 0, };
 
 	Set_Select_Character_Pos();
+	m_enter_button = { 94, 80, 173, 110 };
+	m_Draw_Check = false;
 }
 
 void GameManager::Update(LPARAM lParam, WPARAM wParam)
@@ -57,9 +60,20 @@ void GameManager::Update(LPARAM lParam, WPARAM wParam)
 		Bt_Draw->Draw_Detail_Ready(502, 590, m_select_character, m_select_character, 15, 15);
 		Bt_Draw->Draw_Go();
 	}
+	else if (m_game_status == Status_Input_YourName)
+	{
+		if (m_Draw_Check == false)
+		{
+			Bt_Draw->Draw_Detail_Ready(0, 0, Black_BackGround, Black_BackGround, 1000, 700);
+			Bt_Draw->Draw_Ready(300, 50, White_BackGround_Name, White_BackGround_Name);
+			Bt_Draw->Draw_Detail_Ready(455, 150, m_select_character, m_select_character, 15, 15);
+			Bt_Draw->Draw_Go();
+			InvalidateRect(m_NameBox, FALSE, NULL);
 
-	InvalidateRect(m_NameBox, FALSE, NULL); // << 이것때문에 마우스 인식이 잘안된다
-	// 캐릭터선택창은 그냥 넘어가게하고 이름입력단계 화면을 하나 더 만들기 **
+			m_Draw_Check = true;
+		}
+	}
+
 	Input(lParam, wParam);
 }
 
@@ -75,13 +89,19 @@ void GameManager::Input(LPARAM lParam , WPARAM wParam)
 			for (int i = 0; i < 16; i++)
 			{
 				if (My_Character_Pos[i].rt.left <= m_my_mouse_x && My_Character_Pos[i].rt.top <= m_my_mouse_y && My_Character_Pos[i].rt.right >= m_my_mouse_x && My_Character_Pos[i].rt.bottom >= m_my_mouse_y)
+				{
 					m_select_character = My_Character_Pos[i].name;
+					break;
+				}
 			}
+
+			if (m_enter_button.left <= m_my_mouse_x && m_enter_button.top <= m_my_mouse_y && m_enter_button.right >= m_my_mouse_x && m_enter_button.bottom >= m_my_mouse_y)
+				m_game_status = Status_Input_YourName;
 		}
 	}
 	else if (GetAsyncKeyState(VK_RETURN) & 0x8001)	 //	WM_KEYDOWN
 	{
-		if (m_game_status == Status_Select_Character) // 캐릭터 선택창
+		if (m_game_status == Status_Input_YourName) // 캐릭터 선택창
 		{
 
 		}
