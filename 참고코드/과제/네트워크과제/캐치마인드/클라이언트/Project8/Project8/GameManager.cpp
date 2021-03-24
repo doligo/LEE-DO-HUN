@@ -26,7 +26,8 @@ void GameManager::Init(HWND hWnd, HINSTANCE hInstance)
 
 	Set_Select_Character_Pos();
 	m_enter_button = { 94, 80, 173, 110 };
-	m_Draw_Check = false;
+	m_Draw_Check_YN = false;
+	m_Draw_Check_WR = false;
 }
 
 void GameManager::Update(LPARAM lParam, WPARAM wParam)
@@ -62,7 +63,7 @@ void GameManager::Update(LPARAM lParam, WPARAM wParam)
 	}
 	else if (m_game_status == Status_Input_YourName)
 	{
-		if (m_Draw_Check == false)
+		if (m_Draw_Check_YN == false)
 		{
 			Bt_Draw->Draw_Detail_Ready(0, 0, Black_BackGround, Black_BackGround, 1000, 700);
 			Bt_Draw->Draw_Ready(300, 50, White_BackGround_Name, White_BackGround_Name);
@@ -70,7 +71,20 @@ void GameManager::Update(LPARAM lParam, WPARAM wParam)
 			Bt_Draw->Draw_Go();
 			InvalidateRect(m_NameBox, FALSE, NULL);
 
-			m_Draw_Check = true;
+			m_Draw_Check_YN = true;
+		}
+	}		   
+	else if (m_game_status == Status_Wait_Room)
+	{
+		m_Draw_Check_YN = false;
+
+		if (m_Draw_Check_WR == false)
+		{
+			Bt_Draw->Draw_Ready(0, 0, Waiting_room, Waiting_room);
+			Bt_Draw->Draw_Detail_Ready(743, 531, m_select_character, m_select_character, 10, 10);
+			Bt_Draw->Draw_Go();
+
+			m_Draw_Check_WR = true;
 		}
 	}
 
@@ -101,9 +115,15 @@ void GameManager::Input(LPARAM lParam , WPARAM wParam)
 	}
 	else if (GetAsyncKeyState(VK_RETURN) & 0x8001)	 //	WM_KEYDOWN
 	{
-		if (m_game_status == Status_Input_YourName) // 캐릭터 선택창
+		if (m_game_status == Status_Input_YourName) // 캐릭터 이름입력창
 		{
+			GetWindowText(m_NameBox, m_Player_Name, 512);
 
+			if (strlen(m_Player_Name) > 1)
+			{
+				m_game_status = Status_Wait_Room;
+				// 에디트박스 위치 옮기기
+			}
 		}
 	}
 }

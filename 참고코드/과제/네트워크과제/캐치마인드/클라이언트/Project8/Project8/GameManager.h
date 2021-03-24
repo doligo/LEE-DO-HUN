@@ -33,7 +33,8 @@ private:
 	int m_game_status;
 	int m_my_mouse_x;
 	int m_my_mouse_y;
-	int m_Draw_Check;
+	int m_Draw_Check_YN;
+	int m_Draw_Check_WR;
 
 	RECT m_enter_button;
 	RECT m_exit_button;
