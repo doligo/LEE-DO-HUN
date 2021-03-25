@@ -77,12 +77,16 @@ void GameManager::Update(LPARAM lParam, WPARAM wParam)
 	else if (m_game_status == Status_Wait_Room)
 	{
 		m_Draw_Check_YN = false;
+		DestroyWindow(m_NameBox);
 
 		if (m_Draw_Check_WR == false)
 		{
 			Bt_Draw->Draw_Ready(0, 0, Waiting_room, Waiting_room);
 			Bt_Draw->Draw_Detail_Ready(743, 531, m_select_character, m_select_character, 10, 10);
+			Bt_Draw->Draw_Name_WaitRoom(m_Player_Name);
 			Bt_Draw->Draw_Go();
+
+			InvalidateRect(m_ChatBox, FALSE, NULL);
 
 			m_Draw_Check_WR = true;
 		}
@@ -122,8 +126,15 @@ void GameManager::Input(LPARAM lParam , WPARAM wParam)
 			if (strlen(m_Player_Name) > 1)
 			{
 				m_game_status = Status_Wait_Room;
-				// 에디트박스 위치 옮기기
+				m_ChatBox = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL, 54, 674, 524, 20, m_hWnd, (HMENU)201, m_hInst, NULL);
 			}
+		}
+	}
+	else if (GetAsyncKeyState(VK_ESCAPE) & 0x8001)
+	{
+		if (m_game_status == Status_Wait_Room) // 대기실
+		{
+
 		}
 	}
 }

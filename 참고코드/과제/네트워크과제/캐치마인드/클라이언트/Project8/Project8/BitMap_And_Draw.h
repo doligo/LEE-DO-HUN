@@ -45,6 +45,7 @@ public:
 	void Draw_Detail_Ready(int _x, int _y, int _m_size, int dc_num, int x_size, int y_size);
 	void Draw_Go();
 	void Draw_Black_BackGround();
+	void Draw_Name_WaitRoom(char *name);
 
 	~BitMap_And_Draw();
 };

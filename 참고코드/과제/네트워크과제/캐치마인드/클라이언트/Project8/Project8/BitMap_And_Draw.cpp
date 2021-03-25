@@ -56,6 +56,17 @@ void BitMap_And_Draw::Draw_Black_BackGround()
 	BitBlt(hdc, 0, 0, 1200, 700, Entire_DC, 0, 0, SRCCOPY);
 }
 
+void BitMap_And_Draw::Draw_Name_WaitRoom(char *name)
+{
+	RECT rt = { 874, 526, 974, 546 };
+	RECT rt2 = { 847, 526, 970, 546 };
+
+	if (strlen(name) <= 5)
+		DrawText(Entire_DC, name, -1, &rt, DT_VCENTER | DT_WORDBREAK);
+	else
+		DrawText(Entire_DC, name, -1, &rt2, DT_VCENTER | DT_WORDBREAK);
+}
+
 BitMap_And_Draw::~BitMap_And_Draw()
 {
 

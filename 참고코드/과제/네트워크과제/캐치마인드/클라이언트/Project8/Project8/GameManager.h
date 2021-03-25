@@ -39,6 +39,7 @@ private:
 	RECT m_enter_button;
 	RECT m_exit_button;
 	HWND m_NameBox;
+	HWND m_ChatBox;
 	HWND m_hWnd;
 	HINSTANCE m_hInst;
 
