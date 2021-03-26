@@ -16,6 +16,15 @@ struct SOCKETINFO
 	WSABUF wsabuf;
 };
 
+struct Player_Info
+{
+	char Player_Name[40];
+	int Player_Character;
+	int Player_Level;
+	int Player_Pos;
+	char Player_Chat[50];
+};
+
 //작업자 Thread 함수
 DWORD WINAPI WorkerThread(LPVOID arg);
 

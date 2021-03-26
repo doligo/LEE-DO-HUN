@@ -8,6 +8,21 @@
 #include <iostream>
 using namespace std;
 
+enum P_LEVELS
+{
+	Lung = 100,
+	Lumi,
+};
+
+struct Player_Info
+{
+	char Player_Name[40];
+	int Player_Character;
+	int Player_Level;
+	int Player_Pos;
+	char Player_Chat[50];
+};
+
 class NetWork
 {
 private:
@@ -25,6 +40,8 @@ public:
 	static unsigned WINAPI Send(void *arg);
 	static unsigned WINAPI Recv(void *arg);
 	void Release_Network();
+
+	static Player_Info Player_info;
 
 	~NetWork();
 };

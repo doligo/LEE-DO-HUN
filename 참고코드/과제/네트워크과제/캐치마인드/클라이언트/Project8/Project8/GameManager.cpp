@@ -28,6 +28,8 @@ void GameManager::Init(HWND hWnd, HINSTANCE hInstance)
 	m_enter_button = { 94, 80, 173, 110 };
 	m_Draw_Check_YN = false;
 	m_Draw_Check_WR = false;
+
+	NT->Player_info.Player_Chat[0] = { 0, };
 }
 
 void GameManager::Update(LPARAM lParam, WPARAM wParam)
@@ -72,6 +74,8 @@ void GameManager::Update(LPARAM lParam, WPARAM wParam)
 			InvalidateRect(m_NameBox, FALSE, NULL);
 
 			m_Draw_Check_YN = true;
+
+			NT->Player_info.Player_Character = m_select_character;
 		}
 	}		   
 	else if (m_game_status == Status_Wait_Room)
@@ -125,8 +129,18 @@ void GameManager::Input(LPARAM lParam , WPARAM wParam)
 
 			if (strlen(m_Player_Name) > 1)
 			{
+				strcpy_s(NT->Player_info.Player_Name, m_Player_Name);
 				m_game_status = Status_Wait_Room;
-				m_ChatBox = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL, 54, 674, 524, 20, m_hWnd, (HMENU)201, m_hInst, NULL);
+				m_ChatBox = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL | ES_WANTRETURN, 54, 674, 524, 20, m_hWnd, (HMENU)201, m_hInst, NULL);
+			}
+		}
+		else if (m_game_status == Status_Wait_Room) // ´ë±â½Ç
+		{
+			GetWindowText(m_ChatBox, NT->Player_info.Player_Chat, 512);
+
+			if (strlen(NT->Player_info.Player_Chat) > 1)
+			{
+				SetDlgItemText(m_hWnd, 201, "");
 			}
 		}
 	}
@@ -137,6 +151,7 @@ void GameManager::Input(LPARAM lParam , WPARAM wParam)
 
 		}
 	}
+
 }
 
 void GameManager::Set_Select_Character_Pos()

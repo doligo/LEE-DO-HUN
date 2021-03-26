@@ -2,7 +2,8 @@
 
 NetWork::NetWork()
 {
-
+	Player_info.Player_Level = Lung;
+	Player_info.Player_Pos = 0;
 }
 
 void NetWork::Init_Network(HWND hWnd)
@@ -42,6 +43,7 @@ unsigned WINAPI NetWork::Send(void *arg)
 	while (1)
 	{
 
+		//send(sock, Player_info, sizeof(Player_info), NULL);
 	}
 
 	return 0;
