@@ -132,6 +132,7 @@ void GameManager::Input(LPARAM lParam , WPARAM wParam)
 				strcpy_s(NT->Player_info.Player_Name, m_Player_Name);
 				m_game_status = Status_Wait_Room;
 				m_ChatBox = CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL | ES_WANTRETURN, 54, 674, 524, 20, m_hWnd, (HMENU)201, m_hInst, NULL);
+				NT->m_player_wait_room = true;
 			}
 		}
 		else if (m_game_status == Status_Wait_Room) // ´ë±â½Ç
@@ -141,6 +142,7 @@ void GameManager::Input(LPARAM lParam , WPARAM wParam)
 			if (strlen(NT->Player_info.Player_Chat) > 1)
 			{
 				SetDlgItemText(m_hWnd, 201, "");
+				NT->Player_info.Player_Update = true;
 			}
 		}
 	}

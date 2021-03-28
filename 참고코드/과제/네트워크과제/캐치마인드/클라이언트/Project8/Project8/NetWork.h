@@ -19,8 +19,10 @@ struct Player_Info
 	char Player_Name[40];
 	int Player_Character;
 	int Player_Level;
-	int Player_Pos;
-	char Player_Chat[50];
+	int Player_Pos; // 대기실에서 보여지는 위치
+	char Player_Chat[50]; // 채팅내용
+	int Player_Ingame_Num; // 방에 들어온 순서
+	bool Player_Update; // 변경사항 있는지 체크
 };
 
 class NetWork
@@ -33,6 +35,7 @@ private:
 	HANDLE m_RecvThread;
 
 	HWND m_hWnd;
+	static bool m_player_connect;
 public:
 	NetWork();
 
@@ -42,6 +45,8 @@ public:
 	void Release_Network();
 
 	static Player_Info Player_info;
+	static Player_Info Recv_Player_info; // 상대편플레이어 정보 (일단 1:1 상황만)
+	static int m_player_wait_room;
 
 	~NetWork();
 };

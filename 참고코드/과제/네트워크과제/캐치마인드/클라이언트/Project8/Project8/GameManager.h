@@ -10,6 +10,7 @@ enum GAME_STATUS
 	Status_Select_Character = 10,
 	Status_Input_YourName,
 	Status_Wait_Room,
+	Status_Ingame_Room,
 	Status_Exit_Game
 };
 

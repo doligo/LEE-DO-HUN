@@ -21,8 +21,10 @@ struct Player_Info
 	char Player_Name[40];
 	int Player_Character;
 	int Player_Level;
-	int Player_Pos;
-	char Player_Chat[50];
+	int Player_Pos; // 대기실에서 보여지는 위치
+	char Player_Chat[50]; // 채팅내용
+	int Player_Ingame_Num; // 방에 들어온 순서
+	bool Player_Update; // 변경사항 있는지 체크
 };
 
 //작업자 Thread 함수
