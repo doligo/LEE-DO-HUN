@@ -26,11 +26,12 @@ struct Player_Info
 	char Player_Chat[50]; // 채팅내용
 	int Player_Ingame_Num; // 방에 들어온 순서
 	bool Player_Update; // 변경사항 있는지 체크
+	bool Player_Connect; // 접속체크용
 };
 
 SOCKET PlayerS[MAX_PLAYER];
 Player_Info PlayerS_Info[MAX_PLAYER];
-int count_player_max = 0;
+Player_Info *Test_Info;
 
 //작업자 Thread 함수
 DWORD WINAPI WorkerThread(LPVOID arg);
@@ -114,10 +115,13 @@ int main()
 		}
 		else
 		{
-			if (count_player_max != MAX_PLAYER - 1)
+			for (int i = 0; i < MAX_PLAYER; i++)
 			{
-				PlayerS[count_player_max] = client_sock;
-				count_player_max++;
+				if (PlayerS[i] == NULL)
+				{
+					PlayerS[i] = client_sock;
+					break;
+				}
 			}
 		}
 
@@ -180,11 +184,6 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		int addrlen = sizeof(clientaddr);
 		getpeername(ptr->sock, (SOCKADDR*)&clientaddr, &addrlen);
 
-		if (cbTransferred == 1)
-		{
-
-		}
-
 		//비동기 입출력 결과 확인
 		if (retval == 0 || cbTransferred == 0)
 		{
@@ -193,6 +192,15 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 				DWORD temp1, temp2;
 				WSAGetOverlappedResult(ptr->sock, &ptr->overlapped, &temp1, FALSE, &temp2);
 				err_display("WSAGetOverlappedResult()");
+			}
+
+			for (int i = 0; i < MAX_PLAYER; i++)
+			{
+				if (PlayerS[i] == ptr->sock)
+				{
+					PlayerS[i] = NULL;
+					break;
+				}
 			}
 
 			closesocket(ptr->sock);
@@ -210,10 +218,17 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			ptr->recvbytes = cbTransferred;
 			ptr->sendbytes = 0;
 
-			//받은 데이터 출력
-			ptr->buf[ptr->recvbytes] = '\0';
+			Test_Info = (Player_Info*)ptr->buf;
 
-			printf("[TCP/%s:%d] %s\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port), ptr->buf);
+			//받은 데이터 출력
+			//ptr->buf[ptr->recvbytes] = '\0';
+			if (cbTransferred != 1)
+			{
+				Test_Info->Player_Chat[strlen(Test_Info->Player_Chat) + 1] = '\0';
+
+				printf("[TCP/%s:%d] %s\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port), Test_Info->Player_Chat); // 맨끝인자 원래 ptr->buf
+			}
+
 		}
 		else
 		{

@@ -4,6 +4,8 @@ Player_Info NetWork::Player_info;
 Player_Info NetWork::Recv_Player_info; // 다른 플레이어의 정보 (일단은 1:1 부터 구현)
 bool NetWork::m_player_connect = false;
 int NetWork::m_player_wait_room = false;
+bool NetWork::m_player_first_send = false;
+bool NetWork::m_player_first_recv = false;
 
 NetWork::NetWork()
 {
@@ -50,12 +52,17 @@ unsigned WINAPI NetWork::Send(void *arg)
 
 	while (1)
 	{
-		if (connect_check == false && m_player_connect == true)
+		if (connect_check == false && m_player_connect == true) // 처음접속 시
 		{
 			send(sock, (char*)&m_player_connect, sizeof(m_player_connect), 0);
 			connect_check = true;
 		}
-		else if (m_player_wait_room == true && connect_check == true && Player_info.Player_Update == true)
+		if (connect_check == true && m_player_connect == true && m_player_first_send == false) // 처음접속하고 한번만 보낸다
+		{
+			send(sock, (char*)&Player_info, sizeof(Player_info), 0);
+			m_player_first_send = true;
+		}
+		else if (m_player_wait_room == true && connect_check == true && Player_info.Player_Update == true) // 대기실에서 채팅칠때
 		{
 			send(sock, (char*)&Player_info, sizeof(Player_info), 0);
 			Player_info.Player_Update = false;
@@ -98,6 +105,21 @@ unsigned WINAPI NetWork::Recv(void *arg)
 				Recv_Player_info.Player_Pos = tmp_info->Player_Pos;
 				Recv_Player_info.Player_Update = tmp_info->Player_Update;
 			}
+		}
+		else if (m_player_first_recv == false && value == sizeof(Player_Info)) // 딱 한번만
+		{
+			Player_Info *tmp_info;
+			tmp_info = (Player_Info*)buf;
+
+			Recv_Player_info.Player_Character = tmp_info->Player_Character;
+			strcpy_s(Recv_Player_info.Player_Chat, tmp_info->Player_Chat);
+			Recv_Player_info.Player_Ingame_Num = tmp_info->Player_Ingame_Num;
+			Recv_Player_info.Player_Level = tmp_info->Player_Level;
+			strcpy_s(Recv_Player_info.Player_Name, tmp_info->Player_Name);
+			Recv_Player_info.Player_Pos = tmp_info->Player_Pos;
+			Recv_Player_info.Player_Update = tmp_info->Player_Update;
+
+			m_player_first_recv = true;
 		}
 	}
 

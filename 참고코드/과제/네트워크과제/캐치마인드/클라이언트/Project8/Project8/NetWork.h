@@ -23,6 +23,7 @@ struct Player_Info
 	char Player_Chat[50]; // 채팅내용
 	int Player_Ingame_Num; // 방에 들어온 순서
 	bool Player_Update; // 변경사항 있는지 체크
+	bool Player_Connect; // 접속체크용
 };
 
 class NetWork
@@ -47,6 +48,8 @@ public:
 	static Player_Info Player_info;
 	static Player_Info Recv_Player_info; // 상대편플레이어 정보 (일단 1:1 상황만)
 	static int m_player_wait_room;
+	static bool m_player_first_send;
+	static bool m_player_first_recv;
 
 	~NetWork();
 };
