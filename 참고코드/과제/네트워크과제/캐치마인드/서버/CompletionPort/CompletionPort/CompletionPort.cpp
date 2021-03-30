@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define SERVERPORT 9000
+#define SERVERPORT 9001
 #define BUFSIZE 512
+#define MAX_PLAYER 8
 
 //소켓 정보 저장을 위한 구조체
 struct SOCKETINFO
@@ -26,6 +27,10 @@ struct Player_Info
 	int Player_Ingame_Num; // 방에 들어온 순서
 	bool Player_Update; // 변경사항 있는지 체크
 };
+
+SOCKET PlayerS[MAX_PLAYER];
+Player_Info PlayerS_Info[MAX_PLAYER];
+int count_player_max = 0;
 
 //작업자 Thread 함수
 DWORD WINAPI WorkerThread(LPVOID arg);
@@ -54,7 +59,7 @@ int main()
 	SYSTEM_INFO si;
 	GetSystemInfo(&si);
 
-	//(CPU 개수 * 2)개의 작접자 Thread 생성
+	//(CPU 개수 * 2)개의 작업자 Thread 생성
 	HANDLE hThread;
 
 	for (int i = 0; i < (int)si.dwNumberOfProcessors * 2; i++)
@@ -106,6 +111,14 @@ int main()
 		{
 			err_display("accept()");
 			break;
+		}
+		else
+		{
+			if (count_player_max != MAX_PLAYER - 1)
+			{
+				PlayerS[count_player_max] = client_sock;
+				count_player_max++;
+			}
 		}
 
 		printf("[TCP 서버] 클라이언트 접속: IP 주소 = %s, 포트번호 = %d\n", 
@@ -166,6 +179,11 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		SOCKADDR_IN clientaddr;
 		int addrlen = sizeof(clientaddr);
 		getpeername(ptr->sock, (SOCKADDR*)&clientaddr, &addrlen);
+
+		if (cbTransferred == 1)
+		{
+
+		}
 
 		//비동기 입출력 결과 확인
 		if (retval == 0 || cbTransferred == 0)

@@ -93,6 +93,7 @@ void GameManager::Update(LPARAM lParam, WPARAM wParam)
 			InvalidateRect(m_ChatBox, FALSE, NULL);
 
 			m_Draw_Check_WR = true;
+			NT->m_player_connect = true;
 		}
 	}
 

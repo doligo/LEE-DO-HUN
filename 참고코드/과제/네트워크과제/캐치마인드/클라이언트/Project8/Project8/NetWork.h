@@ -35,7 +35,6 @@ private:
 	HANDLE m_RecvThread;
 
 	HWND m_hWnd;
-	static bool m_player_connect;
 public:
 	NetWork();
 
@@ -44,6 +43,7 @@ public:
 	static unsigned WINAPI Recv(void *arg);
 	void Release_Network();
 
+	static bool m_player_connect;
 	static Player_Info Player_info;
 	static Player_Info Recv_Player_info; // 상대편플레이어 정보 (일단 1:1 상황만)
 	static int m_player_wait_room;

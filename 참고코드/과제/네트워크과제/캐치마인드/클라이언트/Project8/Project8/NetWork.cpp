@@ -35,7 +35,7 @@ void NetWork::Init_Network(HWND hWnd)
 		return;
 	}
 
-	m_player_connect = true;
+	m_player_connect = false;
 	Player_info.Player_Update = false;
 
 	m_SendThread = (HANDLE)_beginthreadex(NULL, 0, Send, (void*)&m_ServerSock, 0, NULL);
@@ -50,7 +50,7 @@ unsigned WINAPI NetWork::Send(void *arg)
 
 	while (1)
 	{
-		if (connect_check == false)
+		if (connect_check == false && m_player_connect == true)
 		{
 			send(sock, (char*)&m_player_connect, sizeof(m_player_connect), 0);
 			connect_check = true;
