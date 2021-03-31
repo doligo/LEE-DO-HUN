@@ -31,7 +31,7 @@ struct Player_Info
 
 SOCKET PlayerS[MAX_PLAYER];
 Player_Info PlayerS_Info[MAX_PLAYER];
-Player_Info *Test_Info;
+Player_Info *Tmp_Info;
 
 //작업자 Thread 함수
 DWORD WINAPI WorkerThread(LPVOID arg);
@@ -218,15 +218,33 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			ptr->recvbytes = cbTransferred;
 			ptr->sendbytes = 0;
 
-			Test_Info = (Player_Info*)ptr->buf;
+			Tmp_Info = (Player_Info*)ptr->buf;
+
+			for (int i = 0; i < MAX_PLAYER; i++)
+			{
+				if (PlayerS[i] == ptr->sock)
+				{
+					PlayerS_Info[i].Player_Character = Tmp_Info->Player_Character;
+					if (strlen(Tmp_Info->Player_Chat) <= 50)
+						strcpy_s(PlayerS_Info[i].Player_Chat, Tmp_Info->Player_Chat);
+					PlayerS_Info[i].Player_Ingame_Num = Tmp_Info->Player_Ingame_Num;
+					PlayerS_Info[i].Player_Level = Tmp_Info->Player_Level;
+					if (strlen(Tmp_Info->Player_Name) <= 40)
+						strcpy_s(PlayerS_Info[i].Player_Name, Tmp_Info->Player_Name);
+					PlayerS_Info[i].Player_Pos = Tmp_Info->Player_Pos;
+					PlayerS_Info[i].Player_Update = Tmp_Info->Player_Update;
+					PlayerS_Info[i].Player_Connect = Tmp_Info->Player_Connect;
+					break;
+				}
+			}
 
 			//받은 데이터 출력
 			//ptr->buf[ptr->recvbytes] = '\0';
 			if (cbTransferred != 1)
 			{
-				Test_Info->Player_Chat[strlen(Test_Info->Player_Chat) + 1] = '\0';
+				Tmp_Info->Player_Chat[strlen(Tmp_Info->Player_Chat) + 1] = '\0';
 
-				printf("[TCP/%s:%d] %s\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port), Test_Info->Player_Chat); // 맨끝인자 원래 ptr->buf
+				printf("[TCP/%s:%d] %s\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port), Tmp_Info->Player_Chat); // 맨끝인자 원래 ptr->buf
 			}
 
 		}

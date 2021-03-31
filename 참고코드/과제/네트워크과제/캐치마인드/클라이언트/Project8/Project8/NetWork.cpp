@@ -59,6 +59,7 @@ unsigned WINAPI NetWork::Send(void *arg)
 		}
 		if (connect_check == true && m_player_connect == true && m_player_first_send == false) // 처음접속하고 한번만 보낸다
 		{
+			Player_info.Player_Connect = true;
 			send(sock, (char*)&Player_info, sizeof(Player_info), 0);
 			m_player_first_send = true;
 		}
@@ -104,6 +105,7 @@ unsigned WINAPI NetWork::Recv(void *arg)
 				strcpy_s(Recv_Player_info.Player_Name, tmp_info->Player_Name);
 				Recv_Player_info.Player_Pos = tmp_info->Player_Pos;
 				Recv_Player_info.Player_Update = tmp_info->Player_Update;
+				Recv_Player_info.Player_Connect = tmp_info->Player_Connect;
 			}
 		}
 		else if (m_player_first_recv == false && value == sizeof(Player_Info)) // 딱 한번만
@@ -118,6 +120,7 @@ unsigned WINAPI NetWork::Recv(void *arg)
 			strcpy_s(Recv_Player_info.Player_Name, tmp_info->Player_Name);
 			Recv_Player_info.Player_Pos = tmp_info->Player_Pos;
 			Recv_Player_info.Player_Update = tmp_info->Player_Update;
+			Recv_Player_info.Player_Connect = tmp_info->Player_Connect;
 
 			m_player_first_recv = true;
 		}
