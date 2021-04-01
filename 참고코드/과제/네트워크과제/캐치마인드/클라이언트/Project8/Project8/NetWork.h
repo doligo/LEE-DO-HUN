@@ -8,6 +8,8 @@
 #include <iostream>
 using namespace std;
 
+#define MAX_PLAYER 8
+
 enum P_LEVELS
 {
 	Lung = 100,
@@ -24,6 +26,8 @@ struct Player_Info
 	int Player_Ingame_Num; // 방에 들어온 순서
 	bool Player_Update; // 변경사항 있는지 체크
 	bool Player_Connect; // 접속체크용
+	int Player_Num; // 접속순서
+	int Player_Checking; // 처음 대기실에 왔을때만 정보를 체크하기위한 일회성 변수
 };
 
 class NetWork
@@ -46,10 +50,9 @@ public:
 
 	static bool m_player_connect;
 	static Player_Info Player_info;
-	static Player_Info Recv_Player_info; // 상대편플레이어 정보 (일단 1:1 상황만)
+	static Player_Info Recv_Player_info[MAX_PLAYER]; // 상대편플레이어 정보
 	static int m_player_wait_room;
 	static bool m_player_first_send;
-	static bool m_player_first_recv;
 
 	~NetWork();
 };

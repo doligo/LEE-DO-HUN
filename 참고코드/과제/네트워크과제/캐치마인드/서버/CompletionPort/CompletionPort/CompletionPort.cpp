@@ -27,11 +27,14 @@ struct Player_Info
 	int Player_Ingame_Num; // 방에 들어온 순서
 	bool Player_Update; // 변경사항 있는지 체크
 	bool Player_Connect; // 접속체크용
+	int Player_Num; // 접속순서
+	int Player_Checking; // 처음 대기실에 왔을때만 정보를 체크하기위한 일회성 변수
 };
 
 SOCKET PlayerS[MAX_PLAYER];
 Player_Info PlayerS_Info[MAX_PLAYER];
 Player_Info *Tmp_Info;
+int connect_num= 1;
 
 //작업자 Thread 함수
 DWORD WINAPI WorkerThread(LPVOID arg);
@@ -120,6 +123,11 @@ int main()
 				if (PlayerS[i] == NULL)
 				{
 					PlayerS[i] = client_sock;
+					PlayerS_Info[i].Player_Num = connect_num;
+
+					retval = send(PlayerS[i], (char*)&connect_num, sizeof(connect_num), 0);
+
+					connect_num++;
 					break;
 				}
 			}
@@ -266,6 +274,26 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			if (WSAGetLastError() != WSA_IO_PENDING)
 			{
 				err_display("WSASend()");
+			}
+
+			for (int i = 0; i < MAX_PLAYER; i++)
+			{
+				if (PlayerS_Info[i].Player_Connect == true && PlayerS[i] != NULL)
+				{
+					for (int j = 0; j < MAX_PLAYER; j++)
+					{
+						if (PlayerS_Info[j].Player_Update == true && PlayerS[j] != NULL)
+						{
+							retval = send(PlayerS[i], (char*)&PlayerS_Info[j], sizeof(Player_Info), 0);
+
+							if (retval == SOCKET_ERROR)
+							{
+								err_display("데이터전송실패()");
+								break;
+							}
+						}
+					}
+				}
 			}
 
 			continue;

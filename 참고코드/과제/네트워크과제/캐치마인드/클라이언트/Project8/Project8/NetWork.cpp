@@ -1,11 +1,10 @@
 #include "NetWork.h"
 
 Player_Info NetWork::Player_info;
-Player_Info NetWork::Recv_Player_info; // 다른 플레이어의 정보 (일단은 1:1 부터 구현)
+Player_Info NetWork::Recv_Player_info[MAX_PLAYER];
 bool NetWork::m_player_connect = false;
 int NetWork::m_player_wait_room = false;
 bool NetWork::m_player_first_send = false;
-bool NetWork::m_player_first_recv = false;
 
 NetWork::NetWork()
 {
@@ -60,8 +59,13 @@ unsigned WINAPI NetWork::Send(void *arg)
 		if (connect_check == true && m_player_connect == true && m_player_first_send == false) // 처음접속하고 한번만 보낸다
 		{
 			Player_info.Player_Connect = true;
+			Player_info.Player_Update = true;
+			Player_info.Player_Checking = 20;
+
 			send(sock, (char*)&Player_info, sizeof(Player_info), 0);
+
 			m_player_first_send = true;
+			Player_info.Player_Update = false;
 		}
 		else if (m_player_wait_room == true && connect_check == true && Player_info.Player_Update == true) // 대기실에서 채팅칠때
 		{
@@ -78,7 +82,8 @@ unsigned WINAPI NetWork::Recv(void *arg)
 	SOCKET sock = *((SOCKET*)arg);
 	int value = 0;
 	char buf[BUFSIZ];
-	int tmp = 0;
+	int *tmp = 0;
+	int trigger = 0;
 
 	while (1)
 	{
@@ -95,34 +100,61 @@ unsigned WINAPI NetWork::Recv(void *arg)
 		{
 			Player_Info *tmp_info;
 			tmp_info = (Player_Info*)buf;
-
+			
 			if (tmp_info->Player_Update == true)
 			{
-				Recv_Player_info.Player_Character = tmp_info->Player_Character;
-				strcpy_s(Recv_Player_info.Player_Chat, tmp_info->Player_Chat);
-				Recv_Player_info.Player_Ingame_Num = tmp_info->Player_Ingame_Num;
-				Recv_Player_info.Player_Level = tmp_info->Player_Level;
-				strcpy_s(Recv_Player_info.Player_Name, tmp_info->Player_Name);
-				Recv_Player_info.Player_Pos = tmp_info->Player_Pos;
-				Recv_Player_info.Player_Update = tmp_info->Player_Update;
-				Recv_Player_info.Player_Connect = tmp_info->Player_Connect;
+				for (int i = 1; i < 9; i++)
+				{
+					if (tmp_info->Player_Num == i)
+					{
+						Recv_Player_info[i - 1].Player_Character = tmp_info->Player_Character;
+						strcpy_s(Recv_Player_info[i - 1].Player_Chat, tmp_info->Player_Chat);
+						Recv_Player_info[i - 1].Player_Ingame_Num = tmp_info->Player_Ingame_Num;
+						Recv_Player_info[i - 1].Player_Level = tmp_info->Player_Level;
+						strcpy_s(Recv_Player_info[i - 1].Player_Name, tmp_info->Player_Name);
+						Recv_Player_info[i - 1].Player_Pos = tmp_info->Player_Pos;
+						Recv_Player_info[i - 1].Player_Update = tmp_info->Player_Update;
+						Recv_Player_info[i - 1].Player_Connect = tmp_info->Player_Connect;
+						Recv_Player_info[i - 1].Player_Num = tmp_info->Player_Num;
+						Recv_Player_info[i - 1].Player_Checking = tmp_info->Player_Checking;
+						break;
+					}
+				}
 			}
+			
 		}
-		else if (m_player_first_recv == false && value == sizeof(Player_Info)) // 딱 한번만
+		else if (value == sizeof(Player_Info)) // 딱 한번만
+			//// 위로 올려보기  Player_Checking 이 안먹음
 		{
 			Player_Info *tmp_info;
 			tmp_info = (Player_Info*)buf;
 
-			Recv_Player_info.Player_Character = tmp_info->Player_Character;
-			strcpy_s(Recv_Player_info.Player_Chat, tmp_info->Player_Chat);
-			Recv_Player_info.Player_Ingame_Num = tmp_info->Player_Ingame_Num;
-			Recv_Player_info.Player_Level = tmp_info->Player_Level;
-			strcpy_s(Recv_Player_info.Player_Name, tmp_info->Player_Name);
-			Recv_Player_info.Player_Pos = tmp_info->Player_Pos;
-			Recv_Player_info.Player_Update = tmp_info->Player_Update;
-			Recv_Player_info.Player_Connect = tmp_info->Player_Connect;
+			if (tmp_info->Player_Checking == 30)
+				break;
 
-			m_player_first_recv = true;
+			for (int i = 1; i < 9; i++)
+			{
+				if (tmp_info->Player_Num == i)
+				{
+					Recv_Player_info[i - 1].Player_Character = tmp_info->Player_Character;
+					strcpy_s(Recv_Player_info[i - 1].Player_Chat, tmp_info->Player_Chat);
+					Recv_Player_info[i - 1].Player_Ingame_Num = tmp_info->Player_Ingame_Num;
+					Recv_Player_info[i - 1].Player_Level = tmp_info->Player_Level;
+					strcpy_s(Recv_Player_info[i - 1].Player_Name, tmp_info->Player_Name);
+					Recv_Player_info[i - 1].Player_Pos = tmp_info->Player_Pos;
+					Recv_Player_info[i - 1].Player_Update = tmp_info->Player_Update;
+					Recv_Player_info[i - 1].Player_Connect = tmp_info->Player_Connect;
+					Recv_Player_info[i - 1].Player_Num = tmp_info->Player_Num;
+					Recv_Player_info[i - 1].Player_Checking = 30;
+				}
+			}		  
+	  
+		}
+		else if (trigger == false && value == sizeof(int))
+		{
+			tmp = (int*)buf;
+			Recv_Player_info[*tmp - 1].Player_Num = *tmp;
+			trigger = true;
 		}
 	}
 
