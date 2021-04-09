@@ -155,3 +155,12 @@ void Render()
 	// 후면 버퍼를 보이는 화면으로 전환.
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }
+
+///// 정점 초기화
+
+HRESULT InitVB()
+{
+	//CUSTOMVERTEX vertices[] = {};
+	// 헤더파일 오류남 체크하기
+
+}
