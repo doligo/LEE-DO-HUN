@@ -12,10 +12,18 @@ void Render();
 HINSTANCE g_hInst;
 LPDIRECT3D9 g_pD3D = NULL;
 LPDIRECT3DDEVICE9 g_pD3DDevice = NULL;
+LPDIRECT3DVERTEXBUFFER9 g_pVB = NULL;	// 정점을 보관할 버퍼
 
 char g_szClassName[256] = "D3D Init";
 #pragma comment(lib, "msimg32.lib") // 링커 2019 오류 뜨면 추가해주면 된다.
 
+struct CUSTOMVERTEX
+{
+	FLOAT x, y, z, rhw; // 정점의 변환된 좌표
+	DWORD color; // 정점의 색
+};
+
+#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW | D3DFVF_DIFFUSE)
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
@@ -160,7 +168,30 @@ void Render()
 
 HRESULT InitVB()
 {
-	//CUSTOMVERTEX vertices[] = {};
-	// 헤더파일 오류남 체크하기
+	CUSTOMVERTEX vertices[] =
+	{
 
+	{ 150.0f, 50.0f, 0.5f, 1.0f, 0xffff0000, }, // x, y, z, rhw, color
+	{ 250.0f, 250.0f, 0.5f, 1.0f, 0xff00ff00, },
+	{ 50.0f, 250.0f, 0.5f, 1.0f, 0xff00ffff, },
+
+	};
+
+	if (FAILED(g_pD3DDevice->CreateVertexBuffer(3 * sizeof(CUSTOMVERTEX), 0, D3DFVF_CUSTOMVERTEX, D3DPOOL_DEFAULT, &g_pVB, NULL)))
+	{
+		return E_FAIL;
+	}
+
+	void *pVertices;
+
+	if (FAILED(g_pVB->Lock(0, sizeof(vertices), (void**)&pVertices, 0)))
+	{
+		return E_FAIL;
+	}
+
+	memcpy(pVertices, vertices, sizeof(vertices));
+
+	g_pVB->Unlock();
+
+	return S_OK;
 }
