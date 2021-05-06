@@ -7,7 +7,7 @@ GameSystem::GameSystem()
 	game_status = FALSE;
 	game_keyboard = KEY_UP;
 	game_over_trigger = FALSE;
-	game_stage = 1;
+	game_stage = 3;
 	flage_exist = TRUE;
 	player_life = 4;
 	cur_player_life = 4;
